@@ -118,6 +118,26 @@ The project uses Laravel Sail for local development.
 
 ---
 
+## ⚠️ Important Performance Recommendation
+
+For best performance with Docker + Laravel + WSL2:
+
+✅ Store the project inside the Linux filesystem (WSL)
+
+Example:
+
+```bash
+~/projects/my-project
+```
+
+❌ Do NOT store the project inside Windows mounted directories such as:
+
+```bash
+/mnt/c/...
+```
+
+---
+
 ## Installation & Setup
 
 ### 1. Install required software
@@ -158,15 +178,24 @@ Click: **Apply & Restart**
 
 ---
 
-### 4. Clone project
+### 4. Open Ubuntu (WSL)
 
-Create folder in Windows, e.g.:
+Launch Ubuntu from the Start menu.
 
+---
+
+### 5. Create projects directory inside WSL
+
+```bash
+mkdir -p ~/projects
+cd ~/projects
 ```
-C:\Docker
-```
 
-Open terminal in this folder:
+---
+
+### 6. Clone project
+
+Clone the repository inside the Linux filesystem:
 
 ```bash
 git clone <repo-url>
@@ -175,7 +204,7 @@ cd <project-folder>
 
 ---
 
-### 5. Create .env file
+### 7. Create .env file
 
 ```bash
 copy .env.example .env
@@ -183,32 +212,26 @@ copy .env.example .env
 
 ---
 
-### 6. Install dependencies (via Docker)
+### 8. Install dependencies (via Docker)
 
 ```bash
-docker run --rm -v ${PWD}:/var/www/html -w /var/www/html laravelsail/php84-composer:latest composer install --ignore-platform-reqs
+docker run --rm \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php84-composer:latest \
+    composer install --ignore-platform-reqs
 ```
 
 ---
 
-### 7. Open Ubuntu (WSL)
-
-Launch Ubuntu and navigate to project:
-
-```bash
-cd /mnt/c/Docker/<project-folder>
-```
-
----
-
-### 8. Allow Docker access inside WSL
+### 9. Allow Docker access inside WSL
 
 ```bash
 sudo usermod -aG docker $USER
 newgrp docker
 ```
 
-Check:
+Check Docker access:
 
 ```bash
 docker ps
@@ -216,7 +239,7 @@ docker ps
 
 ---
 
-### 9. Start Sail
+### 10. Start Sail
 
 ```bash
 ./vendor/bin/sail up -d
@@ -224,7 +247,7 @@ docker ps
 
 ---
 
-### 10. Finish Laravel setup
+### 11. Finish Laravel setup
 
 ```bash
 ./vendor/bin/sail artisan key:generate
