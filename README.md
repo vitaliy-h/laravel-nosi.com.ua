@@ -29,6 +29,22 @@ cp .env.example .env
 
 ---
 
+## Local install sail
+
+This will create a temporary container, connect the current directory under which the command is run as a web folder,
+install the necessary dependencies, and then you can run sail up as usual.
+
+```bash 
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php84-composer:latest \
+    composer install --ignore-platform-reqs
+```
+
+---
+
 ## 🐳 Start Sail
 
 The project uses Laravel Sail for local development.
@@ -71,6 +87,14 @@ The project uses Laravel Sail for local development.
 
 ---
 
+## 📦 Run Seeder
+
+```bash
+./vendor/bin/sail artisan db:seed
+```
+
+---
+
 # 🛠 Services
 
 ## 🌐 Application
@@ -93,25 +117,8 @@ phpMyAdmin is included in the project for database management.
 
 ---
 
-# 🌱 Seeder + Admin Access
 
----
-
-## 📦 1. Run Seeder
-
-```bash
-./vendor/bin/sail artisan db:seed
-```
-
-Or:
-
-```bash
-./vendor/bin/sail artisan migrate:fresh --seed
-```
-
----
-
-## 🔐 2. Default Roles
+## 🔐 1. Default Roles
 
 | Role  | Permissions                  |
 |-------|-----------------------------|
@@ -120,7 +127,7 @@ Or:
 
 ---
 
-## 👤 3. Default Admin User
+## 👤 2. Default Admin User
 
 After running the seeder:
 
