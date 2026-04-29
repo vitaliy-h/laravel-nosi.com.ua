@@ -36,7 +36,6 @@ install the necessary dependencies, and then you can run sail up as usual.
 
 ```bash 
 docker run --rm \
-    -u "$(id -u):$(id -g)" \
     -v "$(pwd):/var/www/html" \
     -w /var/www/html \
     laravelsail/php84-composer:latest \

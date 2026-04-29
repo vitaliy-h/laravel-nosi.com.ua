@@ -11,20 +11,24 @@ class UserInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('name'),
+                TextEntry::make('name')
+                    ->label(__('admin.users.fields.name')),
                 TextEntry::make('email')
-                    ->label('Email address'),
+                    ->label(__('admin.users.fields.email')),
                 TextEntry::make('roles.name')
-                    ->label('Roles')
+                    ->label(__('admin.users.fields.roles'))
                     ->badge()
                     ->formatStateUsing(fn($state) => $state ?? '—'),
                 TextEntry::make('email_verified_at')
+                    ->label(__('admin.users.fields.email_verified_at'))
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('created_at')
+                    ->label(__('admin.core.fields.created_at'))
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('updated_at')
+                    ->label(__('admin.core.fields.updated_at'))
                     ->dateTime()
                     ->placeholder('-'),
             ]);
