@@ -1,195 +1,68 @@
-# 🚀 Laravel Project Setup (Sail + MySQL)
+# Laravel Filament Starter
 
-## 📋 Requirements
+Base starter project for building admin panels using **Laravel 13 + Filament v5**.
 
-Make sure you have installed:
+This repository is designed to be **cloned and used as a foundation** for new projects with a ready-to-use:
 
-- Docker
-- Docker Compose
-- Git
-
----
-
-## 📥 Clone the repository
-
-```bash
-git clone <your-repo-url>
-cd <project-folder>
-```
-
----
-
-## ⚙️ Environment setup
-
-Copy `.env` file:
-
-```bash
-cp .env.example .env
-```
-
----
-
-## Local install sail
-
-This will create a temporary container, connect the current directory under which the command is run as a web folder,
-install the necessary dependencies, and then you can run sail up as usual.
-
-```bash 
-docker run --rm \
-    -v "$(pwd):/var/www/html" \
-    -w /var/www/html \
-    laravelsail/php84-composer:latest \
-    composer install --ignore-platform-reqs
-```
-
----
-
-## 🐳 Start Sail
-
-The project uses Laravel Sail for local development.
-
-```bash
-./vendor/bin/sail up -d
-```
-
----
-
-## 📦 Install dependencies
-
-```bash
-./vendor/bin/sail composer install
-```
-
----
-
-## 🔑 Generate application key
-
-```bash
-./vendor/bin/sail artisan key:generate
-```
-
----
-
-## 📁 Storage link
-
-```bash
-./vendor/bin/sail artisan storage:link
-```
-
----
-
-## 🗄 Run migrations
-
-```bash
-./vendor/bin/sail artisan migrate
-```
-
----
-
-## 📦 Run Seeder
-
-```bash
-./vendor/bin/sail artisan db:seed
-```
-
----
-
-# 🛠 Services
-
-## 🌐 Application
-
-- URL: http://localhost
-
----
-
-## 🗄 phpMyAdmin
-
-phpMyAdmin is included in the project for database management.
-
-- URL: http://localhost:8080
-
-### Login credentials:
-
-- **Server:** `mysql`
-- **Username:** value from `DB_USERNAME`
-- **Password:** value from `DB_PASSWORD`
+* Admin panel (Filament)
+* Role & permission system (Spatie)
+* Docker-based local environment (Laravel Sail)
+* Localization setup
+* Consistent admin UI/UX conventions
 
 ---
 
 
-## 🔐 1. Default Roles
+# 📚 Documentation
 
-| Role  | Permissions                  |
-|-------|-----------------------------|
-| admin | admin (admin panel access)  |
-| user  | user                        |
+All documentation is located in the `/docs` directory.
 
----
+## Core Docs
 
-## 👤 2. Default Admin User
-
-After running the seeder:
-
-- **Email:** `admin@example.com`
-- **Password:** `password`
-- **Role:** `admin`
+* [Project Overview](./docs/README.md)
+* [Local Setup](./docs/local_setup.md)
+* [Translations Guide](./docs/translations.md)
+* [Filament Admin Panel](./docs/filament.md)
 
 ---
 
-## 🧱 Useful Commands
+# 🧩 What’s Included
 
-### ▶️ Artisan
-
-```bash
-./vendor/bin/sail artisan <command>
-```
-
----
-
-### 🔄 Reset permissions cache
-
-```bash
-./vendor/bin/sail artisan permission:cache-reset
-```
+* Laravel 13
+* Filament v5 Admin Panel
+* Spatie Roles & Permissions
+* MySQL + Redis (via Sail)
+* phpMyAdmin
+* Standardized admin UI patterns
 
 ---
 
-### ⛔ Stop Sail
+# 📌 Philosophy
 
-```bash
-./vendor/bin/sail down
-```
-
----
-
-### 🔁 Rebuild containers
-
-```bash
-./vendor/bin/sail up -d --build
-```
+* Laravel-first approach
+* Minimal and consistent admin UI
+* No over-engineering
+* Fast project bootstrap
 
 ---
 
-### 🧹 Full reset (with volumes)
+# 🛠 Recommended Workflow
 
-```bash
-./vendor/bin/sail down -v
-./vendor/bin/sail up -d
-```
+1. Clone project
+2. Configure environment
+3. Run Sail
+4. Create first Filament resource
+5. Extend modules using defined conventions
 
 ---
 
-# 💡 Recommendation
+# 📎 Notes
 
-Add an alias to simplify commands:
+* Sail is the **recommended environment** for all development
+* OpenServer support is available for Windows (see docs)
 
-```bash
-alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
-```
+---
 
-Then you can use:
+# 🚀 Summary
 
-```bash
-sail up -d
-sail artisan migrate
-```
+This starter helps you **skip boilerplate** and focus on business logic by providing a clean, consistent, and production-ready base.

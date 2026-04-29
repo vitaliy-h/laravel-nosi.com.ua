@@ -1,0 +1,444 @@
+# Local Development Setup
+
+This project supports multiple local environments depending on your OS and preferences.
+
+---
+
+# 🧭 Supported Environments
+
+* Linux / macOS → Laravel Sail (recommended)
+* Windows → Laravel Sail (WSL2)
+* Windows → OpenServer (alternative, without Docker)
+
+---
+
+# 🐧 Linux / macOS (Laravel Sail)
+
+## 📋 Requirements
+
+Make sure you have installed:
+
+- Docker
+- Docker Compose
+- Git
+
+---
+
+## 📥 Clone the repository
+
+```bash
+git clone <your-repo-url>
+cd <project-folder>
+```
+
+---
+
+## ⚙️ Environment setup
+
+Copy `.env` file:
+
+```bash
+cp .env.example .env
+```
+
+---
+
+## Local install sail
+
+This will create a temporary container, connect the current directory under which the command is run as a web folder,
+install the necessary dependencies, and then you can run sail up as usual.
+
+```bash 
+docker run --rm \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php84-composer:latest \
+    composer install --ignore-platform-reqs
+```
+
+---
+
+## 🐳 Start Sail
+
+The project uses Laravel Sail for local development.
+
+```bash
+./vendor/bin/sail up -d
+```
+
+---
+
+## 📦 Install dependencies
+
+```bash
+./vendor/bin/sail composer install
+```
+
+---
+
+## 🔑 Generate application key
+
+```bash
+./vendor/bin/sail artisan key:generate
+```
+
+---
+
+## 📁 Storage link
+
+```bash
+./vendor/bin/sail artisan storage:link
+```
+
+---
+
+## 🗄 Run migrations
+
+```bash
+./vendor/bin/sail artisan migrate
+```
+
+---
+
+## 📦 Run Seeder
+
+```bash
+./vendor/bin/sail artisan db:seed
+```
+
+---
+
+# 🪟 Windows (Laravel Sail via WSL2)
+
+## Requirements
+
+* WSL2 (Ubuntu recommended)
+* Docker Desktop
+* Git
+
+---
+
+## Installation & Setup
+
+### 1. Install required software
+
+* Install Docker Desktop
+* Install Git
+
+---
+
+### 2. Install WSL2
+
+Open PowerShell as Administrator:
+
+```bash
+wsl --install
+```
+
+After installation:
+
+* Restart your PC
+* Create Linux user and password in Ubuntu
+
+---
+
+### 3. Configure Docker for WSL2
+
+Open Docker Desktop:
+
+* Settings → General
+
+    * Enable: **Use the WSL 2 based engine**
+
+* Settings → Resources → WSL Integration
+
+    * Enable Ubuntu
+
+Click: **Apply & Restart**
+
+---
+
+### 4. Clone project
+
+Create folder in Windows, e.g.:
+
+```
+C:\Docker
+```
+
+Open terminal in this folder:
+
+```bash
+git clone <repo-url>
+cd <project-folder>
+```
+
+---
+
+### 5. Create .env file
+
+```bash
+copy .env.example .env
+```
+
+---
+
+### 6. Install dependencies (via Docker)
+
+```bash
+docker run --rm -v ${PWD}:/var/www/html -w /var/www/html laravelsail/php84-composer:latest composer install --ignore-platform-reqs
+```
+
+---
+
+### 7. Open Ubuntu (WSL)
+
+Launch Ubuntu and navigate to project:
+
+```bash
+cd /mnt/c/Docker/<project-folder>
+```
+
+---
+
+### 8. Allow Docker access inside WSL
+
+```bash
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+Check:
+
+```bash
+docker ps
+```
+
+---
+
+### 9. Start Sail
+
+```bash
+./vendor/bin/sail up -d
+```
+
+---
+
+### 10. Finish Laravel setup
+
+```bash
+./vendor/bin/sail artisan key:generate
+./vendor/bin/sail artisan storage:link
+./vendor/bin/sail artisan migrate
+./vendor/bin/sail artisan db:seed
+```
+
+---
+
+## Access
+
+* App: [http://localhost](http://localhost)
+* phpMyAdmin: [http://localhost:8080](http://localhost:8080)
+
+---
+
+## Default Admin Credentials
+
+```
+Email: admin@example.com
+Password: password
+```
+
+---
+
+# 🪟 Windows (OpenServer - no Docker)
+
+## Requirements
+
+* OpenServer (or similar stack: PHP 8.3, MySQL, Redis optional)
+* Composer
+* Node.js
+
+---
+
+## Setup Steps
+
+```bash
+git clone <repo>
+cd <project>
+cp .env.example .env
+```
+
+Update `.env`:
+
+```
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=...
+DB_USERNAME=...
+DB_PASSWORD=...
+```
+
+Install dependencies:
+
+```bash
+composer install
+npm install
+```
+
+Generate key:
+
+```bash
+php artisan key:generate
+```
+
+Run migrations:
+
+```bash
+php artisan migrate
+```
+
+Run dev server:
+
+```bash
+php artisan serve
+npm run dev
+```
+
+---
+
+## Access
+
+* App: [http://localhost:8000](http://localhost:8000)
+
+---
+
+# ⚠️ Differences Between Environments
+
+| Feature     | Sail   | OpenServer |
+| ----------- | ------ | ---------- |
+| Docker      | ✅      | ❌          |
+| Redis       | ✅      | optional   |
+| phpMyAdmin  | ✅      | optional   |
+| Setup speed | slower | faster     |
+| Consistency | high   | medium     |
+
+---
+
+# 🛠 Services
+
+## 🌐 Application
+
+- URL: http://localhost
+
+---
+
+## 🗄 phpMyAdmin
+
+phpMyAdmin is included in the project for database management.
+
+- URL: http://localhost:8080
+
+### Login credentials:
+
+- **Server:** `mysql`
+- **Username:** value from `DB_USERNAME`
+- **Password:** value from `DB_PASSWORD`
+
+---
+
+
+## 🔐 1. Default Roles
+
+| Role  | Permissions                  |
+|-------|-----------------------------|
+| admin | admin (admin panel access)  |
+| user  | user                        |
+
+---
+
+## 👤 2. Default Admin User
+
+After running the seeder:
+
+- **Email:** `admin@example.com`
+- **Password:** `password`
+- **Role:** `admin`
+
+---
+
+## 🧱 Useful Commands
+
+### ▶️ Artisan
+
+```bash
+./vendor/bin/sail artisan <command>
+```
+
+---
+
+### 🔄 Reset permissions cache
+
+```bash
+./vendor/bin/sail artisan permission:cache-reset
+```
+
+---
+
+### ⛔ Stop Sail
+
+```bash
+./vendor/bin/sail down
+```
+
+---
+
+### 🔁 Rebuild containers
+
+```bash
+./vendor/bin/sail up -d --build
+```
+
+---
+
+### 🧹 Full reset (with volumes)
+
+```bash
+./vendor/bin/sail down -v
+./vendor/bin/sail up -d
+```
+
+---
+
+# 📌 Recommendation
+
+* Use **Sail** for all team development
+* Use **OpenServer** only if Docker is not available
+
+Add an alias to simplify commands:
+
+```bash
+alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
+```
+
+Then you can use:
+
+```bash
+sail up -d
+sail artisan migrate
+```
+
+---
+
+# 📎 Related Documentation
+
+* [General README](./README.md)
+* [Translations Guide](./translations.md)
+* [Filament Admin Panel](./filament.md)
+* [Architecture Overview](./architecture.md)
+
+---
+
+# 🚀 Summary
+
+This project supports multiple local setups, but **Laravel Sail is the primary and recommended environment** for consistency across development teams.

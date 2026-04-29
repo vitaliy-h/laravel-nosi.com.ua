@@ -131,9 +131,10 @@ We follow these rules:
 
 # 📎 Related Documentation
 
-* [Filament Admin Panel Setup](./filament.md)
-* [Project Architecture](./architecture.md)
 * [General README](./README.md)
+* [Filament Admin Panel](./filament.md)
+* [Project Architecture](./architecture.md)
+* [local Setup](./local_setup.md)
 
 ---
 

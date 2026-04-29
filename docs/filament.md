@@ -169,6 +169,7 @@ Some modules MAY override defaults if needed:
 * [General README](./README.md)
 * [Translations Guide](./translations.md)
 * [Filament Setup](./filament.md)
+* [local Setup](./local_setup.md)
 
 ---
 

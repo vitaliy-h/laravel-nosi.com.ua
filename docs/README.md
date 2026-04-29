@@ -190,8 +190,9 @@ Used across:
 # 📎 Related Documentation
 
 * [Translations Guide](./translations.md)
-* [Filament Setup](./filament.md)
+* [Filament Admin Panel](./filament.md)
 * [Architecture Overview](./architecture.md)
+* [local Setup](./local_setup.md)
 
 ---
 
