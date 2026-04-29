@@ -1,2 +1,0 @@
-* * * * * root /usr/local/bin/php /var/www/html/artisan schedule:run >> /var/log/cron.log 2>&1
-* * * * * root /usr/local/bin/php /var/www/html/artisan queue:work >> /var/log/cron.log 2>&1

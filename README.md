@@ -1,12 +1,12 @@
-# 🚀 Laravel Project Setup (Docker + Mysql)
+# 🚀 Laravel Project Setup (Sail + MySQL)
 
 ## 📋 Requirements
 
 Make sure you have installed:
 
-* Docker
-* Docker Compose
-* Git
+- Docker
+- Docker Compose
+- Git
 
 ---
 
@@ -29,20 +29,20 @@ cp .env.example .env
 
 ---
 
-## 🐳 Start containers
+## 🐳 Start Sail
+
+The project uses Laravel Sail for local development.
 
 ```bash
-docker compose up -d
+./vendor/bin/sail up -d
 ```
 
 ---
 
 ## 📦 Install dependencies
 
-Run inside container:
-
 ```bash
-docker compose exec web composer install
+./vendor/bin/sail composer install
 ```
 
 ---
@@ -50,15 +50,15 @@ docker compose exec web composer install
 ## 🔑 Generate application key
 
 ```bash
-docker compose exec web php artisan key:generate
+./vendor/bin/sail artisan key:generate
 ```
 
 ---
 
-##  Storage link
+## 📁 Storage link
 
 ```bash
-docker compose exec web php artisan storage:link
+./vendor/bin/sail artisan storage:link
 ```
 
 ---
@@ -66,59 +66,57 @@ docker compose exec web php artisan storage:link
 ## 🗄 Run migrations
 
 ```bash
-docker compose exec web php artisan migrate
+./vendor/bin/sail artisan migrate
 ```
 
 ---
 
-## Change the hosts file to point the domain to your server.
+# 🛠 Services
 
-Windows: `c:\Windows\System32\Drivers\etc\hosts`
+## 🌐 Application
 
-Linux: `/etc/hosts`
-
-MacOS: `sudo nano /etc/hosts` then ˆ+O and ˆ+X
-
-Add the following lines:
-
-```
-127.0.0.1   lv-bigjol.local
-```
-
-URL: [http://lv-bigjol.local](http://lv-bigjol.local).
-Admin URL: [http://lv-bigjol.local/admin](http://lv-bigjol.local/admin).
-
+- URL: http://localhost
 
 ---
 
-# 🌱 Roles & Permissions Seeder + Admin Access
+## 🗄 phpMyAdmin
 
-This guide explains how to run the roles and permissions seeder and access the admin panel.
+phpMyAdmin is included in the project for database management.
+
+- URL: http://localhost:8080
+
+### Login credentials:
+
+- **Server:** `mysql`
+- **Username:** value from `DB_USERNAME`
+- **Password:** value from `DB_PASSWORD`
+
+---
+
+# 🌱 Seeder + Admin Access
 
 ---
 
 ## 📦 1. Run Seeder
 
-To create default roles, permissions, and admin user, run:
-
-```bash id="run-seeder"
-docker compose exec web php artisan db:seed --class=RolesAndPermissionsSeeder
+```bash
+./vendor/bin/sail artisan db:seed
 ```
 
-Or, if starting fresh with migration:
+Or:
 
-```bash id="migrate-seed"
-docker compose exec web php artisan migrate:fresh --seed
+```bash
+./vendor/bin/sail artisan migrate:fresh --seed
 ```
 
 ---
 
 ## 🔐 2. Default Roles
 
-| Role    | Permissions        |
-| ------- |--------------------|
-| admin   | admin(full access) |
-| user    | user               |
+| Role  | Permissions                  |
+|-------|-----------------------------|
+| admin | admin (admin panel access)  |
+| user  | user                        |
 
 ---
 
@@ -126,36 +124,66 @@ docker compose exec web php artisan migrate:fresh --seed
 
 After running the seeder:
 
-* **Email:** `admin@example.com`
-* **Password:** `password`
-* **Role:** `admin` (full access)
-
-This user can log in to the Filament admin panel.
+- **Email:** `admin@example.com`
+- **Password:** `password`
+- **Role:** `admin`
 
 ---
 
-## 🧱 6. Useful Commands
+## 🧱 Useful Commands
 
-* **Reset permissions cache:**
+### ▶️ Artisan
 
 ```bash
-docker compose exec web php artisan permission:cache-reset
+./vendor/bin/sail artisan <command>
 ```
 
-* **Run artisan commands inside container:**
+---
+
+### 🔄 Reset permissions cache
 
 ```bash
-docker compose exec web php artisan <command>
+./vendor/bin/sail artisan permission:cache-reset
 ```
 
-* **Stop Docker containers:**
+---
+
+### ⛔ Stop Sail
 
 ```bash
-docker compose down
+./vendor/bin/sail down
 ```
 
-* **Rebuild containers:**
+---
+
+### 🔁 Rebuild containers
 
 ```bash
-docker compose up -d --build
+./vendor/bin/sail up -d --build
+```
+
+---
+
+### 🧹 Full reset (with volumes)
+
+```bash
+./vendor/bin/sail down -v
+./vendor/bin/sail up -d
+```
+
+---
+
+# 💡 Recommendation
+
+Add an alias to simplify commands:
+
+```bash
+alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
+```
+
+Then you can use:
+
+```bash
+sail up -d
+sail artisan migrate
 ```
