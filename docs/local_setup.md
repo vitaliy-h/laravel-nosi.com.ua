@@ -287,9 +287,9 @@ Password: password
 ## Setup Steps
 
 ```bash
-git clone <repo>
-cd <project>
-cp .env.example .env
+git clone https://github.com/abc-cms/laravel-filament-starter.git
+cd laravel-filament-starter
+copy .env.example .env
 ```
 
 Update `.env`:
