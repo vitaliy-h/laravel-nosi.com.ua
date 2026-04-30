@@ -315,10 +315,11 @@ Generate key:
 php artisan key:generate
 ```
 
-Run migrations:
+Run migrations & seeder:
 
 ```bash
 php artisan migrate
+php artisan db:seed
 ```
 
 Run dev server:
