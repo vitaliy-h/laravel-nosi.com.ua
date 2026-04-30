@@ -12,6 +12,15 @@ This project supports multiple local environments depending on your OS and prefe
 
 ---
 
+## Default Admin Credentials
+
+```
+Email: admin@example.com
+Password: password
+```
+
+---
+
 # 🐧 Linux / macOS (Laravel Sail)
 
 ## 📋 Requirements
@@ -27,7 +36,7 @@ Make sure you have installed:
 ## 📥 Clone the repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/abc-cms/laravel-filament-starter.git
 cd <project-folder>
 ```
 
@@ -265,15 +274,6 @@ docker ps
 
 ---
 
-## Default Admin Credentials
-
-```
-Email: admin@example.com
-Password: password
-```
-
----
-
 # 🪟 Windows (OpenServer - no Docker)
 
 ## Requirements
@@ -309,87 +309,13 @@ composer install
 npm install
 ```
 
-Generate key:
+Finish Laravel setup:
 
 ```bash
 php artisan key:generate
-```
-
-Run migrations & seeder:
-
-```bash
 php artisan migrate
 php artisan db:seed
 ```
-
-Run dev server:
-
-```bash
-php artisan serve
-npm run dev
-```
-
----
-
-## Access
-
-* App: [http://localhost:8000](http://localhost:8000)
-
----
-
-# ⚠️ Differences Between Environments
-
-| Feature     | Sail   | OpenServer |
-| ----------- | ------ | ---------- |
-| Docker      | ✅      | ❌          |
-| Redis       | ✅      | optional   |
-| phpMyAdmin  | ✅      | optional   |
-| Setup speed | slower | faster     |
-| Consistency | high   | medium     |
-
----
-
-# 🛠 Services
-
-## 🌐 Application
-
-- URL: http://localhost
-
----
-
-## 🗄 phpMyAdmin
-
-phpMyAdmin is included in the project for database management.
-
-- URL: http://localhost:8080
-
-### Login credentials:
-
-- **Server:** `mysql`
-- **Username:** value from `DB_USERNAME`
-- **Password:** value from `DB_PASSWORD`
-
----
-
-
-## 🔐 1. Default Roles
-
-| Role  | Permissions                  |
-|-------|-----------------------------|
-| admin | admin (admin panel access)  |
-| user  | user                        |
-
----
-
-## 👤 2. Default Admin User
-
-After running the seeder:
-
-- **Email:** `admin@example.com`
-- **Password:** `password`
-- **Role:** `admin`
-
----
 
 ## 🧱 Useful Commands
 
