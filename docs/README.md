@@ -37,9 +37,9 @@ Production-ready starter based on Laravel + Filament.
 
 
 ## Docs
-
-* [Translations Guide](./translations.md)
-* [Filament Admin Panel](./filament.md)
-* [Architecture Overview](./architecture.md)
 * [local Setup](./local_setup.md)
+* [Architecture Overview](./architecture.md)
+* [Filament Admin Panel](./filament.md)
+  * [Resource Generation](filament/resource-generation.md)
+  * [Translations Guide](filament/translations.md)
 

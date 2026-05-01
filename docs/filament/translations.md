@@ -131,18 +131,9 @@ We follow these rules:
 
 # 📎 Related Documentation
 
-* [General README](./README.md)
-* [Filament Admin Panel](./filament.md)
-* [Project Architecture](./architecture.md)
-* [local Setup](./local_setup.md)
+* [General README](../README.md)
+* [Filament Admin Panel](../filament.md)
+* [Project Architecture](../architecture.md)
+* [local Setup](../local_setup.md)
 
 ---
-
-# 🚀 Summary
-
-This starter uses **pure Laravel localization approach** to ensure:
-
-* simplicity
-* maintainability
-* compatibility with Filament v5
-* scalability for multi-language projects

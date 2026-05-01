@@ -21,7 +21,7 @@ All documentation is located in the `/docs` directory.
 
 * [Project Overview](./docs/README.md)
 * [Local Setup](./docs/local_setup.md)
-* [Translations Guide](./docs/translations.md)
+* [Translations Guide](docs/filament/translations.md)
 * [Filament Admin Panel](./docs/filament.md)
 
 ---

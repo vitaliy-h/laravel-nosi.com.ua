@@ -2,16 +2,23 @@
 
 namespace App\Filament\Resources\Users;
 
-use App\Filament\Resources\Users\Pages\ListUsers;
-use App\Filament\Resources\Users\Schemas\UserForm;
-use App\Filament\Resources\Users\Schemas\UserInfolist;
-use App\Filament\Resources\Users\Tables\UsersTable;
+use App\Filament\Actions\BaseEditAction;
+use App\Filament\Resources\Users\Pages\ManageUsers;
 use App\Models\User;
 use BackedEnum;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -21,30 +28,80 @@ class UserResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return UserForm::configure($schema);
-    }
-
-    public static function infolist(Schema $schema): Schema
-    {
-        return UserInfolist::configure($schema);
+        return $schema
+            ->components([
+                TextInput::make('name')
+                    ->label(__('admin.users.fields.name'))
+                    ->required(),
+                TextInput::make('email')
+                    ->label(__('admin.users.fields.email'))
+                    ->email()
+                    ->required(),
+                Select::make('roles')
+                    ->label(__('admin.users.fields.roles'))
+                    ->multiple()
+                    ->relationship('roles', 'name')
+                    ->preload(),
+                DateTimePicker::make('email_verified_at')
+                    ->label(__('admin.users.fields.email_verified_at')),
+                TextInput::make('password')
+                    ->label(__('admin.users.fields.password'))
+                    ->password()
+                    ->dehydrated(fn($state) => filled($state))
+                    ->dehydrateStateUsing(fn($state) => filled($state) ? Hash::make($state) : null)
+                    ->required(fn(string $context) => $context === 'create'),
+            ]);
     }
 
     public static function table(Table $table): Table
     {
-        return UsersTable::configure($table);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
+        return $table
+            ->columns([
+                TextColumn::make('name')
+                    ->label(__('admin.users.fields.name'))
+                    ->searchable(),
+                TextColumn::make('email')
+                    ->label(__('admin.users.fields.email'))
+                    ->searchable(),
+                TextColumn::make('roles.name')->badge()
+                    ->label(__('admin.users.fields.roles')),
+                TextColumn::make('email_verified_at')
+                    ->label(__('admin.users.fields.email_verified_at'))
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')
+                    ->label(__('admin.core.fields.created_at'))
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->label(__('admin.core.fields.updated_at'))
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                SelectFilter::make('roles')
+                    ->label(__('admin.users.fields.roles'))
+                    ->relationship('roles', 'name'),
+            ])
+            ->recordActions([
+                BaseEditAction::make()->iconButton(),
+                DeleteAction::make()->iconButton(),
+            ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+            ->toolbarActions([
+            \Filament\Actions\CreateAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ]);
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => ListUsers::route('/'),
+            'index' => ManageUsers::route('/'),
         ];
     }
 }
