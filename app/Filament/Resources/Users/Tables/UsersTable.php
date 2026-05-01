@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Users\Tables;
 
 use App\Filament\Actions\BaseEditAction;
+use App\Filament\Traits\HasDefaultTable;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -14,9 +15,11 @@ use Filament\Tables\Table;
 
 class UsersTable
 {
+    use HasDefaultTable;
+
     public static function configure(Table $table): Table
     {
-        return $table
+        return self::applyDefaultTable($table
             ->columns([
                 TextColumn::make('name')
                     ->label(__('admin.users.fields.name'))
@@ -46,16 +49,6 @@ class UsersTable
                 SelectFilter::make('roles')
                     ->label(__('admin.users.fields.roles'))
                     ->relationship('roles', 'name'),
-            ])
-            ->recordActions([
-                BaseEditAction::make()->iconButton(),
-                DeleteAction::make()->iconButton(),
-            ], position: RecordActionsPosition::BeforeColumns)
-            ->toolbarActions([
-                CreateAction::make(),
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ]));
     }
 }
