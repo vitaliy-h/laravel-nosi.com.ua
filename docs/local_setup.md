@@ -4,7 +4,7 @@ This project supports multiple local environments depending on your OS and prefe
 
 ---
 
-# 🧭 Supported Environments
+## Supported Environments
 
 * Linux / macOS → Laravel Sail (recommended)
 * Windows → Laravel Sail (WSL2)
@@ -25,15 +25,13 @@ Password: password
 
 ## 📋 Requirements
 
-Make sure you have installed:
-
 - Docker
 - Docker Compose
 - Git
 
 ---
 
-## 📥 Clone the repository
+## Clone the repository
 
 ```bash
 git clone https://github.com/abc-cms/laravel-filament-starter.git
@@ -42,7 +40,7 @@ cd <project-folder>
 
 ---
 
-## ⚙️ Environment setup
+## Environment setup
 
 Copy `.env` file:
 
@@ -67,51 +65,14 @@ docker run --rm \
 
 ---
 
-## 🐳 Start Sail
-
-The project uses Laravel Sail for local development.
+## Setup
 
 ```bash
 ./vendor/bin/sail up -d
-```
-
----
-
-## 📦 Install dependencies
-
-```bash
 ./vendor/bin/sail composer install
-```
-
----
-
-## 🔑 Generate application key
-
-```bash
 ./vendor/bin/sail artisan key:generate
-```
-
----
-
-## 📁 Storage link
-
-```bash
 ./vendor/bin/sail artisan storage:link
-```
-
----
-
-## 🗄 Run migrations
-
-```bash
 ./vendor/bin/sail artisan migrate
-```
-
----
-
-## 📦 Run Seeder
-
-```bash
 ./vendor/bin/sail artisan db:seed
 ```
 
@@ -313,13 +274,14 @@ Finish Laravel setup:
 
 ```bash
 php artisan key:generate
+php artisan storage:link
 php artisan migrate
 php artisan db:seed
 ```
 
 ## 🧱 Useful Commands
 
-### ▶️ Artisan
+### Artisan
 
 ```bash
 ./vendor/bin/sail artisan <command>
@@ -327,7 +289,7 @@ php artisan db:seed
 
 ---
 
-### 🔄 Reset permissions cache
+### Reset permissions cache
 
 ```bash
 ./vendor/bin/sail artisan permission:cache-reset
@@ -335,7 +297,7 @@ php artisan db:seed
 
 ---
 
-### ⛔ Stop Sail
+### Stop Sail
 
 ```bash
 ./vendor/bin/sail down
@@ -343,7 +305,7 @@ php artisan db:seed
 
 ---
 
-### 🔁 Rebuild containers
+### Rebuild containers
 
 ```bash
 ./vendor/bin/sail up -d --build
@@ -351,7 +313,7 @@ php artisan db:seed
 
 ---
 
-### 🧹 Full reset (with volumes)
+### Full reset (with volumes)
 
 ```bash
 ./vendor/bin/sail down -v
@@ -360,7 +322,7 @@ php artisan db:seed
 
 ---
 
-# 📌 Recommendation
+# Recommendation
 
 * Use **Sail** for all team development
 * Use **OpenServer** only if Docker is not available
@@ -386,9 +348,3 @@ sail artisan migrate
 * [Translations Guide](./translations.md)
 * [Filament Admin Panel](./filament.md)
 * [Architecture Overview](./architecture.md)
-
----
-
-# 🚀 Summary
-
-This project supports multiple local setups, but **Laravel Sail is the primary and recommended environment** for consistency across development teams.
