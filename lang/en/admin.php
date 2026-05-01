@@ -21,10 +21,13 @@ return [
     'users' => [
         'fields' => [
             'name' => 'Name',
+            'surname' => 'Surname',
+            'phone' => 'Phone',
             'email' => 'Email address',
             'roles' => 'Roles',
             'email_verified_at' => 'Email verified at',
             'password' => 'Password',
+            'ip' => 'IP',
         ]
     ]
 

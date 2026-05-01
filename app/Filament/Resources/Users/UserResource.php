@@ -32,11 +32,20 @@ class UserResource extends Resource
             ->components([
                 TextInput::make('name')
                     ->label(__('admin.users.fields.name'))
-                    ->required(),
+                    ->required()
+                    ->maxLength(255),
+                TextInput::make('surname')
+                    ->label(__('admin.users.fields.surname'))
+                    ->maxLength(255),
                 TextInput::make('email')
                     ->label(__('admin.users.fields.email'))
                     ->email()
-                    ->required(),
+                    ->required()
+                    ->unique(ignoreRecord: true),
+                TextInput::make('phone')
+                    ->label(__('admin.users.fields.phone'))
+                    ->numeric()
+                    ->unique(ignoreRecord: true),
                 Select::make('roles')
                     ->label(__('admin.users.fields.roles'))
                     ->multiple()
@@ -50,6 +59,10 @@ class UserResource extends Resource
                     ->dehydrated(fn($state) => filled($state))
                     ->dehydrateStateUsing(fn($state) => filled($state) ? Hash::make($state) : null)
                     ->required(fn(string $context) => $context === 'create'),
+                TextInput::make('ip')
+                    ->label(__('admin.users.fields.ip'))
+                    ->disabled()
+                    ->dehydrated(false),
             ]);
     }
 
@@ -60,11 +73,20 @@ class UserResource extends Resource
                 TextColumn::make('name')
                     ->label(__('admin.users.fields.name'))
                     ->searchable(),
+                TextColumn::make('name')
+                    ->label(__('admin.users.fields.surname'))
+                    ->searchable(),
                 TextColumn::make('email')
                     ->label(__('admin.users.fields.email'))
                     ->searchable(),
+                TextColumn::make('phone')
+                    ->label(__('admin.users.fields.phone'))
+                    ->searchable(),
                 TextColumn::make('roles.name')->badge()
                     ->label(__('admin.users.fields.roles')),
+                TextColumn::make('ip')
+                    ->label(__('admin.users.fields.ip'))
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('email_verified_at')
                     ->label(__('admin.users.fields.email_verified_at'))
                     ->dateTime()
