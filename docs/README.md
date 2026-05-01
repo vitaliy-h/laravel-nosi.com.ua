@@ -17,7 +17,7 @@ Production-ready starter based on Laravel + Filament.
 ## Services
 * laravel.test
 * mysql
-2redis
+* redis
 * phpmyadmin
 
 ## Setup
