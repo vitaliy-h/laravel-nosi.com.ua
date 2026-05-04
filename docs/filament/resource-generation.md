@@ -51,16 +51,11 @@ php artisan migrate
 ## Step 3 — Generate Filament Resource
 
 ```bash
-php artisan make:filament-resource Post \
-    --simple \
-    --generate \
-    --no-view
+php artisan make:filament-resource Page --simple --generate
 ```
 
 ### Flags explanation:
 
 * `--simple` → no separate pages (modal-based CRUD)
 * `--generate` → auto-generate form from database
-* `--no-view` → disables View page
-
 ---

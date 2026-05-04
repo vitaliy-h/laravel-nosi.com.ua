@@ -29,6 +29,21 @@ return [
             'password' => 'Password',
             'ip' => 'IP',
         ]
+    ],
+    'pages' => [
+        'fields' => [
+            'name' => 'Name',
+            'url' => 'Url',
+            'url_helper' => 'URL is managed by system for this page type',
+            'text' => 'Content',
+            'module' => 'Module',
+            'rank' => 'Rank',
+            'display' => 'Display',
+            'display_menu' => 'Display menu',
+            'display_menu_footer' => 'Display menu footer',
+            'meta_title' => 'Meta title',
+            'meta_description' => 'Meta description',
+        ]
     ]
 
 ];
