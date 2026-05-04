@@ -67,15 +67,11 @@ TextColumn::make('name')
 
 # ⚙️ Locale Configuration
 
-Default locale is set in:
+Default locale is set in env file:
 
-```
-config/app.php
-```
-
-```php
-'locale' => 'en',
-'fallback_locale' => 'en',
+```ENV
+APP_LOCALE=en
+APP_FALLBACK_LOCALE=en
 ```
 
 ---
