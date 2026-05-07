@@ -10,7 +10,7 @@
             <ul class="navbar-nav ms-auto">
                 @foreach($headerMenu as $item)
                     <li class="nav-item">
-                        <a class="nav-link" href="{{\App\Modules\Core\Facades\UrlFacade::normalize($item->url)}}">{{$item->name}}</a>
+                        <a class="nav-link" href="{{\App\Modules\Core\Facades\UrlFacade::normalize($item->slug)}}">{{$item->title}}</a>
                     </li>
                 @endforeach
             </ul>

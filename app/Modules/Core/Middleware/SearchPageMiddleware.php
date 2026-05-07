@@ -27,14 +27,18 @@ readonly class SearchPageMiddleware
         if ($module) {
             $page = $this->pages->findByModule(PageModule::from($module));
         } else {
-            $url = $request->path();
-            $page = $this->pages->findByUrl(UrlFacade::normalize($url));
+            $slug = $request->path();
+            $page = $this->pages->findBySlug(UrlFacade::normalize($slug));
         }
 
         if (!$page) {
             abort(404);
         }
-        view()->share('page', $page);
+        view()->share([
+            'page' => $page,
+            'meta_title' => $page->meta_title,
+            'meta_description' => $page->meta_description,
+        ]);
         return $next($request);
     }
 }

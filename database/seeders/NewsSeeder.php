@@ -22,6 +22,8 @@ class NewsSeeder extends Seeder
                 'text' => "Full content of test news {$i}. Lorem ipsum dolor sit amet...",
                 'display' => rand(0, 1),
                 'published_at' => now()->subDays(rand(0, 30)),
+                'meta_title' => "Test news {$i}",
+                'meta_description' => "Short description for news {$i}",
             ]);
         }
     }

@@ -7,9 +7,9 @@ use App\Modules\Core\Models\Page;
 
 class PagesRepository
 {
-    public function findByUrl(string $slug): ?Page
+    public function findBySlug(string $slug): ?Page
     {
-        return Page::where('url', $slug)
+        return Page::where('slug', $slug)
             ->visible()
             ->first();
     }

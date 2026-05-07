@@ -15,8 +15,8 @@ class PagesTableSeeder extends Seeder
     {
         $pages = [
             [
-                'name' => 'Main Page',
-                'url' => '/',
+                'title' => 'Main Page',
+                'slug' => '/',
                 'text' => '<h5>Main Page</h5>',
                 'module' => PageModule::INDEX,
                 'display' => true,
@@ -27,8 +27,8 @@ class PagesTableSeeder extends Seeder
                 'meta_description' => 'Main Page',
             ],
             [
-                'name' => 'News',
-                'url' => '/news',
+                'title' => 'News',
+                'slug' => '/news',
                 'text' => '<h5>News</h5>',
                 'module' => PageModule::NEWS,
                 'display' => true,
@@ -39,8 +39,8 @@ class PagesTableSeeder extends Seeder
                 'meta_description' => 'News',
             ],
             [
-                'name' => 'Feedback',
-                'url' => '/feedback',
+                'title' => 'Feedback',
+                'slug' => '/feedback',
                 'text' => '<h5>News</h5>',
                 'module' => PageModule::FEEDBACK,
                 'display' => true,
@@ -51,8 +51,8 @@ class PagesTableSeeder extends Seeder
                 'meta_description' => 'Feedback',
             ],
             [
-                'name' => 'Text Page',
-                'url' => '/text-page-1',
+                'title' => 'Text Page',
+                'slug' => '/text-page-1',
                 'text' => '<h5>Text page</h5>',
                 'module' => PageModule::TEXT,
                 'display' => true,
@@ -63,8 +63,8 @@ class PagesTableSeeder extends Seeder
                 'meta_description' => 'Text Page',
             ],
             [
-                'name' => 'Text Page 2',
-                'url' => '/text-page-2',
+                'title' => 'Text Page 2',
+                'slug' => '/text-page-2',
                 'text' => '<h5>Text page</h5>',
                 'module' => PageModule::TEXT,
                 'display' => true,
@@ -77,7 +77,7 @@ class PagesTableSeeder extends Seeder
         ];
 
         foreach ($pages as $page) {
-            $pageExist = Page::where('url', $page['url'])->first();
+            $pageExist = Page::where('slug', $page['slug'])->first();
             if (!$pageExist) {
                 $pageExist = new Page();
             }

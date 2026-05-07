@@ -7,7 +7,6 @@ use App\Filament\Resources\Pages\Pages\ManagePages;
 use App\Modules\Core\Enums\PageModule;
 use App\Modules\Core\Facades\UrlFacade;
 use App\Modules\Core\Models\Page;
-use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -19,7 +18,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -32,13 +30,13 @@ class PageResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('name')
-                    ->label(__('admin.fields.name'))
+                TextInput::make('title')
+                    ->label(__('admin.fields.title'))
                     ->required(),
-                TextInput::make('url')
-                    ->label(__('admin.fields.url'))
+                TextInput::make('slug')
+                    ->label(__('admin.fields.slug'))
                     ->unique()
-                    ->afterStateUpdated(fn($state, callable $set) => $set('url', UrlFacade::normalize($state)))
+                    ->afterStateUpdated(fn($state, callable $set) => $set('slug', UrlFacade::normalize($state)))
                     ->required()
                     ->disabled(fn($record) => $record && $record->module !== PageModule::TEXT
                     )
@@ -84,11 +82,11 @@ class PageResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
-                    ->label(__('admin.fields.name'))
+                TextColumn::make('title')
+                    ->label(__('admin.fields.title'))
                     ->searchable(),
-                TextColumn::make('url')
-                    ->label(__('admin.fields.url'))
+                TextColumn::make('slug')
+                    ->label(__('admin.fields.slug'))
                     ->searchable(),
                 TextColumn::make('module')
                     ->label(__('admin.fields.module'))
@@ -125,7 +123,7 @@ class PageResource extends Resource
             ->recordActions([
                 ViewAction::make()
                     ->iconButton()
-                    ->url(fn ($record) => $record->url)
+                    ->url(fn($record) => $record->slug)
                     ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton()->visible(fn($record) => $record->module === PageModule::TEXT

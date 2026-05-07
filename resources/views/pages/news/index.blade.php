@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <h1>{{$page->name}}</h1>
+        <h1>{{$page->title}}</h1>
 
         <div class="row">
             @foreach($news as $item)

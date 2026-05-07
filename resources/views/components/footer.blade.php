@@ -6,7 +6,7 @@
                     <ul class="list-unstyled">
                         <li class="nav-item">
                             <a class="text-decoration-none text-dark"
-                               href="{{\App\Modules\Core\Facades\UrlFacade::normalize($item->url)}}">{{$item->name}}</a>
+                               href="{{\App\Modules\Core\Facades\UrlFacade::normalize($item->slug)}}">{{$item->title}}</a>
                         </li>
                     </ul>
                 </div>

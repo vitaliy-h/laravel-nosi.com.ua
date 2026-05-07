@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('pages', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('url')->unique();
+            $table->string('title');
+            $table->string('slug')->unique();
             $table->text('text')->nullable(); // RichEditor HTML
             $table->string('module')->index()->default(\App\Modules\Core\Enums\PageModule::TEXT);
             $table->integer('rank')->default(0);

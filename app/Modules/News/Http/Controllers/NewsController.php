@@ -21,6 +21,10 @@ class NewsController extends Controller
     public function show($slug, Request $request)
     {
         $newsItem = $this->repository->getBySlug($slug);
+        view()->share([
+            'meta_title' => $newsItem->meta_title,
+            'meta_description' => $newsItem->meta_description,
+        ]);
         return view('pages.news.show', compact('newsItem'));
     }
 }

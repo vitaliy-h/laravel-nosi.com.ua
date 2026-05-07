@@ -11,8 +11,8 @@ class Page extends Model
     use HasVisibility;
 
     protected $fillable = [
-        'name',
-        'url',
+        'title',
+        'slug',
         'text',
         'module',
         'rank',

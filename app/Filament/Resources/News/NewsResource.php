@@ -45,6 +45,12 @@ class NewsResource extends Resource
                     ->label(__('admin.fields.text'))
                     ->required()
                     ->columnSpanFull(),
+                TextInput::make('meta_title')
+                    ->label(__('admin.fields.meta_title'))
+                    ->columnSpanFull(),
+                Textarea::make('meta_description')
+                    ->label(__('admin.fields.meta_description'))
+                    ->columnSpanFull(),
                 DateTimePicker::make('published_at')
                     ->label(__('admin.fields.published_at')),
                 Toggle::make('display')
