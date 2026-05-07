@@ -28,32 +28,30 @@ class NewsResource extends Resource
 {
     protected static ?string $model = News::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 TextInput::make('title')
-                    ->label(__('admin.news.fields.title'))
+                    ->label(__('admin.fields.title'))
                     ->required(),
                 TextInput::make('slug')
-                    ->label(__('admin.news.fields.slug'))
+                    ->label(__('admin.fields.slug'))
                     ->disabled(),
                 Textarea::make('short_text')
-                    ->label(__('admin.news.fields.short_text'))
+                    ->label(__('admin.fields.short_text'))
                     ->columnSpanFull(),
                 RichEditor::make('text')
-                    ->label(__('admin.news.fields.text'))
+                    ->label(__('admin.fields.text'))
                     ->required()
                     ->columnSpanFull(),
                 DateTimePicker::make('published_at')
-                    ->label(__('admin.news.fields.published_at')),
+                    ->label(__('admin.fields.published_at')),
                 Toggle::make('display')
-                    ->label(__('admin.news.fields.display'))
+                    ->label(__('admin.fields.display'))
                     ->required(),
                 FileUpload::make('img')
-                    ->label(__('admin.news.fields.img'))
+                    ->label(__('admin.fields.img'))
                     ->image()
                     ->visibility('public')
                     ->getUploadedFileNameForStorageUsing(function ($file, $record) {
@@ -71,27 +69,27 @@ class NewsResource extends Resource
             ->defaultSort('published_at', 'desc')
             ->columns([
                 TextColumn::make('title')
-                    ->label(__('admin.news.fields.title'))
+                    ->label(__('admin.fields.title'))
                     ->searchable(),
                 TextColumn::make('slug')
-                    ->label(__('admin.news.fields.slug'))
+                    ->label(__('admin.fields.slug'))
                     ->searchable(),
                 ImageColumn::make('img')
-                    ->label(__('admin.news.fields.img')),
+                    ->label(__('admin.fields.img')),
                 IconColumn::make('display')
-                    ->label(__('admin.news.fields.display'))
+                    ->label(__('admin.fields.display'))
                     ->boolean(),
                 TextColumn::make('published_at')
-                    ->label(__('admin.news.fields.published_at'))
+                    ->label(__('admin.fields.published_at'))
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('created_at')
-                    ->label(__('admin.core.fields.created_at'))
+                    ->label(__('admin.fields.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label(__('admin.core.fields.updated_at'))
+                    ->label(__('admin.fields.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

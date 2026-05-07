@@ -18,11 +18,11 @@ class BaseEditAction
                 $action->makeModalSubmitAction(
                     'save',
                     arguments: ['close' => false],
-                )->label(__('admin.core.actions.save')),
+                )->label(__('admin.actions.save')),
                 $action->makeModalSubmitAction(
                     'saveAndClose',
                     arguments: ['close' => true],
-                )->label(__('admin.core.actions.saveClose')),
+                )->label(__('admin.actions.saveClose')),
             ])
             ->action(function (array $data, array $arguments, $record, $action) :void {
                 $record->update($data);

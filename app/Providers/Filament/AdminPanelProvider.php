@@ -18,6 +18,9 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationItem;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -28,6 +31,26 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+                return $builder->items([
+
+                    NavigationItem::make(__('admin.tables.dashboard'))
+                        ->icon('heroicon-o-home')
+                        ->url(Dashboard::getUrl()),
+
+                    NavigationItem::make(__('admin.tables.users'))
+                        ->icon('heroicon-o-users')
+                        ->url(\App\Filament\Resources\Users\UserResource::getUrl()),
+
+                    NavigationItem::make(__('admin.tables.pages'))
+                        ->icon('heroicon-o-document-text')
+                        ->url(\App\Filament\Resources\Pages\PageResource::getUrl()),
+
+                    NavigationItem::make(__('admin.tables.news'))
+                        ->icon('heroicon-o-newspaper')
+                        ->url(\App\Filament\Resources\News\NewsResource::getUrl()),
+                ]);
+            })
             ->colors([
                 'primary' => Color::Amber,
             ])

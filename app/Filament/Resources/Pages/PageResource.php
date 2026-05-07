@@ -28,28 +28,26 @@ class PageResource extends Resource
 {
     protected static ?string $model = Page::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->label(__('admin.pages.fields.name'))
+                    ->label(__('admin.fields.name'))
                     ->required(),
                 TextInput::make('url')
-                    ->label(__('admin.pages.fields.url'))
+                    ->label(__('admin.fields.url'))
                     ->unique()
                     ->afterStateUpdated(fn($state, callable $set) => $set('url', UrlFacade::normalize($state)))
                     ->required()
                     ->disabled(fn($record) => $record && $record->module !== PageModule::TEXT
                     )
                     ->helperText(fn($record) => $record && $record->module !== PageModule::TEXT
-                        ? __('admin.pages.fields.url_helper')
+                        ? __('admin.fields.url_helper')
                         : null
                     ),
                 Select::make('module')
-                    ->label(__('admin.pages.fields.module'))
+                    ->label(__('admin.fields.module'))
                     ->options(PageModule::options())
                     ->required()
                     ->default(PageModule::TEXT->value)
@@ -57,27 +55,27 @@ class PageResource extends Resource
                     ->dehydrated()
                     ->visible(fn($record) => $record !== null),
                 TextInput::make('rank')
-                    ->label(__('admin.pages.fields.rank'))
+                    ->label(__('admin.fields.rank'))
                     ->required()
                     ->numeric()
                     ->default(0),
                 Toggle::make('display')
-                    ->label(__('admin.pages.fields.display'))
+                    ->label(__('admin.fields.display'))
                     ->required(),
                 Toggle::make('display_menu')
-                    ->label(__('admin.pages.fields.display_menu'))
+                    ->label(__('admin.fields.display_menu'))
                     ->required(),
                 Toggle::make('display_menu_footer')
-                    ->label(__('admin.pages.fields.display_menu_footer'))
+                    ->label(__('admin.fields.display_menu_footer'))
                     ->required(),
                 RichEditor::make('text')
-                    ->label(__('admin.pages.fields.text'))
+                    ->label(__('admin.fields.text'))
                     ->columnSpanFull(),
                 TextInput::make('meta_title')
-                    ->label(__('admin.pages.fields.meta_title'))
+                    ->label(__('admin.fields.meta_title'))
                     ->columnSpanFull(),
                 Textarea::make('meta_description')
-                    ->label(__('admin.pages.fields.meta_description'))
+                    ->label(__('admin.fields.meta_description'))
                     ->columnSpanFull(),
             ]);
     }
@@ -87,28 +85,28 @@ class PageResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label(__('admin.pages.fields.name'))
+                    ->label(__('admin.fields.name'))
                     ->searchable(),
                 TextColumn::make('url')
-                    ->label(__('admin.pages.fields.url'))
+                    ->label(__('admin.fields.url'))
                     ->searchable(),
                 TextColumn::make('module')
-                    ->label(__('admin.pages.fields.module'))
+                    ->label(__('admin.fields.module'))
                     ->searchable()
                     ->badge()
                     ->formatStateUsing(fn($state) => $state?->label()),
                 TextColumn::make('rank')
-                    ->label(__('admin.pages.fields.rank'))
+                    ->label(__('admin.fields.rank'))
                     ->numeric()
                     ->sortable(),
                 IconColumn::make('display')
-                    ->label(__('admin.pages.fields.display'))
+                    ->label(__('admin.fields.display'))
                     ->boolean(),
                 IconColumn::make('display_menu')
-                    ->label(__('admin.pages.fields.display_menu'))
+                    ->label(__('admin.fields.display_menu'))
                     ->boolean(),
                 IconColumn::make('display_menu_footer')
-                    ->label(__('admin.pages.fields.display_menu_footer'))
+                    ->label(__('admin.fields.display_menu_footer'))
                     ->boolean(),
                 TextColumn::make('created_at')
                     ->label(__('admin.core.fields.created_at'))

@@ -8,52 +8,42 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'core' => [
-        'fields' => [
-            'created_at' => 'Created at',
-            'updated_at' => 'Updated at',
-        ],
-        'actions' => [
-            'save' => 'Save',
-            'saveClose' => 'Save & Close',
-        ]
+    'tables' => [
+        'dashboard' => 'Dashboard',
+        'users' => 'Users',
+        'pages' => 'Pages',
+        'news'  => 'News'
     ],
-    'users' => [
-        'fields' => [
-            'name' => 'Name',
-            'surname' => 'Surname',
-            'phone' => 'Phone',
-            'email' => 'Email address',
-            'roles' => 'Roles',
-            'email_verified_at' => 'Email verified at',
-            'password' => 'Password',
-            'ip' => 'IP',
-        ]
+
+    'fields' => [
+        'created_at' => 'Created at',
+        'updated_at' => 'Updated at',
+        'name' => 'Name',
+        'title' => 'Title',
+        'surname' => 'Surname',
+        'email' => 'Email',
+        'phone' => 'Phone',
+        'password' => 'Password',
+        'ip' => 'IP',
+        'roles' => 'Roles',
+        'url' => 'Url',
+        'module' => 'Module',
+        'rank' => 'Rank',
+        'display' => 'Display',
+        'meta_title' => 'Meta title',
+        'meta_description' => 'Meta description',
+        'slug' => 'Slug',
+        'img' => 'Image',
+        'published_at' => 'Published at',
+        'short_text' => 'Short text',
+        'text' => 'Content',
+        'email_verified_at' => 'Email verified at',
+        'url_helper' => 'URL is managed by system for this page type',
+        'display_menu' => 'Menu',
+        'display_menu_footer' => 'Footer',
     ],
-    'pages' => [
-        'fields' => [
-            'name' => 'Name',
-            'url' => 'Url',
-            'url_helper' => 'URL is managed by system for this page type',
-            'text' => 'Content',
-            'module' => 'Module',
-            'rank' => 'Rank',
-            'display' => 'Display',
-            'display_menu' => 'Display menu',
-            'display_menu_footer' => 'Display menu footer',
-            'meta_title' => 'Meta title',
-            'meta_description' => 'Meta description',
-        ]
-    ],
-    'news' => [
-        'fields' => [
-            'title' => 'Title',
-            'slug' => 'Slug',
-            'img' => 'Image',
-            'display' => 'Display',
-            'published_at' => 'Published at',
-            'short_text' => 'Short text',
-            'text' => 'Content',
-        ]
+    'actions' => [
+        'save' => 'Save',
+        'saveClose' => 'Save & Close',
     ]
 ];
