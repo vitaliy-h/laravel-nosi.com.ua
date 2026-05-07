@@ -1,0 +1,10 @@
+.news-card-list-image {
+    width: 100%;
+    height: 220px;
+    object-fit: scale-down;
+}
+.news-card-image {
+    max-height: 500px;
+    object-fit: scale-down;
+    width: 100%;
+}

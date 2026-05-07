@@ -1,0 +1,124 @@
+<?php
+
+namespace App\Filament\Resources\News;
+
+use App\Filament\Actions\BaseEditAction;
+use App\Filament\Resources\News\Pages\ManageNews;
+use App\Modules\News\Models\News;
+use BackedEnum;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+
+class NewsResource extends Resource
+{
+    protected static ?string $model = News::class;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    public static function form(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                TextInput::make('title')
+                    ->label(__('admin.news.fields.title'))
+                    ->required(),
+                TextInput::make('slug')
+                    ->label(__('admin.news.fields.slug'))
+                    ->disabled(),
+                Textarea::make('short_text')
+                    ->label(__('admin.news.fields.short_text'))
+                    ->columnSpanFull(),
+                RichEditor::make('text')
+                    ->label(__('admin.news.fields.text'))
+                    ->required()
+                    ->columnSpanFull(),
+                DateTimePicker::make('published_at')
+                    ->label(__('admin.news.fields.published_at')),
+                Toggle::make('display')
+                    ->label(__('admin.news.fields.display'))
+                    ->required(),
+                FileUpload::make('img')
+                    ->label(__('admin.news.fields.img'))
+                    ->image()
+                    ->visibility('public')
+                    ->getUploadedFileNameForStorageUsing(function ($file, $record) {
+                        return ($record ?? new News())->getFilePath(
+                            $file->getClientOriginalName(),
+                            'img',
+                        );
+                    }),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->defaultSort('published_at', 'desc')
+            ->columns([
+                TextColumn::make('title')
+                    ->label(__('admin.news.fields.title'))
+                    ->searchable(),
+                TextColumn::make('slug')
+                    ->label(__('admin.news.fields.slug'))
+                    ->searchable(),
+                ImageColumn::make('img')
+                    ->label(__('admin.news.fields.img')),
+                IconColumn::make('display')
+                    ->label(__('admin.news.fields.display'))
+                    ->boolean(),
+                TextColumn::make('published_at')
+                    ->label(__('admin.news.fields.published_at'))
+                    ->dateTime()
+                    ->sortable(),
+                TextColumn::make('created_at')
+                    ->label(__('admin.core.fields.created_at'))
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->label(__('admin.core.fields.updated_at'))
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                //
+            ])
+            ->recordActions([
+                ViewAction::make()
+                    ->iconButton()
+                    ->url(fn ($record) => route('news.show',['slug'=>$record->slug]))
+                    ->openUrlInNewTab(),
+                BaseEditAction::make()->iconButton(),
+                DeleteAction::make()->iconButton(),
+            ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+            ->toolbarActions([
+            \Filament\Actions\CreateAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => ManageNews::route('/'),
+        ];
+    }
+}

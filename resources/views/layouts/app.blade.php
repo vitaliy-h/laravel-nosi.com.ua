@@ -8,6 +8,7 @@
 
     {{-- Bootstrap --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{asset('css/static/static.css')}}" rel="stylesheet">
 
     {{-- Global styles --}}
     @include('components.head')

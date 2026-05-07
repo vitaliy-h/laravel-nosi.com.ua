@@ -11,6 +11,7 @@ use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -124,6 +125,10 @@ class PageResource extends Resource
                 //
             ])
             ->recordActions([
+                ViewAction::make()
+                    ->iconButton()
+                    ->url(fn ($record) => $record->url)
+                    ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton()->visible(fn($record) => $record->module === PageModule::TEXT
                 ),

@@ -16,6 +16,9 @@ Route::post('/feedback', [\App\Modules\Feedback\Http\Controllers\FeedbackControl
 Route::get('/news', [\App\Modules\News\Http\Controllers\NewsController::class, 'index'])
     ->middleware('page:' . \App\Modules\Core\Enums\PageModule::NEWS->value)
     ->name('news');
+Route::get('/news/{slug}', [\App\Modules\News\Http\Controllers\NewsController::class, 'show'])
+    ->middleware('page:' . \App\Modules\Core\Enums\PageModule::NEWS->value)
+    ->name('news.show');
 
 Route::get('{slug}', [TextPageController::class,'index'])
     ->middleware('page');

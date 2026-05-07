@@ -2,39 +2,45 @@
 
 @section('content')
     <div class="container">
-        <h1>News</h1>
+        <h1>{{$page->name}}</h1>
 
         <div class="row">
-            <div class="col-md-4 mb-3">
-                <div class="card p-3">
-                    <h5>{{ fake()->realText(50) }}</h5>
-                    <p>{{ fake()->realText(200) }}</p>
+            @foreach($news as $item)
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
 
-                    <a href="#" class="btn btn-primary">
-                        Read more
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-4 mb-3">
-                <div class="card p-3">
-                    <h5>{{ fake()->realText(50) }}</h5>
-                    <p>{{ fake()->realText(200) }}</p>
+                        @if($item->image)
+                            <img
+                                src="{{ $item->image }}"
+                                class="news-card-list-image"
+                                alt="{{ $item->title }}"
+                            >
+                        @endif
 
-                    <a href="#" class="btn btn-primary">
-                        Read more
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-4 mb-3">
-                <div class="card p-3">
-                    <h5>{{ fake()->realText(50) }}</h5>
-                    <p>{{ fake()->realText(200) }}</p>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                {{ $item->title }}
+                            </h5>
 
-                    <a href="#" class="btn btn-primary">
-                        Read more
-                    </a>
+                            <p class="card-text">
+                                {{ $item->short_text }}
+                            </p>
+
+                            <a
+                                href="{{ route('news.show', $item->slug) }}"
+                                class="btn btn-primary"
+                            >
+                                {{__('news.read_more')}}
+                            </a>
+                        </div>
+
+                    </div>
                 </div>
-            </div>
+            @endforeach
+        </div>
+
+        <div class="mt-4">
+            {{ $news->links() }}
         </div>
 
     </div>

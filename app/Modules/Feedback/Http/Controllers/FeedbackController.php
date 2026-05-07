@@ -12,8 +12,9 @@ class FeedbackController extends Controller
         return view('pages.feedback');
     }
 
-    public function save(Request $request)
+    public function save(Request $request): \Illuminate\Http\RedirectResponse
     {
         /*todo save feedback*/
+        return redirect()->back()->with('success', __('feedback.feedback_saved'));
     }
 }

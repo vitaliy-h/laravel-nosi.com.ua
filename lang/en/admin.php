@@ -44,6 +44,16 @@ return [
             'meta_title' => 'Meta title',
             'meta_description' => 'Meta description',
         ]
+    ],
+    'news' => [
+        'fields' => [
+            'title' => 'Title',
+            'slug' => 'Slug',
+            'img' => 'Image',
+            'display' => 'Display',
+            'published_at' => 'Published at',
+            'short_text' => 'Short text',
+            'text' => 'Content',
+        ]
     ]
-
 ];

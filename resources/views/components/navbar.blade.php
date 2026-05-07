@@ -8,15 +8,11 @@
 
         <div id="nav" class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/news">News</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/feedback">Feedback</a>
-                </li>
+                @foreach($headerMenu as $item)
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{\App\Modules\Core\Facades\UrlFacade::normalize($item->url)}}">{{$item->name}}</a>
+                    </li>
+                @endforeach
             </ul>
         </div>
     </div>

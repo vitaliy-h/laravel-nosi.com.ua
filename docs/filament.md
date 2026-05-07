@@ -31,4 +31,5 @@ Detailed documentation is split into separate files:
 * [General README](./README.md)
 * [local Setup](./local_setup.md)
 * [Architecture Overview](./architecture.md)
+  * [images](images.md)
 ---

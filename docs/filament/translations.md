@@ -46,7 +46,6 @@ __('admin.users.fields.email')
 
 ---
 
-
 # 🧠 Filament Integration
 
 Filament v5 fully supports Laravel translations.
@@ -129,7 +128,9 @@ We follow these rules:
 
 * [General README](../README.md)
 * [Filament Admin Panel](../filament.md)
+    * [Resource Generation](resource-generation.md)
 * [Project Architecture](../architecture.md)
+    * [images](../images.md)
 * [local Setup](../local_setup.md)
 
 ---
