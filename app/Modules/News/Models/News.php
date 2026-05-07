@@ -3,14 +3,12 @@
 namespace App\Modules\News\Models;
 
 use App\Modules\Core\Traits\HasImage;
-use App\Modules\Core\Traits\HasSlug;
 use App\Modules\Core\Traits\HasVisibility;
 use Illuminate\Database\Eloquent\Model;
 
 class News extends Model
 {
     use HasVisibility;
-    use HasSlug;
     use HasImage;
 
     protected $fillable = [

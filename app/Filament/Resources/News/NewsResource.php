@@ -40,6 +40,7 @@ class NewsResource extends Resource
                     ->required(),
                 TextInput::make('slug')
                     ->label(__('admin.fields.slug'))
+                    ->unique()
                     ->columnSpan(3),
                 DateTimePicker::make('published_at')
                     ->label(__('admin.fields.published_at'))
