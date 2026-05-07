@@ -20,6 +20,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Table;
 
 class PageResource extends Resource
@@ -29,43 +31,50 @@ class PageResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema
+            ->columns(12)
             ->components([
                 TextInput::make('title')
                     ->label(__('admin.fields.title'))
+                    ->columnSpan(6)
                     ->required(),
                 TextInput::make('slug')
                     ->label(__('admin.fields.slug'))
+                    ->columnSpan(3)
                     ->unique()
                     ->afterStateUpdated(fn($state, callable $set) => $set('slug', UrlFacade::normalize($state)))
                     ->required()
-                    ->disabled(fn($record) => $record && $record->module !== PageModule::TEXT
-                    )
+                    ->disabled(fn($record) => $record && $record->module !== PageModule::TEXT)
+                    /*
                     ->helperText(fn($record) => $record && $record->module !== PageModule::TEXT
                         ? __('admin.fields.url_helper')
                         : null
-                    ),
+                    )*/,
+                TextInput::make('rank')
+                    ->label(__('admin.fields.rank'))
+                    ->required()
+                    ->numeric()
+                    ->columnSpan(2)
+                    ->default(0),
+                Toggle::make('display')
+                    ->label(__('admin.fields.display'))
+                    ->inline(false),
+
                 Select::make('module')
                     ->label(__('admin.fields.module'))
+                    ->columnSpan(6)
                     ->options(PageModule::options())
                     ->required()
                     ->default(PageModule::TEXT->value)
                     ->disabled(fn($record) => $record !== null)
                     ->dehydrated()
                     ->visible(fn($record) => $record !== null),
-                TextInput::make('rank')
-                    ->label(__('admin.fields.rank'))
-                    ->required()
-                    ->numeric()
-                    ->default(0),
-                Toggle::make('display')
-                    ->label(__('admin.fields.display'))
-                    ->required(),
                 Toggle::make('display_menu')
                     ->label(__('admin.fields.display_menu'))
-                    ->required(),
+                    ->inline(false),
                 Toggle::make('display_menu_footer')
                     ->label(__('admin.fields.display_menu_footer'))
-                    ->required(),
+                    ->inline(false),
+
                 RichEditor::make('text')
                     ->label(__('admin.fields.text'))
                     ->columnSpanFull(),
@@ -93,26 +102,23 @@ class PageResource extends Resource
                     ->searchable()
                     ->badge()
                     ->formatStateUsing(fn($state) => $state?->label()),
-                TextColumn::make('rank')
+                TextInputColumn::make('rank')
                     ->label(__('admin.fields.rank'))
-                    ->numeric()
+                    ->type('number')
                     ->sortable(),
-                IconColumn::make('display')
-                    ->label(__('admin.fields.display'))
-                    ->boolean(),
-                IconColumn::make('display_menu')
-                    ->label(__('admin.fields.display_menu'))
-                    ->boolean(),
-                IconColumn::make('display_menu_footer')
-                    ->label(__('admin.fields.display_menu_footer'))
-                    ->boolean(),
+                ToggleColumn::make('display_menu')
+                    ->label(__('admin.fields.display_menu')),
+                ToggleColumn::make('display_menu_footer')
+                    ->label(__('admin.fields.display_menu_footer')),
+                ToggleColumn::make('display')
+                    ->label(__('admin.fields.display')),
                 TextColumn::make('created_at')
-                    ->label(__('admin.core.fields.created_at'))
+                    ->label(__('admin.fields.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label(__('admin.core.fields.updated_at'))
+                    ->label(__('admin.fields.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -38,10 +38,6 @@ class AdminPanelProvider extends PanelProvider
                         ->icon('heroicon-o-home')
                         ->url(Dashboard::getUrl()),
 
-                    NavigationItem::make(__('admin.tables.users'))
-                        ->icon('heroicon-o-users')
-                        ->url(\App\Filament\Resources\Users\UserResource::getUrl()),
-
                     NavigationItem::make(__('admin.tables.pages'))
                         ->icon('heroicon-o-document-text')
                         ->url(\App\Filament\Resources\Pages\PageResource::getUrl()),
@@ -49,6 +45,10 @@ class AdminPanelProvider extends PanelProvider
                     NavigationItem::make(__('admin.tables.news'))
                         ->icon('heroicon-o-newspaper')
                         ->url(\App\Filament\Resources\News\NewsResource::getUrl()),
+
+                    NavigationItem::make(__('admin.tables.users'))
+                        ->icon('heroicon-o-users')
+                        ->url(\App\Filament\Resources\Users\UserResource::getUrl()),
                 ]);
             })
             ->colors([
