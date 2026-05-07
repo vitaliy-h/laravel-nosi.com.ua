@@ -346,6 +346,7 @@ sail artisan migrate
 
 * [General README](./README.md)
 * [Architecture Overview](./architecture.md)
+  * [images](images.md)
 * [Filament Admin Panel](./filament.md)
     * [Resource Generation](filament/resource-generation.md)
     * [Translations Guide](filament/translations.md)
