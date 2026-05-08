@@ -26,10 +26,4 @@ Detailed documentation is split into separate files:
 
 ---
 
-# Related Docs
-
-* [General README](./README.md)
-* [local Setup](./local_setup.md)
-* [Architecture Overview](./architecture.md)
-  * [images](images.md)
----
+[Back to main readme](./README.md)

@@ -124,13 +124,4 @@ We follow these rules:
 
 ---
 
-# 📎 Related Documentation
-
-* [General README](../README.md)
-* [Filament Admin Panel](../filament.md)
-    * [Resource Generation](resource-generation.md)
-* [Project Architecture](../architecture.md)
-    * [images](../images.md)
-* [local Setup](../local_setup.md)
-
----
+[Back to main readme](../README.md)

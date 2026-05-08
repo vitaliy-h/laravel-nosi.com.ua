@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Filament\Generators\AdminResourceClassGenerator;
 use App\Filament\Generators\AdminResourceManageRecordsPageClassGenerator;
+use App\Modules\Core\Services\TranslationService;
 use App\Modules\Core\Services\UrlHelper;
 use Filament\Commands\FileGenerators\Resources\Pages\ResourceManageRecordsPageClassGenerator;
 use Filament\Commands\FileGenerators\Resources\ResourceClassGenerator;
@@ -23,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ResourceManageRecordsPageClassGenerator::class, AdminResourceManageRecordsPageClassGenerator::class);
         $this->app->singleton('url-helper', function () {
             return new UrlHelper();
+        });
+        $this->app->singleton('translation', function () {
+            return new TranslationService();
         });
     }
 

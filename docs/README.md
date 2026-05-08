@@ -36,11 +36,15 @@ Production-ready starter based on Laravel + Filament.
 * Docker-based development environment
 
 
-## Docs
+# 📎 Documentation
+
+* [General README](./README.md)
 * [local Setup](./local_setup.md)
 * [Architecture Overview](./architecture.md)
-  * [images](images.md)
+    * [images](images.md)
+    * [translations](translations.md)
 * [Filament Admin Panel](./filament.md)
-  * [Resource Generation](filament/resource-generation.md)
-  * [Translations Guide](filament/translations.md)
+    * [Resource Generation](filament/resource-generation.md)
+    * [Translations Guide](filament/translations.md)
+
 
