@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('shop_brands', function (Blueprint $table) {
             $table->id();
             $table->integer('rank')->nullable();
-            $table->boolean('display')->nullable();
+            $table->boolean('display')->default(true);
             $table->string('title')->nullable();
             $table->string('slug')->nullable();
             $table->string('img')->nullable();

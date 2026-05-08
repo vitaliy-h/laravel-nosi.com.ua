@@ -34,11 +34,9 @@ class PageResource extends Resource
             ->columns(12)
             ->components([
                 TextInput::make('title')
-                    ->label(__('admin.fields.title'))
                     ->columnSpan(6)
                     ->required(),
                 TextInput::make('slug')
-                    ->label(__('admin.fields.slug'))
                     ->columnSpan(3)
                     ->unique()
                     ->afterStateUpdated(fn($state, callable $set) => $set('slug', UrlFacade::normalize($state)))
@@ -50,17 +48,14 @@ class PageResource extends Resource
                         : null
                     )*/,
                 TextInput::make('rank')
-                    ->label(__('admin.fields.rank'))
                     ->numeric()
                     ->columnSpan(2)
                     ->default(0),
                 Toggle::make('display')
-                    ->label(__('admin.fields.display'))
                     ->inline(false)
                     ->default(true),
 
                 Select::make('module')
-                    ->label(__('admin.fields.module'))
                     ->columnSpan(6)
                     ->options(PageModule::options())
                     ->required()
@@ -69,20 +64,17 @@ class PageResource extends Resource
                     ->dehydrated()
                     ->visible(fn($record) => $record !== null),
                 Toggle::make('display_menu')
-                    ->label(__('admin.fields.display_menu'))
+                    ->columnSpan(3)
                     ->inline(false),
                 Toggle::make('display_menu_footer')
-                    ->label(__('admin.fields.display_menu_footer'))
+                    ->columnSpan(3)
                     ->inline(false),
 
                 RichEditor::make('text')
-                    ->label(__('admin.fields.text'))
                     ->columnSpanFull(),
                 TextInput::make('meta_title')
-                    ->label(__('admin.fields.meta_title'))
                     ->columnSpanFull(),
                 Textarea::make('meta_description')
-                    ->label(__('admin.fields.meta_description'))
                     ->columnSpanFull(),
             ]);
     }

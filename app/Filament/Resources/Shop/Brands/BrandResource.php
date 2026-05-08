@@ -35,25 +35,20 @@ class BrandResource extends Resource
             ->columns(12)
             ->components([
                 TextInput::make('title')
-                    ->label(__('admin.fields.title'))
                     ->required()
                     ->columnSpan(5),
                 TextInput::make('slug')
-                    ->label(__('admin.fields.slug'))
                     ->required()
                     ->columnSpan(3),
                 TextInput::make('rank')
-                    ->label(__('admin.fields.rank'))
                     ->numeric()
                     ->columnSpan(2)
                     ->default(0),
                 Toggle::make('display')
-                    ->label(__('admin.fields.display'))
                     ->inline(false)
                     ->default(true),
                 /*
                 FileUpload::make('img')
-                    ->label(__('admin.fields.img'))
                     ->image()
                     ->columnSpan(6)
                     ->visibility('public')
@@ -65,13 +60,10 @@ class BrandResource extends Resource
                     }),
                 */
                 RichEditor::make('text')
-                    ->label(__('admin.fields.text'))
                     ->columnSpanFull(),
                 TextInput::make('meta_title')
-                    ->label(__('admin.fields.meta_title'))
                     ->columnSpanFull(),
                 Textarea::make('meta_description')
-                    ->label(__('admin.fields.meta_description'))
                     ->columnSpanFull(),
 
             ]);
@@ -82,26 +74,19 @@ class BrandResource extends Resource
         return $table
             ->defaultSort('rank', 'desc')
             ->columns([
-                ImageColumn::make('img')
-                    ->label(__('admin.fields.img')),
+                ImageColumn::make('img'),
                 TextColumn::make('title')
-                    ->label(__('admin.fields.title'))
                     ->searchable(),
                 TextColumn::make('slug')
-                    ->label(__('admin.fields.slug'))
                     ->searchable(),
                 TextColumn::make('rank')
-                    ->label(__('admin.fields.rank'))
                     ->sortable(),
-                ToggleColumn::make('display')
-                    ->label(__('admin.fields.display')),
+                ToggleColumn::make('display'),
                 TextColumn::make('created_at')
-                    ->label(__('admin.fields.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label(__('admin.fields.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -36,27 +36,22 @@ class CategoryResource extends Resource
             ->columns(12)
             ->components([
                 TextInput::make('title')
-                    ->label(__('admin.fields.title'))
                     ->columnSpan(4)
                     ->required(),
                 TextInput::make('slug')
-                    ->label(__('admin.fields.slug'))
                     ->required()
                     ->columnSpan(4),
                 /*
                 TextInput::make('rank')
-                    ->label(__('admin.fields.rank'))
                     ->required()
                     ->numeric()
                     ->columnSpan(3)
                     ->default(0),
                 */
                 Toggle::make('display')
-                    ->label(__('admin.fields.display'))
                     ->default(true)
                     ->inline(false),
                 Select::make('parent_id')
-                    ->label(__('admin.fields.parent_id'))
                     ->options(
                         Category::defaultOrder()
                             ->withDepth()
@@ -77,7 +72,6 @@ class CategoryResource extends Resource
                     ->nullable()
                     ->columnSpan(4),
                 Select::make('_position_id')
-                    ->label(__('admin.fields._position_id'))
                     ->options(function (callable $get, $record) {
                         $parentId = $get('parent_id');
                         return Category::query()
@@ -115,13 +109,10 @@ class CategoryResource extends Resource
                     }),
                 */
                 RichEditor::make('text')
-                    ->label(__('admin.fields.text'))
                     ->columnSpanFull(),
                 TextInput::make('meta_title')
-                    ->label(__('admin.fields.meta_title'))
                     ->columnSpanFull(),
                 Textarea::make('meta_description')
-                    ->label(__('admin.fields.meta_description'))
                     ->columnSpanFull(),
 
             ]);
@@ -135,26 +126,20 @@ class CategoryResource extends Resource
             )
             ->defaultSort('_lft')
             ->columns([
-                ImageColumn::make('img')
-                    ->label(__('admin.fields.img')),
+                ImageColumn::make('img'),
                 TextColumn::make('title')
-                    ->label(__('admin.fields.title'))
                     ->formatStateUsing(fn ($record) =>
                         str_repeat('— ', $record->depth) . $record->title
                     )
                     ->searchable(),
                 TextColumn::make('slug')
-                    ->label(__('admin.fields.slug'))
                     ->searchable(),
-                ToggleColumn::make('display')
-                    ->label(__('admin.fields.display')),
+                ToggleColumn::make('display'),
                 TextColumn::make('created_at')
-                    ->label(__('admin.fields.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label(__('admin.fields.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -9,6 +9,8 @@ use Filament\Commands\FileGenerators\Resources\Pages\ResourceManageRecordsPageCl
 use Filament\Commands\FileGenerators\Resources\ResourceClassGenerator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use Filament\Forms\Components\Field;
+use Filament\Tables\Columns\Column;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,5 +32,33 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap();
+
+        Field::configureUsing(function (Field $component) {
+            $name = $component->getName();
+
+            if (!$name) {
+                return;
+            }
+
+            $name = str($name)->afterLast('.')->toString();
+
+            $key = "admin.fields.$name";
+            $translation = __($key);
+
+            if ($translation === $key) {
+                return;
+            }
+
+            // EXACT Filament default label style
+            $defaultLabel = (string) str($name)
+                ->replace(['_', '-'], ' ')
+                ->ucfirst();
+
+            if ($component->getLabel() === $defaultLabel) {
+                $component->label($translation);
+            }
+        });
+
+
     }
 }

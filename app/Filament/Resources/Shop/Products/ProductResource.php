@@ -38,28 +38,22 @@ class ProductResource extends Resource
             ->columns(12)
             ->components([
                 TextInput::make('title')
-                    ->label(__('admin.fields.title'))
                     ->columnSpan(5)
                     ->required(),
                 TextInput::make('slug')
-                    ->label(__('admin.fields.slug'))
                     ->columnSpan(3),
                 TextInput::make('rank')
-                    ->label(__('admin.fields.rank'))
                     ->numeric()
                     ->columnSpan(2)
                     ->default(0),
                 Toggle::make('display')
-                    ->label(__('admin.fields.display'))
                     ->inline(false)
                     ->default(true),
 
                 TextInput::make('article')
-                    ->label(__('admin.fields.article'))
                     ->default(null)
                     ->columnSpan(4),
                 Select::make('category_id')
-                    ->label(__('admin.fields.category'))
                     ->options(
                         Category::defaultOrder()
                             ->withDepth()
@@ -74,18 +68,15 @@ class ProductResource extends Resource
                     ->required()
                     ->columnSpan(4),
                 Select::make('brand_id')
-                    ->label(__('admin.fields.brand'))
                     ->options(Brand::pluck('title', 'id'))
                     ->searchable()
                     ->preload()
                     ->columnSpan(4),
 
                 TextInput::make('price')
-                    ->label(__('admin.fields.price'))
                     ->numeric()
                     ->columnSpan(2),
                 TextInput::make('price2')
-                    ->label(__('admin.fields.price2'))
                     ->numeric()
                     ->columnSpan(2),
 
@@ -103,13 +94,10 @@ class ProductResource extends Resource
                     }),
 */
                 RichEditor::make('text')
-                    ->label(__('admin.fields.text'))
                     ->columnSpanFull(),
                 TextInput::make('meta_title')
-                    ->label(__('admin.fields.meta_title'))
                     ->columnSpanFull(),
                 Textarea::make('meta_description')
-                    ->label(__('admin.fields.meta_description'))
                     ->columnSpanFull(),
             ]);
     }
@@ -118,46 +106,35 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('img')
-                    ->label(__('admin.fields.img')),
+                ImageColumn::make('img'),
                 TextColumn::make('title')
-                    ->label(__('admin.fields.title'))
                     ->searchable(),
                 TextColumn::make('slug')
-                    ->label(__('admin.fields.slug'))
                     ->searchable(),
                 TextColumn::make('article')
-                    ->label(__('admin.fields.article'))
                     ->searchable(),
 
                 TextColumn::make('category.title')
-                    ->label(__('admin.fields.category'))
                     ->sortable(),
 
                 TextColumn::make('brand.title')
-                    ->label(__('admin.fields.brand'))
                     ->sortable(),
 
                 TextColumn::make('price')
-                    ->label(__('admin.fields.price'))
                     ->money()
                     ->default(0)
                     ->sortable(),
                 TextColumn::make('price2')
-                    ->label(__('admin.fields.price2'))
                     ->money()
                     ->default(0)
                     ->sortable(),
 
-                ToggleColumn::make('display')
-                    ->label(__('admin.fields.display')),
+                ToggleColumn::make('display'),
                 TextColumn::make('created_at')
-                    ->label(__('admin.fields.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label(__('admin.fields.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

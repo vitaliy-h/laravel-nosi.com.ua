@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             NestedSet::columns($table);
             $table->integer('rank')->nullable();
-            $table->boolean('display')->nullable();
+            $table->boolean('display')->default(true);
             $table->string('title')->nullable();
             $table->string('slug')->nullable();
             $table->string('img')->nullable();
