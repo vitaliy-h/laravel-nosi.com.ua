@@ -34,13 +34,13 @@ The system provides:
 
 ### `languages` table
 
-Field Type Description
-  -------------- -------- ----------------------------------
-title string Language name
-localization enum Language code (`en`, `uk`, etc.)
-dictionary json Key-value translations
-rank int Sorting order
-display bool Visibility flag
+| Field        | Type   | Description                      |
+|--------------|--------|----------------------------------|
+| title        | string | Language name                    |
+| localization | enum   | Language code (`en`, `uk`, etc.) |
+| dictionary   | json   | Key-value translations           |
+| rank         | int    | Sorting order                    |
+| display      | bool   | Visibility flag                  |
 
 ---
 
@@ -49,6 +49,8 @@ display bool Visibility flag
 Language files are located in:
 
 lang/{locale}/dictionary.php
+
+Main languages file is `lang/en/dictionary.php`. This file used as default for new languages when you create them in admin panel, and as structure for exists ones.
 
 Example:
 
