@@ -51,13 +51,13 @@ class PageResource extends Resource
                     )*/,
                 TextInput::make('rank')
                     ->label(__('admin.fields.rank'))
-                    ->required()
                     ->numeric()
                     ->columnSpan(2)
                     ->default(0),
                 Toggle::make('display')
                     ->label(__('admin.fields.display'))
-                    ->inline(false),
+                    ->inline(false)
+                    ->default(true),
 
                 Select::make('module')
                     ->label(__('admin.fields.module'))

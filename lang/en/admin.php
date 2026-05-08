@@ -9,15 +9,25 @@ return [
     */
 
     'tables' => [
+        'general' => 'General',
         'dashboard' => 'Dashboard',
         'users' => 'Users',
         'pages' => 'Pages',
-        'news'  => 'News'
+        'news'  => 'News',
+        'shop'  => 'Shop',
+        'shop_categories'  => 'Categories',
+        'shop_brands'  => 'Brands',
+        'shop_products'  => 'Products',
     ],
 
     'fields' => [
         'created_at' => 'Created at',
         'updated_at' => 'Updated at',
+        'price'=>'Price',
+        'price2'=>'Price2',
+        'article'=>'Article',
+        'category'=>'Category',
+        'brand'=>'Brand',
         'name' => 'Name',
         'title' => 'Title',
         'surname' => 'Surname',

@@ -40,14 +40,14 @@ class NewsResource extends Resource
                     ->required(),
                 TextInput::make('slug')
                     ->label(__('admin.fields.slug'))
-                    ->unique()
                     ->columnSpan(3),
                 DateTimePicker::make('published_at')
                     ->label(__('admin.fields.published_at'))
                     ->columnSpan(3),
                 Toggle::make('display')
                     ->label(__('admin.fields.display'))
-                    ->inline(false),
+                    ->inline(false)
+                    ->default(true),
                 Textarea::make('short_text')
                     ->label(__('admin.fields.short_text'))
                     ->columnSpan(6),
@@ -64,7 +64,6 @@ class NewsResource extends Resource
                     }),
                 RichEditor::make('text')
                     ->label(__('admin.fields.text'))
-                    ->required()
                     ->columnSpanFull(),
                 TextInput::make('meta_title')
                     ->label(__('admin.fields.meta_title'))
