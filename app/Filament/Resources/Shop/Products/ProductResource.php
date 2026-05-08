@@ -5,7 +5,8 @@ namespace App\Filament\Resources\Shop\Products;
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
 use App\Models\Shop\Product;
-use App\Modules\News\Models\News;
+use App\Models\Shop\Category;
+use App\Models\Shop\Brand;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -18,11 +19,12 @@ use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+
+use Filament\Forms\Components\Select;
 
 class ProductResource extends Resource
 {
@@ -51,26 +53,42 @@ class ProductResource extends Resource
                     ->label(__('admin.fields.display'))
                     ->inline(false)
                     ->default(true),
-                TextInput::make('category_id')
-                    ->label(__('admin.fields.category'))
-                    ->numeric()
-                    ->columnSpan(3),
-                TextInput::make('brand_id')
-                    ->label(__('admin.fields.brand'))
-                    ->numeric()
-                    ->columnSpan(3),
-                TextInput::make('price')
-                    ->label(__('admin.fields.price'))
-                    ->numeric()
-                    ->columnSpan(3),
-                TextInput::make('price2')
-                    ->label(__('admin.fields.price2'))
-                    ->numeric()
-                    ->columnSpan(3),
+
                 TextInput::make('article')
                     ->label(__('admin.fields.article'))
                     ->default(null)
-                    ->columnSpan(3),
+                    ->columnSpan(4),
+                Select::make('category_id')
+                    ->label(__('admin.fields.category'))
+                    ->options(
+                        Category::defaultOrder()
+                            ->withDepth()
+                            ->get()
+                            ->toFlatTree()
+                            ->mapWithKeys(fn ($category) => [
+                                $category->id => str_repeat('— ', $category->depth) . $category->title
+                            ])
+                    )
+                    ->searchable()
+                    ->preload()
+                    ->required()
+                    ->columnSpan(4),
+                Select::make('brand_id')
+                    ->label(__('admin.fields.brand'))
+                    ->options(Brand::pluck('title', 'id'))
+                    ->searchable()
+                    ->preload()
+                    ->columnSpan(4),
+
+                TextInput::make('price')
+                    ->label(__('admin.fields.price'))
+                    ->numeric()
+                    ->columnSpan(2),
+                TextInput::make('price2')
+                    ->label(__('admin.fields.price2'))
+                    ->numeric()
+                    ->columnSpan(2),
+
 /*
                 FileUpload::make('img')
                     ->label(__('admin.fields.img'))
@@ -112,13 +130,12 @@ class ProductResource extends Resource
                     ->label(__('admin.fields.article'))
                     ->searchable(),
 
-                TextColumn::make('category_id')
+                TextColumn::make('category.title')
                     ->label(__('admin.fields.category'))
-                    ->numeric()
                     ->sortable(),
-                TextColumn::make('brand_id')
+
+                TextColumn::make('brand.title')
                     ->label(__('admin.fields.brand'))
-                    ->numeric()
                     ->sortable(),
 
                 TextColumn::make('price')

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,5 +18,11 @@ class DatabaseSeeder extends Seeder
         $this->call(RolesAndPermissionsSeeder::class);
         $this->call(PagesTableSeeder::class);
         $this->call(NewsSeeder::class);
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        $this->call(ShopCategorySeeder::class);
+        $this->call(ShopBrandSeeder::class);
+        $this->call(ShopProductSeeder::class);
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

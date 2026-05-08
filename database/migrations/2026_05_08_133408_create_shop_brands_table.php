@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('shop_brands', function (Blueprint $table) {
             $table->id();
-            $table->integer('rank')->default(0);
-            $table->boolean('display')->default(true);
-            $table->string('title');
-            $table->string('slug');
+            $table->integer('rank')->nullable();
+            $table->boolean('display')->nullable();
+            $table->string('title')->nullable();
+            $table->string('slug')->nullable();
             $table->string('img')->nullable();
             $table->longText('text')->nullable();
             $table->string('meta_title')->nullable();
