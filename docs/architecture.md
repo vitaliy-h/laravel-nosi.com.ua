@@ -124,12 +124,4 @@ resources/views/feedback
 
 ---
 
-# 📎 Related Documentation
-
-* [General README](./README.md)
-* [local Setup](./local_setup.md)
-* [Architecture Overview](./architecture.md)
-  * [images](images.md)
-* [Filament Admin Panel](./filament.md)
-    * [Resource Generation](filament/resource-generation.md)
-    * [Translations Guide](filament/translations.md)
+[Back to main readme](./README.md)

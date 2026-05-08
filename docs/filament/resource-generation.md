@@ -62,13 +62,4 @@ php artisan make:filament-resource Page --simple --generate --no-interaction
 
 ---
 
-# 📎 Related Documentation
-
-* [General README](../README.md)
-* [Filament Admin Panel](../filament.md)
-    * [Translations Guide](translations.md)
-* [Project Architecture](../architecture.md)
-    * [images](../images.md)
-* [local Setup](../local_setup.md)
-
----
+[Back to main readme](../README.md)

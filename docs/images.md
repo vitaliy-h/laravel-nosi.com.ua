@@ -115,3 +115,7 @@ FileUpload::make('img')
 * Always use `HasImage` for models with images
 * Always use `img` for single image field name
 * Storage path generation must go through `getFilePath()`
+
+---
+
+[Back to main readme](./README.md)

@@ -18,6 +18,7 @@ return [
         'shop_categories'  => 'Categories',
         'shop_brands'  => 'Brands',
         'shop_products'  => 'Products',
+        'languages'  => 'Languages',
     ],
 
     'fields' => [
@@ -51,6 +52,8 @@ return [
         'url_helper' => 'URL is managed by system for this page type',
         'display_menu' => 'Menu',
         'display_menu_footer' => 'Footer',
+        'localization' => 'Localization',
+        'dictionary' => 'Dictionary',
     ],
     'actions' => [
         'save' => 'Save',

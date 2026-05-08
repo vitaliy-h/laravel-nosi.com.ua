@@ -45,6 +45,10 @@ class AdminPanelProvider extends PanelProvider
                                 ->icon('heroicon-o-document-text')
                                 ->url(\App\Filament\Resources\Pages\PageResource::getUrl()),
 
+                            NavigationItem::make(__('admin.tables.languages'))
+                                ->icon('heroicon-o-language')
+                                ->url(\App\Filament\Resources\Languages\LanguageResource::getUrl()),
+
                             NavigationItem::make(__('admin.tables.news'))
                                 ->icon('heroicon-o-newspaper')
                                 ->url(\App\Filament\Resources\News\NewsResource::getUrl()),
