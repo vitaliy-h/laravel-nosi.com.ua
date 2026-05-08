@@ -19,28 +19,34 @@ class ShopCategorySeeder extends Seeder
             [
                 'title' => 'Electronics',
                 'slug' => 'electronics',
+                'display'=>true,
                 'children' => [
                     [
                         'title' => 'Phones',
                         'slug' => 'phones',
+                        'display'=>true,
                     ],
                     [
                         'title' => 'Laptops',
                         'slug' => 'laptops',
+                        'display'=>true,
                     ],
                 ],
             ],
             [
                 'title' => 'Clothing',
                 'slug' => 'clothing',
+                'display'=>true,
                 'children' => [
                     [
                         'title' => 'Men',
                         'slug' => 'men',
+                        'display'=>true,
                     ],
                     [
                         'title' => 'Women',
                         'slug' => 'women',
+                        'display'=>true,
                     ],
                 ],
             ],

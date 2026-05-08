@@ -22,6 +22,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+use Filament\Forms\Components\Select;
 
 class CategoryResource extends Resource
 {
@@ -36,22 +37,70 @@ class CategoryResource extends Resource
             ->components([
                 TextInput::make('title')
                     ->label(__('admin.fields.title'))
-                    ->columnSpan(5)
+                    ->columnSpan(4)
                     ->required(),
                 TextInput::make('slug')
                     ->label(__('admin.fields.slug'))
                     ->required()
-                    ->columnSpan(3),
+                    ->columnSpan(4),
+                /*
                 TextInput::make('rank')
                     ->label(__('admin.fields.rank'))
                     ->required()
                     ->numeric()
                     ->columnSpan(3)
                     ->default(0),
+                */
                 Toggle::make('display')
                     ->label(__('admin.fields.display'))
                     ->default(true)
                     ->inline(false),
+                Select::make('parent_id')
+                    ->label(__('admin.fields.parent_id'))
+                    ->options(
+                        Category::defaultOrder()
+                            ->withDepth()
+                            ->get()
+                            ->toFlatTree()
+                            ->mapWithKeys(fn ($category) => [
+                                $category->id => str_repeat('— ', $category->depth) . $category->title
+                            ])
+                    )
+                    ->disableOptionWhen(function ($value, $record) {
+                        if (!$record) return false;
+
+                        return $value == $record->id ||
+                            $record->descendants->pluck('id')->contains($value);
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->nullable()
+                    ->columnSpan(4),
+                Select::make('_position_id')
+                    ->label(__('admin.fields._position_id'))
+                    ->options(function (callable $get, $record) {
+                        $parentId = $get('parent_id');
+                        return Category::query()
+                            ->when($parentId,
+                                fn ($q) => $q->where('parent_id', $parentId),
+                                fn ($q) => $q->whereNull('parent_id')
+                            )
+                            ->defaultOrder()
+                            ->get()
+                            ->mapWithKeys(fn ($c) => [
+                                $c->id => $c->title
+                            ]);
+                    })
+                    ->afterStateHydrated(function ($state, callable $set, $record) {
+                        if ($record && !$state) {
+                            $set('_position_id', $record->id);
+                        }
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->nullable()
+                    ->columnSpan(4),
                 /*
                 FileUpload::make('img')
                     ->label(__('admin.fields.img'))
@@ -81,19 +130,22 @@ class CategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('rank', 'desc')
+            ->modifyQueryUsing(fn ($query) =>
+                $query->withDepth()->defaultOrder()
+            )
+            ->defaultSort('_lft')
             ->columns([
                 ImageColumn::make('img')
                     ->label(__('admin.fields.img')),
                 TextColumn::make('title')
                     ->label(__('admin.fields.title'))
+                    ->formatStateUsing(fn ($record) =>
+                        str_repeat('— ', $record->depth) . $record->title
+                    )
                     ->searchable(),
                 TextColumn::make('slug')
                     ->label(__('admin.fields.slug'))
                     ->searchable(),
-                TextColumn::make('rank')
-                    ->label(__('admin.fields.rank'))
-                    ->sortable(),
                 ToggleColumn::make('display')
                     ->label(__('admin.fields.display')),
                 TextColumn::make('created_at')

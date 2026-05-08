@@ -25,6 +25,8 @@ return [
         'updated_at' => 'Updated at',
         'price'=>'Price',
         'price2'=>'Price2',
+        'parent_id'=>'Parent',
+        '_position_id'=>'Position Before',
         'article'=>'Article',
         'category'=>'Category',
         'brand'=>'Brand',
