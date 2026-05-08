@@ -5,12 +5,10 @@ namespace App\Filament\Resources\Shop\Brands;
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Shop\Brands\Pages\ManageBrands;
 use App\Models\Shop\Brand;
-use App\Modules\News\Models\News;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
@@ -53,9 +51,7 @@ class BrandResource extends Resource
                     ->label(__('admin.fields.display'))
                     ->inline(false)
                     ->default(true),
-                Textarea::make('short_text')
-                    ->label(__('admin.fields.short_text'))
-                    ->columnSpan(6),
+                /*
                 FileUpload::make('img')
                     ->label(__('admin.fields.img'))
                     ->image()
@@ -67,6 +63,7 @@ class BrandResource extends Resource
                             'img',
                         );
                     }),
+                */
                 RichEditor::make('text')
                     ->label(__('admin.fields.text'))
                     ->columnSpanFull(),

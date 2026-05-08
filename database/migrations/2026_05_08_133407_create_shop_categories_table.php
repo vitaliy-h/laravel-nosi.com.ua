@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Kalnoy\Nestedset\NestedSet;
 
 return new class extends Migration
 {
@@ -13,10 +14,11 @@ return new class extends Migration
     {
         Schema::create('shop_categories', function (Blueprint $table) {
             $table->id();
-            $table->integer('rank')->default(0);
-            $table->boolean('display')->default(true);
-            $table->string('title');
-            $table->string('slug');
+            NestedSet::columns($table);
+            $table->integer('rank')->nullable();
+            $table->boolean('display')->nullable();
+            $table->string('title')->nullable();
+            $table->string('slug')->nullable();
             $table->string('img')->nullable();
             $table->longText('text')->nullable();
             $table->string('meta_title')->nullable();

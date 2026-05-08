@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('shop_products', function (Blueprint $table) {
             $table->id();
-            $table->boolean('display')->default(true);
-            $table->foreignId('category_id')->constrained('shop_categories');
-            $table->foreignId('brand_id')->nullable()->constrained('shop_brands');
-            $table->decimal('price', 10, 2);
-            $table->decimal('price2', 10, 2);
+            $table->boolean('display')->nullable();
+            $table->foreignId('category_id')->constrained('shop_categories')->nullable();
+            $table->foreignId('brand_id')->nullable()->constrained('shop_brands')->nullable();
+            $table->decimal('price', 10, 2)->nullable();
+            $table->decimal('price2', 10, 2)->nullable();
             $table->string('article')->nullable();
-            $table->string('title');
-            $table->string('slug');
+            $table->string('title')->nullable();
+            $table->string('slug')->nullable();
             $table->string('img')->nullable();
             $table->longText('text')->nullable();
             $table->string('meta_title')->nullable();

@@ -12,12 +12,12 @@ return new class extends Migration {
     {
         Schema::create('news', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->string('slug')->unique();
             $table->text('short_text')->nullable();
-            $table->longText('text');
+            $table->longText('text')->nullable();
             $table->string('img')->nullable();
-            $table->boolean('display')->default(false);
+            $table->boolean('display')->nullable();
             $table->timestamp('published_at')->nullable();
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();

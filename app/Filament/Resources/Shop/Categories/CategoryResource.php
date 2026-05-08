@@ -5,13 +5,11 @@ namespace App\Filament\Resources\Shop\Categories;
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Shop\Categories\Pages\ManageCategories;
 use App\Models\Shop\Category;
-use App\Modules\News\Models\News;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
@@ -54,6 +52,7 @@ class CategoryResource extends Resource
                     ->label(__('admin.fields.display'))
                     ->default(true)
                     ->inline(false),
+                /*
                 FileUpload::make('img')
                     ->label(__('admin.fields.img'))
                     ->image()
@@ -65,6 +64,7 @@ class CategoryResource extends Resource
                             'img',
                         );
                     }),
+                */
                 RichEditor::make('text')
                     ->label(__('admin.fields.text'))
                     ->columnSpanFull(),
