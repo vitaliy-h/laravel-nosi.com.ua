@@ -37,32 +37,25 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
 
+        //Automatic labels in forms, tables, pop-ups, etc.
         Field::configureUsing(function (Field $component) {
             $name = $component->getName();
-
             if (!$name) {
                 return;
             }
-
             $name = str($name)->afterLast('.')->toString();
-
             $key = "admin.fields.$name";
             $translation = __($key);
-
             if ($translation === $key) {
                 return;
             }
-
             // EXACT Filament default label style
             $defaultLabel = (string) str($name)
                 ->replace(['_', '-'], ' ')
                 ->ucfirst();
-
             if ($component->getLabel() === $defaultLabel) {
                 $component->label($translation);
             }
         });
-
-
     }
 }

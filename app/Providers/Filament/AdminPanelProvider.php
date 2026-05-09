@@ -32,49 +32,43 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
-                return $builder->groups([
-
-                    // 🔹 Основне
-                    NavigationGroup::make(__('admin.tables.general'))
-                        ->items([
-                            NavigationItem::make(__('admin.tables.dashboard'))
-                                ->icon('heroicon-o-home')
-                                ->url(Dashboard::getUrl()),
-
-                            NavigationItem::make(__('admin.tables.pages'))
-                                ->icon('heroicon-o-document-text')
-                                ->url(\App\Filament\Resources\Pages\PageResource::getUrl()),
-
-                            NavigationItem::make(__('admin.tables.languages'))
-                                ->icon('heroicon-o-language')
-                                ->url(\App\Filament\Resources\Languages\LanguageResource::getUrl()),
-
-                            NavigationItem::make(__('admin.tables.news'))
-                                ->icon('heroicon-o-newspaper')
-                                ->url(\App\Filament\Resources\News\NewsResource::getUrl()),
-                        ]),
-
-                    NavigationGroup::make(__('admin.tables.shop'))
-                        //->icon('heroicon-o-shopping-bag')
-                        ->items([
-                            NavigationItem::make(__('admin.tables.shop_products'))
-                                ->icon('heroicon-o-cube')
-                                ->url(\App\Filament\Resources\Shop\Products\ProductResource::getUrl()),
-                            NavigationItem::make(__('admin.tables.shop_categories'))
-                                ->icon('heroicon-o-squares-2x2')
-                                ->url(\App\Filament\Resources\Shop\Categories\CategoryResource::getUrl()),
-                            NavigationItem::make(__('admin.tables.shop_brands'))
-                                ->icon('heroicon-o-tag')
-                                ->url(\App\Filament\Resources\Shop\Brands\BrandResource::getUrl()),
-                        ]),
-
-                    NavigationGroup::make(__('admin.tables.users'))
-                        ->items([
-                            NavigationItem::make(__('admin.tables.users'))
-                                ->icon('heroicon-o-users')
-                                ->url(\App\Filament\Resources\Users\UserResource::getUrl()),
-                        ]),
-                ]);
+                return $builder
+                    ->items([
+                        NavigationItem::make(__('admin.tables.dashboard'))
+                            ->icon('heroicon-o-home')
+                            ->url(Dashboard::getUrl()),
+                        NavigationItem::make(__('admin.tables.pages'))
+                            ->icon('heroicon-o-document-text')
+                            ->url(\App\Filament\Resources\Pages\PageResource::getUrl()),
+                        NavigationItem::make(__('admin.tables.languages'))
+                            ->icon('heroicon-o-language')
+                            ->url(\App\Filament\Resources\Languages\LanguageResource::getUrl()),
+                        NavigationItem::make(__('admin.tables.news'))
+                            ->icon('heroicon-o-newspaper')
+                            ->url(\App\Filament\Resources\News\NewsResource::getUrl()),
+                    ])
+                    ->groups([
+                        // shop
+                        NavigationGroup::make(__('admin.tables.shop'))
+                            ->items([
+                                NavigationItem::make(__('admin.tables.shop_products'))
+                                    ->icon('heroicon-o-cube')
+                                    ->url(\App\Filament\Resources\Shop\Products\ProductResource::getUrl()),
+                                NavigationItem::make(__('admin.tables.shop_categories'))
+                                    ->icon('heroicon-o-squares-2x2')
+                                    ->url(\App\Filament\Resources\Shop\Categories\CategoryResource::getUrl()),
+                                NavigationItem::make(__('admin.tables.shop_brands'))
+                                    ->icon('heroicon-o-tag')
+                                    ->url(\App\Filament\Resources\Shop\Brands\BrandResource::getUrl()),
+                            ]),
+                        // users
+                        NavigationGroup::make(__('admin.tables.users'))
+                            ->items([
+                                NavigationItem::make(__('admin.tables.users'))
+                                    ->icon('heroicon-o-users')
+                                    ->url(\App\Filament\Resources\Users\UserResource::getUrl()),
+                            ]),
+                    ]);
             })
             ->colors([
                 'primary' => Color::Amber,
