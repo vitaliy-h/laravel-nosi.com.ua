@@ -4,6 +4,7 @@ namespace App\Models\Shop;
 
 use Illuminate\Database\Eloquent\Model;
 use Kalnoy\Nestedset\NodeTrait;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
@@ -22,4 +23,9 @@ class Category extends Model
         'meta_title',
         'meta_description',
     ];
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
 }

@@ -15,7 +15,7 @@ class NewsSeeder extends Seeder
     {
         for ($i = 1; $i <= 10; $i++) {
             News::updateOrCreate([
-                'slug' => Str::slug("Test news {$i}")
+                'slug' => Str::slug("/Test news {$i}")
             ],[
                 'title' => "Test news {$i}",
                 'short_text' => "Short description for news {$i}",

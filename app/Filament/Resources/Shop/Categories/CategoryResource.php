@@ -154,7 +154,18 @@ class CategoryResource extends Resource
                     ->url(fn ($record) => route('news.show',['slug'=>$record->slug]))
                     ->openUrlInNewTab(),*/
                 BaseEditAction::make()->iconButton(),
-                DeleteAction::make()->iconButton(),
+                DeleteAction::make()
+                    ->iconButton()
+                    ->disabled(fn ($record) =>
+                        $record->children()->exists() ||
+                        $record->products()->exists()
+                    )
+                    ->tooltip(fn ($record) => (
+                        $record->children()->exists() || $record->products()->exists()
+                    )
+                        ? __('admin.messages.delete_child_items_forbidden')
+                        : null
+                    ),
             ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
                 \Filament\Actions\CreateAction::make(),

@@ -84,33 +84,26 @@ class PageResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('title')
-                    ->label(__('admin.fields.title'))
                     ->searchable(),
                 TextColumn::make('slug')
-                    ->label(__('admin.fields.slug'))
                     ->searchable(),
                 TextColumn::make('module')
-                    ->label(__('admin.fields.module'))
                     ->searchable()
                     ->badge()
                     ->formatStateUsing(fn($state) => $state?->label()),
                 TextInputColumn::make('rank')
-                    ->label(__('admin.fields.rank'))
                     ->type('number')
-                    ->sortable(),
-                ToggleColumn::make('display_menu')
-                    ->label(__('admin.fields.display_menu')),
-                ToggleColumn::make('display_menu_footer')
-                    ->label(__('admin.fields.display_menu_footer')),
-                ToggleColumn::make('display')
-                    ->label(__('admin.fields.display')),
+                    ->sortable()
+                    ->alignEnd()
+                    ->width('100px'),
+                ToggleColumn::make('display_menu'),
+                ToggleColumn::make('display_menu_footer'),
+                ToggleColumn::make('display'),
                 TextColumn::make('created_at')
-                    ->label(__('admin.fields.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label(__('admin.fields.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -124,8 +117,14 @@ class PageResource extends Resource
                     ->url(fn($record) => $record->slug)
                     ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
-                DeleteAction::make()->iconButton()->visible(fn($record) => $record->module === PageModule::TEXT
-                ),
+                DeleteAction::make()
+                    ->iconButton()
+                    ->disabled(fn($record) => $record->module !== PageModule::TEXT)
+                    ->tooltip(fn($record) =>
+                    $record->module !== PageModule::TEXT
+                        ? __('admin.messages.page_delete_forbidden')
+                        : null
+                    ),
             ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
                 \Filament\Actions\CreateAction::make(),

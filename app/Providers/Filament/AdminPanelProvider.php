@@ -21,11 +21,15 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
+use Filament\Tables\Table;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        Table::configureUsing(function (Table $table): void {
+            $table->recordUrl(fn () => null);//Do not open view page when clicking a table row.
+        });
         return $panel
             ->default()
             ->id('admin')

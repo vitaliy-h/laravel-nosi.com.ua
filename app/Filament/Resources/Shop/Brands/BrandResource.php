@@ -80,7 +80,8 @@ class BrandResource extends Resource
                 TextColumn::make('slug')
                     ->searchable(),
                 TextColumn::make('rank')
-                    ->sortable(),
+                    ->sortable()
+                    ->alignEnd(),
                 ToggleColumn::make('display'),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -101,7 +102,14 @@ class BrandResource extends Resource
                     ->url(fn ($record) => route('news.show',['slug'=>$record->slug]))
                     ->openUrlInNewTab(),*/
                 BaseEditAction::make()->iconButton(),
-                DeleteAction::make()->iconButton(),
+                DeleteAction::make()
+                    ->iconButton()
+                    ->disabled(fn ($record) => $record->products()->exists())
+                    ->tooltip(fn ($record) =>
+                    $record->products()->exists()
+                        ? __('admin.messages.delete_child_items_forbidden')
+                        : null
+                    ),
             ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
                 \Filament\Actions\CreateAction::make(),

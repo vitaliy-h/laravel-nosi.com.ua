@@ -23,7 +23,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
-
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Components\Select;
 
 class ProductResource extends Resource
@@ -113,22 +113,14 @@ class ProductResource extends Resource
                     ->searchable(),
                 TextColumn::make('article')
                     ->searchable(),
-
-                TextColumn::make('category.title')
-                    ->sortable(),
-
-                TextColumn::make('brand.title')
-                    ->sortable(),
-
+                TextColumn::make('category.title'),
+                TextColumn::make('brand.title'),
                 TextColumn::make('price')
                     ->money()
-                    ->default(0)
                     ->sortable(),
                 TextColumn::make('price2')
                     ->money()
-                    ->default(0)
                     ->sortable(),
-
                 ToggleColumn::make('display'),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -140,7 +132,23 @@ class ProductResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('category_id')
+                    ->options(
+                        Category::defaultOrder()
+                            ->withDepth()
+                            ->get()
+                            ->toFlatTree()
+                            ->mapWithKeys(fn ($category) => [
+                                $category->id => str_repeat('— ', $category->depth) . $category->title
+                            ])
+                    )
+                    ->searchable()
+                    ->preload(),
+
+                SelectFilter::make('brand_id')
+                    ->relationship('brand', 'title')
+                    ->searchable()
+                    ->preload(),
             ])
             ->recordActions([
                 BaseEditAction::make()->iconButton(),
