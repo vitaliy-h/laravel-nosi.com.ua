@@ -95,19 +95,18 @@ class CategoryResource extends Resource
                     ->live()
                     ->nullable()
                     ->columnSpan(4),
-                /*
+
                 FileUpload::make('img')
-                    ->label(__('admin.fields.img'))
                     ->image()
                     ->columnSpan(6)
                     ->visibility('public')
                     ->getUploadedFileNameForStorageUsing(function ($file, $record) {
-                        return ($record ?? new News())->getFilePath(
+                        return ($record ?? new Category())->getFilePath(
                             $file->getClientOriginalName(),
                             'img',
                         );
                     }),
-                */
+
                 RichEditor::make('text')
                     ->columnSpanFull(),
                 TextInput::make('meta_title')

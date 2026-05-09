@@ -47,18 +47,18 @@ class BrandResource extends Resource
                 Toggle::make('display')
                     ->inline(false)
                     ->default(true),
-                /*
+
                 FileUpload::make('img')
                     ->image()
                     ->columnSpan(6)
                     ->visibility('public')
                     ->getUploadedFileNameForStorageUsing(function ($file, $record) {
-                        return ($record ?? new News())->getFilePath(
+                        return ($record ?? new Brand())->getFilePath(
                             $file->getClientOriginalName(),
                             'img',
                         );
                     }),
-                */
+
                 RichEditor::make('text')
                     ->columnSpanFull(),
                 TextInput::make('meta_title')

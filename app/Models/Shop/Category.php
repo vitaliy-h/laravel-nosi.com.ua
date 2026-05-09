@@ -2,6 +2,7 @@
 
 namespace App\Models\Shop;
 
+use App\Modules\Core\Traits\HasImage;
 use Illuminate\Database\Eloquent\Model;
 use Kalnoy\Nestedset\NodeTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Category extends Model
 {
     use NodeTrait;
+    use HasImage;
 
     protected $table = 'shop_categories';
 

@@ -2,10 +2,13 @@
 
 namespace App\Models\Shop;
 
+use App\Modules\Core\Traits\HasImage;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    use HasImage;
+
     protected $table = 'shop_products';
 
     protected $fillable = [

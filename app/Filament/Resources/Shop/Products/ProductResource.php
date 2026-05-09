@@ -73,18 +73,9 @@ class ProductResource extends Resource
                     ->preload()
                     ->columnSpan(4),
 
-                TextInput::make('price')
-                    ->numeric()
-                    ->columnSpan(2),
-                TextInput::make('price2')
-                    ->numeric()
-                    ->columnSpan(2),
-
-/*
                 FileUpload::make('img')
-                    ->label(__('admin.fields.img'))
                     ->image()
-                    ->columnSpan(12)
+                    ->columnSpan(6)
                     ->visibility('public')
                     ->getUploadedFileNameForStorageUsing(function ($file, $record) {
                         return ($record ?? new Product())->getFilePath(
@@ -92,7 +83,14 @@ class ProductResource extends Resource
                             'img',
                         );
                     }),
-*/
+
+                TextInput::make('price')
+                    ->numeric()
+                    ->columnSpan(2),
+                TextInput::make('price2')
+                    ->numeric()
+                    ->columnSpan(2),
+
                 RichEditor::make('text')
                     ->columnSpanFull(),
                 TextInput::make('meta_title')

@@ -2,11 +2,13 @@
 
 namespace App\Models\Shop;
 
+use App\Modules\Core\Traits\HasImage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Brand extends Model
 {
+    use HasImage;
 
     protected $table = 'shop_brands';
 
