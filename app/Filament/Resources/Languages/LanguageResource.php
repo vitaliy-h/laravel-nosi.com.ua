@@ -21,6 +21,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+use Filament\Schemas\Components\Utilities\Get;
 
 class LanguageResource extends Resource
 {
@@ -50,7 +51,7 @@ class LanguageResource extends Resource
                     ->default(true),
                 Section::make(__('admin.fields.dictionary'))
                     ->columns(2)
-                    ->schema(static::getTranslationFields())
+                    ->schema(fn (Get $get) => static::getTranslationFields($get))
                     ->columnSpanFull(),
             ]);
     }
@@ -102,9 +103,11 @@ class LanguageResource extends Resource
         ];
     }
 
-    public static function getTranslationFields(): array
+    public static function getTranslationFields(Get $get): array
     {
-        $translations = require lang_path('en/dictionary.php');
+        $locale = $get('localization') ?: 'en';
+
+        $translations = require lang_path($locale . '/dictionary.php');
 
         $fields = [];
 

@@ -5,11 +5,13 @@ namespace App\Modules\Core\Enums;
 enum Localization: string
 {
     case EN = 'en';
+    case UK = 'uk';
 
     public function label(): string
     {
         return match ($this) {
             self::EN => 'English',
+            self::UK => 'Ukrainian',
         };
     }
 
