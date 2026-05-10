@@ -22,34 +22,46 @@ use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Request;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         Table::configureUsing(function (Table $table): void {
-            $table->recordUrl(fn () => null);//Do not open view page when clicking a table row.
+            $table
+                ->recordUrl(fn () => null)//Do not open view page when clicking a table row
+                //->striped()
+                ->defaultPaginationPageOption(25)
+                ->paginationPageOptions([25, 50, 100]);
         });
         return $panel
             ->default()
+            ->sidebarWidth('15rem') // default ~16rem
+            ->sidebarFullyCollapsibleOnDesktop()
+            //->topNavigation() //navigation on top
             ->id('admin')
-            ->path('admin')
+            ->path('admin') //path to admin panel in browser
             ->login()
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
                     ->items([
                         NavigationItem::make(__('admin.tables.dashboard'))
                             ->icon('heroicon-o-home')
-                            ->url(Dashboard::getUrl()),
+                            ->url(Dashboard::getUrl())
+                            ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.pages.dashboard')),
                         NavigationItem::make(__('admin.tables.pages'))
                             ->icon('heroicon-o-document-text')
-                            ->url(\App\Filament\Resources\Pages\PageResource::getUrl()),
+                            ->url(\App\Filament\Resources\Pages\PageResource::getUrl())
+                            ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.pages.*')),
                         NavigationItem::make(__('admin.tables.languages'))
                             ->icon('heroicon-o-language')
-                            ->url(\App\Filament\Resources\Languages\LanguageResource::getUrl()),
+                            ->url(\App\Filament\Resources\Languages\LanguageResource::getUrl())
+                            ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.languages.*')),
                         NavigationItem::make(__('admin.tables.news'))
                             ->icon('heroicon-o-newspaper')
-                            ->url(\App\Filament\Resources\News\NewsResource::getUrl()),
+                            ->url(\App\Filament\Resources\News\NewsResource::getUrl())
+                            ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.news.*')),
                     ])
                     ->groups([
                         // shop
@@ -57,25 +69,29 @@ class AdminPanelProvider extends PanelProvider
                             ->items([
                                 NavigationItem::make(__('admin.tables.shop_products'))
                                     ->icon('heroicon-o-cube')
-                                    ->url(\App\Filament\Resources\Shop\Products\ProductResource::getUrl()),
+                                    ->url(\App\Filament\Resources\Shop\Products\ProductResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.shop.products*')),
                                 NavigationItem::make(__('admin.tables.shop_categories'))
                                     ->icon('heroicon-o-squares-2x2')
-                                    ->url(\App\Filament\Resources\Shop\Categories\CategoryResource::getUrl()),
+                                    ->url(\App\Filament\Resources\Shop\Categories\CategoryResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.shop.categories*')),
                                 NavigationItem::make(__('admin.tables.shop_brands'))
                                     ->icon('heroicon-o-tag')
-                                    ->url(\App\Filament\Resources\Shop\Brands\BrandResource::getUrl()),
+                                    ->url(\App\Filament\Resources\Shop\Brands\BrandResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.shop.brands*')),
                             ]),
                         // users
                         NavigationGroup::make(__('admin.tables.users'))
                             ->items([
                                 NavigationItem::make(__('admin.tables.users'))
                                     ->icon('heroicon-o-users')
-                                    ->url(\App\Filament\Resources\Users\UserResource::getUrl()),
+                                    ->url(\App\Filament\Resources\Users\UserResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.shop.users*')),
                             ]),
                     ]);
             })
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Sky,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
