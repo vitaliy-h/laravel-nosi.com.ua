@@ -73,7 +73,8 @@ class LanguageResource extends Resource
                     ->columns(2)
                     ->schema(fn (Get $get) => static::getTranslationFields($get))
                     ->key(fn (Get $get) => 'dictionary-' . ($get('localization') ?? Localization::EN->value))
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->contained(false),
             ]);
     }
 
@@ -172,7 +173,8 @@ class LanguageResource extends Resource
                 ->schema($schema)
                 ->collapsible()
                 ->collapsed(!$first)
-                ->columnSpanFull();
+                ->columnSpanFull()
+                ->contained(false);
 
             $first = false;
         }
@@ -208,17 +210,19 @@ class LanguageResource extends Resource
         $key = array_shift($parts);
 
         $type = 'input';
-        $span = 12;
+        $span = 4;
         $br = false;
 
         foreach ($parts as $part) {
 
             if ($part === 'textarea') {
                 $type = 'textarea';
+                $span = 12;
             }
 
             if ($part === 'html') {
                 $type = 'html';
+                $span = 12;
             }
 
             if ($part === 'br') {
