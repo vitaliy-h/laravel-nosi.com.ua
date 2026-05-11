@@ -38,10 +38,8 @@ class LanguageResource extends Resource
             ->columns(12)
             ->components([
                 TextInput::make('title')
-                    ->label(__('admin.fields.title'))
                     ->columnSpan(4),
                 Select::make('localization')
-                    ->label(__('admin.fields.localization'))
                     ->options(Localization::options())
                     ->required()
                     ->columnSpan(4)
@@ -64,13 +62,11 @@ class LanguageResource extends Resource
                         $set('dictionary', $dictionary);
                     }),
                 TextInput::make('rank')
-                    ->label(__('admin.fields.rank'))
                     ->required()
                     ->numeric()
                     ->default(0)
                     ->columnSpan(2),
                 Toggle::make('display')
-                    ->label(__('admin.fields.display'))
                     ->inline(false)
                     ->default(true),
                 Section::make(__('admin.fields.dictionary'))
@@ -88,27 +84,21 @@ class LanguageResource extends Resource
             ->defaultSort('rank', 'DESC')
             ->columns([
                 TextColumn::make('title')
-                    ->label(__('admin.fields.title'))
                     ->searchable(),
                 TextColumn::make('localization')
-                    ->label(__('admin.fields.localization'))
                     ->searchable()
                     ->badge()
                     ->formatStateUsing(fn($state) => $state?->label()),
                 TextInputColumn::make('rank')
-                    ->label(__('admin.fields.rank'))
                     ->type('number')
                     ->sortable()
                     ->width('1%'),
-                ToggleColumn::make('display')
-                    ->label(__('admin.fields.display')),
+                ToggleColumn::make('display'),
                 TextColumn::make('created_at')
-                    ->label(__('admin.fields.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label(__('admin.fields.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -111,8 +111,10 @@ class ProductResource extends Resource
                     ->searchable(),
                 TextColumn::make('article')
                     ->searchable(),
-                TextColumn::make('category.title'),
-                TextColumn::make('brand.title'),
+                TextColumn::make('category.title')
+                    ->label(__('admin.fields.category_id')),
+                TextColumn::make('brand.title')
+                    ->label(__('admin.fields.brand_id')),
                 TextColumn::make('price')
                     ->money()
                     ->sortable(),

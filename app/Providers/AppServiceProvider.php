@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Filament\Forms\Components\Field;
+use Filament\Tables\Columns\Column;
+use Filament\Tables\Filters\BaseFilter;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,6 +33,42 @@ class AppServiceProvider extends ServiceProvider
         });
     }
 
+    //Automatic labels in forms, tables, pop-ups, etc.
+    private function translateFilamentLabels(): void
+    {
+        $configure = function ($component) {
+            $name = $component->getName();
+
+            if (!$name) {
+                return;
+            }
+
+            $name = str($name)->afterLast('.')->toString();
+
+            $key = "admin.fields.$name";
+
+            $translation = __($key);
+
+            if ($translation === $key) {
+                return;
+            }
+
+            $defaultLabel = (string) str($name)
+                ->replace(['_', '-'], ' ')
+                ->ucfirst();
+
+            if ($component->getLabel() === $defaultLabel) {
+                $component->label($translation);
+            }
+        };
+
+        Field::configureUsing($configure);
+
+        Column::configureUsing($configure);
+
+        BaseFilter::configureUsing($configure);
+    }
+
     /**
      * Bootstrap any application services.
      */
@@ -40,26 +78,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->registerActivityLogListeners();
 
-        //Automatic labels in forms, tables, pop-ups, etc.
-        Field::configureUsing(function (Field $component) {
-            $name = $component->getName();
-            if (!$name) {
-                return;
-            }
-            $name = str($name)->afterLast('.')->toString();
-            $key = "admin.fields.$name";
-            $translation = __($key);
-            if ($translation === $key) {
-                return;
-            }
-            // EXACT Filament default label style
-            $defaultLabel = (string) str($name)
-                ->replace(['_', '-'], ' ')
-                ->ucfirst();
-            if ($component->getLabel() === $defaultLabel) {
-                $component->label($translation);
-            }
-        });
+        $this->translateFilamentLabels();
     }
 
     private function registerActivityLogListeners(): void

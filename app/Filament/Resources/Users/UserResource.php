@@ -29,36 +29,28 @@ class UserResource extends Resource
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->label(__('admin.fields.name'))
                     ->required()
                     ->maxLength(255),
                 TextInput::make('surname')
-                    ->label(__('admin.fields.surname'))
                     ->maxLength(255),
                 TextInput::make('email')
-                    ->label(__('admin.fields.email'))
                     ->email()
                     ->required()
                     ->unique(ignoreRecord: true),
                 TextInput::make('phone')
-                    ->label(__('admin.fields.phone'))
                     ->numeric()
                     ->unique(ignoreRecord: true),
                 Select::make('roles')
-                    ->label(__('admin.fields.roles'))
                     ->multiple()
                     ->relationship('roles', 'name')
                     ->preload(),
-                DateTimePicker::make('email_verified_at')
-                    ->label(__('admin.fields.email_verified_at')),
+                DateTimePicker::make('email_verified_at'),
                 TextInput::make('password')
-                    ->label(__('admin.fields.password'))
                     ->password()
                     ->dehydrated(fn($state) => filled($state))
                     ->dehydrateStateUsing(fn($state) => filled($state) ? Hash::make($state) : null)
                     ->required(fn(string $context) => $context === 'create'),
                 TextInput::make('ip')
-                    ->label(__('admin.fields.ip'))
                     ->disabled()
                     ->dehydrated(false),
             ]);
@@ -69,41 +61,32 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label(__('admin.fields.name'))
                     ->searchable(),
-                TextColumn::make('name')
-                    ->label(__('admin.fields.surname'))
+                TextColumn::make('surname')
                     ->searchable(),
                 TextColumn::make('email')
-                    ->label(__('admin.fields.email'))
                     ->searchable(),
                 TextColumn::make('phone')
-                    ->label(__('admin.fields.phone'))
                     ->searchable(),
-                TextColumn::make('roles.name')->badge()
-                    ->label(__('admin.fields.roles')),
+                TextColumn::make('roles.name')
+                    ->badge(),
                 TextColumn::make('ip')
-                    ->label(__('admin.fields.ip'))
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('email_verified_at')
-                    ->label(__('admin.fields.email_verified_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
-                    ->label(__('admin.fields.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label(__('admin.fields.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('roles')
-                    ->label(__('admin.fields.roles'))
                     ->relationship('roles', 'name'),
             ])
             ->recordActions([

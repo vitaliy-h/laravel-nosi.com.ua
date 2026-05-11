@@ -26,7 +26,7 @@ return [
         'article' => 'Article',
         'brand_id' => 'Brand',
         'category_id' => 'Category',
-        'created_at' => 'Created at 12',
+        'created_at' => 'Created at',
         'dictionary' => 'Dictionary',
         'display' => 'Display',
         'display_menu' => 'Menu',
