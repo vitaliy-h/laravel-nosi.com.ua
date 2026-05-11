@@ -15,12 +15,14 @@ Production-ready starter based on Laravel + Filament.
 * Laravel Sail (Docker)
 
 ## Services
+
 * laravel.test
 * mysql
 * redis
 * phpmyadmin
 
 ## Setup
+
 ```bash
   ./vendor/bin/sail up -d
   ./vendor/bin/sail composer install
@@ -30,11 +32,11 @@ Production-ready starter based on Laravel + Filament.
 ```  
 
 ## Features
+
 * Filament admin panel
 * Roles & permissions
 * Laravel localization
 * Docker-based development environment
-
 
 # 📎 Documentation
 
@@ -43,6 +45,7 @@ Production-ready starter based on Laravel + Filament.
 * [Architecture Overview](./architecture.md)
     * [images](images.md)
     * [translations](translations.md)
+    * [activity logs](logs.md)
 * [Filament Admin Panel](./filament.md)
     * [Resource Generation](filament/resource-generation.md)
     * [Translations Guide](filament/translations.md)

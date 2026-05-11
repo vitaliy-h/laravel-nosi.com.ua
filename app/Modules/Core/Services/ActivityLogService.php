@@ -52,6 +52,11 @@ class ActivityLogService
         $newValues = [];
 
         foreach ($changes as $field => $value) {
+            if($this->onlyTrackChanges($field)) {
+                $oldValues[$field] = null;
+                $newValues[$field] = null;
+                continue;
+            }
             $oldValues[$field] = $this->normalizeValue(
                 $model->getOriginal($field)
             );
@@ -92,13 +97,7 @@ class ActivityLogService
         );
     }
 
-    protected function createLog(
-        ActivityLogEventEnum $event,
-        Model                $model,
-        ?array               $oldValues,
-        ?array               $newValues,
-        array                $changedFields,
-    ): void
+    protected function createLog(ActivityLogEventEnum $event, Model $model, ?array $oldValues, ?array $newValues, array $changedFields): void
     {
         ActivityLog::query()->create([
             'user_id' => auth()->id(),
@@ -146,7 +145,8 @@ class ActivityLogService
 
         return collect($attributes)
             ->except($ignored)
-            ->map(fn($value) => $this->normalizeValue($value))
+            ->map(fn($value, $key) => $this->onlyTrackChanges($key) ? null : $this->normalizeValue($value))
+            ->filter(fn($value) => $value !== null)
             ->toArray();
     }
 
@@ -191,5 +191,28 @@ class ActivityLogService
         }
 
         return $value;
+    }
+
+    public function onlyTrackChanges(string $field): bool
+    {
+        $rules = config('activity-log.only_track_changes', []);
+
+        foreach ($rules as $rule) {
+
+            if (str_ends_with($rule, '*')) {
+
+                $prefix = rtrim($rule, '*');
+
+                if (str_starts_with($field, $prefix)) {
+                    return true;
+                }
+            }
+
+            if ($field === $rule) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -23,5 +23,8 @@ return [
         'updated_at',
         'created_at',
     ],
-
+    // fields that only track "changed", without values. Use this for big fields.
+    'only_track_changes' => [
+        'dictionary',
+    ],
 ];

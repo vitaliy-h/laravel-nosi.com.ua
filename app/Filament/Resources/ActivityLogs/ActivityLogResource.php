@@ -12,7 +12,6 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\KeyValueEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -50,7 +49,7 @@ class ActivityLogResource extends Resource
                     ->badge()
                     ->searchable(),
                 TextColumn::make('model_type')
-                    ->formatStateUsing(fn ($state) => class_basename($state))
+                    ->formatStateUsing(fn($state) => class_basename($state))
                     ->searchable(),
                 TextColumn::make('model_id')
                     ->numeric()
@@ -109,11 +108,31 @@ class ActivityLogResource extends Resource
                             ->toArray();
                     }),
 
-                Filter::make('created_at')
-                    ->label(__('admin.fields.created_at'))
+                Filter::make('model_id')
+                    ->label(__('admin.fields.model_id'))
                     ->schema([
-                        DatePicker::make('from'),
-                        DatePicker::make('until'),
+                        TextInput::make('model_id'),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+
+                        return $query
+                            ->when(
+                                $data['model_id'] ?? null,
+                                fn($q, $id) => $q->where('model_id', $id)
+                            );
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if (empty($data['model_id'])) {
+                            return null;
+                        }
+
+                        return " #{$data['model_id']}";
+                    }),
+
+                Filter::make('created_at')
+                    ->schema([
+                        DatePicker::make('from')->label(__('admin.fields.from')),
+                        DatePicker::make('until')->label(__('admin.fields.until')),
                     ])
                     ->query(function (Builder $query, array $data) {
                         return $query
@@ -126,7 +145,7 @@ class ActivityLogResource extends Resource
                                 fn(Builder $query, $date) => $query->whereDate('created_at', '<=', $date),
                             );
                     })->indicateUsing(function (array $data): ?string {
-                        if (! $data['from'] && ! $data['until']) {
+                        if (!$data['from'] && !$data['until']) {
                             return null;
                         }
 
@@ -134,21 +153,6 @@ class ActivityLogResource extends Resource
                             ($data['from'] ?? '...') .
                             ' - ' .
                             ($data['until'] ?? '...');
-                    }),
-
-                Filter::make('record')
-                    ->schema([])
-                    ->query(function (Builder $query, array $data) {
-                        if (
-                            empty($data['model_type']) ||
-                            empty($data['model_id'])
-                        ) {
-                            return $query;
-                        }
-
-                        return $query
-                            ->where('model_type', $data['model_type'])
-                            ->where('model_id', $data['model_id']);
                     }),
             ])
             ->recordActions([
@@ -227,10 +231,6 @@ class ActivityLogResource extends Resource
 
                     KeyValueEntry::make('new_values')
                         ->label(__('admin.fields.new_values'))
-                        ->columnSpanFull(),
-
-                    KeyValueEntry::make('changed_fields')
-                        ->label(__('admin.fields.changed_fields'))
                         ->columnSpanFull(),
                 ]),
         ];

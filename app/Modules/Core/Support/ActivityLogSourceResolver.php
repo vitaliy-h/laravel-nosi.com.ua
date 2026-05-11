@@ -14,12 +14,6 @@ class ActivityLogSourceResolver
                 return ActivityLogSourceEnum::SYSTEM;
             }
 
-            $argv = request()->server('argv', []);
-
-            if (collect($argv)->contains(fn($arg) => str_contains($arg, 'db:seed'))) {
-                return ActivityLogSourceEnum::SEEDER;
-            }
-
             return ActivityLogSourceEnum::CONSOLE;
         }
 

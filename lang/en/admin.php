@@ -59,13 +59,15 @@ return [
         '_position_id' => 'Position Before',
         'user' => 'User',
         'event' => 'Event',
-        'model_type' => 'Model type',
+        'model_type' => 'Model',
         'model_id' => 'Model ID',
         'old_values' => 'Old values',
         'new_values' => 'New values',
         'changed_fields' => 'Changed fields',
         'source' => 'Source',
         'ip_address' => 'IP address',
+        'from' => 'From',
+        'until' => 'Until',
     ],
     'messages'=> [
         'delete_child_items_forbidden'=>'Delete child items first',
@@ -74,5 +76,6 @@ return [
     'actions' => [
         'save' => 'Save',
         'saveClose' => 'Save & Close',
+        'view_logs' => 'View Logs',
     ]
 ];
