@@ -25,19 +25,9 @@ class BaseEditAction
                     arguments: ['close' => true],
                 )->label(__('admin.actions.saveClose')),
 
-                \Filament\Actions\Action::make('logs')
-                    ->label('View logs')
-                    ->icon('heroicon-o-clock')
-                    ->outlined()
-                    ->url(
-                        \App\Filament\Resources\ActivityLogs\ActivityLogResource::getUrl('index', [
-                            'filters[model_type][value]' => $record::class,
-                            'filters[model_id][model_id]' => $record->getKey(),
-                        ])
-                        , true)
-                    ->extraAttributes([
-                        'class' => 'ml-auto',
-                    ]),
+                ViewLogsAction::make()
+                    ->record($record)
+                    ->outlined(),
             ])
             ->action(function (array $data, array $arguments, $record, $action): void {
                 $record->update($data);

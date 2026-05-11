@@ -12,10 +12,9 @@ class ViewLogsAction
         return Action::make(__('admin.actions.view_logs'))
             ->label(__('admin.actions.view_logs'))
             ->icon('heroicon-o-clock')
-            ->color('gray')
             ->url(fn($record) => ActivityLogResource::getUrl('index', [
                 'filters[model_type][value]' => $record::class,
                 'filters[model_id][model_id]' => $record->getKey(),
-            ]));
+            ]),true);
     }
 }
