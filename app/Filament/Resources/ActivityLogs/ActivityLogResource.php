@@ -43,7 +43,12 @@ class ActivityLogResource extends Resource
         return $table
             ->defaultSort('created_at', 'desc')
             ->columns([
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable(),
                 TextColumn::make('user.email')
+                    ->searchable(),
+                TextColumn::make('ip_address')
                     ->searchable(),
                 TextColumn::make('event')
                     ->badge()
@@ -58,17 +63,8 @@ class ActivityLogResource extends Resource
                     ->badge()
                     ->searchable(),
                 TextColumn::make('changed_fields')
-                    ->badge()
-                    ->listWithLineBreaks(),
-                TextColumn::make('ip_address')
-                    ->searchable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable(),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->badge(),
+                    //->listWithLineBreaks(),
             ])
             ->filters([
                 //
