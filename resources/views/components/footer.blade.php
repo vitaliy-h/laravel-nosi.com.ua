@@ -17,7 +17,7 @@
 
         <div class="text-center">
             <p class="mb-0">
-                © {{ date('Y') }} {{t('footer_copyright')}}
+                © {{ date('Y') }} {!! t('footer_copyright') !!}
             </p>
         </div>
     </div>

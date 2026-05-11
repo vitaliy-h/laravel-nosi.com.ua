@@ -17,6 +17,8 @@ The system provides:
 - Easy translation usage via `t('key')`
 - Admin management via Filament
 - Automatic language seeding from `/lang/*/dictionary.php`
+- Dynamic translation form generation
+- Module-based translation grouping
 
 ---
 
@@ -25,7 +27,7 @@ The system provides:
 ## Data sources priority
 
 1. Database main locale (`languages.dictionary`)
-2. Database Fallback locale (`languages.dictionary`)
+2. Database fallback locale (`languages.dictionary`)
 3. Empty string (if nothing found)
 
 ---
@@ -38,7 +40,7 @@ The system provides:
 |--------------|--------|----------------------------------|
 | title        | string | Language name                    |
 | localization | enum   | Language code (`en`, `uk`, etc.) |
-| dictionary   | json   | Key-value translations           |
+| dictionary   | json   | Nested translation dictionary    |
 | rank         | int    | Sorting order                    |
 | display      | bool   | Visibility flag                  |
 
@@ -48,245 +50,201 @@ The system provides:
 
 Language files are located in:
 
+```text
 lang/{locale}/dictionary.php
+```
 
-Main languages file is `lang/en/dictionary.php`. This file used as default for new languages when you create them in admin panel, and as structure for exists ones.
+Main languages file is `lang/en/dictionary.php`.
+
+This file is used:
+- as default structure for new languages
+- as initial seed source
+- as translation form template
 
 Example:
 
-``` php
+```php
 return [
-    'index.hero.title' => 'Welcome',
-    'buttons.save' => 'Save',
+
+    'feedback' => [
+        'name:input6' => 'Name',
+        'message:textarea:br' => 'Message',
+        'saved:input12' => 'Feedback has been saved.',
+    ],
+
 ];
 ```
 
-These files are used only for initial database seeding.
+---
 
-After that, translations are managed in the database.
+# 🧩 Dictionary structure
+
+Translations are grouped by modules/pages.
+
+Stored in database as nested arrays without suffixes.
+
+---
+
+# 🏗 Supported field suffixes
+
+| Suffix         | Description           |
+|----------------|-----------------------|
+| textarea       | Render textarea field |
+| html           | Render rich editor    |
+| input1-input12 | Column span           |
+| br             | Start new row         |
+
+Example:
+
+```php
+'name:input6:br'
+```
+
+---
+
+# 🛠 Filament admin panel
+
+Features:
+
+- Add/edit languages
+- Module-based collapsible sections
+- Dynamic fields generation
+- Autofill translations from language templates
+- Rich editor support
+- Automatic cache clearing
+
+---
+
+# 🔄 Dynamic language templates
+
+When creating a new language:
+
+1. System tries loading:
+
+```text
+lang/{locale}/dictionary.php
+```
+
+2. If file does not exist:
+    - fallback to:
+
+```text
+lang/en/dictionary.php
+```
+
+3. Fields are generated dynamically
 
 ---
 
 # 🚀 Seeding translations
 
-The system automatically imports translations from language files using
-a seeder.
-
-### Behavior:
+Seeder behavior:
 
 - Scans all folders inside `/lang`
 - Loads `dictionary.php`
+- Removes UI suffixes from keys
 - Creates or updates language in DB
-- Sets dictionary as initial data
+- Clears translation cache
 
-### Seeder:
+Run:
 
-``` bash
+```bash
 sail artisan db:seed --class=LanguageSeeder
 ```
+
+⚠ IMPORTANT:
+Running seeder again rewrites dictionaries using file defaults.
 
 ---
 
 # 🛠 Translation usage
 
-## Recommended helper
+## Helper
 
-``` php
-t('menu.home')
+```php
+t('feedback.name')
 ```
 
----
+## Blade
 
-## Example in Blade
-
-``` blade
-<h1>{{ t('index_hero_title') }}</h1>
+```blade
+{!! t('buttons.save') !!}
 ```
 
----
+## PHP
 
-## Example in PHP
-
-``` php
-$message = t('buttons_save');
-```
-
----
-
-## With replacements
-
-``` php
-t('messages_welcome', [
-    'name' => $user->name,
-]);
-```
-
----
-
-# 🔄 Translation service
-
-All translation logic is handled by:
-
-App\Modules\Core\Services\TranslationService
-
-### Responsibilities:
-
-- Resolve current locale
-- Fetch translations from DB
-- Apply fallback locale
-- Cache translations per language, and clear cache after update
-- Replace placeholders variables
-
----
-
-# ⚡ Helper function
-
-A global helper is available:
-
-`t(string $key, array $replace = [])`
-
-This is a wrapper over the TranslationService.
-
----
-
-# 🧩 Admin panel (Filament)
-
-Translations are fully editable via Filament Resource:
-
-## Features:
-
-- Add/edit languages
-- Manage dictionary keys
-- Enable/disable language
-- Set display order
-- Edit translations per key
-
----
-
-## Dictionary editing
-
-Translations are stored as JSON:
-
-``` json
-{
-    "menu_home": "Home",
-    "buttons_save": "Save"
-}
+```php
+$message = t('buttons.save');
 ```
 
 ---
 
 # ➕ Adding new translation keys
 
-## Step 1 --- Add key to language file
+1. Add key to:
 
-Edit:
-
+```text
 lang/en/dictionary.php
+```
 
 Example:
 
-``` php
-return [
-    'new_key_example' => 'Example text',
-];
-```
-
----
-
-## Step 2 --- Run seeder or manual update in admin panel.
-
-Here you can choose your option:
-
-* Run seeder. !IMPORTANT this will rewrite all dictionary to default values.
-    ``` bash
-    php artisan db:seed --class=LanguageSeeder
-    ```
-* Set value for new keys in admin panel. This is better solution for adding new keys.
-
----
-
-## Step 3 --- Use in code
-
-``` php
-t('new_key_example')
-```
-
----
-
-# 🌍 Adding a new language
-
-There are two ways to add a new language.
-
----
-
-## First step
-
-Add new case to `Localization` enum:
-
 ```php
-case DE = 'de';
+'feedback' => [
+    'phone:input6' => 'Phone',
+],
 ```
 
-## ✅ Option 1 — Recommended (Admin Panel)
+2. Add translations in admin panel
 
-1. Open Filament Admin Panel
-2. Create new Language
-3. Set:
-    - title
-    - localization (de)
-    - rank
-    - display = true
-4. Save
-
-✔ Safe\
-✔ Does not overwrite data\
-✔ Production-ready
-
----
-
-## ⚠️ Option 2 — File-based bootstrap
-
-1. Create folder:
-
-```
-lang/de/
-```
-
-2. Add file:
-
-```
-lang/de/dictionary.php
-```
-
-3. Add translations
-
-```php
-return [
-    'menu.home' => 'Startseite',
-];
-```
-
-4. Run seeder:
+OR run:
 
 ```bash
 php artisan db:seed --class=LanguageSeeder
 ```
 
 ⚠ WARNING:
-
-- This will overwrite DB translations with file defaults
-- Intended only for initial setup
+Seeder rewrites dictionaries using default file values.
 
 ---
 
-# 🔁 Updating translations
+# 🌍 Adding a new language
 
-After initial seeding:
+## Step 1
 
-- All translation changes are made in admin panel
-- Language files are no longer the source of truth
-- Database always takes priority
+Add new case to Localization enum:
+
+```php
+case DE = 'de';
+```
+
+---
+
+## Option 1 — Recommended
+
+Create language in admin panel.
+
+✔ Safe  
+✔ Does not overwrite translations
+
+---
+
+## Option 2 — Bootstrap from file
+
+Create:
+
+```text
+lang/de/dictionary.php
+```
+
+Run:
+
+```bash
+php artisan db:seed --class=LanguageSeeder
+```
+
+⚠ WARNING:
+This overwrites DB translations with file defaults.
 
 ---
 
@@ -294,17 +252,24 @@ After initial seeding:
 
 Translations are cached per locale:
 
-- Cache key: `translations.{locale}`
-- Cache is automatically cleared when language is updated or deleted
+```text
+translations.{locale}
+```
+
+Cache clears automatically after:
+- update
+- delete
+- seeder execution
 
 ---
 
-# 🧭 Best practices
+# 📌 Summary
 
-✔ Use `t()` everywhere\
-✔ Keep keys in snake case (`menu_home`, `buttons_save`)\
-✔ Do not store business logic translations in language files after seed\
-✔ Manage translations via admin panel
+- Laravel files = bootstrap + templates
+- Database = runtime source
+- Filament = admin UI
+- TranslationService = translation engine
+- `t()` = helper API
 
 ---
 
