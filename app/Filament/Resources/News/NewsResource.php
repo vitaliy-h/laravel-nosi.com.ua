@@ -5,7 +5,6 @@ namespace App\Filament\Resources\News;
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\News\Pages\ManageNews;
 use App\Modules\News\Models\News;
-use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -18,8 +17,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
@@ -38,7 +35,8 @@ class NewsResource extends Resource
                     ->columnSpan(5)
                     ->required(),
                 TextInput::make('slug')
-                    ->columnSpan(3),
+                    ->columnSpan(3)
+                    ->unique(),
                 DateTimePicker::make('published_at')
                     ->columnSpan(3),
                 Toggle::make('display')
@@ -96,13 +94,13 @@ class NewsResource extends Resource
             ->recordActions([
                 ViewAction::make()
                     ->iconButton()
-                    ->url(fn ($record) => route('news.show',['slug'=>$record->slug]))
+                    ->url(fn($record) => route('news.show', ['slug' => $record->slug]))
                     ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),
             ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
-            \Filament\Actions\CreateAction::make(),
+                \Filament\Actions\CreateAction::make(),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

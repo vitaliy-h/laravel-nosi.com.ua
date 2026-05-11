@@ -4,14 +4,15 @@ namespace App\Providers;
 
 use App\Filament\Generators\AdminResourceClassGenerator;
 use App\Filament\Generators\AdminResourceManageRecordsPageClassGenerator;
+use App\Modules\Core\Observers\ActivityLogObserver;
 use App\Modules\Core\Services\TranslationService;
 use App\Modules\Core\Services\UrlHelper;
 use Filament\Commands\FileGenerators\Resources\Pages\ResourceManageRecordsPageClassGenerator;
 use Filament\Commands\FileGenerators\Resources\ResourceClassGenerator;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Filament\Forms\Components\Field;
-use Filament\Tables\Columns\Column;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,6 +38,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
 
+        $this->registerActivityLogListeners();
+
         //Automatic labels in forms, tables, pop-ups, etc.
         Field::configureUsing(function (Field $component) {
             $name = $component->getName();
@@ -56,6 +59,35 @@ class AppServiceProvider extends ServiceProvider
             if ($component->getLabel() === $defaultLabel) {
                 $component->label($translation);
             }
+        });
+    }
+
+    private function registerActivityLogListeners(): void
+    {
+        $dispatcher = Model::getEventDispatcher();
+
+        $dispatcher->listen('eloquent.created: *', function (
+            string $event,
+            array $data
+        ) {
+            app(ActivityLogObserver::class)
+                ->created($data[0]);
+        });
+
+        $dispatcher->listen('eloquent.updated: *', function (
+            string $event,
+            array $data
+        ) {
+            app(ActivityLogObserver::class)
+                ->updated($data[0]);
+        });
+
+        $dispatcher->listen('eloquent.deleted: *', function (
+            string $event,
+            array $data
+        ) {
+            app(ActivityLogObserver::class)
+                ->deleted($data[0]);
         });
     }
 }

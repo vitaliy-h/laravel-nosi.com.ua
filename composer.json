@@ -30,7 +30,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Modules/Core/Support/functions.php"
+          "app/Modules/Core/Helpers/functions.php"
         ]
     },
     "autoload-dev": {
