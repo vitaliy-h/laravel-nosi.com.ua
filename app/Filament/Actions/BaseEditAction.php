@@ -2,8 +2,6 @@
 
 namespace App\Filament\Actions;
 
-use App\Filament\Traits\HasActivityLogsAction;
-use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 
 
@@ -15,7 +13,7 @@ class BaseEditAction
             ->iconButton()
             ->modalSubmitAction(false)
             ->modalCancelAction(false)
-            ->extraModalFooterActions(fn (EditAction $action, $record) => [
+            ->extraModalFooterActions(fn(EditAction $action, $record) => [
 
                 $action->makeModalSubmitAction(
                     'save',
@@ -36,12 +34,12 @@ class BaseEditAction
                             'filters[model_type][value]' => $record::class,
                             'filters[model_id][model_id]' => $record->getKey(),
                         ])
-                    ,true)
+                        , true)
                     ->extraAttributes([
                         'class' => 'ml-auto',
                     ]),
             ])
-            ->action(function (array $data, array $arguments, $record, $action) :void {
+            ->action(function (array $data, array $arguments, $record, $action): void {
                 $record->update($data);
 
                 if (!($arguments['close'] ?? true)) {
