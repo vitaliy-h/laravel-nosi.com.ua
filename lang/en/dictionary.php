@@ -24,6 +24,10 @@ return [
         'saved' => 'Feedback has been saved.',
     ],
 
+    'news' => [
+        'read_more' => 'Read more',
+    ],
+
     'buttons' => [
         'send' => 'Send',
         'save' => 'Save',

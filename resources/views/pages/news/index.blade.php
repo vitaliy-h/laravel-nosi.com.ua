@@ -30,7 +30,7 @@
                                 href="{{ route('news.show', $item->slug) }}"
                                 class="btn btn-primary"
                             >
-                                {{t('news_read_more')}}
+                                {{t('news.read_more')}}
                             </a>
                         </div>
 
