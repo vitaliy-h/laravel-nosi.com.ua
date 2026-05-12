@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Filament\Resources\ActivityLogs;
+namespace App\Filament\Resources\Logs;
 
-use App\Filament\Resources\ActivityLogs\Pages\ManageActivityLogs;
-use App\Modules\Core\Enums\ActivityLogEventEnum;
-use App\Modules\Core\Enums\ActivityLogSourceEnum;
-use App\Modules\Core\Models\ActivityLog;
+use App\Filament\Resources\Logs\Pages\ManageLogs;
+use App\Modules\Core\Enums\LogEventEnum;
+use App\Modules\Core\Enums\LogSourceEnum;
+use App\Modules\Core\Models\Log;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -26,9 +26,9 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class ActivityLogResource extends Resource
+class LogResource extends Resource
 {
-    protected static ?string $model = ActivityLog::class;
+    protected static ?string $model = Log::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
@@ -75,7 +75,7 @@ class ActivityLogResource extends Resource
 
                 SelectFilter::make(__('admin.fields.event'))
                     ->options(
-                        collect(ActivityLogEventEnum::cases())
+                        collect(LogEventEnum::cases())
                             ->mapWithKeys(fn($case) => [
                                 $case->value => ucfirst($case->value),
                             ])
@@ -84,7 +84,7 @@ class ActivityLogResource extends Resource
 
                 SelectFilter::make(__('admin.fields.source'))
                     ->options(
-                        collect(ActivityLogSourceEnum::cases())
+                        collect(LogSourceEnum::cases())
                             ->mapWithKeys(fn($case) => [
                                 $case->value => ucfirst(str_replace('_', ' ', $case->value)),
                             ])
@@ -94,7 +94,7 @@ class ActivityLogResource extends Resource
                 SelectFilter::make('model_type')
                     ->label(__('admin.fields.model_type'))
                     ->options(function () {
-                        return ActivityLog::query()
+                        return Log::query()
                             ->select('model_type')
                             ->distinct()
                             ->pluck('model_type', 'model_type')
@@ -173,7 +173,7 @@ class ActivityLogResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ManageActivityLogs::route('/'),
+            'index' => ManageLogs::route('/'),
         ];
     }
 

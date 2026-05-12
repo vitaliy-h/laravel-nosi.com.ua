@@ -2,7 +2,7 @@
 
 namespace App\Modules\Core\Enums;
 
-enum ActivityLogEventEnum: string
+enum LogEventEnum: string
 {
     case CREATED = 'created';
     case UPDATED = 'updated';

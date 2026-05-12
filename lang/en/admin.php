@@ -19,7 +19,7 @@ return [
         'shop_brands'  => 'Brands',
         'shop_products'  => 'Products',
         'languages'  => 'Languages',
-        'activity_logs'  => 'Logs',
+        'logs'  => 'Logs',
     ],
 
     'fields' => [

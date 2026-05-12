@@ -45,7 +45,7 @@ Production-ready starter based on Laravel + Filament.
 * [Architecture Overview](./architecture.md)
     * [images](images.md)
     * [translations](translations.md)
-    * [activity logs](logs.md)
+    * [logs](logs.md)
 * [Filament Admin Panel](./filament.md)
     * [Resource Generation](filament/resource-generation.md)
     * [Translations Guide](filament/translations.md)

@@ -3,13 +3,13 @@
 namespace App\Modules\Core\Models;
 
 use App\Models\User;
-use App\Modules\Core\Enums\ActivityLogEventEnum;
-use App\Modules\Core\Enums\ActivityLogSourceEnum;
+use App\Modules\Core\Enums\LogEventEnum;
+use App\Modules\Core\Enums\LogSourceEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class ActivityLog extends Model
+class Log extends Model
 {
     protected $fillable = [
         'user_id',
@@ -28,8 +28,8 @@ class ActivityLog extends Model
         'old_values' => 'array',
         'new_values' => 'array',
         'changed_fields' => 'array',
-        'event' => ActivityLogEventEnum::class,
-        'source' => ActivityLogSourceEnum::class,
+        'event' => LogEventEnum::class,
+        'source' => LogSourceEnum::class,
     ];
 
     public function model(): MorphTo

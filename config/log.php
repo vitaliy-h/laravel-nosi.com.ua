@@ -1,13 +1,13 @@
 <?php
 
-use App\Modules\Core\Models\ActivityLog;
+use App\Modules\Core\Models\Log;
 
 return [
 
-    'enabled' => env('ACTIVITY_LOG_ENABLED', true),
+    'enabled' => env('LOG_ENABLED', true),
 
     'excluded_models' => [
-        ActivityLog::class,
+        Log::class,
     ],
 
     'excluded_tables' => [

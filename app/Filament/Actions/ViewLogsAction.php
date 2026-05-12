@@ -2,7 +2,7 @@
 
 namespace App\Filament\Actions;
 
-use App\Filament\Resources\ActivityLogs\ActivityLogResource;
+use App\Filament\Resources\Logs\LogResource;
 use Filament\Actions\Action;
 
 class ViewLogsAction
@@ -12,7 +12,7 @@ class ViewLogsAction
         return Action::make(__('admin.actions.view_logs'))
             ->label(__('admin.actions.view_logs'))
             ->icon('heroicon-o-clock')
-            ->url(fn($record) => ActivityLogResource::getUrl('index', [
+            ->url(fn($record) => LogResource::getUrl('index', [
                 'filters[model_type][value]' => $record::class,
                 'filters[model_id][model_id]' => $record->getKey(),
             ]),true);

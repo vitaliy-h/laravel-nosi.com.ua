@@ -89,12 +89,12 @@ class AdminPanelProvider extends PanelProvider
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.shop.users*')),
                             ]),
 
-                        NavigationGroup::make(__('admin.tables.activity_logs'))
+                        NavigationGroup::make(__('admin.tables.logs'))
                             ->items([
-                                NavigationItem::make(__('admin.tables.activity_logs'))
+                                NavigationItem::make(__('admin.tables.logs'))
                                     ->icon('heroicon-o-archive-box')
-                                    ->url(\App\Filament\Resources\ActivityLogs\ActivityLogResource::getUrl())
-                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.activity-logs.*')),
+                                    ->url(\App\Filament\Resources\Logs\LogResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.logs.*')),
                             ]),
                     ]);
             })

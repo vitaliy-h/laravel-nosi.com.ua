@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use App\Filament\Generators\AdminResourceClassGenerator;
 use App\Filament\Generators\AdminResourceManageRecordsPageClassGenerator;
-use App\Modules\Core\Observers\ActivityLogObserver;
+use App\Modules\Core\Observers\LogObserver;
 use App\Modules\Core\Services\TranslationService;
 use App\Modules\Core\Services\UrlHelper;
 use Filament\Commands\FileGenerators\Resources\Pages\ResourceManageRecordsPageClassGenerator;
@@ -76,12 +76,12 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
 
-        $this->registerActivityLogListeners();
+        $this->registerLogListeners();
 
         $this->translateFilamentLabels();
     }
 
-    private function registerActivityLogListeners(): void
+    private function registerLogListeners(): void
     {
         $dispatcher = Model::getEventDispatcher();
 
@@ -89,7 +89,7 @@ class AppServiceProvider extends ServiceProvider
             string $event,
             array $data
         ) {
-            app(ActivityLogObserver::class)
+            app(LogObserver::class)
                 ->created($data[0]);
         });
 
@@ -97,7 +97,7 @@ class AppServiceProvider extends ServiceProvider
             string $event,
             array $data
         ) {
-            app(ActivityLogObserver::class)
+            app(LogObserver::class)
                 ->updated($data[0]);
         });
 
@@ -105,7 +105,7 @@ class AppServiceProvider extends ServiceProvider
             string $event,
             array $data
         ) {
-            app(ActivityLogObserver::class)
+            app(LogObserver::class)
                 ->deleted($data[0]);
         });
     }

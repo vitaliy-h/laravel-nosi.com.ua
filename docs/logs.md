@@ -1,8 +1,8 @@
-# Activity Logs System
+# Logs System
 
 ## Overview
 
-The Activity Logs system provides a centralized audit trail for all
+The Logs system provides a centralized audit trail for all
 changes made within the application.
 
 It automatically tracks:
@@ -44,10 +44,10 @@ Each log entry contains:
 
 ### Core components
 
-- ActivityLogService -- main service responsible for writing logs
-- ActivityLog model -- database representation
-- ActivityLogSourceResolver -- detects source (admin/api/console)
-- config/activity-log.php -- configuration rules
+- LogService -- main service responsible for writing logs
+- Log model -- database representation
+- LogSourceResolver -- detects source (admin/api/console)
+- config/log.php -- configuration rules
 
 ------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ All logging is handled automatically via observers or service calls:
 
 ### 1. Created
 
-ActivityLogService::logCreated(\$model);
+LogService::logCreated(\$model);
 
 Stores: - new values only - changed fields
 
@@ -65,7 +65,7 @@ Stores: - new values only - changed fields
 
 ### 2. Updated
 
-ActivityLogService::logUpdated(\$model);
+LogService::logUpdated(\$model);
 
 Stores: - old values - new values - changed fields
 
@@ -73,7 +73,7 @@ Stores: - old values - new values - changed fields
 
 ### 3. Deleted
 
-ActivityLogService::logDeleted(\$model);
+LogService::logDeleted(\$model);
 
 Stores: - old values only - changed fields
 
@@ -83,7 +83,7 @@ Stores: - old values only - changed fields
 
 The system supports field-level logging policies via config.
 
-### config/activity-log.php
+### config/log.php
 
 ``` php
 return [

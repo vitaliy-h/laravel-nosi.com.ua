@@ -2,7 +2,7 @@
 
 namespace App\Modules\Core\Enums;
 
-enum ActivityLogSourceEnum: string
+enum LogSourceEnum: string
 {
     case ADMIN_PANEL = 'admin_panel';
     case API = 'api';

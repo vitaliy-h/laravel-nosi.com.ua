@@ -2,26 +2,26 @@
 
 namespace App\Modules\Core\Observers;
 
-use App\Modules\Core\Services\ActivityLogService;
+use App\Modules\Core\Services\LogService;
 use Illuminate\Database\Eloquent\Model;
 
-class ActivityLogObserver
+class LogObserver
 {
     public function created(Model $model): void
     {
-        app(ActivityLogService::class)
+        app(LogService::class)
             ->logCreated($model);
     }
 
     public function updated(Model $model): void
     {
-        app(ActivityLogService::class)
+        app(LogService::class)
             ->logUpdated($model);
     }
 
     public function deleted(Model $model): void
     {
-        app(ActivityLogService::class)
+        app(LogService::class)
             ->logDeleted($model);
     }
 }

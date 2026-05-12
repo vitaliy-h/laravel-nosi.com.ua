@@ -2,12 +2,12 @@
 
 namespace App\Modules\Core\Services;
 
-use App\Modules\Core\Enums\ActivityLogEventEnum;
-use App\Modules\Core\Models\ActivityLog;
-use App\Modules\Core\Support\ActivityLogSourceResolver;
+use App\Modules\Core\Enums\LogEventEnum;
+use App\Modules\Core\Models\Log;
+use App\Modules\Core\Support\LogSourceResolver;
 use Illuminate\Database\Eloquent\Model;
 
-class ActivityLogService
+class LogService
 {
     public function logCreated(Model $model): void
     {
@@ -25,7 +25,7 @@ class ActivityLogService
         }
 
         $this->createLog(
-            event: ActivityLogEventEnum::CREATED,
+            event: LogEventEnum::CREATED,
             model: $model,
             oldValues: null,
             newValues: $attributes,
@@ -65,7 +65,7 @@ class ActivityLogService
         }
 
         $this->createLog(
-            event: ActivityLogEventEnum::UPDATED,
+            event: LogEventEnum::UPDATED,
             model: $model,
             oldValues: $oldValues,
             newValues: $newValues,
@@ -89,7 +89,7 @@ class ActivityLogService
         }
 
         $this->createLog(
-            event: ActivityLogEventEnum::DELETED,
+            event: LogEventEnum::DELETED,
             model: $model,
             oldValues: $attributes,
             newValues: null,
@@ -97,9 +97,9 @@ class ActivityLogService
         );
     }
 
-    protected function createLog(ActivityLogEventEnum $event, Model $model, ?array $oldValues, ?array $newValues, array $changedFields): void
+    protected function createLog(LogEventEnum $event, Model $model, ?array $oldValues, ?array $newValues, array $changedFields): void
     {
-        ActivityLog::query()->create([
+        Log::query()->create([
             'user_id' => auth()->id(),
 
             'event' => $event,
@@ -112,7 +112,7 @@ class ActivityLogService
 
             'changed_fields' => $changedFields,
 
-            'source' => ActivityLogSourceResolver::resolve(),
+            'source' => LogSourceResolver::resolve(),
 
             'ip_address' => request()?->ip(),
 
@@ -121,15 +121,15 @@ class ActivityLogService
 
     protected function shouldLog(Model $model): bool
     {
-        if (!config('activity-log.enabled')) {
+        if (!config('log.enabled')) {
             return false;
         }
 
-        if (in_array($model::class, config('activity-log.excluded_models'))) {
+        if (in_array($model::class, config('log.excluded_models'))) {
             return false;
         }
 
-        if (in_array($model->getTable(), config('activity-log.excluded_tables'))) {
+        if (in_array($model->getTable(), config('log.excluded_tables'))) {
             return false;
         }
 
@@ -152,7 +152,7 @@ class ActivityLogService
 
     protected function getIgnoredAttributes(Model $model): array
     {
-        $defaultIgnored = config('activity-log.ignored_attributes', []);
+        $defaultIgnored = config('log.ignored_attributes', []);
 
         $modelIgnored = property_exists($model, 'logExcept')
             ? $model->logExcept
@@ -195,7 +195,7 @@ class ActivityLogService
 
     public function onlyTrackChanges(string $field): bool
     {
-        $rules = config('activity-log.only_track_changes', []);
+        $rules = config('log.only_track_changes', []);
 
         foreach ($rules as $rule) {
 
