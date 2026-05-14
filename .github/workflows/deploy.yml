@@ -16,7 +16,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASS }}
-          port: 21
+          port: 22
           script: |
             cd /home/abc-cms/web/abc-cms.com/public_html
 
