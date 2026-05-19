@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ShopBrandSeeder::class);
         $this->call(ShopProductSeeder::class);
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        $this->call(LetterTemplateSeeder::class);
     }
 }

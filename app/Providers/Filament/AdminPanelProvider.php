@@ -86,7 +86,19 @@ class AdminPanelProvider extends PanelProvider
                                 NavigationItem::make(__('admin.tables.users'))
                                     ->icon('heroicon-o-users')
                                     ->url(\App\Filament\Resources\Users\UserResource::getUrl())
-                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.shop.users*')),
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.users*')),
+                            ]),
+
+                        NavigationGroup::make(__('admin.tables.letters'))
+                            ->items([
+                                NavigationItem::make(__('admin.tables.letter_templates'))
+                                    ->icon('heroicon-o-envelope')
+                                    ->url(\App\Filament\Resources\LetterTemplates\LetterTemplateResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.letter-templates.*')),
+                                NavigationItem::make(__('admin.tables.log_letters'))
+                                    ->icon('heroicon-o-inbox')
+                                    ->url(\App\Filament\Resources\LogLetters\LogLetterResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.log-letters.*')),
                             ]),
 
                         NavigationGroup::make(__('admin.tables.logs'))

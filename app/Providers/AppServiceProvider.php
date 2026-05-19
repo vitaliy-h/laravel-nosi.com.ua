@@ -5,10 +5,12 @@ namespace App\Providers;
 use App\Filament\Generators\AdminResourceClassGenerator;
 use App\Filament\Generators\AdminResourceManageRecordsPageClassGenerator;
 use App\Modules\Core\Observers\LogObserver;
+use App\Modules\Core\Services\LetterTemplateService;
 use App\Modules\Core\Services\TranslationService;
 use App\Modules\Core\Services\UrlHelper;
 use Filament\Commands\FileGenerators\Resources\Pages\ResourceManageRecordsPageClassGenerator;
 use Filament\Commands\FileGenerators\Resources\ResourceClassGenerator;
+use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
@@ -30,6 +32,9 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->singleton('translation', function () {
             return new TranslationService();
+        });
+        $this->app->singleton('letter-template-service', function () {
+            return new LetterTemplateService();
         });
     }
 
@@ -53,7 +58,7 @@ class AppServiceProvider extends ServiceProvider
                 return;
             }
 
-            $defaultLabel = (string) str($name)
+            $defaultLabel = (string)str($name)
                 ->replace(['_', '-'], ' ')
                 ->ucfirst();
 
@@ -67,6 +72,8 @@ class AppServiceProvider extends ServiceProvider
         Column::configureUsing($configure);
 
         BaseFilter::configureUsing($configure);
+
+        TextEntry::configureUsing($configure);
     }
 
     /**
@@ -87,7 +94,7 @@ class AppServiceProvider extends ServiceProvider
 
         $dispatcher->listen('eloquent.created: *', function (
             string $event,
-            array $data
+            array  $data
         ) {
             app(LogObserver::class)
                 ->created($data[0]);
@@ -95,7 +102,7 @@ class AppServiceProvider extends ServiceProvider
 
         $dispatcher->listen('eloquent.updated: *', function (
             string $event,
-            array $data
+            array  $data
         ) {
             app(LogObserver::class)
                 ->updated($data[0]);
@@ -103,7 +110,7 @@ class AppServiceProvider extends ServiceProvider
 
         $dispatcher->listen('eloquent.deleted: *', function (
             string $event,
-            array $data
+            array  $data
         ) {
             app(LogObserver::class)
                 ->deleted($data[0]);
