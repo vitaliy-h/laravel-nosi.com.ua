@@ -114,7 +114,7 @@ class LogLetterResource extends Resource
                 DeleteAction::make()->iconButton(),
             ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
-                \Filament\Actions\CreateAction::make(),
+//                \Filament\Actions\CreateAction::make(),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
@@ -143,12 +143,25 @@ class LogLetterResource extends Resource
 
                             TextEntry::make('sender'),
                             TextEntry::make('sender_name'),
-                            TextEntry::make('status'),
+                            TextEntry::make('status')
+                                ->badge()
+                                ->color(fn($state) => match ($state) {
+                                LogLetterStatusEnum::SENT => 'success',
+                                LogLetterStatusEnum::FAILED => 'danger',
+                                default => 'warning',
+                            }),
 
                             TextEntry::make('created_at')->dateTime(),
                         ]),
                 ]),
+            Section::make()
+                ->schema([
 
+                    TextEntry::make('error_message')
+                        ->columnSpanFull(),
+
+                ])
+                ->visible(fn ($record) => !empty($record->error_message)),
             Section::make()
                 ->schema([
                     TextInput::make('subject')->disabled()->columnSpanFull(),
