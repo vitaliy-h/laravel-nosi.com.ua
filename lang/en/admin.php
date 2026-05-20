@@ -9,20 +9,21 @@ return [
     */
 
     'tables' => [
-        'general' => 'General',
         'dashboard' => 'Dashboard',
-        'users' => 'Users',
+        'feedback' => 'Feedback',
+        'general' => 'General',
+        'languages' => 'Languages',
+        'letters' => 'Letters',
+        'letter_templates' => 'Letter templates',
+        'log_letters' => 'Letters',
+        'logs' => 'Logs',
+        'news' => 'News',
         'pages' => 'Pages',
-        'news'  => 'News',
-        'shop'  => 'Shop',
-        'shop_categories'  => 'Categories',
-        'shop_brands'  => 'Brands',
-        'shop_products'  => 'Products',
-        'languages'  => 'Languages',
-        'logs'  => 'Logs',
-        'letters'  => 'letters',
-        'letter_templates'  => 'Templates',
-        'log_letters'  => 'logs',
+        'shop' => 'Shop',
+        'shop_brands' => 'Brands',
+        'shop_categories' => 'Categories',
+        'shop_products' => 'Products',
+        'users' => 'Users',
     ],
 
     'fields' => [

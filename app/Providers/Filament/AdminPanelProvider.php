@@ -62,6 +62,14 @@ class AdminPanelProvider extends PanelProvider
                             ->icon('heroicon-o-newspaper')
                             ->url(\App\Filament\Resources\News\NewsResource::getUrl())
                             ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.news.*')),
+                        NavigationItem::make(__('admin.tables.feedback'))
+                            ->icon('heroicon-o-chat-bubble-left-right')
+                            ->url(\App\Filament\Resources\Feedback\FeedbackResource::getUrl())
+                            ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.feedback.*')),
+                        NavigationItem::make(__('admin.tables.letter_templates'))
+                            ->icon('heroicon-o-envelope')
+                            ->url(\App\Filament\Resources\LetterTemplates\LetterTemplateResource::getUrl())
+                            ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.letter-templates.*')),
                     ])
                     ->groups([
                         // shop
@@ -89,24 +97,16 @@ class AdminPanelProvider extends PanelProvider
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.users*')),
                             ]),
 
-                        NavigationGroup::make(__('admin.tables.letters'))
-                            ->items([
-                                NavigationItem::make(__('admin.tables.letter_templates'))
-                                    ->icon('heroicon-o-envelope')
-                                    ->url(\App\Filament\Resources\LetterTemplates\LetterTemplateResource::getUrl())
-                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.letter-templates.*')),
-                                NavigationItem::make(__('admin.tables.log_letters'))
-                                    ->icon('heroicon-o-inbox')
-                                    ->url(\App\Filament\Resources\LogLetters\LogLetterResource::getUrl())
-                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.log-letters.*')),
-                            ]),
-
                         NavigationGroup::make(__('admin.tables.logs'))
                             ->items([
                                 NavigationItem::make(__('admin.tables.logs'))
                                     ->icon('heroicon-o-archive-box')
                                     ->url(\App\Filament\Resources\Logs\LogResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.logs.*')),
+                                NavigationItem::make(__('admin.tables.log_letters'))
+                                    ->icon('heroicon-o-inbox')
+                                    ->url(\App\Filament\Resources\LogLetters\LogLetterResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.log-letters.*')),
                             ]),
                     ]);
             })
