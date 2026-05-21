@@ -14,6 +14,11 @@
             </div>
 
             <div class="mb-3">
+                <label class="form-label">{{t('feedback.email')}}</label>
+                <input type="email" name="email" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
                 <label class="form-label">{{t('feedback.message')}}</label>
                 <textarea name="message" class="form-control" required></textarea>
             </div>
