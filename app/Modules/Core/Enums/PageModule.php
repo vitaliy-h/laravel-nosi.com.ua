@@ -8,6 +8,7 @@ enum PageModule: string
     case TEXT = 'text_page';
     case NEWS = 'news';
     case FEEDBACK = 'feedback';
+    case SHOP = 'shop';
 
     public function label(): string
     {
@@ -16,6 +17,7 @@ enum PageModule: string
             self::TEXT => 'Text Page',
             self::NEWS => 'News',
             self::FEEDBACK => 'Feedback',
+            self::SHOP => 'Shop',
         };
     }
 

@@ -33,13 +33,26 @@ class PageResource extends Resource
         return $schema
             ->columns(12)
             ->components([
+                // Automatically generate slug from title only during page creation and only if the slug field is still empty
                 TextInput::make('title')
                     ->columnSpan(6)
-                    ->required(),
+                    ->required()
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function ($state, callable $set, callable $get, $record) {
+                        if ($record === null && empty($get('slug'))) {
+                            $set('slug', strtolower(trim(UrlFacade::normalize($state), '/')));
+                        }
+                    }),
+                // Convert slug to URL-friendly format:
+                // - lowercase
+                // - remove leading/trailing slashes
+                // - replace spaces and invalid characters
                 TextInput::make('slug')
                     ->columnSpan(3)
-                    ->unique()
-                    ->afterStateUpdated(fn($state, callable $set) => $set('slug', UrlFacade::normalize($state)))
+                    ->unique(ignoreRecord: true)
+                    ->afterStateUpdated(fn($state, callable $set) =>
+                    $set('slug', strtolower(trim(UrlFacade::normalize($state), '/')))
+                    )
                     ->required()
                     ->disabled(fn($record) => $record && $record->module !== PageModule::TEXT)
                     /*
@@ -50,7 +63,8 @@ class PageResource extends Resource
                 TextInput::make('rank')
                     ->numeric()
                     ->columnSpan(2)
-                    ->default(0),
+                    // changed default parameter to 1
+                    ->default(1),
                 Toggle::make('display')
                     ->inline(false)
                     ->default(true),
@@ -62,7 +76,9 @@ class PageResource extends Resource
                     ->default(PageModule::TEXT->value)
                     ->disabled(fn($record) => $record !== null)
                     ->dehydrated()
-                    ->visible(fn($record) => $record !== null),
+                // Removed because the module field must be visible when creating a page too
+                    //->visible(fn($record) => $record !== null
+                ,
                 Toggle::make('display_menu')
                     ->columnSpan(3)
                     ->inline(false),
@@ -114,7 +130,8 @@ class PageResource extends Resource
             ->recordActions([
                 ViewAction::make()
                     ->iconButton()
-                    ->url(fn($record) => $record->slug)
+                    // Changed to generate correct frontend URL instead of /admin/{slug}
+                    ->url(fn($record) => '/' . ltrim($record->slug, '/'))
                     ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()
