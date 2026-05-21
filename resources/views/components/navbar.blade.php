@@ -1,25 +1,3 @@
-<?php /*
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="/">{{ $page->name ?? config('app.name') }}</a>
-
-        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div id="nav" class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto">
-                @foreach($headerMenu as $item)
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{\App\Modules\Core\Facades\UrlFacade::normalize($item->slug)}}">{{$item->title}}</a>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
-    </div>
-</nav>
- */?>
-
 <header id="header" class="header position-relative">
 
     <!-- Main Header -->
@@ -113,12 +91,22 @@
             <div class="position-relative">
                 <nav id="navmenu" class="navmenu">
                     <ul>
-                        <li><a href="index.html" class="active">Home</a></li>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="category.html">Category</a></li>
-                        <li><a href="product-details.html">Product Details</a></li>
-                        <li><a href="cart.html">Cart</a></li>
-                        <li><a href="checkout.html">Checkout</a></li>
+                        @foreach($headerMenu as $item)
+                            @php
+                                $url = \App\Modules\Core\Facades\UrlFacade::normalize($item->slug);
+                            @endphp
+
+                            <li>
+                                <a
+                                    href="{{ $url }}"
+                                    class="{{ '/' . request()->segment(1) === $url ? 'active' : '' }}"
+                                >
+                                    {{ $item->title }}
+                                </a>
+                            </li>
+                        @endforeach
+
+                        <?php /*
                         <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                             <ul>
                                 <li><a href="#">Dropdown 1</a></li>
@@ -136,6 +124,7 @@
                                 <li><a href="#">Dropdown 4</a></li>
                             </ul>
                         </li>
+
 
                         <!-- Products Mega Menu 1 -->
                         <li class="products-megamenu-1"><a href="#"><span>Megamenu 1</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
@@ -189,7 +178,6 @@
 
                             </ul><!-- End Products Mega Menu 1 Mobile View -->
 
-                <?php /*
                             <!-- Products Mega Menu 1 Desktop View -->
                             <div class="desktop-megamenu">
 
@@ -696,7 +684,6 @@
 
                         </li><!-- End Products Mega Menu 2 -->
  */ ?>
-                        <li><a href="contact.html">Contact</a></li>
 
                     </ul>
                 </nav>
