@@ -93,13 +93,13 @@
                     <ul>
                         @foreach($headerMenu as $item)
                             @php
-                                $url = \App\Modules\Core\Facades\UrlFacade::normalize($item->slug);
+                                $url = \App\Modules\Core\Facades\UrlFacade::normalizeForLink($item->slug);
                             @endphp
 
                             <li>
                                 <a
                                     href="{{ $url }}"
-                                    class="{{ '/' . request()->segment(1) === $url ? 'active' : '' }}"
+                                    class="{{ '/' . request()->path() === $url ? 'active' : '' }}"
                                 >
                                     {{ $item->title }}
                                 </a>

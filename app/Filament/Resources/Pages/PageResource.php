@@ -18,10 +18,9 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Columns\TextInputColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 
 class PageResource extends Resource
@@ -33,37 +32,25 @@ class PageResource extends Resource
         return $schema
             ->columns(12)
             ->components([
-                // Automatically generate slug from title only during page creation and only if the slug field is still empty
                 TextInput::make('title')
                     ->columnSpan(6)
                     ->required()
                     ->live(onBlur: true)
                     ->afterStateUpdated(function ($state, callable $set, callable $get, $record) {
                         if ($record === null && empty($get('slug'))) {
-                            $set('slug', strtolower(trim(UrlFacade::normalize($state), '/')));
+                            $set('slug', UrlFacade::slug($state));
                         }
                     }),
-                // Convert slug to URL-friendly format:
-                // - lowercase
-                // - remove leading/trailing slashes
-                // - replace spaces and invalid characters
                 TextInput::make('slug')
                     ->columnSpan(3)
                     ->unique(ignoreRecord: true)
-                    ->afterStateUpdated(fn($state, callable $set) =>
-                    $set('slug', strtolower(trim(UrlFacade::normalize($state), '/')))
+                    ->afterStateUpdated(fn($state, callable $set) => $set('slug', UrlFacade::slug($state))
                     )
                     ->required()
-                    ->disabled(fn($record) => $record && $record->module !== PageModule::TEXT)
-                    /*
-                    ->helperText(fn($record) => $record && $record->module !== PageModule::TEXT
-                        ? __('admin.fields.url_helper')
-                        : null
-                    )*/,
+                    ->disabled(fn($record) => $record && $record->module !== PageModule::TEXT),
                 TextInput::make('rank')
                     ->numeric()
                     ->columnSpan(2)
-                    // changed default parameter to 1
                     ->default(1),
                 Toggle::make('display')
                     ->inline(false)
@@ -75,10 +62,7 @@ class PageResource extends Resource
                     ->required()
                     ->default(PageModule::TEXT->value)
                     ->disabled(fn($record) => $record !== null)
-                    ->dehydrated()
-                // Removed because the module field must be visible when creating a page too
-                    //->visible(fn($record) => $record !== null
-                ,
+                    ->dehydrated(),
                 Toggle::make('display_menu')
                     ->columnSpan(3)
                     ->inline(false),
@@ -130,15 +114,13 @@ class PageResource extends Resource
             ->recordActions([
                 ViewAction::make()
                     ->iconButton()
-                    // Changed to generate correct frontend URL instead of /admin/{slug}
-                    ->url(fn($record) => '/' . ltrim($record->slug, '/'))
+                    ->url(fn($record) => UrlFacade::normalizeForLink($record->slug))
                     ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()
                     ->iconButton()
                     ->disabled(fn($record) => $record->module !== PageModule::TEXT)
-                    ->tooltip(fn($record) =>
-                    $record->module !== PageModule::TEXT
+                    ->tooltip(fn($record) => $record->module !== PageModule::TEXT
                         ? __('admin.messages.page_delete_forbidden')
                         : null
                     ),
