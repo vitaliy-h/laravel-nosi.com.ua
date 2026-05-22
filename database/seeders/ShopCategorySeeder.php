@@ -18,34 +18,34 @@ class ShopCategorySeeder extends Seeder
         $tree = [
             [
                 'title' => 'Electronics',
-                'slug' => '/electronics',
+                'slug' => 'electronics',
                 'display'=>true,
                 'children' => [
                     [
                         'title' => 'Phones',
-                        'slug' => '/phones',
+                        'slug' => 'phones',
                         'display'=>true,
                     ],
                     [
                         'title' => 'Laptops',
-                        'slug' => '/laptops',
+                        'slug' => 'laptops',
                         'display'=>true,
                     ],
                 ],
             ],
             [
                 'title' => 'Clothing',
-                'slug' => '/clothing',
+                'slug' => 'clothing',
                 'display'=>true,
                 'children' => [
                     [
                         'title' => 'Men',
-                        'slug' => '/men',
+                        'slug' => 'men',
                         'display'=>true,
                     ],
                     [
                         'title' => 'Women',
-                        'slug' => '/women',
+                        'slug' => 'women',
                         'display'=>true,
                     ],
                 ],
