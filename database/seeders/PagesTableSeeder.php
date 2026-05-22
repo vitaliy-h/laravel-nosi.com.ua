@@ -16,7 +16,7 @@ class PagesTableSeeder extends Seeder
         $pages = [
             [
                 'title' => 'Main Page',
-                'slug' => '/',
+                'slug' => '',
                 'text' => '<h5>Main Page</h5>',
                 'module' => PageModule::INDEX,
                 'display' => true,
@@ -28,7 +28,7 @@ class PagesTableSeeder extends Seeder
             ],
             [
                 'title' => 'News',
-                'slug' => '/news',
+                'slug' => 'news',
                 'text' => '<h5>News</h5>',
                 'module' => PageModule::NEWS,
                 'display' => true,
@@ -40,7 +40,7 @@ class PagesTableSeeder extends Seeder
             ],
             [
                 'title' => 'Feedback',
-                'slug' => '/feedback',
+                'slug' => 'feedback',
                 'text' => '<h5>News</h5>',
                 'module' => PageModule::FEEDBACK,
                 'display' => true,
@@ -52,7 +52,7 @@ class PagesTableSeeder extends Seeder
             ],
             [
                 'title' => 'Text Page',
-                'slug' => '/text-page-1',
+                'slug' => 'text-page-1',
                 'text' => '<h5>Text page</h5>',
                 'module' => PageModule::TEXT,
                 'display' => true,
@@ -64,7 +64,7 @@ class PagesTableSeeder extends Seeder
             ],
             [
                 'title' => 'Text Page 2',
-                'slug' => '/text-page-2',
+                'slug' => 'text-page-2',
                 'text' => '<h5>Text page</h5>',
                 'module' => PageModule::TEXT,
                 'display' => true,
@@ -73,6 +73,18 @@ class PagesTableSeeder extends Seeder
                 'rank' => 96,
                 'meta_title' => 'Text Page',
                 'meta_description' => 'Text Page',
+            ],
+            [
+                'title' => 'Shop',
+                'slug' => 'shop',
+                'text' => '<h5>Shop</h5>',
+                'module' => PageModule::SHOP,
+                'display' => true,
+                'display_menu' => true,
+                'display_menu_footer' => true,
+                'rank' => 95,
+                'meta_title' => 'Shop',
+                'meta_description' => 'Shop',
             ]
         ];
 
