@@ -4,6 +4,7 @@ namespace App\Modules\Core\Repositories;
 
 use App\Modules\Core\Enums\PageModule;
 use App\Modules\Core\Models\Page;
+use Illuminate\Support\Collection;
 
 class PagesRepository
 {
@@ -19,5 +20,16 @@ class PagesRepository
         return Page::where('module', $module)
             ->visible()
             ->first();
+    }
+
+    /**
+     * For first time only index page in breadcrumbs
+     * @return Collection
+     */
+    public function getBreadcrumbs(): Collection
+    {
+        return Page::where('module', PageModule::INDEX)
+            ->visible()
+            ->get();
     }
 }

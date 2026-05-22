@@ -36,6 +36,7 @@ readonly class SearchPageMiddleware
         }
         view()->share([
             'page' => $page,
+            'breadcrumbs' => $this->pages->getBreadcrumbs(),
             'meta_title' => $page->meta_title,
             'meta_description' => $page->meta_description,
         ]);

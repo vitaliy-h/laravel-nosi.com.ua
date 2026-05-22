@@ -17,6 +17,8 @@ use Illuminate\Pagination\Paginator;
 use Filament\Forms\Components\Field;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Filters\BaseFilter;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Route;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -86,6 +88,8 @@ class AppServiceProvider extends ServiceProvider
         $this->registerLogListeners();
 
         $this->translateFilamentLabels();
+
+        $this->loadModuleRoutes();
     }
 
     private function registerLogListeners(): void
@@ -115,5 +119,36 @@ class AppServiceProvider extends ServiceProvider
             app(LogObserver::class)
                 ->deleted($data[0]);
         });
+    }
+
+    /**
+     * Load routes from modules.
+     */
+    private function loadModuleRoutes(): void
+    {
+        $modulesPath = app_path('Modules');
+
+        if (!File::exists($modulesPath)) {
+            return;
+        }
+
+        $modules = File::directories($modulesPath);
+
+        foreach ($modules as $module) {
+
+            $webRoute = $module . '/routes/web.php';
+            $apiRoute = $module . '/routes/api.php';
+
+            if (File::exists($webRoute)) {
+                Route::middleware('web')
+                    ->group($webRoute);
+            }
+
+            if (File::exists($apiRoute)) {
+                Route::prefix('api')
+                    ->middleware('api')
+                    ->group($apiRoute);
+            }
+        }
     }
 }

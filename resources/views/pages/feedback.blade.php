@@ -1,11 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        @include('blocks.alerts')
-        <h1>{{ $page->title }}</h1>
+    @include('blocks.page_title')
 
-        <form method="POST" action="{{ route('feedback.save') }}">
+    <div class="container mt-4">
+        @include('blocks.alerts')
+
+        <form method="POST" action="{{ route('feedback.store') }}">
             @csrf
 
             <div class="mb-3">

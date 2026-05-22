@@ -58,10 +58,23 @@
                                     <span>Settings</span>
                                 </a>
                             </div>
-                            <div class="dropdown-footer">
-                                <a href="login-register.html" class="btn btn-primary w-100 mb-2">Sign In</a>
-                                <a href="login-register.html" class="btn btn-outline-primary w-100">Register</a>
-                            </div>
+                            @guest
+                                <div class="dropdown-footer">
+                                    <a href="{{route('login')}}" class="btn btn-primary w-100 mb-2">{{t('auth.login')}}</a>
+                                    <a href="{{route('register')}}" class="btn btn-outline-primary w-100">{{t('auth.register')}}</a>
+                                </div>
+                            @endguest
+                            @auth
+                                <div class="dropdown-footer">
+                                <form method="post" action="{{ route('logout') }}">
+                                    @csrf
+
+                                    <button type="submit" class="btn btn-outline-primary w-100">
+                                        {{ t('buttons.logout') }}
+                                    </button>
+                                </form>
+                                </div>
+                            @endauth
                         </div>
                     </div>
 

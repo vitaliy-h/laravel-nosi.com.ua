@@ -16,7 +16,7 @@ class FeedbackController extends Controller
         return view('pages.feedback');
     }
 
-    public function save(Request $request): \Illuminate\Http\RedirectResponse
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         LetterTemplateFacade::send(
             new SendLetterTemplateData(
