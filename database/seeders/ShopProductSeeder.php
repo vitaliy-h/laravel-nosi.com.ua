@@ -2,16 +2,37 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Shop\Product;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ShopProductSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        //
+        Product::truncate();
+        Storage::disk('public')->deleteDirectory('shop_products');
+
+        for ($i = 1; $i <= 12; $i++) {
+            $sourceFile = public_path("demo/assets/img/product/product-{$i}.webp");
+            $filename = Str::uuid() . '.webp';
+            $dir = 'shop_products/'.$i.'/img/';
+            Storage::disk('public')->makeDirectory($dir);
+            Storage::disk('public')->put(
+                $dir . $filename,
+                File::get($sourceFile)
+            );
+            Product::create([
+                //'id'=>$i,
+                'title' => fake()->words(3, true),
+                'slug' => fake()->slug(),
+                'price' => fake()->numberBetween(100, 10000),
+                'category_id' => fake()->randomElement([2, 3, 5, 6]),
+                'brand_id' => fake()->numberBetween(1, 4),
+                'img' => $dir. $filename,
+            ]);
+        }
     }
 }
