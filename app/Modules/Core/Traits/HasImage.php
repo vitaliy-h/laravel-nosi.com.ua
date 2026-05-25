@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 
 trait HasImage
 {
+    private array $imgFields = ['img'];
     public function initializeHasImage(): void
     {
         $this->appends = array_unique(array_merge(
@@ -19,6 +20,9 @@ trait HasImage
     {
         static::created(function ($model) {
             $model->moveTempFile();
+        });
+        static::updating(function ($model) {
+            $model->deleteOldImages();
         });
         static::deleted(function ($model) {
             $model->deleteFilesDirectory();
@@ -48,7 +52,7 @@ trait HasImage
 
     public function moveTempFile(): void
     {
-        $fields = ['img'];
+        $fields = $this->imgFields;
 
         foreach ($fields as $field) {
             $oldPath = $this->{$field};
@@ -95,5 +99,28 @@ trait HasImage
         }
 
         return asset('/assets/images/no_image.svg');
+    }
+
+    /**
+     * Delete old images on update
+     */
+    protected function deleteOldImages(): void
+    {
+        $fields = $this->imgFields;
+
+        foreach ($fields as $field) {
+            if (!$this->isDirty($field)) {
+                continue;
+            }
+
+            $oldPath = $this->getOriginal($field);
+
+            if (
+                $oldPath &&
+                Storage::exists($oldPath)
+            ) {
+                Storage::delete($oldPath);
+            }
+        }
     }
 }

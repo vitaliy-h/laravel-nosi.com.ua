@@ -3,7 +3,7 @@
 @section('content')
     @include('blocks.page_title')
 
-    <!-- Password Reset Section -->
+    <!-- Login Section -->
     <section id="login-register" class="login-register section">
 
         <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -12,7 +12,7 @@
                 <div class="col-lg-5">
                     <div class="login-register-wraper">
 
-                        {{-- todo password reset form--}}
+                        @include('pages.auth.forms.'.$mode)
 
                     </div>
                 </div>
@@ -21,5 +21,5 @@
         </div>
 
     </section>
-    <!-- /Password Reset -->
+    <!-- /Login Section -->
 @endsection

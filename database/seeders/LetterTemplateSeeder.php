@@ -15,7 +15,7 @@ class LetterTemplateSeeder extends Seeder
     {
         foreach (LetterEnum::cases() as $case) {
             $data = __("letter_templates.{$case->value}");
-            if (!LetterTemplate::whereKey($case)->exists()) {
+            if (!LetterTemplate::where('key',$case)->exists()) {
                 LetterTemplate::create(
                     [
                         'key' => $case->value,

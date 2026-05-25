@@ -32,14 +32,20 @@ return [
     'auth' => [
         'login' => 'Sign In',
         'register' => 'Register',
+        'password_recovery' => 'Password recovery',
         'name' => 'Name',
         'email' => 'Email address',
         'password' => 'Password',
+        'new_password' => 'New password',
         'password_confirmation' => 'Confirm password',
         'remember_me' => 'Remember me',
         'invalid_credentials' => 'Invalid credentials',
         'forgot_password' => 'Forgot Password?',
         'terms:html' => 'I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>',
+        'user_not_found' => 'User not found',
+        'password_reset_email_sent' => 'Email with password reset link has been sent.',
+        'password_reset_success' => 'Password reset success.',
+        'password_reset_error' => 'Error occurred while resetting password.',
     ],
 
     'buttons' => [
@@ -49,6 +55,7 @@ return [
         'login' => 'Login',
         'logout' => 'Sign Out',
         'create_acc' => 'Create Account',
+        'request_password_recovery' => 'Reset Password',
     ],
 
 ];

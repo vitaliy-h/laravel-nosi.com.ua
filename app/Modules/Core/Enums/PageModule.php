@@ -9,9 +9,7 @@ enum PageModule: string
     case NEWS = 'news';
     case FEEDBACK = 'feedback';
     case SHOP = 'shop';
-    case LOGIN = 'login';
-    case REGISTER = 'register';
-    case PASSWORD_RECOVERY = 'password_recovery';
+    case AUTH = 'auth';
 
     public function label(): string
     {
@@ -21,9 +19,7 @@ enum PageModule: string
             self::NEWS => 'News',
             self::FEEDBACK => 'Feedback',
             self::SHOP => 'Shop',
-            self::LOGIN => 'login',
-            self::REGISTER => 'register',
-            self::PASSWORD_RECOVERY => 'password_recovery',
+            self::AUTH => 'Auth',
         };
     }
 

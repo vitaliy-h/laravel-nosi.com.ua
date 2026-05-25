@@ -1,22 +1,18 @@
 <?php
-Route::prefix('/login')->middleware(['guest', 'page:' . \App\Modules\Core\Enums\PageModule::LOGIN->value])->group(function () {
-    Route::get('/', [\App\Modules\Auth\Http\Controllers\LoginController::class, 'index'])
-        ->name('login');
-    Route::post('/', [\App\Modules\Auth\Http\Controllers\LoginController::class, 'store'])
+
+Route::prefix('/auth')->middleware(['guest', 'page:' . \App\Modules\Core\Enums\PageModule::AUTH->value])->group(function () {
+    Route::get('/', [\App\Modules\Auth\Http\Controllers\AuthController::class, 'index'])
+        ->name('auth');
+    Route::post('/login', [\App\Modules\Auth\Http\Controllers\AuthController::class, 'login'])
         ->name('login.store');
+    Route::post('/register', [\App\Modules\Auth\Http\Controllers\AuthController::class, 'register'])
+        ->name('register.store');
+    Route::post('/password-recovery', [\App\Modules\Auth\Http\Controllers\AuthController::class, 'passwordRecovery'])
+        ->middleware('throttle:5,1')
+        ->name('password.recovery.store');
+    Route::post('/password-reset', [\App\Modules\Auth\Http\Controllers\AuthController::class, 'passwordReset'])
+        ->name('password.reset.store');
 });
-Route::post('/logout', [\App\Modules\Auth\Http\Controllers\LoginController::class, 'logout'])
+Route::post('/logout', [\App\Modules\Auth\Http\Controllers\AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
-Route::prefix('/registration')->middleware(['guest', 'page:' . \App\Modules\Core\Enums\PageModule::REGISTER->value])->group(function () {
-    Route::get('/', [\App\Modules\Auth\Http\Controllers\RegisterController::class, 'index'])
-        ->name('register');
-    Route::post('/', [\App\Modules\Auth\Http\Controllers\RegisterController::class, 'store'])
-        ->name('register.store');
-});
-Route::prefix('/password-recovery')->middleware(['guest', 'page:' . \App\Modules\Core\Enums\PageModule::PASSWORD_RECOVERY->value])->group(function () {
-    Route::get('/', [\App\Modules\Auth\Http\Controllers\PasswordResetController::class, 'index'])
-        ->name('password.recovery');
-    Route::post('/', [\App\Modules\Auth\Http\Controllers\PasswordResetController::class, 'store'])
-        ->name('password.recovery.store');
-});
