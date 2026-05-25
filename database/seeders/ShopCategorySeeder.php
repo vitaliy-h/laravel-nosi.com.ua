@@ -17,36 +17,57 @@ class ShopCategorySeeder extends Seeder
 
         $tree = [
             [
-                'title' => 'Electronics',
-                'slug' => 'electronics',
-                'display'=>true,
+                'title' => 'Clothing',
+                'slug' => 'clothing',
+                'display' => true,
                 'children' => [
                     [
-                        'title' => 'Phones',
-                        'slug' => 'phones',
-                        'display'=>true,
+                        'title' => "Men's Wear",
+                        'slug' => 'mens-wear',
+                        'display' => true,
+                    ],
+                    [
+                        'title' => "Women's Wear",
+                        'slug' => 'womens-wear',
+                        'display' => true,
+                    ],
+                    [
+                        'title' => "Kids' Clothing",
+                        'slug' => 'kids-clothing',
+                        'display' => true,
+                    ],
+                    [
+                        'title' => 'Accessories',
+                        'slug' => 'clothing-accessories',
+                        'display' => true,
+                    ],
+                ],
+            ],
+
+            [
+                'title' => 'Electronics',
+                'slug' => 'electronics',
+                'display' => true,
+                'children' => [
+                    [
+                        'title' => 'Smartphones',
+                        'slug' => 'smartphones',
+                        'display' => true,
                     ],
                     [
                         'title' => 'Laptops',
                         'slug' => 'laptops',
-                        'display'=>true,
-                    ],
-                ],
-            ],
-            [
-                'title' => 'Clothing',
-                'slug' => 'clothing',
-                'display'=>true,
-                'children' => [
-                    [
-                        'title' => 'Men',
-                        'slug' => 'men',
-                        'display'=>true,
+                        'display' => true,
                     ],
                     [
-                        'title' => 'Women',
-                        'slug' => 'women',
-                        'display'=>true,
+                        'title' => 'Tablets',
+                        'slug' => 'tablets',
+                        'display' => true,
+                    ],
+                    [
+                        'title' => 'Accessories',
+                        'slug' => 'electronics-accessories',
+                        'display' => true,
                     ],
                 ],
             ],

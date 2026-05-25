@@ -36,28 +36,6 @@
                             <i class="bi bi-person"></i>
                         </button>
                         <div class="dropdown-menu">
-                            <div class="dropdown-header">
-                                <h6>Welcome to <span class="sitename">eStore</span></h6>
-                                <p class="mb-0">Access account &amp; manage orders</p>
-                            </div>
-                            <div class="dropdown-body">
-                                <a class="dropdown-item d-flex align-items-center" href="account.html">
-                                    <i class="bi bi-person-circle me-2"></i>
-                                    <span>My Profile</span>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="account.html">
-                                    <i class="bi bi-bag-check me-2"></i>
-                                    <span>My Orders</span>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="account.html">
-                                    <i class="bi bi-heart me-2"></i>
-                                    <span>My Wishlist</span>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="account.html">
-                                    <i class="bi bi-gear me-2"></i>
-                                    <span>Settings</span>
-                                </a>
-                            </div>
                             @guest
                                 <div class="dropdown-footer">
                                     <a href="{{route('login')}}" class="btn btn-primary w-100 mb-2">{{t('auth.login')}}</a>
@@ -65,10 +43,31 @@
                                 </div>
                             @endguest
                             @auth
+                                <div class="dropdown-header">
+                                    <h6>Welcome to <span class="sitename">eStore</span></h6>
+                                    <p class="mb-0">Access account &amp; manage orders</p>
+                                </div>
+                                <div class="dropdown-body">
+                                    <a class="dropdown-item d-flex align-items-center" href="account.html">
+                                        <i class="bi bi-person-circle me-2"></i>
+                                        <span>My Profile</span>
+                                    </a>
+                                    <a class="dropdown-item d-flex align-items-center" href="account.html">
+                                        <i class="bi bi-bag-check me-2"></i>
+                                        <span>My Orders</span>
+                                    </a>
+                                    <a class="dropdown-item d-flex align-items-center" href="account.html">
+                                        <i class="bi bi-heart me-2"></i>
+                                        <span>My Wishlist</span>
+                                    </a>
+                                    <a class="dropdown-item d-flex align-items-center" href="account.html">
+                                        <i class="bi bi-gear me-2"></i>
+                                        <span>Settings</span>
+                                    </a>
+                                </div>
                                 <div class="dropdown-footer">
                                 <form method="post" action="{{ route('logout') }}">
                                     @csrf
-
                                     <button type="submit" class="btn btn-outline-primary w-100">
                                         {{ t('buttons.logout') }}
                                     </button>

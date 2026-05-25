@@ -16,10 +16,10 @@ class ShopBrandSeeder extends Seeder
         Brand::truncate();
 
         $brands = [
-            ['title' => 'Apple','slug'=>'/apple'],
-            ['title' => 'Samsung','slug'=>'/samsung'],
-            ['title' => 'Nike','slug'=>'/nike'],
-            ['title' => 'Adidas','slug'=>'/adidas'],
+            ['title' => 'Apple','slug'=>'apple'],
+            ['title' => 'Samsung','slug'=>'samsung'],
+            ['title' => 'Nike','slug'=>'nike'],
+            ['title' => 'Adidas','slug'=>'adidas'],
         ];
 
         foreach ($brands as $brand) {

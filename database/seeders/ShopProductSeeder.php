@@ -28,8 +28,8 @@ class ShopProductSeeder extends Seeder
                 //'id'=>$i,
                 'title' => fake()->words(3, true),
                 'slug' => fake()->slug(),
-                'price' => fake()->numberBetween(100, 10000),
-                'category_id' => fake()->randomElement([2, 3, 5, 6]),
+                'price' => fake()->numberBetween(30, 300),
+                'category_id' => fake()->randomElement([2,3,4,5,7,8,9,10]),
                 'brand_id' => fake()->numberBetween(1, 4),
                 'img' => $dir. $filename,
             ]);
