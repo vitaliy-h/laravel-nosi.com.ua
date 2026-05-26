@@ -25,7 +25,7 @@
                                 <p class="card-text">{{ $category->description }}</p>
                             @endif
 
-                            <a href="{{ route('shop.category', $category->slug) }}" class="btn btn-primary">
+                            <a href="{{ module_url(\App\Modules\Core\Enums\PageModule::SHOP,[$category->slug]) }}" class="btn btn-primary">
                                 Open category
                             </a>
                         </div>

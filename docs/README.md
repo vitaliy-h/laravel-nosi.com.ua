@@ -43,6 +43,7 @@ Production-ready starter based on Laravel + Filament.
 * [General README](./README.md)
 * [local Setup](./local_setup.md)
 * [Architecture Overview](./architecture.md)
+    * [routing](routing.md)
     * [images](images.md)
     * [translations](translations.md)
     * [logs](logs.md)

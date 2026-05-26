@@ -42,7 +42,7 @@
                                 </div>
                             @endif
 
-                            <a href="{{ route('shop.product', [$category->slug, $product->slug]) }}" class="btn btn-primary">
+                            <a href="{{ module_url(\App\Modules\Core\Enums\PageModule::SHOP, [$category->slug, $product->slug]) }}" class="btn btn-primary">
                                 View product
                             </a>
                         </div>

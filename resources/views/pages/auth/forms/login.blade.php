@@ -28,7 +28,7 @@
             <input type="checkbox" name="remember_me" class="form-check-input" id="login-register-remember-me" value="1">
             <label class="form-check-label" for="login-register-remember-me">{{t('auth.remember_me')}}</label>
         </div>
-        <a href="{{route('auth',['mode'=>'password_recovery'])}}" class="forgot-password">{{t('auth.forgot_password')}}</a>
+        <a href="{{module_url(\App\Modules\Core\Enums\PageModule::AUTH,[],['password_recovery'=>null])}}" class="forgot-password">{{t('auth.forgot_password')}}</a>
     </div>
 
     <div class="d-grid">

@@ -12,9 +12,6 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(\App\Modules\Core\Middleware\InjectMenus::class);
-        $middleware->alias([
-            'page' => \App\Modules\Core\Middleware\SearchPageMiddleware::class,
-        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -1,8 +1,6 @@
 <?php
 
-Route::prefix('/auth')->middleware(['guest', 'page:' . \App\Modules\Core\Enums\PageModule::AUTH->value])->group(function () {
-    Route::get('/', [\App\Modules\Auth\Http\Controllers\AuthController::class, 'index'])
-        ->name('auth');
+Route::prefix('/auth')->middleware(['guest'])->group(function () {
     Route::post('/login', [\App\Modules\Auth\Http\Controllers\AuthController::class, 'login'])
         ->name('login.store');
     Route::post('/register', [\App\Modules\Auth\Http\Controllers\AuthController::class, 'register'])

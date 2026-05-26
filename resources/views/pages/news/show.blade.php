@@ -3,7 +3,7 @@
 @section('content')
     <div class="container py-5">
 
-        <a href="{{ route('news') }}" class="btn btn-light mb-4">
+        <a href="{{ module_url(\App\Modules\Core\Enums\PageModule::NEWS) }}" class="btn btn-light mb-4">
             ← Back
         </a>
 

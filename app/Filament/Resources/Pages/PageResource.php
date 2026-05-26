@@ -46,8 +46,7 @@ class PageResource extends Resource
                     ->unique(ignoreRecord: true)
                     ->afterStateUpdated(fn($state, callable $set) => $set('slug', UrlFacade::slug($state))
                     )
-                    ->required()
-                    ->disabled(fn($record) => $record && $record->module !== PageModule::TEXT),
+                    ->required(),
                 TextInput::make('rank')
                     ->numeric()
                     ->columnSpan(2)

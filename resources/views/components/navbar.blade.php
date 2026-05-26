@@ -38,8 +38,9 @@
                         <div class="dropdown-menu">
                             @guest
                                 <div class="dropdown-footer">
-                                    <a href="{{route('auth',['mode'=>'login'])}}" class="btn btn-primary w-100 mb-2">{{t('auth.login')}}</a>
-                                    <a href="{{route('auth',['mode'=>'register'])}}" class="btn btn-outline-primary w-100">{{t('auth.register')}}</a>
+
+                                    <a href="{{module_url(\App\Modules\Core\Enums\PageModule::AUTH,[],['login'=>null])}}" class="btn btn-primary w-100 mb-2">{{t('auth.login')}}</a>
+                                    <a href="{{module_url(\App\Modules\Core\Enums\PageModule::AUTH,[],['register'=>null])}}" class="btn btn-outline-primary w-100">{{t('auth.register')}}</a>
                                 </div>
                             @endguest
                             @auth

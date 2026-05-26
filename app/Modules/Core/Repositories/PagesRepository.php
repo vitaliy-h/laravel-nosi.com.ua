@@ -11,6 +11,7 @@ class PagesRepository
     public function findBySlug(string $slug): ?Page
     {
         return Page::where('slug', $slug)
+            ->whereNotNull('module')
             ->visible()
             ->first();
     }

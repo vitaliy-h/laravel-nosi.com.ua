@@ -2,6 +2,7 @@
 
 namespace App\Modules\Shop\Http\Repository;
 
+use App\Modules\Core\Enums\PageModule;
 use App\Modules\Shop\Http\Models\ShopCategory;
 use App\Modules\Shop\Http\Models\ShopParameter;
 use App\Modules\Shop\Http\Models\ShopProduct;
@@ -68,7 +69,7 @@ class ShopRepository
             ->get()
             ->map(fn ($item) => [
                 'name' => $item->title,
-                'url' => route('shop.category', $item->slug),
+                'url' => module_url(PageModule::SHOP, [$item->slug]),
             ])
             ->toArray();
     }

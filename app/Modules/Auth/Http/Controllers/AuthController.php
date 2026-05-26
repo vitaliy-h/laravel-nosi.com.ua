@@ -10,7 +10,9 @@ use App\Modules\Auth\Http\Requests\PasswordResetRequest;
 use App\Modules\Auth\Http\Requests\RegisterRequest;
 use App\Modules\Core\Dtos\SendLetterTemplateData;
 use App\Modules\Core\Enums\LetterEnum;
+use App\Modules\Core\Enums\PageModule;
 use App\Modules\Core\Facades\LetterTemplateFacade;
+use App\Modules\Core\Facades\UrlFacade;
 use App\Modules\Core\Repositories\UsersRepository;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
@@ -25,15 +27,6 @@ class AuthController extends Controller
 
     public function __construct(private readonly UsersRepository $usersRepository)
     {
-    }
-
-    public function index(Request $request)
-    {
-        return view('pages.auth.index', [
-            'mode' => $request->input('mode', 'login'),
-            'token' => $request->input('token'),
-            'email' => $request->input('email'),
-        ]);
     }
 
     public function login(LoginRequest $request): RedirectResponse
@@ -55,7 +48,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended('/');
+        return redirect()->intended(module_url(PageModule::INDEX));
     }
 
     public function logout(Request $request): RedirectResponse
@@ -66,7 +59,7 @@ class AuthController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect(module_url(PageModule::INDEX));
     }
 
     public function register(RegisterRequest $request): RedirectResponse
@@ -81,7 +74,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect('/');
+        return redirect(module_url(PageModule::INDEX));
     }
 
     public function passwordRecovery(PasswordRecoveryRequest $request): RedirectResponse
@@ -93,11 +86,12 @@ class AuthController extends Controller
 
         $token = Password::broker()->createToken($user);
 
-        $resetUrl = route('auth', [
-            'mode' => 'password_reset',
+        $resetUrl = UrlFacade::getModuleUrl(\App\Modules\Core\Enums\PageModule::AUTH, [], [
+            'password_reset' => null,
             'token' => $token,
             'email' => $user->email,
         ]);
+
         LetterTemplateFacade::send(
             new SendLetterTemplateData(
                 key: LetterEnum::PASSWORD_RESET,
@@ -138,7 +132,7 @@ class AuthController extends Controller
         }
 
         return redirect()
-            ->route('auth')
+            ->to(module_url(PageModule::AUTH))
             ->with('success', t('auth.password_reset_success'));
     }
 }

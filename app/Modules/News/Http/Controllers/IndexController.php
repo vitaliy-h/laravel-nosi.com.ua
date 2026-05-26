@@ -3,17 +3,29 @@
 namespace App\Modules\News\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Core\Interfaces\ModuleIndexControllerInterface;
 use App\Modules\News\Repository\NewsRepository;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
-class NewsController extends Controller
+class IndexController extends Controller implements ModuleIndexControllerInterface
 {
     public function __construct(private readonly NewsRepository $repository)
     {
     }
 
-    public function index(Request $request)
+    public function accessCheck(): RedirectResponse|Response|null
     {
+        return null;
+    }
+
+    public function index(Request $request, array $segments = [])
+    {
+        if (!empty($segments)) {
+            $slug = $segments[0];
+            return $this->show($slug, $request);
+        }
         $news = $this->repository->all();
         return view('pages.news.index', compact('news'));
     }

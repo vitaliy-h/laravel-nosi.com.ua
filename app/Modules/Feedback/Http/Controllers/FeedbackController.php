@@ -11,11 +11,6 @@ use Illuminate\Http\Request;
 
 class FeedbackController extends Controller
 {
-    public function index(Request $request)
-    {
-        return view('pages.feedback');
-    }
-
     public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         LetterTemplateFacade::send(

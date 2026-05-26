@@ -28,7 +28,7 @@
                             </p>
 
                             <a
-                                href="{{ route('news.show', $item->slug) }}"
+                                href="{{ module_url(\App\Modules\Core\Enums\PageModule::NEWS,[$item->slug])}}"
                                 class="btn btn-primary"
                             >
                                 {{t('news.read_more')}}
