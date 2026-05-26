@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
-@section('content')
-    <div class="container">
-        <h1>{{ $page->title }}</h1>
+@php use Illuminate\Support\Str; @endphp
 
+@section('content')
+    @include('blocks.page_title')
+
+    <div class="container mt-4">
         @if($page->text)
             <div class="mb-4">
                 {!! $page->text !!}
@@ -15,14 +17,22 @@
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
                         @if($category->image)
-                            <img src="{{ $category->image }}" class="card-img-top" alt="{{ $category->name }}">
+                            <img
+                                src="{{ $category->image }}"
+                                class="news-card-list-image"
+                                alt="{{ $category->title ?? $category->name }}"
+                            >
                         @endif
 
                         <div class="card-body">
-                            <h5 class="card-title">{{ $category->name }}</h5>
+                            <h5 class="card-title">
+                                {{ $category->title ?? $category->name }}
+                            </h5>
 
-                            @if($category->description)
-                                <p class="card-text">{{ $category->description }}</p>
+                            @if($category->text ?? $category->description ?? null)
+                                <p class="card-text">
+                                    {{ Str::limit(strip_tags($category->text ?? $category->description), 120) }}
+                                </p>
                             @endif
 
                             <a href="{{ route('shop.category', $category->slug) }}" class="btn btn-primary">
