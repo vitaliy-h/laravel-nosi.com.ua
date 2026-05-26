@@ -4,6 +4,7 @@ namespace App\Filament\Resources\News;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\News\Pages\ManageNews;
+use App\Modules\Core\Enums\PageModule;
 use App\Modules\News\Models\News;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -94,7 +95,7 @@ class NewsResource extends Resource
             ->recordActions([
                 ViewAction::make()
                     ->iconButton()
-                    ->url(fn($record) => route('news.show', ['slug' => $record->slug]))
+                    ->url(fn($record) => module_url(PageModule::NEWS,[$record->slug]))
                     ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),
