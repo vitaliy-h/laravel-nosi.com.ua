@@ -4,8 +4,7 @@ namespace App\Filament\Resources\Users;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Users\Pages\ManageUsers;
-use App\Models\User;
-use BackedEnum;
+use App\Modules\Core\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -14,7 +13,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;

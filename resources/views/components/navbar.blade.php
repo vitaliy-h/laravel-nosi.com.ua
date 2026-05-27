@@ -49,21 +49,9 @@
                                     <p class="mb-0">Access account &amp; manage orders</p>
                                 </div>
                                 <div class="dropdown-body">
-                                    <a class="dropdown-item d-flex align-items-center" href="account.html">
+                                    <a class="dropdown-item d-flex align-items-center" href="{{module_url(\App\Modules\Core\Enums\PageModule::PROFILE)}}">
                                         <i class="bi bi-person-circle me-2"></i>
-                                        <span>My Profile</span>
-                                    </a>
-                                    <a class="dropdown-item d-flex align-items-center" href="account.html">
-                                        <i class="bi bi-bag-check me-2"></i>
-                                        <span>My Orders</span>
-                                    </a>
-                                    <a class="dropdown-item d-flex align-items-center" href="account.html">
-                                        <i class="bi bi-heart me-2"></i>
-                                        <span>My Wishlist</span>
-                                    </a>
-                                    <a class="dropdown-item d-flex align-items-center" href="account.html">
-                                        <i class="bi bi-gear me-2"></i>
-                                        <span>Settings</span>
+                                        <span>{{t('profile.my_profile')}}</span>
                                     </a>
                                 </div>
                                 <div class="dropdown-footer">

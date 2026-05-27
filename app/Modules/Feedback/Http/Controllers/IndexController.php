@@ -3,10 +3,6 @@
 namespace App\Modules\Feedback\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Feedback;
-use App\Modules\Core\Dtos\SendLetterTemplateData;
-use App\Modules\Core\Enums\LetterEnum;
-use App\Modules\Core\Facades\LetterTemplateFacade;
 use App\Modules\Core\Interfaces\ModuleIndexControllerInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

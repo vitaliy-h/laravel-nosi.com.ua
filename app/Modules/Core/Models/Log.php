@@ -2,7 +2,6 @@
 
 namespace App\Modules\Core\Models;
 
-use App\Models\User;
 use App\Modules\Core\Enums\LogEventEnum;
 use App\Modules\Core\Enums\LogSourceEnum;
 use Illuminate\Database\Eloquent\Model;

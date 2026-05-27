@@ -37,6 +37,7 @@ return [
         'email' => 'Email address',
         'password' => 'Password',
         'new_password' => 'New password',
+        'current_password' => 'Current Password',
         'password_confirmation' => 'Confirm password',
         'remember_me' => 'Remember me',
         'invalid_credentials' => 'Invalid credentials',
@@ -48,6 +49,25 @@ return [
         'password_reset_error' => 'Error occurred while resetting password.',
     ],
 
+    'profile' => [
+        'my_profile' => 'My profile',
+        'account_settings' => 'Account Settings',
+        'personal_information' => 'Personal Information',
+        'user_data_updated' => 'Personal Information has been successfully updated.',
+        'user_data_update_error' => 'Error occurred while updating personal data. Please try again.',
+        'security' => 'Security',
+        'password_updated' => 'Password has been successfully updated.',
+        'password_updated_error' => 'Error occurred while updating password. Please try again.',
+        'delete_account' => 'Delete Account',
+        'delete_account_text' => 'Once you delete your account, there is no going back. Please be certain.',
+        'delete_account_confirm_text' => 'Enter your email to confirm account deletion.',
+        'delete_account_email_mismatch' => 'The email address does not match your account.',
+    ],
+
+    'errors' => [
+        'something_went_wrong' => 'Unexpected error. Please try again.',
+    ],
+
     'buttons' => [
         'send' => 'Send',
         'save' => 'Save',
@@ -56,6 +76,10 @@ return [
         'logout' => 'Sign Out',
         'create_acc' => 'Create Account',
         'request_password_recovery' => 'Reset Password',
+        'menu' => 'Reset Password',
+        'save_changes' => 'Save Changes',
+        'update_password' => 'Update Password',
+        'delete_account' => 'Delete Account',
     ],
 
 ];

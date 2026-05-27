@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\Core\Dtos\SendLetterTemplateData;
 use App\Modules\Core\Enums\LetterEnum;
 use App\Modules\Core\Facades\LetterTemplateFacade;
-use App\Models\Feedback;
+use App\Modules\Feedback\Models\Feedback;
 use Illuminate\Http\Request;
 
 class FeedbackController extends Controller

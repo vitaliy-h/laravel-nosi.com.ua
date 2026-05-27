@@ -2,7 +2,7 @@
 
 namespace App\Modules\Core\Repositories;
 
-use App\Models\User;
+use App\Modules\Core\Models\User;
 
 class UsersRepository
 {

@@ -4,13 +4,13 @@ namespace App\Filament\Resources\Feedback;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Feedback\Pages\ManageFeedback;
-use App\Models\Feedback;
+use App\Modules\Feedback\Models\Feedback;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;

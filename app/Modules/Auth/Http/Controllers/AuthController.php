@@ -3,7 +3,6 @@
 namespace App\Modules\Auth\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Modules\Auth\Http\Requests\LoginRequest;
 use App\Modules\Auth\Http\Requests\PasswordRecoveryRequest;
 use App\Modules\Auth\Http\Requests\PasswordResetRequest;
@@ -13,6 +12,7 @@ use App\Modules\Core\Enums\LetterEnum;
 use App\Modules\Core\Enums\PageModule;
 use App\Modules\Core\Facades\LetterTemplateFacade;
 use App\Modules\Core\Facades\UrlFacade;
+use App\Modules\Core\Models\User;
 use App\Modules\Core\Repositories\UsersRepository;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
@@ -48,7 +48,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(module_url(PageModule::INDEX));
+        return redirect()->to(module_url(PageModule::PROFILE));
     }
 
     public function logout(Request $request): RedirectResponse

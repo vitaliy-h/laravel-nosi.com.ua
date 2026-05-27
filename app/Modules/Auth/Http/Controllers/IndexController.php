@@ -20,7 +20,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
     public function accessCheck(): \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse|null
     {
         if (auth()->check()) {
-            return redirect()->to(module_url(PageModule::INDEX));
+            return redirect()->to(module_url(PageModule::PROFILE));
         }
         return null;
     }

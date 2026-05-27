@@ -10,6 +10,7 @@ enum PageModule: string
     case FEEDBACK = 'feedback';
     case SHOP = 'shop';
     case AUTH = 'auth';
+    case PROFILE = 'profile';
 
     public function label(): string
     {
@@ -20,6 +21,7 @@ enum PageModule: string
             self::FEEDBACK => 'Feedback',
             self::SHOP => 'Shop',
             self::AUTH => 'Auth',
+            self::PROFILE => 'Profile',
         };
     }
 

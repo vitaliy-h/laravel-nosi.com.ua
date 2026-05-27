@@ -1,11 +1,16 @@
-@if(session()->has('success'))
+@php
+    $successKey = $successKey ?? 'success';
+    $errorKey = $errorKey ?? 'error';
+@endphp
+
+@if(session()->has($successKey))
     <div class="card card-body py-3 alert alert-success">
-        {{ session('success') }}
+        {{ session($successKey) }}
     </div>
 @endif
 
-@if(session()->has('error'))
+@if(session()->has($errorKey))
     <div class="card card-body py-3 alert alert-danger">
-        {{ session('error') }}
+        {{ session($errorKey) }}
     </div>
 @endif
