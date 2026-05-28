@@ -23,7 +23,12 @@ class ShopRepository
             ->orderBy('_lft')
             ->get();
     }
-
+    public function getProductById(int $id)
+    {
+        return ShopProduct::query()
+            ->where('id', $id)
+            ->firstOrFail();
+    }
     /**
      * Get category by slug.
      */

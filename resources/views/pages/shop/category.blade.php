@@ -184,7 +184,7 @@
                                                     <i class="bi bi-arrow-repeat"></i>
                                                 </button>
                                                 <a
-                                                    href="{{ module_url(\App\Modules\Core\Enums\PageModule::SHOP, [$category->slug, $product->slug]) }}"
+                                                    href="{{ module_url(\App\Modules\Core\Enums\PageModule::SHOP, [$category->slug, $product->slug. '-' . $product->id]) }}"
                                                     class="quick-action-btn"
                                                 >
                                                     <i class="bi bi-eye"></i>
@@ -200,7 +200,7 @@
                                     <div class="product-content">
                                         <div class="product-details">
                                             <h3 class="product-title">
-                                                <a href="{{ module_url(\App\Modules\Core\Enums\PageModule::SHOP, [$category->slug, $product->slug]) }}">
+                                                <a href="{{ module_url(\App\Modules\Core\Enums\PageModule::SHOP, [$category->slug, $product->slug. '-' . $product->id]) }}">
                                                     {{ $product->title ?? $product->name }}
                                                 </a>
                                             </h3>

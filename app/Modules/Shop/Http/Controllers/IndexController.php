@@ -21,38 +21,35 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         return null;
     }
 
-    /**
-     * Shop main page.
-     * URL: /shop
-     * @param Request $request
-     * @param array $segments
-     */
     public function index(Request $request, array $segments = [])
     {
         $categoryList = $this->repository->mainCategories();
+
         if (!empty($segments)) {
-            $productSlug = $segments[1] ?? null;
+            $productSlugId = $segments[1] ?? null;
             $categorySlug = $segments[0] ?? null;
-            if ($productSlug && $categorySlug) {
-                return $this->product($categorySlug, $productSlug, $request);
+
+            if ($productSlugId && $categorySlug) {
+                return $this->product($categorySlug, $productSlugId, $request);
             }
+
             if ($categorySlug) {
                 return $this->category($categorySlug, $request);
             }
         }
+        $page = (object) [
+            'title' => 'Shop',
+            'text' => null,
+        ];
 
-        return view('pages.shop.index', compact('categoryList'));
+        $breadcrumbs = [];
+        return view('pages.shop.index', compact('categoryList', 'breadcrumbs','page'));
     }
 
-    /**
-     * Category page.
-     * URL: /shop/{categorySlug}
-     */
     public function category(string $categorySlug, Request $request)
     {
         $category = $this->repository->getCategoryBySlug($categorySlug);
 
-        // Redirect to canonical category URL if slug is not correct.
         if ($categorySlug !== $category->slug) {
             return redirect()->to(module_url(PageModule::SHOP, $category->slug), 301);
         }
@@ -85,18 +82,27 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         ));
     }
 
-    /**
-     * Product page.
-     * URL: /shop/{categorySlug}/{productSlug}
-     */
-    public function product(string $categorySlug, string $productSlug, Request $request)
+    public function product(string $categorySlug, string $productSlugId, Request $request)
     {
         $category = $this->repository->getCategoryBySlug($categorySlug);
-        $product = $this->repository->getProductBySlug($productSlug, $category);
 
-        // Redirect to canonical product URL if category or product slug is not correct.
+        if (!preg_match('/^(.+)-(\d+)$/', $productSlugId, $matches)) {
+            abort(404);
+        }
+
+        $productSlug = $matches[1];
+        $productId = (int) $matches[2];
+
+        $product = $this->repository->getProductById($productId);
+
         if ($categorySlug !== $category->slug || $productSlug !== $product->slug) {
-            return redirect()->to(module_url(\App\Modules\Core\Enums\PageModule::SHOP, [$category->slug, $product->slug]),301);
+            return redirect()->to(
+                module_url(PageModule::SHOP, [
+                    $category->slug,
+                    $product->slug . '-' . $product->id,
+                ]),
+                301
+            );
         }
 
         view()->share([
@@ -107,7 +113,10 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         $breadcrumbs = $this->repository->breadcrumbs($category);
         $breadcrumbs[] = [
             'name' => $product->title,
-            'url' => module_url(\App\Modules\Core\Enums\PageModule::SHOP, [$category->slug, $product->slug]),
+            'url' => module_url(PageModule::SHOP, [
+                $category->slug,
+                $product->slug . '-' . $product->id,
+            ]),
         ];
 
         return view('pages.shop.product', compact(
