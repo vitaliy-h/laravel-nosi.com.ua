@@ -3,7 +3,7 @@
 namespace App\Modules\Core\Models;
 
 use App\Modules\Core\Enums\PageModule;
-use App\Modules\Core\Traits\HasVisibility;
+use App\Modules\Core\Traits\Models\HasVisibility;
 use Illuminate\Database\Eloquent\Model;
 
 class Page extends Model

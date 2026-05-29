@@ -114,14 +114,14 @@ app/Modules/Core/Enums/PageModule.php
 The system automatically resolves controllers using the module value:
 
 ```
-\App\Modules\{ModuleName}\Http\Controllers\IndexController@index
+\App\Modules\{ModuleName}\Http\Controllers\Web\IndexController@index
 ```
 
 Example:
 
-* `news` → `App\Modules\News\Http\Controllers\IndexController@index`
-* `index` → `App\Modules\Index\Http\Controllers\IndexController@index`
-* `text_pages` → `App\Modules\TextPage\Http\Controllers\IndexController@index`
+* `news` → `App\Modules\News\Http\Controllers\Web\IndexController@index`
+* `index` → `App\Modules\Index\Http\Controllers\Web\IndexController@index`
+* `text_pages` → `App\Modules\TextPage\Http\Controllers\Web\IndexController@index`
 
 ---
 

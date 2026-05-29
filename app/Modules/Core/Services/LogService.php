@@ -100,7 +100,7 @@ class LogService
     protected function createLog(LogEventEnum $event, Model $model, ?array $oldValues, ?array $newValues, array $changedFields): void
     {
         Log::query()->create([
-            'user_id' => auth()->id(),
+            'user_id' => request()->user()?->id,
 
             'event' => $event,
 

@@ -1,6 +1,6 @@
 <?php
 
-use App\Modules\Shop\Http\Controllers\IndexController;
+use App\Modules\Shop\Http\Controllers\Web\IndexController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/shop', [IndexController::class, 'index'])

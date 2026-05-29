@@ -24,12 +24,12 @@ class ProfileDeleteUserAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'delete_email' => [
+            'email' => [
                 'required',
                 'string',
                 'email',
                 function ($attribute, $value, $fail) {
-                    if ($value !== auth()->user()->email) {
+                    if ($value !== request()->user()->email) {
                         $fail(t('profile.delete_account_email_mismatch'));
                     }
                 },
@@ -44,6 +44,16 @@ class ProfileDeleteUserAccountRequest extends FormRequest
     {
         return [
             'delete_email' => t('auth.email'),
+            'email' => t('auth.email'),
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('delete_email') && !$this->has('email')) {
+            $this->merge([
+                'email' => $this->delete_email,
+            ]);
+        }
     }
 }

@@ -22,6 +22,6 @@ jobs:
 
             git pull origin master
 
-            php8.4 /usr/local/bin/composer install --no-dev --optimize-autoloader
+            php8.4 /usr/local/bin/composer install
 
             php8.4 artisan migrate

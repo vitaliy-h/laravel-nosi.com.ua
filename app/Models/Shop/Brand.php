@@ -2,7 +2,7 @@
 
 namespace App\Models\Shop;
 
-use App\Modules\Core\Traits\HasImage;
+use App\Modules\Core\Traits\Models\HasImage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 

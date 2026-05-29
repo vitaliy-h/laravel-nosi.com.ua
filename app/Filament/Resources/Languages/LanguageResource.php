@@ -4,8 +4,8 @@ namespace App\Filament\Resources\Languages;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Languages\Pages\ManageLanguages;
-use App\Modules\Core\Enums\Localization;
-use App\Modules\Core\Models\Language;
+use App\Modules\Translation\Enums\Localization;
+use App\Modules\Translation\Models\Language;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;

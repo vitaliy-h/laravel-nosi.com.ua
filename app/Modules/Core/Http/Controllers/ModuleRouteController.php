@@ -47,7 +47,7 @@ class ModuleRouteController extends Controller
 
         if ($page) {
 
-            $routerClass = '\\App\\Modules\\' . Str::ucfirst(Str::camel($page->module->value))  . '\\Http\\Controllers\\IndexController';
+            $routerClass = '\\App\\Modules\\' . Str::ucfirst(Str::camel($page->module->value))  . '\\Http\\Controllers\\Web\\IndexController';
 
             if (class_exists($routerClass)) {
                 $moduleSegments = array_slice($segments, 1);

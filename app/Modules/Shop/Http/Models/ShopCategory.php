@@ -2,8 +2,8 @@
 
 namespace App\Modules\Shop\Http\Models;
 
-use App\Modules\Core\Traits\HasImage;
-use App\Modules\Core\Traits\HasVisibility;
+use App\Modules\Core\Traits\Models\HasImage;
+use App\Modules\Core\Traits\Models\HasVisibility;
 use Illuminate\Database\Eloquent\Model;
 
 class ShopCategory extends Model

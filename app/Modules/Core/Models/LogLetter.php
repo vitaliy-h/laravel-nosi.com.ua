@@ -5,7 +5,7 @@ namespace App\Modules\Core\Models;
 use App\Modules\Core\Enums\LetterEnum;
 use App\Modules\Core\Enums\LogLetterSourceEnum;
 use App\Modules\Core\Enums\LogLetterStatusEnum;
-use App\Modules\Core\Traits\HasImage;
+use App\Modules\Core\Traits\Models\HasImage;
 use Illuminate\Database\Eloquent\Model;
 
 class LogLetter extends Model

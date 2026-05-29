@@ -7,19 +7,19 @@ use App\Filament\Generators\AdminResourceManageRecordsPageClassGenerator;
 use App\Modules\Core\Observers\LogObserver;
 use App\Modules\Core\Repositories\PagesRepository;
 use App\Modules\Core\Services\LetterTemplateService;
-use App\Modules\Core\Services\TranslationService;
 use App\Modules\Core\Services\UrlHelper;
+use App\Modules\Translation\Services\TranslationService;
 use Filament\Commands\FileGenerators\Resources\Pages\ResourceManageRecordsPageClassGenerator;
 use Filament\Commands\FileGenerators\Resources\ResourceClassGenerator;
-use Filament\Infolists\Components\TextEntry;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Pagination\Paginator;
 use Filament\Forms\Components\Field;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Filters\BaseFilter;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
             return new UrlHelper(app(PagesRepository::class));
         });
         $this->app->singleton('translation', function () {
-            return new TranslationService();
+            return app(TranslationService::class);
         });
         $this->app->singleton('letter-template-service', function () {
             return new LetterTemplateService();
@@ -113,12 +113,12 @@ class AppServiceProvider extends ServiceProvider
                 ->updated($data[0]);
         });
 
-        $dispatcher->listen('eloquent.deleted: *', function (
+        $dispatcher->listen('eloquent.deleting: *', function (
             string $event,
             array  $data
         ) {
             app(LogObserver::class)
-                ->deleted($data[0]);
+                ->deleting($data[0]);
         });
     }
 

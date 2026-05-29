@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Modules\Core\Enums\Localization;
-use App\Modules\Core\Facades\Trans;
-use App\Modules\Core\Models\Language;
+use App\Modules\Translation\Enums\Localization;
+use App\Modules\Translation\Facade\Trans;
+use App\Modules\Translation\Models\Language;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 

@@ -19,7 +19,7 @@ class LogObserver
             ->logUpdated($model);
     }
 
-    public function deleted(Model $model): void
+    public function deleting(Model $model): void
     {
         app(LogService::class)
             ->logDeleted($model);

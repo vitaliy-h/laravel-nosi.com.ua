@@ -62,10 +62,18 @@ return [
         'delete_account_text' => 'Once you delete your account, there is no going back. Please be certain.',
         'delete_account_confirm_text' => 'Enter your email to confirm account deletion.',
         'delete_account_email_mismatch' => 'The email address does not match your account.',
+        'account_deleted' => 'Account Deleted',
     ],
 
     'errors' => [
         'something_went_wrong' => 'Unexpected error. Please try again.',
+        '404_title' => '404 - Page not found',
+        '404_h1' => 'Page not found',
+        '404_text:input12' => 'The page you are looking for doesn’t exist or has been moved.',
+
+        '500_title' => '500 - Server error',
+        '500_h1' => 'Something went wrong',
+        '500_text:input12' => ' We’re working to fix the problem. Please try again later.',
     ],
 
     'buttons' => [
@@ -80,6 +88,18 @@ return [
         'save_changes' => 'Save Changes',
         'update_password' => 'Update Password',
         'delete_account' => 'Delete Account',
+        'go_home' => 'Go home',
     ],
 
+    'api' => [
+        'validation_error' => 'Validation error.',
+        'unauthenticated' => 'Unauthenticated.',
+        'forbidden' => 'Forbidden.',
+        'resource_not_found' => 'Resource not found.',
+        'route_not_found' => 'Route not found.',
+        'to_many_requests' => 'Too many requests.',
+        'login_success' => 'Login successful.',
+        'register_success' => 'Registration successful.',
+        'logout_success' => 'Logged out.',
+    ],
 ];

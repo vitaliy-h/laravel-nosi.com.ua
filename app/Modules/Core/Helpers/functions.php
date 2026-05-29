@@ -1,7 +1,7 @@
 <?php
 
 use App\Modules\Core\Enums\PageModule;
-use App\Modules\Core\Facades\Trans;
+use App\Modules\Translation\Facade\Trans;
 
 function t(string $key, array $replace = []): string
 {
