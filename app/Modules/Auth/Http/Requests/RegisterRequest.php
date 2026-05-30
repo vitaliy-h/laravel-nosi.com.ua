@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Modules\Auth\Http\Requests\Api;
+namespace App\Modules\Auth\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
-class ApiLoginRequest extends FormRequest
+class RegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,19 +24,35 @@ class ApiLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email'],
-            'password' => ['required', 'string'],
+            'name' => ['required', 'string', 'max:255'],
+
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                'unique:users,email',
+            ],
+
+            'password' => [
+                'required',
+                'confirmed',
+                Password::min(8),
+            ],
+
+            'terms' => ['accepted'],
         ];
     }
 
     /**
-     * Custom attribute names.
+     * Attributes.
      */
     public function attributes(): array
     {
         return [
+            'name' => t('auth.name'),
             'email' => t('auth.email'),
             'password' => t('auth.password'),
+            'terms' => t('auth.terms'),
         ];
     }
 }
