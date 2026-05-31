@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('letter_templates', function (Blueprint $table) {
             $table->id();
+            $table->timestamps();
             $table->string('key')->unique();
             $table->string('sender')->nullable();
             $table->string('sender_name')->nullable();
             $table->string('receivers')->nullable();
             $table->string('subject')->nullable();
             $table->text('body')->nullable();
-            $table->timestamps();
         });
     }
 

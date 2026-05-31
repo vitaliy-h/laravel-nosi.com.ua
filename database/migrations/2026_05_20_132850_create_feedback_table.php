@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('feedback', function (Blueprint $table) {
             $table->id();
+            $table->timestamps();
             $table->boolean('processed')->default(false);
+            $table->ipAddress('ip')->nullable();
             $table->string('name')->nullable();
             $table->string('email')->nullable();
-            $table->ipAddress('ip')->nullable();
             $table->text('message')->nullable();
-            $table->timestamps();
         });
     }
 

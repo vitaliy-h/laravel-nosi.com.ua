@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('shop_products', function (Blueprint $table) {
             $table->id();
+            $table->timestamps();
             $table->boolean('display')->default(true);
             $table->foreignId('category_id')->constrained('shop_categories')->nullable();
             $table->foreignId('brand_id')->nullable()->constrained('shop_brands')->nullable();
@@ -22,10 +23,9 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->string('slug')->nullable();
             $table->string('img')->nullable();
-            $table->longText('text')->nullable();
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();
-            $table->timestamps();
+            $table->longText('text')->nullable();
         });
     }
 

@@ -12,12 +12,12 @@ return new class extends Migration {
     {
         Schema::create('languages', function (Blueprint $table) {
             $table->id();
+            $table->timestamps();
+            $table->tinyInteger('display')->default(0)->unsigned();
+            $table->integer('rank')->default(0);
             $table->string('title')->nullable();
             $table->string('localization')->unique();
             $table->text('dictionary')->nullable()->default(null);
-            $table->integer('rank')->default(0);
-            $table->tinyInteger('display')->default(0)->unsigned();
-            $table->timestamps();
         });
     }
 
