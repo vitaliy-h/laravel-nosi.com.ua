@@ -79,3 +79,7 @@ Model create/update/delete events are automatically observed via `LogObserver` (
 ### Filament generators
 
 Custom stubs (`AdminResourceClassGenerator`, `AdminResourceManageRecordsPageClassGenerator`) are bound in `AppServiceProvider` and auto-apply project conventions when running `make:filament-resource`.
+
+### Additional
+
+Always add newly created files to git
