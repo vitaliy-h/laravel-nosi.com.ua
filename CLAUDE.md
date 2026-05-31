@@ -1,1 +1,1 @@
-Read all project AI instructions from .ai/
+Always add newly created files to git
