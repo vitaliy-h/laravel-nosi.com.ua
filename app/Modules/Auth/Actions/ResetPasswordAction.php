@@ -23,10 +23,10 @@ class ResetPasswordAction
                 'password_confirmation' => $data->password_confirmation,
                 'token' => $data->token,
             ],
-            function ($user) use ($data) {
+            function ($user, $password) {
 
                 $user->forceFill([
-                    'password' => Hash::make($data->password),
+                    'password' => Hash::make($password),
                     'remember_token' => Str::random(60),
                 ])->save();
 
