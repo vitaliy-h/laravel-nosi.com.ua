@@ -85,14 +85,17 @@ Structure can grow depending on module complexity.
 
 # Routing
 
-Routes remain in standard Laravel folders:
+Routes remain in standard Laravel folders for POST and API methods:
 
 ```text
 routes/web.php
 routes/api.php
 ```
 
-No custom route loader is used.
+For GET request used a catch-all `fallback` route (`Core/routes/web.php`) dispatches unmatched URLs to
+`ModuleRouteController`, which resolves a `Page` by slug, reads its `module` enum, and invokes
+`App\Modules\{Module}\Http\Controllers\Web\IndexController` (contract: `ModuleIndexControllerInterface` →
+`accessCheck()` then `index()`). This acts as a lightweight CMS layer.
 
 ---
 

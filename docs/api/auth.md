@@ -23,7 +23,8 @@ POST /api/auth/register
   "name": "John Doe",
   "email": "john@example.com",
   "password": "password",
-  "password_confirmation": "password"
+  "password_confirmation": "password",
+  "terms": true
 }
 ```
 

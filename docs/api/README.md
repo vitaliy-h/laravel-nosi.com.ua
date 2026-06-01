@@ -61,6 +61,7 @@ You will find in the directory `docs/api` postman collection file with all the r
 
 * [Auth](./auth.md)
 * [Profile](./profile.md)
+* [Shop](./shop.md)
 * [Translation](./translation.md)
 
 ---

@@ -29,6 +29,13 @@ return [
         'read_more' => 'Read more',
     ],
 
+    'shop' => [
+        'categories_list' => 'Categories List',
+        'category_info'   => 'Full category information',
+        'category_products'   => 'Products list',
+        'product_info'        => 'Product information',
+    ],
+
     'auth' => [
         'login' => 'Sign In',
         'register' => 'Register',

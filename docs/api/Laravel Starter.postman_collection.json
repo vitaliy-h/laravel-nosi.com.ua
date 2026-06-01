@@ -64,7 +64,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\":\"test name\",\n    \"email\":\"test@example.com\",\n    \"password\":\"password\",\n    \"password_confirmation\":\"password\"\n}",
+							"raw": "{\n    \"name\":\"test name\",\n    \"email\":\"test@example.com\",\n    \"password\":\"password\",\n    \"password_confirmation\":\"password\",\n    \"terms\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -242,6 +242,100 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Shop",
+			"item": [
+				{
+					"name": "Get Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/shop/categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"shop",
+								"categories"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/shop/categories/clothing",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"shop",
+								"categories",
+								"clothing"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Category Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/shop/categories/womens-wear/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"shop",
+								"categories",
+								"womens-wear",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/shop/categories/womens-wear/products/ea-est-perferendis-asperiores-accusamus-et-qui",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"shop",
+								"categories",
+								"womens-wear",
+								"products",
+								"ea-est-perferendis-asperiores-accusamus-et-qui"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"auth": {
@@ -249,7 +343,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "14|A4qJrHoEePaWlgjE3F9ZDHsbzTtk8MplPVkNH0OI013704d1",
+				"value": "1|rhtnChhrrsqmhVZESOtAnHaaTgVHgajW5MKjLtHM4da6ee61",
 				"type": "string"
 			}
 		]

@@ -6,12 +6,19 @@ use App\Modules\Core\Enums\PageModule;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Parameter;
 use App\Modules\Shop\Models\Product;
-use App\Modules\Shop\Models\Brand;
 use Illuminate\Http\Request;
 
 class ShopRepository
 {
     private int $paginate = 10;
+
+    /**
+     * Get shop categories tree.
+     */
+    public function getTree()
+    {
+        return Category::visible()->get()->toTree();
+    }
 
     /**
      * Get top-level shop categories.
@@ -24,12 +31,14 @@ class ShopRepository
             ->orderBy('_lft')
             ->get();
     }
+
     public function getProductById(int $id)
     {
         return Product::query()
             ->where('id', $id)
             ->firstOrFail();
     }
+
     /**
      * Get category by slug.
      */
@@ -48,6 +57,7 @@ class ShopRepository
         return Product::visible()
             ->where('slug', $slug)
             ->where('category_id', $category->id)
+            ->with('brand')
             ->firstOrFail();
     }
 
@@ -73,7 +83,7 @@ class ShopRepository
             ->where('_rgt', '>=', $category->_rgt)
             ->orderBy('_lft')
             ->get()
-            ->map(fn ($item) => [
+            ->map(fn($item) => [
                 'name' => $item->title,
                 'url' => module_url(PageModule::SHOP, [$item->slug]),
             ])
@@ -207,10 +217,12 @@ class ShopRepository
     {
         return Product::visible()
             ->where('category_id', $category->id)
+            ->with('brand')
             ->orderBy('price')
             ->paginate($this->paginate)
             ->withQueryString();
     }
+
     /**
      * Extract filterable parameter IDs from serialized category parameters.
      */
@@ -226,7 +238,7 @@ class ShopRepository
 
         foreach ($data as $id => $item) {
             if (!empty($item['display']) && !empty($item['filter'])) {
-                $ids[] = (int) $id;
+                $ids[] = (int)$id;
             }
         }
 
@@ -239,8 +251,8 @@ class ShopRepository
     private function stringToIntArray(string $value): array
     {
         return collect(explode(',', $value))
-            ->map(fn ($item) => (int) $item)
-            ->filter(fn ($item) => $item > 0)
+            ->map(fn($item) => (int)$item)
+            ->filter(fn($item) => $item > 0)
             ->values()
             ->toArray();
     }

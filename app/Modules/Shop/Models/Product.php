@@ -33,4 +33,14 @@ class Product extends Model
         'price' => 'float',
         'price2' => 'float',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
 }

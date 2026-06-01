@@ -4,7 +4,7 @@ namespace App\Filament\Resources\Shop\Categories;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Shop\Categories\Pages\ManageCategories;
-use App\Models\Shop\Category;
+use App\Modules\Shop\Models\Category;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;

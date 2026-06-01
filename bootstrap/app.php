@@ -67,7 +67,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($e instanceof NotFoundHttpException) {
                 return response()->json([
                     'success' => false,
-                    'message' => t('api.route_not_found'),
+                    'message' => t('api.resource_not_found'),
                     'errors' => null,
                 ], 404);
             }

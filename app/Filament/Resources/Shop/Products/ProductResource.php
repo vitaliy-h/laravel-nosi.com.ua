@@ -4,9 +4,9 @@ namespace App\Filament\Resources\Shop\Products;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
-use App\Models\Shop\Category;
-use App\Models\Shop\Product;
 use App\Modules\Shop\Models\Brand;
+use App\Modules\Shop\Models\Category;
+use App\Modules\Shop\Models\Product;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
