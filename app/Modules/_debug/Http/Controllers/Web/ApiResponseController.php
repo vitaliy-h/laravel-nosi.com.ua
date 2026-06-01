@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Modules\Test\Http\Controllers\Web;
+namespace App\Modules\_debug\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class TestController extends Controller
+class ApiResponseController extends Controller
 {
     public function api_response_index(Request $request)
     {
