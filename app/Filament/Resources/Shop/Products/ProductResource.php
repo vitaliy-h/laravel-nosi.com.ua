@@ -4,17 +4,18 @@ namespace App\Filament\Resources\Shop\Products;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
-use App\Models\Shop\Product;
 use App\Models\Shop\Category;
-use App\Models\Shop\Brand;
+use App\Models\Shop\Product;
+use App\Modules\Shop\Models\Brand;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -22,9 +23,8 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
-use Filament\Tables\Table;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Forms\Components\Select;
+use Filament\Tables\Table;
 
 class ProductResource extends Resource
 {

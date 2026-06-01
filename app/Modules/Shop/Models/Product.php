@@ -1,24 +1,25 @@
 <?php
 
-namespace App\Modules\Shop\Http\Models;
+namespace App\Modules\Shop\Models;
 
 use App\Modules\Core\Traits\Models\HasImage;
 use App\Modules\Core\Traits\Models\HasVisibility;
 use Illuminate\Database\Eloquent\Model;
 
-class ShopCategory extends Model
+class Product extends Model
 {
     use HasVisibility;
     use HasImage;
 
-    protected $table = 'shop_categories';
+    protected $table = 'shop_products';
 
     protected $fillable = [
-        'parent_id',
-        '_lft',
-        '_rgt',
-        'rank',
         'display',
+        'category_id',
+        'brand_id',
+        'price',
+        'price2',
+        'article',
         'title',
         'slug',
         'img',
@@ -29,5 +30,7 @@ class ShopCategory extends Model
 
     protected $casts = [
         'display' => 'boolean',
+        'price' => 'float',
+        'price2' => 'float',
     ];
 }

@@ -5,7 +5,7 @@ namespace App\Modules\Shop\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Modules\Core\Enums\PageModule;
 use App\Modules\Core\Interfaces\ModuleIndexControllerInterface;
-use App\Modules\Shop\Http\Repository\ShopRepository;
+use App\Modules\Shop\Repository\ShopRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

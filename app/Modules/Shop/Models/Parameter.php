@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Modules\Shop\Http\Models;
+namespace App\Modules\Shop\Models;
 
 use App\Modules\Core\Traits\Models\HasVisibility;
 use Illuminate\Database\Eloquent\Model;
 
-class ShopParameter extends Model
+class Parameter extends Model
 {
     use HasVisibility;
 

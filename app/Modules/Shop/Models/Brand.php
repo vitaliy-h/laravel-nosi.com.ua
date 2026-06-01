@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models\Shop;
+namespace App\Modules\Shop\Models;
 
+use App\Models\Shop\Product;
 use App\Modules\Core\Traits\Models\HasImage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;

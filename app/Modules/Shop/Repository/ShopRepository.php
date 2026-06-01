@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Modules\Shop\Http\Repository;
+namespace App\Modules\Shop\Repository;
 
 use App\Modules\Core\Enums\PageModule;
-use App\Modules\Shop\Http\Models\ShopCategory;
-use App\Modules\Shop\Http\Models\ShopParameter;
-use App\Modules\Shop\Http\Models\ShopProduct;
+use App\Modules\Shop\Models\Category;
+use App\Modules\Shop\Models\Parameter;
+use App\Modules\Shop\Models\Product;
+use App\Modules\Shop\Models\Brand;
 use Illuminate\Http\Request;
 
 class ShopRepository
@@ -17,7 +18,7 @@ class ShopRepository
      */
     public function mainCategories()
     {
-        return ShopCategory::visible()
+        return Category::visible()
             ->whereNull('parent_id')
             ->orderBy('rank')
             ->orderBy('_lft')
@@ -25,16 +26,16 @@ class ShopRepository
     }
     public function getProductById(int $id)
     {
-        return ShopProduct::query()
+        return Product::query()
             ->where('id', $id)
             ->firstOrFail();
     }
     /**
      * Get category by slug.
      */
-    public function getCategoryBySlug(string $slug): ShopCategory
+    public function getCategoryBySlug(string $slug): Category
     {
-        return ShopCategory::visible()
+        return Category::visible()
             ->where('slug', $slug)
             ->firstOrFail();
     }
@@ -42,9 +43,9 @@ class ShopRepository
     /**
      * Get product by slug and category.
      */
-    public function getProductBySlug(string $slug, ShopCategory $category): ShopProduct
+    public function getProductBySlug(string $slug, Category $category): Product
     {
-        return ShopProduct::visible()
+        return Product::visible()
             ->where('slug', $slug)
             ->where('category_id', $category->id)
             ->firstOrFail();
@@ -53,9 +54,9 @@ class ShopRepository
     /**
      * Get direct child categories.
      */
-    public function childCategories(ShopCategory $category)
+    public function childCategories(Category $category)
     {
-        return ShopCategory::visible()
+        return Category::visible()
             ->where('parent_id', $category->id)
             ->orderBy('rank')
             ->orderBy('_lft')
@@ -65,9 +66,9 @@ class ShopRepository
     /**
      * Get category breadcrumbs by nested set keys.
      */
-    public function breadcrumbs(ShopCategory $category): array
+    public function breadcrumbs(Category $category): array
     {
-        return ShopCategory::visible()
+        return Category::visible()
             ->where('_lft', '<=', $category->_lft)
             ->where('_rgt', '>=', $category->_rgt)
             ->orderBy('_lft')
@@ -82,7 +83,7 @@ class ShopRepository
     /**
      * Prepare filter data from request.
      */
-    public function prepareFilters(ShopCategory $category, Request $request): array
+    public function prepareFilters(Category $category, Request $request): array
     {
         $filters = [
             'brand' => $request->query('brand'),
@@ -101,7 +102,7 @@ class ShopRepository
             return $filters;
         }
 
-        $shopParameters = ShopParameter::visible()
+        $shopParameters = Parameter::visible()
             ->whereIn('id', $parameterIds)
             ->orderBy('rank', 'desc')
             ->get()
@@ -202,9 +203,9 @@ class ShopRepository
             ->withQueryString();
     }
     /**/
-    public function productsByCategory(ShopCategory $category, array $filters = [])
+    public function productsByCategory(Category $category, array $filters = [])
     {
-        return ShopProduct::visible()
+        return Product::visible()
             ->where('category_id', $category->id)
             ->orderBy('price')
             ->paginate($this->paginate)
