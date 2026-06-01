@@ -23,13 +23,11 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
 
     public function index(Request $request, array $segments = [])
     {
-        $categoryList = $this->repository->mainCategories();
-
         if (!empty($segments)) {
-            $productSlugId = $segments[1] ?? null;
             $categorySlug = $segments[0] ?? null;
+            $productSlugId = $segments[1] ?? null;
 
-            if ($productSlugId && $categorySlug) {
+            if ($categorySlug && $productSlugId) {
                 return $this->product($categorySlug, $productSlugId, $request);
             }
 
@@ -37,13 +35,10 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
                 return $this->category($categorySlug, $request);
             }
         }
-        $page = (object) [
-            'title' => 'Shop',
-            'text' => null,
-        ];
 
-        $breadcrumbs = [];
-        return view('pages.shop.index', compact('categoryList', 'breadcrumbs','page'));
+        $categoryList = $this->repository->mainCategories();
+
+        return view('pages.shop.index', compact('categoryList'));
     }
 
     public function category(string $categorySlug, Request $request)
@@ -60,7 +55,6 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         ]);
 
         $breadcrumbs = $this->repository->breadcrumbs($category);
-
         $categoryList = $this->repository->childCategories($category);
 
         if ($categoryList->isNotEmpty()) {
@@ -111,13 +105,6 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         ]);
 
         $breadcrumbs = $this->repository->breadcrumbs($category);
-        $breadcrumbs[] = [
-            'name' => $product->title,
-            'url' => module_url(PageModule::SHOP, [
-                $category->slug,
-                $product->slug . '-' . $product->id,
-            ]),
-        ];
 
         return view('pages.shop.product', compact(
             'category',
