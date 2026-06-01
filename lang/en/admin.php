@@ -1,13 +1,10 @@
 <?php
 
+//Admin panel translations
+
 return [
 
-    /*
-    |--------------------------------------------------------------------------
-    | Admin panel translations
-    |--------------------------------------------------------------------------
-    */
-
+    // table names in the database
     'tables' => [
         'dashboard' => 'Dashboard',
         'feedback' => 'Feedback',
@@ -26,6 +23,7 @@ return [
         'users' => 'Users',
     ],
 
+    // fields & filters
     'fields' => [
         'article' => 'Article',
         'brand_id' => 'Brand',
@@ -86,10 +84,12 @@ return [
         'attachments' => 'Attachments',
         'status' => 'Status',
     ],
+    // messages
     'messages'=> [
         'delete_child_items_forbidden'=>'Delete child items first',
         'page_delete_forbidden'=>'System modules cannot be deleted',
     ],
+    // buttons & actions
     'actions' => [
         'save' => 'Save',
         'saveClose' => 'Save & Close',

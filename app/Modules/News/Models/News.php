@@ -8,19 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class News extends Model
 {
-    use HasVisibility;
-    use HasImage;
+    use HasVisibility; // for visibility on the website
+    use HasImage; // if there is an image
 
     protected $fillable = [
-        'title',
+        'published_at', // main field for sorting
+        'display', // related to HasVisibility
         'slug',
-        'short_text',
-        'text',
-        'img',
-        'display',
-        'published_at',
+        'img', // main image
+        'title',
         'meta_title',
         'meta_description',
+        'short_text',
+        'text',
     ];
 
     protected $casts = [
