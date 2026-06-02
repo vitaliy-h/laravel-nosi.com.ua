@@ -36,9 +36,31 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
             }
         }
 
-        $categoryList = $this->repository->mainCategories();
+        view()->share([
+            'meta_title' => 'Каталог',
+            'meta_description' => '',
+        ]);
 
-        return view('pages.shop.index', compact('categoryList'));
+        $categoryList = $this->repository->allCategories();
+
+        $products = $this->repository->productsByCategory();
+
+        $filters = [];
+        $breadcrumbs = [];
+
+        $category = (object)[
+            'title' => 'Каталог',
+            'text' => '',
+            'slug' => '',
+        ];
+
+        return view('pages.shop.category', compact(
+            'category',
+            'categoryList',
+            'products',
+            'filters',
+            'breadcrumbs'
+        ));
     }
 
     public function category(string $categorySlug, Request $request)
@@ -55,21 +77,16 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         ]);
 
         $breadcrumbs = $this->repository->breadcrumbs($category);
-        $categoryList = $this->repository->childCategories($category);
 
-        if ($categoryList->isNotEmpty()) {
-            return view('pages.shop.category-list', compact(
-                'category',
-                'categoryList',
-                'breadcrumbs'
-            ));
-        }
+        $categoryList = $this->repository->allCategories($category->id);
 
         $filters = $this->repository->prepareFilters($category, $request);
+
         $products = $this->repository->productsByCategory($category, $filters);
 
         return view('pages.shop.category', compact(
             'category',
+            'categoryList',
             'products',
             'filters',
             'breadcrumbs'
@@ -85,7 +102,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         }
 
         $productSlug = $matches[1];
-        $productId = (int) $matches[2];
+        $productId = (int)$matches[2];
 
         $product = $this->repository->getProductById($productId);
 
@@ -106,8 +123,11 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
 
         $breadcrumbs = $this->repository->breadcrumbs($category);
 
+        $categoryList = $this->repository->allCategories($category->id);
+
         return view('pages.shop.product', compact(
             'category',
+            'categoryList',
             'product',
             'breadcrumbs'
         ));

@@ -19,20 +19,11 @@
 
                     <div class="product-categories-widget widget-item">
                         <h3 class="widget-title">Categories</h3>
-
-                        <ul class="category-tree list-unstyled mb-0">
-                            @foreach($breadcrumbs as $breadcrumb)
-                                <li class="category-item">
-                                    <div class="d-flex justify-content-between align-items-center category-header">
-                                        <a href="{{ $breadcrumb['url'] }}" class="category-link">
-                                            {{ $breadcrumb['name'] }}
-                                        </a>
-                                    </div>
-                                </li>
-                            @endforeach
-                        </ul>
+                        @include('pages.shop.partials.category-tree', [
+                            'categories' => $categoryList,
+                            'level' => 0,
+                        ])
                     </div>
-
                     <div class="pricing-range-widget widget-item">
                         <h3 class="widget-title">Price Range</h3>
 
@@ -67,9 +58,6 @@
                                 </div>
                             </div>
 
-                            <div class="filter-actions mt-3">
-                                <button type="button" class="btn btn-sm btn-primary w-100">Apply Filter</button>
-                            </div>
                         </div>
                     </div>
 
@@ -92,6 +80,9 @@
                                         </label>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="filter-actions mt-3">
+                                <button type="button" class="btn btn-sm btn-primary w-100">Apply Filter</button>
                             </div>
 
                             <div class="brand-actions">

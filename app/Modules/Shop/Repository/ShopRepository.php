@@ -20,6 +20,48 @@ class ShopRepository
         return Category::visible()->get()->toTree();
     }
 
+
+    public function allCategories(?int $activeCategoryId = null)
+    {
+        $categories = Category::visible()
+            ->with('childrenRecursive')
+            ->whereNull('parent_id')
+            ->orderBy('rank')
+            ->orderBy('_lft')
+            ->get();
+
+        $openedIds = [];
+
+        if ($activeCategoryId) {
+            $activeCategory = Category::find($activeCategoryId);
+
+            if ($activeCategory) {
+                $openedIds = $activeCategory
+                    ->ancestors()
+                    ->pluck('id')
+                    ->toArray();
+            }
+        }
+
+        return $categories->map(function ($category) use ($activeCategoryId, $openedIds) {
+            return $this->markCategoryTree($category, $activeCategoryId, $openedIds);
+        });
+    }
+
+    private function markCategoryTree(Category $category, ?int $activeCategoryId, array $openedIds): Category
+    {
+        $category->_active = $category->id == $activeCategoryId ? 1 : 0;
+        $category->_opened = in_array($category->id, $openedIds) ? 1 : 0;
+
+        $category->childrenRecursive = $category->childrenRecursive->map(function ($child) use ($activeCategoryId, $openedIds) {
+            return $this->markCategoryTree($child, $activeCategoryId, $openedIds);
+        });
+
+        return $category;
+    }
+
+
+
     /**
      * Get top-level shop categories.
      */
@@ -213,11 +255,19 @@ class ShopRepository
             ->withQueryString();
     }
     /**/
-    public function productsByCategory(Category $category, array $filters = [])
+    public function productsByCategory(?Category $category = null, array $filters = [])
     {
-        return Product::visible()
-            ->where('category_id', $category->id)
-            ->with('brand')
+        $query = Product::visible()
+            ->with('brand');
+
+        if ($category) {
+            $categoryIds = Category::whereDescendantOrSelf($category)
+                ->pluck('id');
+
+            $query->whereIn('category_id', $categoryIds);
+        }
+
+        return $query
             ->orderBy('price')
             ->paginate($this->paginate)
             ->withQueryString();

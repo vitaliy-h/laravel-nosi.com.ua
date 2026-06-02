@@ -1,0 +1,48 @@
+@foreach($categories as $item)
+    @php
+        $children = $item->childrenRecursive ?? collect();
+        $hasChildren = $children->isNotEmpty();
+        $isActive = (int)($item->_active ?? 0) === 1;
+        $isOpened = (int)($item->_opened ?? 0) === 1;
+        $isExpanded = $isActive || $isOpened;
+        $collapseId = 'category-' . $item->id . '-children';
+    @endphp
+
+    <li class="category-item">
+        <div
+            class="d-flex justify-content-between align-items-center category-header {{ $hasChildren && !$isExpanded ? 'collapsed' : '' }}"
+            @if($hasChildren)
+                data-bs-toggle="collapse"
+            data-bs-target="#{{ $collapseId }}"
+            aria-expanded="{{ $isExpanded ? 'true' : 'false' }}"
+            aria-controls="{{ $collapseId }}"
+            @endif
+        >
+            <a
+                href="{{ module_url(\App\Modules\Core\Enums\PageModule::SHOP, $item->slug) }}"
+                class="subcategory-link {{ $isActive ? 'active' : '' }}"
+            >
+                {{ $item->title }}
+            </a>
+
+            @if($hasChildren)
+                <span class="category-toggle">
+                    <i class="bi bi-chevron-down"></i>
+                    <i class="bi bi-chevron-up"></i>
+                </span>
+            @endif
+        </div>
+
+        @if($hasChildren)
+            <ul
+                id="{{ $collapseId }}"
+                class="subcategory-list list-unstyled ps-3 mt-2 collapse {{ $isExpanded ? 'show' : '' }}"
+            >
+                @include('pages.shop.partials.category-tree-items', [
+                    'categories' => $children,
+                    'level' => $level + 1,
+                ])
+            </ul>
+        @endif
+    </li>
+@endforeach
