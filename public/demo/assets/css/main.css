@@ -11657,7 +11657,11 @@ section,
     padding: 0.4rem 0;
   }
 }
-
+.product-categories-widget .category-link.active,
+.product-categories-widget .subcategory-link.active {
+    color: var(--accent-color);
+    font-weight: 700;
+}
 .pricing-range-widget .price-range-container .current-range {
   font-size: 0.875rem;
   font-weight: 500;
