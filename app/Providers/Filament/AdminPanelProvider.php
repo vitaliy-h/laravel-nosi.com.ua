@@ -97,6 +97,21 @@ class AdminPanelProvider extends PanelProvider
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.users*')),
                             ]),
 
+                        NavigationGroup::make(__('admin.tables.geo'))
+                            ->items([
+                                NavigationItem::make(__('admin.tables.geo_countries'))
+                                    ->icon('heroicon-o-globe-alt')
+                                    ->url(\App\Filament\Resources\Geo\GeoCountries\GeoCountryResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.geo.geo-countries*')),
+                                NavigationItem::make(__('admin.tables.geo_regions'))
+                                    ->icon('heroicon-o-map')
+                                    ->url(\App\Filament\Resources\Geo\GeoRegions\GeoRegionResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.geo.geo-regions*')),
+                                NavigationItem::make(__('admin.tables.geo_cities'))
+                                    ->icon('heroicon-o-building-office-2')
+                                    ->url(\App\Filament\Resources\Geo\GeoCities\GeoCityResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.geo.geo-cities*')),
+                            ]),
                         NavigationGroup::make(__('admin.tables.logs'))
                             ->items([
                                 NavigationItem::make(__('admin.tables.logs'))

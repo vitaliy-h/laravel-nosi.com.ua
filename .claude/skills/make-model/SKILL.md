@@ -69,6 +69,13 @@ Modifiers parsed from the field definition:
 - `default:value` → `->default(value)` (string values quoted, boolean/numeric unquoted)
 - `unique` → `->unique()`
 
+**Auto-nullable rule:**
+Apply `->nullable()` automatically to any field that:
+- has no `default:` value specified, AND
+- is NOT one of the exempt fields: `rank`, `display`, `slug`, `created_at`, `updated_at`
+
+Exempt fields never get auto-nullable (they always have a meaningful default or are handled by Laravel). If user explicitly writes `nullable` on an exempt field, still apply it. User-specified `default:` on any field suppresses auto-nullable.
+
 **Image field handling:**
 When user mentions image(s) for a model (single image, multiple images, gallery, etc.):
 - Single image → field name `img`, DB type `string`, nullable
