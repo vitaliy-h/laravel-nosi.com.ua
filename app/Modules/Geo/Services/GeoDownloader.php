@@ -16,7 +16,7 @@ class GeoDownloader
 
     private function downloadPlain(string $type): void
     {
-        $url = config(".sources.$type");
+        $url = config("geo.sources.$type");
 
         $path = storage_path("app/public/geo/{$type}.xml");
 
