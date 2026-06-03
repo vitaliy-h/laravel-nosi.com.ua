@@ -33,17 +33,17 @@ class Category extends Model
     protected $casts = [
         'display' => 'boolean',
     ];
+    /*
+        protected $appends = [
+            '_active',
+            '_opened',
+        ];
 
-    protected $appends = [
-        '_active',
-        '_opened',
-    ];
-
-    protected $attributes = [
-        '_active' => 0,
-        '_opened' => 0,
-    ];
-
+        protected $attributes = [
+            '_active' => 0,
+            '_opened' => 0,
+        ];
+    /**/
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
@@ -53,7 +53,6 @@ class Category extends Model
     {
         return $this->hasMany(self::class, 'parent_id')
             ->visible()
-            ->orderBy('rank')
             ->orderBy('_lft')
             ->with('childrenRecursive');
     }

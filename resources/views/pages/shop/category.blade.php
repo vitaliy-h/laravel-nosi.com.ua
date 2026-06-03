@@ -61,6 +61,8 @@
                         </div>
                     </div>
 
+
+
                     <div class="brand-filter-widget widget-item">
                         <h3 class="widget-title">Filter by Brand</h3>
 

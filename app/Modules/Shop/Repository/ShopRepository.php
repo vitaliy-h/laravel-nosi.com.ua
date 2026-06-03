@@ -26,7 +26,6 @@ class ShopRepository
         $categories = Category::visible()
             ->with('childrenRecursive')
             ->whereNull('parent_id')
-            ->orderBy('rank')
             ->orderBy('_lft')
             ->get();
 
@@ -69,7 +68,6 @@ class ShopRepository
     {
         return Category::visible()
             ->whereNull('parent_id')
-            ->orderBy('rank')
             ->orderBy('_lft')
             ->get();
     }
@@ -110,7 +108,6 @@ class ShopRepository
     {
         return Category::visible()
             ->where('parent_id', $category->id)
-            ->orderBy('rank')
             ->orderBy('_lft')
             ->get();
     }
