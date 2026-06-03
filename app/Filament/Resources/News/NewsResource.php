@@ -4,6 +4,7 @@ namespace App\Filament\Resources\News;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\News\Pages\ManageNews;
+use App\Filament\Traits\HasSeoFields;
 use App\Modules\Core\Enums\PageModule;
 use App\Modules\News\Models\News;
 use Filament\Actions\BulkActionGroup;
@@ -25,6 +26,8 @@ use Filament\Tables\Table;
 
 class NewsResource extends Resource
 {
+    use HasSeoFields;
+
     protected static ?string $model = News::class;
 
     public static function form(Schema $schema): Schema
@@ -33,11 +36,8 @@ class NewsResource extends Resource
             ->columns(12)
             ->components([
                 TextInput::make('title')
-                    ->columnSpan(5)
+                    ->columnSpan(6)
                     ->required(),
-                TextInput::make('slug')
-                    ->columnSpan(3)
-                    ->unique(),
                 DateTimePicker::make('published_at')
                     ->columnSpan(3),
                 Toggle::make('display')
@@ -57,10 +57,7 @@ class NewsResource extends Resource
                     }),
                 RichEditor::make('text')
                     ->columnSpanFull(),
-                TextInput::make('meta_title')
-                    ->columnSpanFull(),
-                Textarea::make('meta_description')
-                    ->columnSpanFull(),
+                static::getSeoSection(),
 
             ]);
     }
@@ -95,7 +92,7 @@ class NewsResource extends Resource
             ->recordActions([
                 ViewAction::make()
                     ->iconButton()
-                    ->url(fn($record) => module_url(PageModule::NEWS,[$record->slug]))
+                    ->url(fn($record) => module_url(PageModule::NEWS, [$record->slug]))
                     ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),

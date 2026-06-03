@@ -2,18 +2,20 @@
 
 namespace App\Filament\Resources\Pages;
 
+use App\Filament\Actions\BaseCreateAction;
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Pages\Pages\ManagePages;
+use App\Filament\Traits\HasSeoFields;
 use App\Modules\Core\Enums\PageModule;
 use App\Modules\Core\Facades\UrlFacade;
 use App\Modules\Core\Models\Page;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
@@ -25,6 +27,8 @@ use Filament\Tables\Table;
 
 class PageResource extends Resource
 {
+    use HasSeoFields;
+
     protected static ?string $model = Page::class;
 
     public static function form(Schema $schema): Schema
@@ -34,18 +38,6 @@ class PageResource extends Resource
             ->components([
                 TextInput::make('title')
                     ->columnSpan(6)
-                    ->required()
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(function ($state, callable $set, callable $get, $record) {
-                        if ($record === null && empty($get('slug'))) {
-                            $set('slug', UrlFacade::slug($state));
-                        }
-                    }),
-                TextInput::make('slug')
-                    ->columnSpan(3)
-                    ->unique(ignoreRecord: true)
-                    ->afterStateUpdated(fn($state, callable $set) => $set('slug', UrlFacade::slug($state))
-                    )
                     ->required(),
                 TextInput::make('rank')
                     ->numeric()
@@ -60,7 +52,7 @@ class PageResource extends Resource
                     ->options(PageModule::options())
                     ->required()
                     ->default(PageModule::TEXT->value)
-                    ->disabled(fn($record) => $record !== null)
+                    ->disabled()
                     ->dehydrated(),
                 Toggle::make('display_menu')
                     ->columnSpan(3)
@@ -71,10 +63,7 @@ class PageResource extends Resource
 
                 RichEditor::make('text')
                     ->columnSpanFull(),
-                TextInput::make('meta_title')
-                    ->columnSpanFull(),
-                Textarea::make('meta_description')
-                    ->columnSpanFull(),
+                static::getSeoSection(true),
             ]);
     }
 
@@ -125,7 +114,7 @@ class PageResource extends Resource
                     ),
             ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
-                \Filament\Actions\CreateAction::make(),
+                CreateAction::make(),
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->action(function ($records) {

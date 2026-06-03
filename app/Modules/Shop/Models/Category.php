@@ -3,6 +3,7 @@
 namespace App\Modules\Shop\Models;
 
 use App\Modules\Core\Traits\Models\HasImage;
+use App\Modules\Core\Traits\Models\HasSeoFields;
 use App\Modules\Core\Traits\Models\HasVisibility;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,6 +14,7 @@ class Category extends Model
     use HasVisibility;
     use HasImage;
     use NodeTrait;
+    use HasSeoFields;
 
     protected $table = 'shop_categories';
 

@@ -36,6 +36,7 @@ Read the model file. Extract:
 - Presence of specific fields: `img`, `title`, `name`, `slug`, `rank`, `display`,
   `published_at` (or any `*_at` timestamp), `meta_title`, `meta_description`,
   `text`, `body`, `short_text`
+- **SEO mode**: active when model has ANY of `slug`, `meta_title`, `meta_description`
 
 ### Step 2 — Confirm plan
 
@@ -158,34 +159,24 @@ Structure: `->columns(12)` always.
 
 **Row 1 — identity & control fields** (always together in this order):
 
-- `TextInput::make('title')` or `name` if no `title`
-    - If `slug` exists, add auto-slug logic:
-      ```php
-      TextInput::make('title')
-          ->columnSpan({title_span})
-          ->required()
-          ->live(onBlur: true)
-          ->afterStateUpdated(function ($state, callable $set, callable $get, $record) {
-              if ($record === null && empty($get('slug'))) {
-                  $set('slug', \App\Modules\Core\Facades\UrlFacade::slug($state));
-              }
-          }),
-      ```
-- `TextInput::make('slug')->columnSpan(3)->unique(ignoreRecord: true)` — if exists
+- `TextInput::make('title')` or `name` if no `title` — no `->live()` / `->afterStateUpdated()` (slug handled by `HasSeoFields` when in SEO mode):
+  ```php
+  TextInput::make('title')
+      ->columnSpan({title_span})
+      ->required(),
+  ```
 - `TextInput::make('rank')->numeric()->columnSpan(2)->default(1)` — if exists
 - `Toggle::make('display')->columnSpan(2)->inline(false)->default(true)` — if exists
 
 **Row 1 columnSpan rule — title/name field MUST fill remaining space:**
 
 Calculate fixed spans of other Row 1 fields:
-- `slug` present → +3
 - `rank` present → +2
 - `display` present → +2
 
 `title_span = 12 − (sum of other Row 1 field spans)`
 
-Example: `slug`+`rank`+`display` → 3+2+2=7 → title gets `->columnSpan(5)`.
-Example: `rank`+`display` only → 2+2=4 → title gets `->columnSpan(8)`.
+Example: `rank`+`display` → 2+2=4 → title gets `->columnSpan(8)`.
 Example: `display` only → 2 → title gets `->columnSpan(10)`.
 Example: no other fields → title gets `->columnSpan(12)`.
 
@@ -242,11 +233,10 @@ FileUpload::make('img')
 - `short_text`: `Textarea::make('short_text')->columnSpan(6),`
 - `text` / `body`: `RichEditor::make('text')->columnSpanFull(),`
 
-**Row 7 — meta fields** (always last, if present):
+**Row 7 — SEO / meta fields** (always last, if SEO mode active):
 
 ```php
-TextInput::make('meta_title')->columnSpanFull(),
-Textarea::make('meta_description')->columnSpanFull(),
+static::getSeoSection(),
 ```
 
 #### Translation labels
@@ -277,6 +267,8 @@ After artisan generates the file, ensure:
     - `use Filament\Tables\Columns\{ImageColumn, TextColumn, TextInputColumn, ToggleColumn};`
     - `use Filament\Forms\Components\{FileUpload, RichEditor, Select, Textarea, TextInput, Toggle, DateTimePicker};`
     - All Enum and Model imports used
+    - **SEO mode only**: `use App\Filament\Traits\HasSeoFields;`
+5. **SEO mode only**: add `use HasSeoFields;` inside the resource class body (after the opening brace, before `$model`)
 
 ### Step 7 — Add navigation to AdminPanelProvider
 
@@ -350,7 +342,7 @@ Print:
 | Field              | Component                | columnSpan |
 |--------------------|--------------------------|------------|
 | `title` / `name`   | `TextInput`              | 12 − (sum of other Row 1 spans) |
-| `slug`             | `TextInput`              | 3          |
+| `slug`             | via `getSeoSection()` (SEO mode)  | —          |
 | `rank`             | `TextInput->numeric()`   | 2          |
 | `display`          | `Toggle->inline(false)`  | 2          |
 | `*_at` datetime    | `DateTimePicker`         | 4          |
@@ -361,8 +353,8 @@ Print:
 | other string       | `TextInput`              | 4          |
 | `short_text`       | `Textarea`               | 6          |
 | `text` / `body`    | `RichEditor`             | Full       |
-| `meta_title`       | `TextInput`              | Full       |
-| `meta_description` | `Textarea`               | Full       |
+| `meta_title`       | via `getSeoSection()` (SEO mode)  | — |
+| `meta_description` | via `getSeoSection()` (SEO mode)  | — |
 
 ### File paths
 

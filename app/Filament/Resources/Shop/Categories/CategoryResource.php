@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Shop\Categories;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Shop\Categories\Pages\ManageCategories;
+use App\Filament\Traits\HasSeoFields;
 use App\Modules\Shop\Models\Category;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
@@ -26,6 +27,7 @@ use Filament\Forms\Components\Select;
 
 class CategoryResource extends Resource
 {
+    use HasSeoFields;
     protected static ?string $model = Category::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
@@ -36,11 +38,8 @@ class CategoryResource extends Resource
             ->columns(12)
             ->components([
                 TextInput::make('title')
-                    ->columnSpan(4)
+                    ->columnSpan(6)
                     ->required(),
-                TextInput::make('slug')
-                    ->required()
-                    ->columnSpan(4),
                 /*
                 TextInput::make('rank')
                     ->required()
@@ -50,7 +49,8 @@ class CategoryResource extends Resource
                 */
                 Toggle::make('display')
                     ->default(true)
-                    ->inline(false),
+                    ->inline(false)
+                    ->columnSpan(6),
                 Select::make('parent_id')
                     ->options(
                         Category::defaultOrder()
@@ -70,7 +70,7 @@ class CategoryResource extends Resource
                     ->searchable()
                     ->preload()
                     ->nullable()
-                    ->columnSpan(4),
+                    ->columnSpan(6),
                 Select::make('_position_id')
                     ->options(function (callable $get, $record) {
                         $parentId = $get('parent_id');
@@ -94,7 +94,7 @@ class CategoryResource extends Resource
                     ->preload()
                     ->live()
                     ->nullable()
-                    ->columnSpan(4),
+                    ->columnSpan(6),
 
                 FileUpload::make('img')
                     ->image()
@@ -109,10 +109,7 @@ class CategoryResource extends Resource
 
                 RichEditor::make('text')
                     ->columnSpanFull(),
-                TextInput::make('meta_title')
-                    ->columnSpanFull(),
-                Textarea::make('meta_description')
-                    ->columnSpanFull(),
+                static::getSeoSection(),
 
             ]);
     }

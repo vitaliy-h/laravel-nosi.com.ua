@@ -3,12 +3,14 @@
 namespace App\Modules\Shop\Models;
 
 use App\Modules\Core\Traits\Models\HasImage;
+use App\Modules\Core\Traits\Models\HasSeoFields;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Brand extends Model
 {
     use HasImage;
+    use HasSeoFields;
 
     protected $table = 'shop_brands';
 

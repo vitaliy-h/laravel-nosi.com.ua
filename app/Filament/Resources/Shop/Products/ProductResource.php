@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Shop\Products;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
+use App\Filament\Traits\HasSeoFields;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
@@ -28,6 +29,7 @@ use Filament\Tables\Table;
 
 class ProductResource extends Resource
 {
+    use HasSeoFields;
     protected static ?string $model = Product::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
@@ -38,10 +40,8 @@ class ProductResource extends Resource
             ->columns(12)
             ->components([
                 TextInput::make('title')
-                    ->columnSpan(5)
+                    ->columnSpan(8)
                     ->required(),
-                TextInput::make('slug')
-                    ->columnSpan(3),
                 TextInput::make('rank')
                     ->numeric()
                     ->columnSpan(2)
@@ -93,10 +93,7 @@ class ProductResource extends Resource
 
                 RichEditor::make('text')
                     ->columnSpanFull(),
-                TextInput::make('meta_title')
-                    ->columnSpanFull(),
-                Textarea::make('meta_description')
-                    ->columnSpanFull(),
+                static::getSeoSection(),
             ]);
     }
 

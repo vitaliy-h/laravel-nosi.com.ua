@@ -3,12 +3,14 @@
 namespace App\Modules\Core\Models;
 
 use App\Modules\Core\Enums\PageModule;
+use App\Modules\Core\Traits\Models\HasSeoFields;
 use App\Modules\Core\Traits\Models\HasVisibility;
 use Illuminate\Database\Eloquent\Model;
 
 class Page extends Model
 {
     use HasVisibility;
+    use HasSeoFields;
 
     protected $fillable = [
         'title',
@@ -21,6 +23,7 @@ class Page extends Model
         'display_menu_footer',
         'meta_title',
         'meta_description',
+        'is_indexable',
     ];
 
     protected $casts = [

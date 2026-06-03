@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Shop\Brands;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Shop\Brands\Pages\ManageBrands;
+use App\Filament\Traits\HasSeoFields;
 use App\Modules\Shop\Models\Brand;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
@@ -24,6 +25,7 @@ use Filament\Tables\Table;
 
 class BrandResource extends Resource
 {
+    use HasSeoFields;
     protected static ?string $model = Brand::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
@@ -35,10 +37,7 @@ class BrandResource extends Resource
             ->components([
                 TextInput::make('title')
                     ->required()
-                    ->columnSpan(5),
-                TextInput::make('slug')
-                    ->required()
-                    ->columnSpan(3),
+                    ->columnSpan(8),
                 TextInput::make('rank')
                     ->numeric()
                     ->columnSpan(2)
@@ -60,10 +59,7 @@ class BrandResource extends Resource
 
                 RichEditor::make('text')
                     ->columnSpanFull(),
-                TextInput::make('meta_title')
-                    ->columnSpanFull(),
-                Textarea::make('meta_description')
-                    ->columnSpanFull(),
+                static::getSeoSection(),
 
             ]);
     }

@@ -97,6 +97,8 @@ return [
         'error_message' => 'Error message',
         'attachments' => 'Attachments',
         'status' => 'Status',
+        'generate_seo' => 'Generate SEO fields',
+        'is_indexable' => 'Is indexable',
     ],
     // messages
     'messages'=> [

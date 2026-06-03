@@ -3,6 +3,7 @@
 namespace App\Modules\Shop\Models;
 
 use App\Modules\Core\Traits\Models\HasImage;
+use App\Modules\Core\Traits\Models\HasSeoFields;
 use App\Modules\Core\Traits\Models\HasVisibility;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,6 +11,7 @@ class Product extends Model
 {
     use HasVisibility;
     use HasImage;
+    use HasSeoFields;
 
     protected $table = 'shop_products';
 

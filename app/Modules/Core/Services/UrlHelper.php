@@ -17,7 +17,7 @@ class UrlHelper
     /**
      * Normalize raw URL string (trim + clean slashes).
      */
-    public function normalize(string $url): string
+    public function normalize(?string $url = ''): string
     {
         $url = trim($url);
 
@@ -27,7 +27,7 @@ class UrlHelper
     /**
      * Normalize URL for usage in links (/path/to/page).
      */
-    public function normalizeForLink(string $url): string
+    public function normalizeForLink(?string $url = ''): string
     {
         $url = $this->normalize($url);
 

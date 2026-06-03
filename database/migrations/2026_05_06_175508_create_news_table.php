@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->timestamp('published_at')->nullable();
             $table->boolean('display')->default(true);
             $table->string('title')->nullable();
-            $table->string('slug')->unique();
+            $table->string('slug')->unique()->nullable();
             $table->string('img')->nullable();
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();

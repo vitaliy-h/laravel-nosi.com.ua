@@ -3,6 +3,7 @@
 namespace App\Modules\News\Models;
 
 use App\Modules\Core\Traits\Models\HasImage;
+use App\Modules\Core\Traits\Models\HasSeoFields;
 use App\Modules\Core\Traits\Models\HasVisibility;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,6 +11,7 @@ class News extends Model
 {
     use HasVisibility; // for visibility on the website
     use HasImage; // if there is an image
+    use HasSeoFields;
 
     protected $fillable = [
         'published_at', // main field for sorting

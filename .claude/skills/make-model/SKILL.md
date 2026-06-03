@@ -175,6 +175,7 @@ Set in the model file:
 - `protected $casts = [...]` — booleans → `'boolean'`, timestamps/dates → `'datetime'`/`'date'`, json → `'array'`, enum fields → `{EnumClassName}::class` (with use import at top)
 - If fields contain `display`: add `use HasVisibility;` inside the class body and `use App\Modules\Core\Traits\Models\HasVisibility;` to the top-level imports
 - If fields contain `img` or `imgs` (or both): add `use HasImage;` inside the class body and `use App\Modules\Core\Traits\Models\HasImage;` to the top-level imports; add `$imgFields` / `$imgArrayFields` overrides per image-field rules in Step 3
+- If fields contain any of `slug`, `meta_title`, `meta_description`: add `use HasSeoFields;` inside the class body and `use App\Modules\Core\Traits\Models\HasSeoFields;` to the top-level imports
 
 ### Step 8 — Summary
 

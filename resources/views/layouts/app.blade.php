@@ -6,6 +6,10 @@
     <title>{{ $meta_title ?? config('app.name') }}</title>
     <meta name="description" content="{{$meta_description ?? ''}}">
 
+    @if($page && !$page->is_indexable)
+        <meta name="robots" content="noindex, nofollow">
+    @endif
+
     <!-- Favicons -->
     <link href="/demo/assets/img/favicon.png" rel="icon">
     <link href="/demo/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
