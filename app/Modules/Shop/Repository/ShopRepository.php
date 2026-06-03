@@ -3,6 +3,7 @@
 namespace App\Modules\Shop\Repository;
 
 use App\Modules\Core\Enums\PageModule;
+use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Parameter;
 use App\Modules\Shop\Models\Product;
@@ -11,15 +12,6 @@ use Illuminate\Http\Request;
 class ShopRepository
 {
     private int $paginate = 10;
-
-    /**
-     * Get shop categories tree.
-     */
-    public function getTree()
-    {
-        return Category::visible()->get()->toTree();
-    }
-
 
     public function allCategories(?int $activeCategoryId = null)
     {
@@ -55,33 +47,19 @@ class ShopRepository
         $category->childrenRecursive = $category->childrenRecursive->map(function ($child) use ($activeCategoryId, $openedIds) {
             return $this->markCategoryTree($child, $activeCategoryId, $openedIds);
         });
-
+        $category->products_count = Product::visible()
+            ->whereIn('category_id', Category::whereDescendantOrSelf($category)->pluck('id'))
+            ->count();
         return $category;
     }
 
-
-
-    /**
-     * Get top-level shop categories.
-     */
-    public function mainCategories()
-    {
-        return Category::visible()
-            ->whereNull('parent_id')
-            ->orderBy('_lft')
-            ->get();
-    }
-
-    public function getProductById(int $id)
+    public function getProductById(int $id): Product
     {
         return Product::query()
             ->where('id', $id)
             ->firstOrFail();
     }
 
-    /**
-     * Get category by slug.
-     */
     public function getCategoryBySlug(string $slug): Category
     {
         return Category::visible()
@@ -89,32 +67,6 @@ class ShopRepository
             ->firstOrFail();
     }
 
-    /**
-     * Get product by slug and category.
-     */
-    public function getProductBySlug(string $slug, Category $category): Product
-    {
-        return Product::visible()
-            ->where('slug', $slug)
-            ->where('category_id', $category->id)
-            ->with('brand')
-            ->firstOrFail();
-    }
-
-    /**
-     * Get direct child categories.
-     */
-    public function childCategories(Category $category)
-    {
-        return Category::visible()
-            ->where('parent_id', $category->id)
-            ->orderBy('_lft')
-            ->get();
-    }
-
-    /**
-     * Get category breadcrumbs by nested set keys.
-     */
     public function breadcrumbs(Category $category): array
     {
         return Category::visible()
@@ -129,130 +81,119 @@ class ShopRepository
             ->toArray();
     }
 
-    /**
-     * Prepare filter data from request.
-     */
-    public function prepareFilters(Category $category, Request $request): array
+    public function prepareFilter(?Category $category, Request $request): array
     {
-        $filters = [
-            'brand' => $request->query('brand'),
-            'price' => $request->query('price'),
+        $filter = [
+            'categories' => [
+                'key' => 'categories',
+                'type' => 'tree',
+                'data' => $this->allCategories($category?->id),
+            ],
+
+            'brand' => [
+                'key' => 'brand',
+                'type' => 'in',
+                'value' => $request->query('brand'),
+                'data' => collect(),
+            ],
+
+            'price' => [
+                'key' => 'price',
+                'type' => 'range',
+                'from' => $request->query('price_from'),
+                'to' => $request->query('price_to'),
+                'data' => [
+                    'min' => 0,
+                    'max' => 0,
+                ],
+            ],
+
+            /*
             'parameters' => [],
             'shop_parameters' => collect(),
+            */
         ];
 
-        if (!$category->parameters) {
-            return $filters;
+        /*
+        if ($category && !empty($category->parameters)) {
+            $parameterIds = $this->getFilterableParameterIds($category->parameters);
+
+            if (!empty($parameterIds)) {
+                $shopParameters = Parameter::visible()
+                    ->whereIn('id', $parameterIds)
+                    ->orderBy('rank', 'desc')
+                    ->get()
+                    ->keyBy('id');
+
+                foreach ($shopParameters as $parameter) {
+                    $key = 'p' . $parameter->id;
+
+                    $filter['parameters'][$parameter->id] = [
+                        'key' => $key,
+                        'type' => $this->getParameterFilterType($parameter),
+                        'value' => $request->query($key),
+                        'data' => [],
+                    ];
+                }
+
+                $filter['shop_parameters'] = $shopParameters;
+            }
         }
+        */
 
-        $parameterIds = $this->getFilterableParameterIds($category->parameters);
+        $filter['brand']['data'] = $this->prepareBrandFilter($category, $filter);
+        $filter['price']['data'] = $this->prepareRangeFilter($category, $filter, $filter['price']);
 
-        if (empty($parameterIds)) {
-            return $filters;
+        /*
+        foreach ($filter['parameters'] ?? [] as $parameterFilter) {
+            if (($parameterFilter['type'] ?? null) === 'range') {
+                $filter['parameters'][$parameterFilter['key']]['data'] = $this->prepareRangeFilter($category, $filter, $parameterFilter);
+            }
         }
+        */
 
-        $shopParameters = Parameter::visible()
-            ->whereIn('id', $parameterIds)
-            ->orderBy('rank', 'desc')
-            ->get()
-            ->keyBy('id');
-
-        foreach ($shopParameters as $parameter) {
-            $filters['parameters'][$parameter->id] = $request->query('p' . $parameter->id);
-        }
-
-        $filters['shop_parameters'] = $shopParameters;
-
-        return $filters;
+        return $filter;
     }
 
-    /**
-     * Get products by category with filters.
-     */
-    /*
-    public function productsByCategory(ShopCategory $category, array $filters)
+    public function productsByCategory(?Category $category = null, array $filter = [])
     {
-        $query = ShopProduct::visible()
-            ->where('category', $category->id);
-
-        // Brand filter.
-        if (!empty($filters['brand'])) {
-            $brandIds = $this->stringToIntArray($filters['brand']);
-
-            if (!empty($brandIds)) {
-                $query->whereIn('brand', $brandIds);
-            }
-        }
-
-        // Price filter. Expected format: min-max.
-        if (!empty($filters['price'])) {
-            [$min, $max] = array_pad(explode('-', $filters['price']), 2, 0);
-
-            if ((int) $min > 0) {
-                $query->where('price', '>=', (int) $min);
-            }
-
-            if ((int) $max > 0) {
-                $query->where('price', '<=', (int) $max);
-            }
-        }
-
-        // Dynamic parameter filters.
-        foreach ($filters['shop_parameters'] as $parameter) {
-            $value = $filters['parameters'][$parameter->id] ?? null;
-
-            if ($value === null || $value === '') {
-                continue;
-            }
-
-            $field = 'p' . $parameter->id;
-
-            // Select.
-            if ((int) $parameter->type === 1) {
-                $ids = $this->stringToIntArray($value);
-
-                if (!empty($ids)) {
-                    $query->whereIn($field, $ids);
-                }
-            }
-
-            // Number from-to. Expected format: min-max.
-            elseif ((int) $parameter->type === 2) {
-                [$min, $max] = array_pad(explode('-', $value), 2, 0);
-
-                if ((int) $min > 0) {
-                    $query->where($field, '>=', (int) $min);
-                }
-
-                if ((int) $max > 0) {
-                    $query->where($field, '<=', (int) $max);
-                }
-            }
-
-            // Boolean.
-            elseif ((int) $parameter->type === 3) {
-                $query->where($field, (int) $value);
-            }
-
-            // Multi checkbox stored as comma-separated values.
-            elseif ((int) $parameter->type === 4) {
-                $ids = $this->stringToIntArray($value);
-
-                $query->where(function ($q) use ($ids, $field) {
-                    foreach ($ids as $id) {
-                        $q->orWhereRaw("FIND_IN_SET(?, {$field})", [$id]);
-                    }
-                });
-            }
-        }
-
-        return $query
+        return $this->buildProductsQuery($category, $filter)
             ->orderBy('price')
             ->paginate($this->paginate)
             ->withQueryString();
     }
-    /**/
-    public function productsByCategory(?Category $category = null, array $filters = [])
+
+    private function prepareBrandFilter(?Category $category = null, array $filter = [])
+    {
+        $query = $this->buildProductsQuery($category, $filter, 'brand');
+
+        $brandCounts = $query
+            ->selectRaw('brand_id, COUNT(*) as total')
+            ->whereNotNull('brand_id')
+            ->groupBy('brand_id')
+            ->pluck('total', 'brand_id');
+
+        return Brand::query()
+            ->whereIn('id', $brandCounts->keys())
+            ->orderBy('title')
+            ->get()
+            ->map(function ($brand) use ($brandCounts) {
+                $brand->products_count = $brandCounts[$brand->id] ?? 0;
+                return $brand;
+            });
+    }
+
+    private function prepareRangeFilter(?Category $category, array $filter, array $currentFilter): array
+    {
+        $query = $this->buildProductsQuery($category, $filter, $currentFilter['key']);
+
+        return [
+            'min' => (float)((clone $query)->min($currentFilter['key']) ?? 0),
+            'max' => (float)((clone $query)->max($currentFilter['key']) ?? 0),
+        ];
+    }
+
+    private function buildProductsQuery(?Category $category = null, array $filter = [], ?string $except = null)
     {
         $query = Product::visible()
             ->with('brand');
@@ -264,15 +205,113 @@ class ShopRepository
             $query->whereIn('category_id', $categoryIds);
         }
 
-        return $query
-            ->orderBy('price')
-            ->paginate($this->paginate)
-            ->withQueryString();
+        foreach ($filter as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+
+            if (($item['key'] ?? null) === $except) {
+                continue;
+            }
+
+            $this->applyFilter($query, $item);
+        }
+
+        /*
+        foreach ($filter['parameters'] ?? [] as $item) {
+            if (($item['key'] ?? null) === $except) {
+                continue;
+            }
+
+            $this->applyFilter($query, $item);
+        }
+        */
+
+        return $query;
     }
 
-    /**
-     * Extract filterable parameter IDs from serialized category parameters.
-     */
+    private function applyFilter($query, ?array $filter): void
+    {
+        if (!$filter) {
+            return;
+        }
+
+        $key = $filter['key'] ?? null;
+        $type = $filter['type'] ?? null;
+        $value = $filter['value'] ?? null;
+
+        if (!$key || !$type || $type === 'tree') {
+            return;
+        }
+
+        if ($type === 'range') {
+            $from = $filter['from'] ?? null;
+            $to = $filter['to'] ?? null;
+
+            if ($from !== null && $from !== '') {
+                $query->where($key, '>=', (float)$from);
+            }
+
+            if ($to !== null && $to !== '') {
+                $query->where($key, '<=', (float)$to);
+            }
+
+            return;
+        }
+
+        if ($value === null || $value === '') {
+            return;
+        }
+
+        if ($type === 'in') {
+            $ids = $this->stringToIntArray($value);
+
+            if (!empty($ids)) {
+                $query->whereIn($key === 'brand' ? 'brand_id' : $key, $ids);
+            }
+
+            return;
+        }
+
+        if ($type === 'equal' || $type === 'boolean') {
+            $query->where($key, (int)$value);
+            return;
+        }
+
+        if ($type === 'min') {
+            $query->where($key, '>=', (float)$value);
+            return;
+        }
+
+        if ($type === 'max') {
+            $query->where($key, '<=', (float)$value);
+            return;
+        }
+
+        if ($type === 'find_in_set') {
+            $ids = $this->stringToIntArray($value);
+
+            if (!empty($ids)) {
+                $query->where(function ($q) use ($ids, $key) {
+                    foreach ($ids as $id) {
+                        $q->orWhereRaw("FIND_IN_SET(?, {$key})", [$id]);
+                    }
+                });
+            }
+        }
+    }
+
+    private function getParameterFilterType(Parameter $parameter): string
+    {
+        return match ((int)$parameter->type) {
+            1 => 'in',
+            2 => 'range',
+            3 => 'boolean',
+            4 => 'find_in_set',
+            default => 'equal',
+        };
+    }
+
     private function getFilterableParameterIds(?string $parameters): array
     {
         $data = @unserialize($parameters);
@@ -292,11 +331,20 @@ class ShopRepository
         return $ids;
     }
 
-    /**
-     * Convert comma-separated string to integer array.
-     */
-    private function stringToIntArray(string $value): array
+    private function stringToIntArray(string|array|null $value): array
     {
+        if (is_array($value)) {
+            return collect($value)
+                ->map(fn($item) => (int)$item)
+                ->filter(fn($item) => $item > 0)
+                ->values()
+                ->toArray();
+        }
+
+        if (!$value) {
+            return [];
+        }
+
         return collect(explode(',', $value))
             ->map(fn($item) => (int)$item)
             ->filter(fn($item) => $item > 0)
