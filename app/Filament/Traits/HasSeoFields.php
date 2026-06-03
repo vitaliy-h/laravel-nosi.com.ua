@@ -13,11 +13,13 @@ trait HasSeoFields
     {
         $schema = [
             Toggle::make('generate_seo')
-                ->label(__('admin.fields.generate_seo'))
+                ->columnSpan(3)
+                ->inline(false)
                 ->default(fn (string $operation) => $operation === 'create')
                 ->dehydrated(),
 
             TextInput::make('slug')
+                ->columnSpan(9)
                 ->unique(ignoreRecord: true)
                 ->maxLength(255),
 
@@ -33,11 +35,13 @@ trait HasSeoFields
 
         if ($hasIndexable) {
             $schema[] = Toggle::make('is_indexable')
+                ->columnSpan(12)
                 ->default(true);
         }
 
         return Section::make('SEO')
             ->schema($schema)
+            ->columns(12)
             ->collapsed()
             ->collapsible()
             ->columnSpanFull();
