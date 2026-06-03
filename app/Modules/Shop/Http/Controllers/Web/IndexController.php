@@ -41,24 +41,22 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
             'meta_description' => '',
         ]);
 
-        $categoryList = $this->repository->allCategories();
-
-        $products = $this->repository->productsByCategory();
-
-        $filters = [];
-        $breadcrumbs = [];
-
         $category = (object)[
             'title' => 'Каталог',
             'text' => '',
             'slug' => '',
         ];
 
+        $breadcrumbs = [];
+
+        $filter = $this->repository->prepareFilter(null, $request);
+        //dd($filter);
+        $products = $this->repository->productsByCategory(null, $filter);
+
         return view('pages.shop.category', compact(
             'category',
-            'categoryList',
             'products',
-            'filters',
+            'filter',
             'breadcrumbs'
         ));
     }
@@ -78,17 +76,13 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
 
         $breadcrumbs = $this->repository->breadcrumbs($category);
 
-        $categoryList = $this->repository->allCategories($category->id);
-
-        $filters = $this->repository->prepareFilters($category, $request);
-
-        $products = $this->repository->productsByCategory($category, $filters);
+        $filter = $this->repository->prepareFilter($category, $request);
+        $products = $this->repository->productsByCategory($category, $filter);
 
         return view('pages.shop.category', compact(
             'category',
-            'categoryList',
             'products',
-            'filters',
+            'filter',
             'breadcrumbs'
         ));
     }
@@ -122,13 +116,12 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         ]);
 
         $breadcrumbs = $this->repository->breadcrumbs($category);
-
-        $categoryList = $this->repository->allCategories($category->id);
+        $filter = $this->repository->prepareFilter($category, $request);
 
         return view('pages.shop.product', compact(
             'category',
-            'categoryList',
             'product',
+            'filter',
             'breadcrumbs'
         ));
     }

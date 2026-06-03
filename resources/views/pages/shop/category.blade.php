@@ -16,83 +16,187 @@
 
             <div class="col-lg-4 sidebar">
                 <div class="widgets-container">
+                    <form method="GET" action="{{ url()->current() }}">
 
-                    <div class="product-categories-widget widget-item">
-                        <h3 class="widget-title">Categories</h3>
-                        @include('pages.shop.partials.category-tree', [
-                            'categories' => $categoryList,
-                            'level' => 0,
-                        ])
-                    </div>
-                    <div class="pricing-range-widget widget-item">
-                        <h3 class="widget-title">Price Range</h3>
+                        <div class="product-categories-widget widget-item">
+                            <h3 class="widget-title">Categories</h3>
+                            @include('pages.shop.partials.category-tree', [
+                                'categories' => $filter['categories']['data'],
+                                'level' => 0,
+                            ])
+                        </div>
+                        @php
+                            $priceFilter = $filter['price'] ?? [];
+                            $priceData = $priceFilter['data'] ?? [];
 
-                        <div class="price-range-container">
-                            <div class="current-range mb-3">
-                                <span class="min-price">$0</span>
-                                <span class="max-price float-end">$500</span>
-                            </div>
+                            $priceMin = (float)($priceData['min'] ?? 0);
+                            $priceMax = (float)($priceData['max'] ?? 0);
 
-                            <div class="range-slider">
-                                <div class="slider-track"></div>
-                                <div class="slider-progress" style="left: 0%; width: 50%;"></div>
-                                <input type="range" class="min-range" min="0" max="1000" value="0" step="10">
-                                <input type="range" class="max-range" min="0" max="1000" value="500" step="10">
-                            </div>
+                            $priceFromGet = $priceFilter['from'] ?? $priceMin;
+                            $priceToGet = $priceFilter['to'] ?? $priceMax;
 
-                            <div class="price-inputs mt-3">
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <div class="input-group input-group-sm">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" class="form-control min-price-input" placeholder="Min" value="0">
+                            $priceFromSlider = max($priceMin, min((float)$priceFromGet, $priceMax));
+                            $priceToSlider = max($priceMin, min((float)$priceToGet, $priceMax));
+
+                            if ($priceFromSlider > $priceToSlider) {
+                                $priceFromSlider = $priceMin;
+                                $priceToSlider = $priceMax;
+                            }
+                        @endphp
+                        <div class="pricing-range-widget widget-item">
+                            <h3 class="widget-title">Price Range</h3>
+
+                            <div class="price-range-container">
+                                <div class="current-range mb-3">
+                                    <span class="min-price">{{ $priceFromSlider }}</span>
+                                    <span class="max-price float-end">{{ $priceToSlider }}</span>
+                                </div>
+
+                                <div class="range-slider">
+                                    <div class="slider-track"></div>
+                                    <div class="slider-progress"></div>
+
+                                    <input
+                                        type="range"
+                                        name=""
+                                        class="min-range"
+                                        min="{{ $priceMin }}"
+                                        max="{{ $priceMax }}"
+                                        value="{{ $priceFromSlider }}"
+                                        step="1"
+                                    >
+
+                                    <input
+                                        type="range"
+                                        name=""
+                                        class="max-range"
+                                        min="{{ $priceMin }}"
+                                        max="{{ $priceMax }}"
+                                        value="{{ $priceToSlider }}"
+                                        step="1"
+                                    >
+                                </div>
+
+                                <div class="price-inputs mt-3">
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text">₴</span>
+                                                <input
+                                                    type="number"
+                                                    data-name="price_from"
+                                                    class="form-control min-price-input"
+                                                    value="{{ $priceFromGet }}"
+                                                    {{ request()->has('price_from') ? 'name=price_from' : '' }}
+                                                >
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-6">
-                                        <div class="input-group input-group-sm">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" class="form-control max-price-input" placeholder="Max" value="500">
+                                        <div class="col-6">
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text">₴</span>
+                                                <input
+                                                    type="number"
+                                                    data-name="price_to"
+                                                    class="form-control max-price-input"
+                                                    value="{{ $priceToGet }}"
+                                                    {{ request()->has('price_to') ? 'name=price_to' : '' }}
+                                                >
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
+                            </div>
                         </div>
-                    </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                document.querySelectorAll('.pricing-range-widget').forEach(function (widget) {
+                                    const minRange = widget.querySelector('.min-range');
+                                    const maxRange = widget.querySelector('.max-range');
+                                    const minInput = widget.querySelector('.min-price-input');
+                                    const maxInput = widget.querySelector('.max-price-input');
 
+                                    function activatePriceFilter() {
+                                        minInput.name = minInput.dataset.name;
+                                        maxInput.name = maxInput.dataset.name;
+                                    }
 
+                                    minRange.addEventListener('input', function () {
+                                        activatePriceFilter();
+                                        minInput.value = minRange.value;
+                                    });
 
-                    <div class="brand-filter-widget widget-item">
-                        <h3 class="widget-title">Filter by Brand</h3>
+                                    maxRange.addEventListener('input', function () {
+                                        activatePriceFilter();
+                                        maxInput.value = maxRange.value;
+                                    });
 
-                        <div class="brand-filter-content">
-                            <div class="brand-search">
-                                <input type="text" class="form-control" placeholder="Search brands...">
-                                <i class="bi bi-search"></i>
-                            </div>
+                                    minInput.addEventListener('input', activatePriceFilter);
+                                    maxInput.addEventListener('input', activatePriceFilter);
+                                });
+                            });
+                        </script>
 
-                            <div class="brand-list">
-                                <div class="brand-item">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="brand1">
-                                        <label class="form-check-label" for="brand1">
-                                            Brand example
-                                            <span class="brand-count">(0)</span>
-                                        </label>
-                                    </div>
+                        <div class="brand-filter-widget widget-item">
+                            <h3 class="widget-title">Filter by Brand</h3>
+
+                            <div class="brand-filter-content">
+                                <?php
+                                /*
+                                ?>
+                                <div class="brand-search">
+                                    <input type="text" class="form-control" placeholder="Search brands...">
+                                    <i class="bi bi-search"></i>
+                                </div>
+                                <?php
+                                /**/
+                                ?>
+                                <div class="brand-list">
+                                    @foreach($filter['brand']['data'] ?? [] as $brand)
+                                        @php
+                                            $selectedBrands = collect((array)($filter['brand']['value'] ?? []))
+                                            ->map(fn($id) => (int)$id)
+                                            ->filter()
+                                            ->toArray();
+                                        @endphp
+
+                                        <div class="brand-item">
+                                            <div class="form-check">
+                                                <input
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    name="brand[]"
+                                                    value="{{ $brand->id }}"
+                                                    id="brand{{ $brand->id }}"
+                                                    {{ in_array($brand->id, $selectedBrands) ? 'checked' : '' }}
+                                                >
+
+                                                <label class="form-check-label" for="brand{{ $brand->id }}">
+                                                    {{ $brand->title }}
+                                                    <span class="brand-count">({{ $brand->products_count }})</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <div class="filter-actions mt-3">
+                                    <button type="submit" class="btn btn-sm btn-primary w-100">Apply Filter</button>
+                                </div>
+                                <div class="brand-actions">
+                                    <button type="submit" class="btn btn-sm btn-outline-primary">Apply Filter</button>
+                                    <a href="{{ url()->current() }}" class="btn btn-sm btn-link">Clear All</a>
                                 </div>
                             </div>
-                            <div class="filter-actions mt-3">
-                                <button type="button" class="btn btn-sm btn-primary w-100">Apply Filter</button>
-                            </div>
-
-                            <div class="brand-actions">
-                                <button class="btn btn-sm btn-outline-primary">Apply Filter</button>
-                                <button class="btn btn-sm btn-link">Clear All</button>
-                            </div>
                         </div>
-                    </div>
+
+                    </form>
+
+
+
+
+
+
 
                 </div>
             </div>
@@ -120,19 +224,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 col-md-6 col-lg-2">
-                                <div class="filter-item">
-                                    <label for="priceRange" class="form-label">Price Range</label>
-                                    <select class="form-select" id="priceRange">
-                                        <option selected>All Prices</option>
-                                        <option>Under $25</option>
-                                        <option>$25 to $50</option>
-                                        <option>$50 to $100</option>
-                                        <option>$100 to $200</option>
-                                        <option>$200 & Above</option>
-                                    </select>
-                                </div>
-                            </div>
+
 
                             <div class="col-12 col-md-6 col-lg-2">
                                 <div class="filter-item">

@@ -24,6 +24,7 @@
                     class="{{ $level === 0 ? 'category-link' : 'subcategory-link' }} {{ $isActive ? 'active' : '' }}"
                 >
                     {{ $item->title }}
+                    <span class="category-count">({{ $item->products_count ?? 0 }})</span>
                 </a>
 
                 @if($hasChildren)
