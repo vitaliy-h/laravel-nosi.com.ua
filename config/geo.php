@@ -2,12 +2,52 @@
 return [
 
     /*
-     * Which countries import
-     */
+        * Which countries to import.
+        * Enabled by default:
+        * - United Kingdom (GB)
+        *
+        * Common country codes:
+        * AU - Australia
+        * CA - Canada
+        * CH - Switzerland
+        * CN - China
+        * DE - Germany
+        * ES - Spain
+        * FR - France
+        * GB - United Kingdom
+        * IE - Ireland
+        * IN - India
+        * IT - Italy
+        * JP - Japan
+        * NL - Netherlands
+        * NZ - New Zealand
+        * PL - Poland
+        * SE - Sweden
+        * UA - Ukraine
+        * US - United States
+        * RU - Russia
+        */
     'countries' => [
-        'RU',
-        'UA',
-        'DE',
+        'GB',
+
+        // 'AU',
+        // 'CA',
+        // 'CH',
+        // 'CN',
+        // 'DE',
+        // 'ES',
+        // 'FR',
+        // 'IE',
+        // 'IN',
+        // 'IT',
+        // 'JP',
+        // 'NL',
+        // 'NZ',
+        // 'PL',
+        // 'SE',
+        // 'UA',
+        // 'US',
+        // 'RU',
     ],
 
     /*
