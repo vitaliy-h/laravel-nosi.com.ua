@@ -10,7 +10,11 @@ class PagesRepository
 {
     public function findBySlug(string $slug): ?Page
     {
-        return Page::where('slug', $slug)
+        return Page::when($slug === '', function ($query) {
+                $query->whereModule(PageModule::INDEX);
+            })->when($slug !== '', function ($query) use ($slug) {
+                $query->where('slug', $slug);
+            })
             ->whereNotNull('module')
             ->visible()
             ->first();

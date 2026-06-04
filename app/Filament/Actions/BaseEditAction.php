@@ -31,7 +31,13 @@ class BaseEditAction
             ])
             ->action(function (array $data, array $arguments, $record, $action): void {
                 $record->update($data);
+                $record = $record->fresh();
 
+                $livewire = $action->getLivewire();
+
+                $mountedActionIndex = array_key_first($livewire->mountedActions ?? []);
+
+                $livewire->mountedActions[$mountedActionIndex]['data'] = $record->attributesToArray();
                 if (!($arguments['close'] ?? true)) {
                     $action->callAfter();
                     $action->sendSuccessNotification();
