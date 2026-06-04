@@ -11,3 +11,36 @@
 
 * Add handling for `_position_id` to rebuild the nested sets tree if it has been changed.
 `app/Filament/Resources/Shop/Categories/CategoryResource.php`
+
+* Add endpoints for the Telegram bot and the corresponding libraries.
+ 
+* OAuth authorization for Google, Telegram, and Facebook.
+ 
+* User roles in the admin panel. 
+
+* Dynamic product attributes.
+
+* Multilingual support on the website.
+
+* Multiple images for a single record in the admin panel.
+
+* Run migrations and other console commands from the web interface.
+
+* Image rotation.
+
+* Cron jobs.
+
+* Upload/update the price list from an Excel file.
+
+* URL redirects.
+
+* Image resizing.
+
+* Canonical URLs.
+
+* Structured data markup.
+
+* XML sitemap.
+
+
+
