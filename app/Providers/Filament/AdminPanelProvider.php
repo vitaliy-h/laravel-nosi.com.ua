@@ -87,6 +87,10 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-tag')
                                     ->url(\App\Filament\Resources\Shop\Brands\BrandResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.shop.brands*')),
+                                NavigationItem::make(__('admin.tables.shop_orders'))
+                                    ->icon('heroicon-o-shopping-cart')
+                                    ->url(\App\Filament\Resources\Shop\Orders\OrderResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.shop.orders.*')),
                             ]),
                         // users
                         NavigationGroup::make(__('admin.tables.users'))

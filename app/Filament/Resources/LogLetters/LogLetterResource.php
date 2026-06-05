@@ -38,7 +38,7 @@ class LogLetterResource extends Resource
         return $schema
             ->components([
                 Select::make('template_key')
-                    ->options(LetterEnum::class),
+                    ->options(LetterEnum::options()),
                 TextInput::make('receiver')
                     ->required(),
                 TextInput::make('subject'),
@@ -49,12 +49,12 @@ class LogLetterResource extends Resource
                 Textarea::make('content')
                     ->columnSpanFull(),
                 Select::make('status')
-                    ->options(LogLetterStatusEnum::class)
+                    ->options(LogLetterStatusEnum::options())
                     ->required(),
                 Textarea::make('error_message')
                     ->columnSpanFull(),
                 Select::make('source')
-                    ->options(LogLetterSourceEnum::class),
+                    ->options(LogLetterSourceEnum::options()),
                 TextInput::make('attachments'),
             ]);
     }
@@ -95,15 +95,15 @@ class LogLetterResource extends Resource
             ->filters([
                 SelectFilter::make('status')
                     ->label(__('admin.fields.status'))
-                    ->options(LogLetterStatusEnum::class),
+                    ->options(LogLetterStatusEnum::options()),
 
                 SelectFilter::make('source')
                     ->label(__('admin.fields.source'))
-                    ->options(LogLetterSourceEnum::class),
+                    ->options(LogLetterSourceEnum::options()),
 
                 SelectFilter::make('template_key')
                     ->label(__('admin.fields.template_key'))
-                    ->options(LetterEnum::class),
+                    ->options(LetterEnum::options()),
             ])
             ->recordActions([
                 ViewAction::make()

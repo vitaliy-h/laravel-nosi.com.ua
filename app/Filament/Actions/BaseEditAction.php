@@ -34,15 +34,24 @@ class BaseEditAction
                 $record = $record->fresh();
 
                 $livewire = $action->getLivewire();
-
                 $mountedActionIndex = array_key_first($livewire->mountedActions ?? []);
 
-                $livewire->mountedActions[$mountedActionIndex]['data'] = $record->attributesToArray();
+                $formData = $record->attributesToArray();
+
+                foreach ($formData as $key => $value) {
+                    $existing = $livewire->mountedActions[$mountedActionIndex]['data'][$key] ?? null;
+                    // FileUpload and similar components store state as array; DB value is scalar — keep form state
+                    if (is_array($existing) && !is_array($value)) {
+                        continue;
+                    }
+                    $livewire->mountedActions[$mountedActionIndex]['data'][$key] = $value;
+                }
+
+
                 if (!($arguments['close'] ?? true)) {
                     $action->callAfter();
                     $action->sendSuccessNotification();
                     $action->halt();
-                    return;
                 }
             });
     }

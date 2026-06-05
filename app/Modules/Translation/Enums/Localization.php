@@ -2,8 +2,11 @@
 
 namespace App\Modules\Translation\Enums;
 
+use App\Modules\Core\Traits\Enums\HasEnumHelpers;
+
 enum Localization: string
 {
+    use HasEnumHelpers;
     case EN = 'en';
     case UK = 'uk';
 
@@ -13,12 +16,5 @@ enum Localization: string
             self::EN => 'English',
             self::UK => 'Ukrainian',
         };
-    }
-
-    public static function options(): array
-    {
-        return collect(self::cases())
-            ->mapWithKeys(fn($case) => [$case->value => $case->label()])
-            ->toArray();
     }
 }

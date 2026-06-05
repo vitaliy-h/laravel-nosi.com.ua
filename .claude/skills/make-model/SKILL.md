@@ -91,14 +91,20 @@ When user mentions image(s) for a model (single image, multiple images, gallery,
 
 For each enum field, create `app/Modules/{ModuleName}/Enums/{EnumClassName}.php`:
 
+Always import and use `HasEnumHelpers` trait — it provides the `options()` static method used by Filament selects and filters.
+
 **String-backed enum:**
 ```php
 <?php
 
 namespace App\Modules\{ModuleName}\Enums;
 
+use App\Modules\Core\Traits\Enums\HasEnumHelpers;
+
 enum {EnumClassName}: string
 {
+    use HasEnumHelpers;
+
     case ACTIVE = 'active';
     case INACTIVE = 'inactive';
 
@@ -118,8 +124,12 @@ enum {EnumClassName}: string
 
 namespace App\Modules\{ModuleName}\Enums;
 
+use App\Modules\Core\Traits\Enums\HasEnumHelpers;
+
 enum {EnumClassName}: int
 {
+    use HasEnumHelpers;
+
     case ACTIVE = 1;
     case INACTIVE = 0;
 
@@ -152,8 +162,29 @@ Within the same group, preserve user's order.
 
 ### Step 5 — Generate via artisan
 
+**Before running any artisan/composer command**, detect the correct runner:
+
+```bash
+# Check for Laravel Sail first
+if [ -f ./vendor/bin/sail ]; then
+    ARTISAN="./vendor/bin/sail artisan"
+    COMPOSER="./vendor/bin/sail composer"
+else
+    # Sail not present — find a compatible PHP
+    ARTISAN="php artisan"
+    COMPOSER="composer"
+fi
+```
+
+If Sail is present → use `./vendor/bin/sail artisan` for all artisan calls and `./vendor/bin/sail composer` for composer.
+If Sail is absent → check that `php --version` satisfies the project's PHP requirement (`composer.json` → `require.php`). If the system `php` doesn't match, look for versioned binaries (`php8.4`, `php8.3`, …) or report that no suitable PHP was found and create files manually.
+
 Run:
 ```bash
+# with Sail:
+./vendor/bin/sail artisan make:model {ModelName} -m
+
+# without Sail (compatible php):
 php artisan make:model {ModelName} -m
 ```
 
@@ -184,4 +215,4 @@ Print a short summary:
 - Migration file name
 - Enum classes created (if any), with their paths
 - Fields added
-- Next suggested step: `php artisan migrate`
+- Next suggested step: `php artisan migrate` (or `./vendor/bin/sail artisan migrate` if Sail is used)

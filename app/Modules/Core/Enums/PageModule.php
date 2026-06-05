@@ -2,8 +2,12 @@
 
 namespace App\Modules\Core\Enums;
 
+use App\Modules\Core\Traits\Enums\HasEnumHelpers;
+
 enum PageModule: string
 {
+    use HasEnumHelpers;
+
     case INDEX = 'index';
     case TEXT = 'text_page';
     case NEWS = 'news';
@@ -27,10 +31,4 @@ enum PageModule: string
         };
     }
 
-    public static function options(): array
-    {
-        return collect(self::cases())
-            ->mapWithKeys(fn($case) => [$case->value => $case->label()])
-            ->toArray();
-    }
 }

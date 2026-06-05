@@ -74,22 +74,10 @@ class LogResource extends Resource
                     ->preload(),
 
                 SelectFilter::make(__('admin.fields.event'))
-                    ->options(
-                        collect(LogEventEnum::cases())
-                            ->mapWithKeys(fn($case) => [
-                                $case->value => ucfirst($case->value),
-                            ])
-                            ->toArray()
-                    ),
+                    ->options(LogEventEnum::options()),
 
                 SelectFilter::make(__('admin.fields.source'))
-                    ->options(
-                        collect(LogSourceEnum::cases())
-                            ->mapWithKeys(fn($case) => [
-                                $case->value => ucfirst(str_replace('_', ' ', $case->value)),
-                            ])
-                            ->toArray()
-                    ),
+                    ->options(LogSourceEnum::options()),
 
                 SelectFilter::make('model_type')
                     ->label(__('admin.fields.model_type'))

@@ -4,6 +4,10 @@
 
 * `npx @anthropic-ai/claude-code` — run Claude Code
 
-* `php artisan migrate:fresh --seed` — run migrations and seeders
+* `php artisan migrate` — run migrations.
+
+* `php artisan db:seed` — run seeders.
+
+* `php artisan migrate:fresh --seed` — refresh database. **This will drop all tables!!!** 
 
 

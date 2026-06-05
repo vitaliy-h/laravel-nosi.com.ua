@@ -54,7 +54,25 @@ Ask: **Proceed?**
 
 ### Step 3 — Run artisan
 
+**Before running**, detect the correct runner:
+
 ```bash
+# Check for Laravel Sail first
+if [ -f ./vendor/bin/sail ]; then
+    ARTISAN="./vendor/bin/sail artisan"
+else
+    ARTISAN="php artisan"
+fi
+```
+
+If Sail is present → use `./vendor/bin/sail artisan` for all artisan calls.
+If Sail is absent → check that `php --version` satisfies the project's PHP requirement (`composer.json` → `require.php`). If the system `php` doesn't match, look for versioned binaries (`php8.4`, `php8.3`, …) or report that no suitable PHP was found and create files manually.
+
+```bash
+# with Sail:
+./vendor/bin/sail artisan make:filament-resource {Module}/{ModelName} --simple --generate --no-interaction
+
+# without Sail (compatible php):
 php artisan make:filament-resource {Module}/{ModelName} --simple --generate --no-interaction
 ```
 
@@ -202,11 +220,7 @@ DateTimePicker::make('published_at')->columnSpan(4),
       ->options(\App\Modules\{Module}\Enums\{EnumClass}::options())
       ->columnSpan(4),
   ```
-  If the Enum doesn't have `options()`, use:
-  ```php
-  ->options(collect(\App\Modules\{Module}\Enums\{EnumClass}::cases())
-      ->mapWithKeys(fn($case) => [$case->value => $case->label()]))
-  ```
+  All project enums use `HasEnumHelpers` trait which provides `options()`. Always use `::options()`.
 
 **Row 4 — image upload** (if `img` field exists):
 
@@ -319,7 +333,7 @@ Print:
 - Navigation added to: AdminPanelProvider (item or group)
 - Translation keys added (with files)
 - Any fields skipped and why
-- Next step: `php artisan filament:optimize-clear` then test in browser
+- Next step: `php artisan filament:optimize-clear` (or `./vendor/bin/sail artisan filament:optimize-clear` if Sail is used) then test in browser
 
 ---
 

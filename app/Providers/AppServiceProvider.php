@@ -5,6 +5,10 @@ namespace App\Providers;
 use App\Modules\Core\Repositories\PagesRepository;
 use App\Modules\Core\Services\LetterTemplateService;
 use App\Modules\Core\Services\UrlHelper;
+use App\Modules\Shop\Models\Order;
+use App\Modules\Shop\Models\OrderProduct;
+use App\Modules\Shop\Observers\OrderObserver;
+use App\Modules\Shop\Observers\OrderProductObserver;
 use App\Modules\Translation\Services\TranslationService;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
@@ -34,6 +38,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap();
+        Order::observe(OrderObserver::class);
+        OrderProduct::observe(OrderProductObserver::class);
     }
 
 }

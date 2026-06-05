@@ -84,5 +84,23 @@ class RolesAndPermissionsSeeder extends Seeder
         if (!$adminUser->hasRole('admin')) {
             $adminUser->assignRole($adminRole);
         }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Create Test User
+        |--------------------------------------------------------------------------
+        */
+
+        $testUser = User::firstOrCreate(
+            ['email' => 'user@example.com'],
+            [
+                'name' => 'Test User',
+                'password' => bcrypt('password'),
+            ]
+        );
+
+        if (!$testUser->hasRole('user')) {
+            $testUser->assignRole($userRole);
+        }
     }
 }

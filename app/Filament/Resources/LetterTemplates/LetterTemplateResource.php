@@ -31,7 +31,7 @@ class LetterTemplateResource extends Resource
             ->components([
 
                 Select::make('key')
-                    ->options(LetterEnum::class)
+                    ->options(LetterEnum::options())
                     ->required()
                     ->searchable()
                     ->unique()
