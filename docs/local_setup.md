@@ -15,7 +15,7 @@ This project supports multiple local environments depending on your OS and prefe
 ## Default Admin Credentials
 
 ```
-Email: admin@example.com
+Login: admin
 Password: password
 ```
 
