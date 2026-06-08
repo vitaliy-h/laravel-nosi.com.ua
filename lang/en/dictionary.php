@@ -9,6 +9,7 @@
 return [
 
     'index' => [
+        'project_name' => 'eStore',
         'hero_title' => 'Welcome',
         'hero_subtitle:html' => 'Starter project on Laravel',
 
@@ -30,6 +31,7 @@ return [
     ],
 
     'shop' => [
+        'currency' => '$',
         'categories_list' => 'Categories List',
         'category_info'   => 'Full category information',
         'category_products'   => 'Products list',
@@ -57,6 +59,8 @@ return [
     ],
 
     'profile' => [
+        'profile_dropdown_header_text' => 'Welcome to',
+        'profile_dropdown_header_subtext' => 'Access account & manage orders',
         'my_profile' => 'My profile',
         'account_settings' => 'Account Settings',
         'personal_information' => 'Personal Information',
@@ -70,6 +74,24 @@ return [
         'delete_account_confirm_text' => 'Enter your email to confirm account deletion.',
         'delete_account_email_mismatch' => 'The email address does not match your account.',
         'account_deleted' => 'Account Deleted',
+        'orders' => 'My Orders',
+        'orders_all' => 'All Orders',
+        'orders_search' => 'Search by order number...',
+        'orders_empty' => 'You have no orders yet.',
+        'order_id' => 'Order ID',
+        'order_status' => 'Status',
+        'order_items' => 'Items',
+        'order_items_unit' => 'items',
+        'order_total' => 'Total',
+        'order_view_details' => 'View Details',
+        'order_information' => 'Order Information',
+        'order_payment_type' => 'Payment Method',
+        'order_price_details' => 'Price Details',
+        'order_pay' => 'Pay Order',
+        'order_review' => 'Write Review',
+        'order_reorder' => 'Reorder',
+        'qty' => 'Qty',
+        'sku' => 'SKU',
     ],
 
     'errors' => [

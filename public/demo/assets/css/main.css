@@ -6906,12 +6906,16 @@ section,
   color: #f97316;
 }
 
-.account .content-area .orders-grid .order-card .order-content .order-info .info-row .status.shipped {
+.account .content-area .orders-grid .order-card .order-content .order-info .info-row .status.shipped,
+.account .content-area .orders-grid .order-card .order-content .order-info .info-row .status.unpaid
+{
   background-color: #ecfeff;
   color: #06b6d4;
 }
 
-.account .content-area .orders-grid .order-card .order-content .order-info .info-row .status.delivered {
+.account .content-area .orders-grid .order-card .order-content .order-info .info-row .status.delivered,
+.account .content-area .orders-grid .order-card .order-content .order-info .info-row .status.paid
+{
   background-color: #f0fdf4;
   color: #22c55e;
 }
@@ -6931,7 +6935,8 @@ section,
   gap: 12px;
 }
 
-.account .content-area .orders-grid .order-card .order-footer button {
+.account .content-area .orders-grid .order-card .order-footer button,
+.account .content-area .orders-grid .order-card .order-footer .btn {
   flex: 1;
   height: 40px;
   border-radius: 10px;
@@ -6939,44 +6944,47 @@ section,
   font-weight: 500;
   transition: all 0.3s ease;
 }
+.account .content-area .orders-grid .order-card .order-footer a.btn {
+   padding: 9px;
+}
 
-.account .content-area .orders-grid .order-card .order-footer button.btn-track {
+.account .content-area .orders-grid .order-card .order-footer .btn-track {
   background-color: var(--accent-color);
   color: var(--contrast-color);
   border: none;
 }
 
-.account .content-area .orders-grid .order-card .order-footer button.btn-track:hover {
+.account .content-area .orders-grid .order-card .order-footer .btn-track:hover {
   background-color: color-mix(in srgb, var(--accent-color), transparent 15%);
 }
 
-.account .content-area .orders-grid .order-card .order-footer button.btn-details {
+.account .content-area .orders-grid .order-card .order-footer .btn-details {
   background-color: color-mix(in srgb, var(--accent-color), transparent 92%);
   color: var(--accent-color);
   border: none;
 }
 
-.account .content-area .orders-grid .order-card .order-footer button.btn-details:hover {
+.account .content-area .orders-grid .order-card .order-footer .btn-details:hover {
   background-color: color-mix(in srgb, var(--accent-color), transparent 88%);
 }
 
-.account .content-area .orders-grid .order-card .order-footer button.btn-review {
+.account .content-area .orders-grid .order-card .order-footer .btn-review {
   background-color: #f0fdf4;
   color: #22c55e;
   border: none;
 }
 
-.account .content-area .orders-grid .order-card .order-footer button.btn-review:hover {
+.account .content-area .orders-grid .order-card .order-footer .btn-review:hover {
   background-color: #dcfce7;
 }
 
-.account .content-area .orders-grid .order-card .order-footer button.btn-reorder {
+.account .content-area .orders-grid .order-card .order-footer .btn-reorder {
   background-color: #fef2f2;
   color: #ef4444;
   border: none;
 }
 
-.account .content-area .orders-grid .order-card .order-footer button.btn-reorder:hover {
+.account .content-area .orders-grid .order-card .order-footer .btn-reorder:hover {
   background-color: #fee2e2;
 }
 

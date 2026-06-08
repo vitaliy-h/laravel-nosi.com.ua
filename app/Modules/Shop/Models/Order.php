@@ -39,4 +39,9 @@ class Order extends Model
     {
         return $this->hasMany(OrderProduct::class, 'shop_order_id');
     }
+
+    public function getTotalAmountFormattedAttribute(): string
+    {
+        return t('shop.currency') . number_format($this->total_amount, 2);
+    }
 }

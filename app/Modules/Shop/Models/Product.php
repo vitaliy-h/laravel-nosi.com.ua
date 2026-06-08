@@ -45,4 +45,9 @@ class Product extends Model
     {
         return $this->belongsTo(Brand::class);
     }
+
+    public function getSlugWithIdAttribute()
+    {
+       return $this->slug.'-'.$this->id;
+    }
 }

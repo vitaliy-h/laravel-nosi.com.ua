@@ -23,9 +23,7 @@
                     <!-- Content Area -->
                     <div class="col-lg-9">
                         <div class="content-area">
-                            <div class="tab-content">
-                                @include('pages.profile.tabs.settings')
-                            </div>
+                            @yield('profile_content')
                         </div>
                     </div>
                 </div>

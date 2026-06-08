@@ -45,13 +45,17 @@
                             @endguest
                             @auth
                                 <div class="dropdown-header">
-                                    <h6>Welcome to <span class="sitename">eStore</span></h6>
-                                    <p class="mb-0">Access account &amp; manage orders</p>
+                                    <h6>{{t('profile.profile_dropdown_header_text')}} <span class="sitename">{{t('index.project_name')}}</span></h6>
+                                    <p class="mb-0">{{t('profile.profile_dropdown_header_subtext')}}</p>
                                 </div>
                                 <div class="dropdown-body">
-                                    <a class="dropdown-item d-flex align-items-center" href="{{module_url(\App\Modules\Core\Enums\PageModule::PROFILE)}}">
+                                    <a class="dropdown-item d-flex align-items-center" href="{{module_url(\App\Modules\Core\Enums\PageModule::PROFILE, 'edit')}}">
                                         <i class="bi bi-person-circle me-2"></i>
                                         <span>{{t('profile.my_profile')}}</span>
+                                    </a>
+                                    <a class="dropdown-item d-flex align-items-center" href="{{module_url(\App\Modules\Core\Enums\PageModule::PROFILE, 'orders')}}">
+                                        <i class="bi bi-bag me-2"></i>
+                                        <span>{{t('profile.orders')}}</span>
                                     </a>
                                 </div>
                                 <div class="dropdown-footer">
