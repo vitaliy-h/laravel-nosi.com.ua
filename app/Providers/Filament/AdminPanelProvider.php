@@ -42,7 +42,7 @@ class AdminPanelProvider extends PanelProvider
             //->topNavigation() //navigation on top
             ->id('admin')
             ->path('admin') //path to admin panel in browser
-            ->login()
+            ->login(\App\Filament\Pages\Auth\Login::class)
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
                     ->items([

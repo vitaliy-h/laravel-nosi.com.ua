@@ -4,6 +4,10 @@
 
 return [
 
+    'auth' => [
+        'login' => 'login',
+    ],
+
     // table names in the database
     'tables' => [
         'dashboard' => 'Dashboard',
