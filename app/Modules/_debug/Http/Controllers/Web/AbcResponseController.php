@@ -6,17 +6,17 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class ApiResponseController extends Controller
+class AbcResponseController extends Controller
 {
-    public function api_response_index(Request $request)
+    public function abc_response_index(Request $request)
     {
-        return view('pages.test.api_response');
+        return view('pages.test.abc_response');
     }
 
-    public function api_response_request(Request $request, string $action): JsonResponse
+    public function abc_response_request(Request $request, string $action): JsonResponse
     {
         $response = [
-            'success' => true,
+            //'success' => true,
             'actions' => [],
         ];
 
@@ -117,6 +117,23 @@ class ApiResponseController extends Controller
                     'content' => '<script>alert("Dynamic script executed")</script>',
                 ];
                 break;
+
+            case 'form':
+
+                $response['actions'][] = [
+                    'method' => 'html',
+                    'selector' => '#test-form .abcr-result',
+                    'content' => 'Form submitted successfully',
+                ];
+
+                $response['actions'][] = [
+                    'method' => 'clearForm',
+                    'selector' => '#test-form',
+                ];
+
+                break;
+
+
         }
 
         return response()->json($response);

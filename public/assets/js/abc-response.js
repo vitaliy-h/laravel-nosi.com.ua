@@ -19,16 +19,12 @@
 | FORM AJAX
 |
 | <form
-|     class="ajax"
-|     data-action="/cart/add"
+|     data-abcr="/cart/add"
 |     method="POST"
 | >
 |
-| class="ajax"
-|     Enables AJAX form submit.
-|
-| data-action=""
-|     API endpoint URL.
+| data-abcr=""
+|     abc response endpoint URL
 |
 | class="validate"
 |     Optional jQuery validation support.
@@ -38,12 +34,12 @@
 | BUTTON/LINK AJAX
 |
 | <button
-|     data-api="/favorite/add"
+|     data-abcr="/favorite/add"
 |     data-product-id="15"
 | >
 |
-| data-api=""
-|     API endpoint URL.
+| data-abcr=""
+|     abc response endpoint URL.
 |
 | data-method=""
 |     Optional HTTP method.
@@ -57,11 +53,11 @@
 |
 | CSS CLASSES
 |
-| .js_wait
+| .abcr-wait
 |     Temporary class added while
 |     request is processing.
 |
-| .disabled
+| .abcr-disabled
 |     Added to submit buttons during request.
 |
 |--------------------------------------------------------------------------
@@ -69,8 +65,6 @@
 | RESPONSE FORMAT
 |
 | {
-|     "success": true,
-|
 |     "actions": [
 |         {
 |             "method": "html",
@@ -95,6 +89,8 @@
 |
 | AVAILABLE RESPONSE METHODS
 |
+| error
+| clearForm
 | append
 | prepend
 | html
@@ -120,10 +116,7 @@
 | EXAMPLE RESPONSE
 |
 | return response()->json([
-|     'success' => true,
-|
 |     'actions' => [
-|
 |         [
 |             'method' => 'html',
 |             'selector' => '#mini-cart',
@@ -131,13 +124,11 @@
 |                 'shop.cart.mini'
 |             )->render(),
 |         ],
-|
 |         [
 |             'method' => 'text',
 |             'selector' => '#cart-count',
 |             'content' => Cart::count(),
 |         ],
-|
 |     ],
 | ]);
 |
@@ -148,7 +139,7 @@
 // Response action handlers
 // ============================================
 
-const ApiResponseHandlers = {
+const AbcResponseHandlers = {
 
     // Insert HTML to the end of element
     append(item) {
@@ -178,6 +169,51 @@ const ApiResponseHandlers = {
 
             });
 
+    },
+
+    clearForm(item) {
+
+        document.querySelectorAll(item.selector)
+            .forEach(form => {
+
+                form.querySelectorAll(
+                    `
+                input:not([type=submit]):not([type=button]):not([type=hidden]):not([name=captcha]),
+                textarea,
+                select
+                `
+                ).forEach(el => {
+
+                    // checkbox / radio
+                    if (
+                        el.type === 'checkbox' ||
+                        el.type === 'radio'
+                    ) {
+
+                        el.checked = false;
+
+                        return;
+                    }
+
+                    // select
+                    if (el.tagName === 'SELECT') {
+
+                        el.selectedIndex = 0;
+
+                        return;
+                    }
+
+                    // default
+                    el.value = '';
+
+                });
+
+            });
+
+    },
+
+    error(item) {
+        alert(item.content);
     },
 
     // Replace inner HTML
@@ -229,8 +265,7 @@ const ApiResponseHandlers = {
         document.querySelectorAll(item.selector)
             .forEach(el => {
 
-                el.scrollTop =
-                    el.scrollHeight;
+                el.scrollTop = 0;
 
             });
 
@@ -438,24 +473,24 @@ const ApiResponseHandlers = {
 };
 
 // ============================================
-// Handle API response
+// Handle abc response
 // ============================================
 
-function apiResponse(response) {
+function abc_response(response) {
 
     if (response.actions) {
 
         response.actions.forEach(item => {
 
             const handler =
-                ApiResponseHandlers[
+                AbcResponseHandlers[
                     item.method
                     ];
 
             if (!handler) {
 
                 console.warn(
-                    'Unknown API method:',
+                    'Unknown action method:',
                     item.method
                 );
 
@@ -469,26 +504,13 @@ function apiResponse(response) {
 
     }
 
-    // TODO:
-    // Replace alerts with toast notifications
-    if (response.error_text) {
-
-        alert(response.error_text);
-
-    }
-    else if (response._error) {
-
-        alert(response._error);
-
-    }
-
 }
 
 // ============================================
-// Universal API request layer
+// Universal AbcResponse request layer
 // ============================================
 
-class Api {
+class AbcResponse {
 
     static async request({
                              url,
@@ -500,14 +522,14 @@ class Api {
         // Prevent double click
         if (
             button?.classList.contains(
-                'js_wait'
+                'abcr-wait'
             )
         ) {
             return;
         }
 
         button?.classList.add(
-            'js_wait'
+            'abcr-wait'
         );
 
         try {
@@ -541,7 +563,7 @@ class Api {
             const json =
                 await response.json();
 
-            apiResponse(json);
+            abc_response(json);
 
             return json;
 
@@ -558,7 +580,7 @@ class Api {
             setTimeout(() => {
 
                 button?.classList.remove(
-                    'js_wait'
+                    'abcr-wait'
                 );
 
             }, 300);
@@ -579,7 +601,7 @@ document.addEventListener(
 
         const form =
             e.target.closest(
-                'form.ajax'
+                'form[data-abcr]'
             );
 
         if (!form) {
@@ -587,7 +609,7 @@ document.addEventListener(
         }
 
         const action =
-            form.dataset.action;
+            form.dataset.abcr;
 
         // No ajax action = normal form
         if (!action) {
@@ -599,6 +621,7 @@ document.addEventListener(
         let valid = true;
 
         // Optional jQuery validation
+        //todo
         if (
             form.classList.contains(
                 'validate'
@@ -630,11 +653,11 @@ document.addEventListener(
             );
 
         submitButton?.classList.add(
-            'disabled'
+            'abcr-disabled'
         );
 
         const json =
-            await Api.request({
+            await AbcResponse.request({
                 url: action,
                 method:
                     form.method || 'POST',
@@ -642,42 +665,10 @@ document.addEventListener(
                 button: submitButton,
             });
 
-        // Clear form on success
-        if (json?.success) {
-
-            form.querySelectorAll(
-                `
-                input:not([type=submit])
-                :not([type=hidden])
-                :not([name=captcha]),
-                textarea,
-                select
-                `
-            ).forEach(el => {
-
-                if (
-                    el.type ===
-                    'checkbox' ||
-                    el.type === 'radio'
-                ) {
-
-                    el.checked = false;
-
-                }
-                else {
-
-                    el.value = '';
-
-                }
-
-            });
-
-        }
-
         setTimeout(() => {
 
             submitButton?.classList.remove(
-                'disabled'
+                'abcr-disabled'
             );
 
         }, 1000);
@@ -695,7 +686,7 @@ document.addEventListener(
 
         const el =
             e.target.closest(
-                '[data-api]'
+                'button[data-abcr], a[data-abcr]'
             );
 
         if (!el) {
@@ -705,7 +696,7 @@ document.addEventListener(
         e.preventDefault();
 
         const url =
-            el.dataset.api;
+            el.dataset.abcr;
 
         if (!url) {
             return;
@@ -717,7 +708,7 @@ document.addEventListener(
             ...el.dataset
         };
 
-        delete data.api;
+        delete data.abcr;
 
         const requestUrl =
             new URL(
@@ -735,7 +726,7 @@ document.addEventListener(
 
             });
 
-        await Api.request({
+        await AbcResponse.request({
             url: requestUrl.toString(),
             method:
                 el.dataset.method
