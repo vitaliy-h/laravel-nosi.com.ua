@@ -97,9 +97,12 @@ class ModuleServiceProvider extends ServiceProvider
 
     private function getClassFromFile(string $path): string
     {
-        $relative = str($path)
-            ->after(app_path() . '/')
-            ->replace('/', '\\')
+        $appPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, app_path());
+        $normalizedPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+
+        $relative = str($normalizedPath)
+            ->after($appPath . DIRECTORY_SEPARATOR)
+            ->replace(DIRECTORY_SEPARATOR, '\\')
             ->replace('.php', '')
             ->toString();
 

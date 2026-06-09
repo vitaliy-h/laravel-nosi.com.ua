@@ -28,7 +28,7 @@ class ShopOrderSeeder extends Seeder
         Order::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        $user = User::where('email', 'user@example.com')->firstOrFail();
+        $user = User::where('email', 'admin')->firstOrFail();
         $products = Product::inRandomOrder()->take(6)->get();
 
         if ($products->isEmpty()) {
