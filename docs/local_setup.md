@@ -256,11 +256,17 @@ copy .env.example .env
 Update `.env`:
 
 ```
-DB_HOST=127.0.0.1
+APP_URL=https://laravel-filament-starter
+DB_CONNECTION=mysql
+DB_HOST="MariaDB-11.8"
 DB_PORT=3306
-DB_DATABASE=...
-DB_USERNAME=...
-DB_PASSWORD=...
+DB_DATABASE=laravel_filament_starter
+DB_USERNAME=root
+DB_PASSWORD=
+```
+Update `.osp/project.ini`:
+```
+web_root = {base_dir}\public
 ```
 
 Install dependencies:
