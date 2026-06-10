@@ -12,6 +12,8 @@ use App\Modules\Profile\Http\Requests\ProfileDeleteUserAccountRequest;
 use App\Modules\Profile\Http\Requests\ProfileUpdateUserDataRequest;
 use App\Modules\Profile\Http\Requests\ProfileUpdateUserPasswordRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 
 class ProfileController extends Controller
 {
@@ -23,14 +25,25 @@ class ProfileController extends Controller
     {
     }
 
-    public function updateUserData(ProfileUpdateUserDataRequest $request): \Illuminate\Http\RedirectResponse
-    {
+    public function updateUserData(ProfileUpdateUserDataRequest $request): JsonResponse|RedirectResponse {
         $this->updateUserDataAction->handle(
             $request->user(),
             ProfileUpdateUserDataData::from($request->validated())
         );
-
-        return back()->with('user_data_success', t('profile.user_data_updated'));
+        //return back()->with('user_data_success', t('profile.user_data_updated'));
+        //abc-response
+        session()->flash('user_data_success', t('profile.user_data_updated'));
+        return response()->json([
+            'actions'=>[
+                [
+                    'method'=>'replaceWith',
+                    'selector'=>'#form-user-data',
+                    'content' => view('pages.profile.components.edit_user_data', [
+                        'user' => $request->user(),
+                    ])->render(),
+                ]
+            ]
+        ]);
     }
 
     public function updateUserPassword(ProfileUpdateUserPasswordRequest $request): \Illuminate\Http\RedirectResponse
