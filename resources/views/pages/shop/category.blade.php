@@ -150,9 +150,11 @@
                                         </div>
                                     @endforeach
                                 </div>
+                                {{--
                                 <div class="filter-actions mt-3">
                                     <button type="submit" class="btn btn-sm btn-primary w-100">Apply Filter</button>
                                 </div>
+                                --}}
                                 <div class="brand-actions">
                                     <button type="submit" class="btn btn-sm btn-outline-primary">Apply Filter</button>
                                     <a href="{{ url()->current() }}" class="btn btn-sm btn-link">Clear All</a>
