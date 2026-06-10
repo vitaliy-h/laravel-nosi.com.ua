@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Pages;
 
-use App\Filament\Actions\BaseCreateAction;
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Pages\Pages\ManagePages;
 use App\Filament\Traits\HasSeoFields;
@@ -24,6 +23,12 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+use Filament\Forms\Components\Builder;
+use App\Filament\Builder\TextBlock;
+use App\Filament\Builder\ImageBlock;
+use App\Filament\Builder\GalleryBlock;
+use App\Filament\Builder\VideoBlock;
+use App\Filament\Builder\TeasersBlock;
 
 class PageResource extends Resource
 {
@@ -61,8 +66,39 @@ class PageResource extends Resource
                     ->columnSpan(3)
                     ->inline(false),
 
-                RichEditor::make('text')
+                //RichEditor::make('text')->columnSpanFull(),
+
+                Builder::make('content')
+                    ->blocks([
+                        TextBlock::make(),
+                        ImageBlock::make(
+                            fn ($record) => 'pages/' . $record?->id . '/builder'
+                        ),
+                        GalleryBlock::make(
+                            fn ($record) => 'pages/' . $record?->id . '/builder'
+                        ),
+                        VideoBlock::make(),
+                        TeasersBlock::make(),
+                    ])
+                    ->afterStateHydrated(function ($state, $set) {
+
+                        if (blank($state)) {
+
+                            $set('content', [
+                                [
+                                    'type' => 'text',
+                                    'data' => [
+                                        'style' => 'default',
+                                    ],
+                                ],
+                            ]);
+                        }
+                    })
+                    ->collapsible()
+                    ->cloneable()
+                    ->reorderable()
                     ->columnSpanFull(),
+
                 static::getSeoSection(true),
             ]);
     }

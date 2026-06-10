@@ -24,6 +24,7 @@ class Page extends Model
         'meta_title',
         'meta_description',
         'is_indexable',
+        'content'
     ];
 
     protected $casts = [
@@ -31,5 +32,6 @@ class Page extends Model
         'display_menu' => 'boolean',
         'display_menu_footer' => 'boolean',
         'module' => PageModule::class,
+        'content'=>'array'
     ];
 }
