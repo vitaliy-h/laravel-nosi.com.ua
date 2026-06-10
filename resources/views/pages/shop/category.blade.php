@@ -118,10 +118,12 @@
                             <h3 class="widget-title">Filter by Brand</h3>
 
                             <div class="brand-filter-content">
+                                {{--
                                 <div class="brand-search">
                                     <input type="text" class="form-control" placeholder="Search brands...">
                                     <i class="bi bi-search"></i>
                                 </div>
+                                --}}
                                 <div class="brand-list">
                                     @foreach($filter['brand']['data'] ?? [] as $brand)
                                         @php
@@ -151,12 +153,15 @@
                                     @endforeach
                                 </div>
                                 {{--
-                                <div class="filter-actions mt-3">
-                                    <button type="submit" class="btn btn-sm btn-primary w-100">Apply Filter</button>
-                                </div>
                                 --}}
                                 <div class="brand-actions">
+                                    {{--
                                     <button type="submit" class="btn btn-sm btn-outline-primary">Apply Filter</button>
+                                    --}}
+                                    <div class="filter-actions mt-3" style="width: 70% !important">
+                                        <button type="submit" class="btn btn-sm btn-primary w-100">Apply Filter</button>
+                                    </div>
+
                                     <a href="{{ url()->current() }}" class="btn btn-sm btn-link">Clear All</a>
                                 </div>
                             </div>
