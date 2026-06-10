@@ -24,6 +24,7 @@ return new class extends Migration {
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();
             $table->text('text')->nullable();
+            $table->json('content')->nullable();
         });
     }
 
