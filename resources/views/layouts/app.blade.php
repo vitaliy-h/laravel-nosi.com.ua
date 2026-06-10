@@ -64,6 +64,9 @@
 <!-- Main JS File -->
 <script src="/demo/assets/js/main.js"></script>
 
+<!-- abc-response -->
+<script src="/assets/js/abc-response.js?2"></script>
+
 {{-- Global scripts --}}
 @include('components.scripts')
 
