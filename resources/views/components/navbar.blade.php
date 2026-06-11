@@ -13,7 +13,7 @@
                 </a>
 
                 <!-- Search -->
-                <form class="search-form desktop-search-form" action="{{route('module.shop')}}">
+                <form class="search-form desktop-search-form" action="{{module_url(\App\Modules\Core\Enums\PageModule::SHOP,[],[])}}">
                     <div class="input-group">
                         <input type="text" class="form-control" name="search" placeholder="Search for products" value="{{ request('search') }}">
                         <button class="btn" type="submit">
@@ -699,7 +699,7 @@
     <!-- Mobile Search Form -->
     <div class="collapse" id="mobileSearch">
         <div class="container">
-            <form class="search-form" action="{{route('module.shop')}}">
+            <form class="search-form" action="{{module_url(\App\Modules\Core\Enums\PageModule::SHOP,[],[])}}">
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" placeholder="Search for products" value="{{ request('search') }}">
                     <button class="btn" type="submit">
