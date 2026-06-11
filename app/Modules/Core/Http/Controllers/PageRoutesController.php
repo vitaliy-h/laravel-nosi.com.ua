@@ -1,5 +1,5 @@
 <?php
-
+/*
 namespace App\Modules\Core\Http\Controllers;
 
 use App\Http\Controllers\Controller;
@@ -117,3 +117,4 @@ class PageRoutesController extends Controller
         return $controller->index($request, $segments);
     }
 }
+/**/
