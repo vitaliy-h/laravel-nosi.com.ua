@@ -14,3 +14,5 @@
         {{ session($errorKey) }}
     </div>
 @endif
+<div class="card card-body py-3 alert alert-success" data-alert="{{$successKey}}" style="display: none"></div>
+<div class="card card-body py-3 alert alert-success" data-alert="{{$errorKey}}" style="display: none"></div>

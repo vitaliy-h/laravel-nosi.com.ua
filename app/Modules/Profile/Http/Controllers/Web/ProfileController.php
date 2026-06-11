@@ -32,7 +32,6 @@ class ProfileController extends Controller
         );
         //return back()->with('user_data_success', t('profile.user_data_updated'));
         //abc-response
-        session()->flash('user_data_success', t('profile.user_data_updated'));
         return response()->json([
             'actions'=>[
                 [
@@ -41,19 +40,48 @@ class ProfileController extends Controller
                     'content' => view('pages.profile.components.edit_user_data', [
                         'user' => $request->user(),
                     ])->render(),
+                ],
+                [
+                    'method'=>'show',
+                    'selector'=> '.alert[data-alert="user_data_success"]',
+                ],
+                [
+                    'method'=>'text',
+                    'selector'=> '.alert[data-alert="user_data_success"]',
+                    'content'=>  t('profile.user_data_updated'),
                 ]
             ]
         ]);
     }
 
-    public function updateUserPassword(ProfileUpdateUserPasswordRequest $request): \Illuminate\Http\RedirectResponse
+    public function updateUserPassword(ProfileUpdateUserPasswordRequest $request): \Illuminate\Http\RedirectResponse|JsonResponse
     {
         $this->updateUserPasswordAction->handle(
             $request->user(),
             $request->input('password')
         );
 
-        return back()->with('password_change_success', t('profile.password_updated'));
+//        return back()->with('password_change_success', t('profile.password_updated'));
+        return response()->json([
+            'actions'=>[
+                [
+                    'method'=>'replaceWith',
+                    'selector'=>'#form-user-password',
+                    'content' => view('pages.profile.components.edit_user_password', [
+                        'user' => $request->user(),
+                    ])->render(),
+                ],
+                [
+                    'method'=>'show',
+                    'selector'=> '.alert[data-alert="password_change_success"]',
+                ],
+                [
+                    'method'=>'text',
+                    'selector'=> '.alert[data-alert="password_change_success"]',
+                    'content'=>  t('profile.password_updated'),
+                ]
+            ]
+        ]);
     }
 
     public function deleteUserAccount(ProfileDeleteUserAccountRequest $request): \Illuminate\Http\RedirectResponse
