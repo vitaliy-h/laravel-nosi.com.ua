@@ -19,7 +19,6 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->append(\App\Modules\Core\Http\Middleware\InjectMenus::class);
         $middleware->alias([
             'auth' => Authenticate::class,
         ]);

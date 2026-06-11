@@ -4,13 +4,15 @@ namespace App\Modules\Core\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Core\Repositories\PagesRepository;
+use App\Modules\Core\Services\MenuService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class ModuleRouteController extends Controller
 {
     public function __construct(
-        private PagesRepository $pages
+        private PagesRepository $pages,
+        private MenuService $menu
     )
     {
     }
@@ -56,6 +58,8 @@ class ModuleRouteController extends Controller
                     'breadcrumbs' => $this->pages->getBreadcrumbs($page),
                     'meta_title' => $page->meta_title,
                     'meta_description' => $page->meta_description,
+                    'headerMenu' => $this->menu->getHeaderMenu(),
+                    'footerMenu' => $this->menu->getFooterMenu(),
                 ]);
                 $result = app($routerClass)->accessCheck();
                 if ($result instanceof \Illuminate\Http\Response

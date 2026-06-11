@@ -72,10 +72,10 @@ class PageResource extends Resource
                     ->blocks([
                         TextBlock::make(),
                         ImageBlock::make(
-                            fn ($record) => 'pages/' . $record?->id . '/builder'
+                            fn ($record) => 'pages/' . $record?->id . '/content'
                         ),
                         GalleryBlock::make(
-                            fn ($record) => 'pages/' . $record?->id . '/builder'
+                            fn ($record) => 'pages/' . $record?->id . '/content'
                         ),
                         VideoBlock::make(),
                         TeasersBlock::make(),

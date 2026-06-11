@@ -41,12 +41,11 @@ class BaseEditAction
                 foreach ($formData as $key => $value) {
                     $existing = $livewire->mountedActions[$mountedActionIndex]['data'][$key] ?? null;
                     // FileUpload and similar components store state as array; DB value is scalar — keep form state
-                    if (is_array($existing) && !is_array($value)) {
+                    if (is_array($existing)) {
                         continue;
                     }
                     $livewire->mountedActions[$mountedActionIndex]['data'][$key] = $value;
                 }
-
 
                 if (!($arguments['close'] ?? true)) {
                     $action->callAfter();
