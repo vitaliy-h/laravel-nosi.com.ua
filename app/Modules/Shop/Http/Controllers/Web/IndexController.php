@@ -3,6 +3,7 @@
 namespace App\Modules\Shop\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Core\Dtos\BreadcrumbData;
 use App\Modules\Core\Enums\PageModule;
 use App\Modules\Core\Interfaces\ModuleIndexControllerInterface;
 use App\Modules\Shop\Repository\ShopRepository;
@@ -38,6 +39,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
          * Examples:
          * /shop/category-slug
          * /shop/category-slug/product-slug-123
+         * @todo too many comments :)
          */
         if (!empty($segments)) {
             $categorySlug = $segments[0] ?? null;
@@ -56,31 +58,16 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
             }
         }
         /**
-         * Fake category object for the catalog root page.
-         * This allows using the same category view for the main catalog.
-         */
-        //dd($page);
-        $category = (object)[
-            'title' => 'Shop',
-            'text' => '',
-            'slug' => '',
-        ];
-        /**
-         * Root catalog page has no breadcrumbs.
-         */
-        $breadcrumbs = [];
-        /**
          * Prepare filters and products for the root catalog page.
          */
+        $categories = $this->repository->allCategories();
         $filter = $this->repository->prepareFilter(null, $request);
-        //dd($filter);
         $products = $this->repository->productsByCategory(null, $filter);
 
         return view('pages.shop.category', compact(
-            'category',
+            'categories',
             'products',
             'filter',
-            'breadcrumbs'
         ));
     }
     /**
@@ -91,6 +78,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         $category = $this->repository->getCategoryBySlug($categorySlug);
         /**
          * Redirect to canonical category URL if the slug is not exact.
+         * @todo if the slug doesn't match, the category won't be found at all — this redirect only makes sense once canonical_url is supported
          */
         if ($categorySlug !== $category->slug) {
             return redirect()->to(module_url(PageModule::SHOP, $category->slug), 301);
@@ -105,13 +93,14 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         /**
          * Prepare breadcrumbs, filters, and products for the category page.
          */
+        $categories = $this->repository->allCategories($category->id);
         $breadcrumbs = $this->repository->breadcrumbs($category);
-
         $filter = $this->repository->prepareFilter($category, $request);
         $products = $this->repository->productsByCategory($category, $filter);
 
         return view('pages.shop.category', compact(
             'category',
+            'categories',
             'products',
             'filter',
             'breadcrumbs'
@@ -161,8 +150,16 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         ]);
         /**
          * Prepare breadcrumbs and filters for product page layout.
+         * @todo refactored breadcrumbs to use BreadcrumbData throughout, updated \App\Modules\Shop\Repository\ShopRepository::breadcrumbs
          */
         $breadcrumbs = $this->repository->breadcrumbs($category);
+        $breadcrumbs->push(
+            new BreadcrumbData(
+                title:$product->name ?? $product->title,
+                url:module_url(PageModule::SHOP, [$category->product->category->slug,$product->product->slug_with_id])
+                /* TODO: added slug_with_id getter in app/Modules/Shop/Models/Product.php for convenient {slug}-{id} formatting */
+            )
+        );
         $filter = $this->repository->prepareFilter($category, $request);
 
         return view('pages.shop.product', compact(

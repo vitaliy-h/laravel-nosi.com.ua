@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Modules\Core\Models\Page;
+use App\Modules\Core\Observers\PageObserver;
 use App\Modules\Core\Repositories\PagesRepository;
 use App\Modules\Core\Services\LetterTemplateService;
 use App\Modules\Core\Services\UrlHelper;
@@ -38,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap();
+        Page::observe(PageObserver::class);
         Order::observe(OrderObserver::class);
         OrderProduct::observe(OrderProductObserver::class);
     }

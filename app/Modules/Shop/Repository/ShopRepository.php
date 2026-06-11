@@ -2,12 +2,14 @@
 
 namespace App\Modules\Shop\Repository;
 
+use App\Modules\Core\Dtos\BreadcrumbData;
 use App\Modules\Core\Enums\PageModule;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Parameter;
 use App\Modules\Shop\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class ShopRepository
 {
@@ -18,68 +20,66 @@ class ShopRepository
 
     public function __construct()
     {
-        $count = (int) request('c', 12);
+        $count = (int)request('c', 12);
 
         $this->paginate = in_array($count, [12, 24, 48, 96], true)
             ? $count
             : 12;
     }
+
+    /**
+     * Get shop categories tree.
+     * TODO: used in API — kept for that reason
+     * \App\Modules\Shop\Http\Controllers\Api\ShopController::categories
+     */
+    public function getTree()
+    {
+        return Category::visible()->get()->toTree();
+    }
+
+    /**
+     * Get product by slug and category.
+     * TODO: used in API — kept for that reason
+     * \App\Modules\Shop\Http\Controllers\Api\ShopController::product
+     */
+    public function getProductBySlug(string $slug, Category $category): Product
+    {
+        return Product::visible()
+            ->where('slug', $slug)
+            ->where('category_id', $category->id)
+            ->with('brand')
+            ->firstOrFail();
+    }
+
     /**
      * Get all root categories with their recursive children.
      * Also marks the active category and opened parent categories.
+     * @todo extracted from filters and rewrote to reduce DB queries
      */
     public function allCategories(?int $activeCategoryId = null)
     {
-        $categories = Category::visible()
-            ->with('childrenRecursive')
-            ->whereNull('parent_id')
-            ->orderBy('_lft')
-            ->get();
+        $ancestorIds = $activeCategoryId
+            ? Category::ancestorsOf($activeCategoryId)->pluck('id')->toArray()
+            : [];
 
-        $openedIds = [];
-        /**
-         * If an active category is provided, get all its ancestors.
-         * These categories should be marked as opened in the category tree.
-         */
-        if ($activeCategoryId) {
-            $activeCategory = Category::find($activeCategoryId);
+        $productCounts = Product::visible()
+            ->selectRaw('category_id, COUNT(*) as total')
+            ->groupBy('category_id')
+            ->pluck('total', 'category_id');
 
-            if ($activeCategory) {
-                $openedIds = $activeCategory
-                    ->ancestors()
-                    ->pluck('id')
-                    ->toArray();
-            }
-        }
-        /**
-         * Mark every category in the tree as active/opened where needed.
-         */
-        return $categories->map(function ($category) use ($activeCategoryId, $openedIds) {
-            return $this->markCategoryTree($category, $activeCategoryId, $openedIds);
+        $categories = Category::visible()->defaultOrder()->get();
+
+        $categories->each(function (Category $category) use ($activeCategoryId, $ancestorIds, $productCounts, $categories) {
+            $category->_active = $category->id === $activeCategoryId ? 1 : 0;
+            $category->_opened = in_array($category->id, $ancestorIds) ? 1 : 0;
+            $category->products_count = $categories
+                ->filter(fn(Category $c) => $c->_lft >= $category->_lft && $c->_lft <= $category->_rgt)
+                ->sum(fn(Category $c) => $productCounts->get($c->id, 0));
         });
+
+        return $categories->toTree();
     }
-    /**
-     * Recursively mark category tree items.
-     * Adds active/opened flags and calculates product count for each category branch.
-     */
-    private function markCategoryTree(Category $category, ?int $activeCategoryId, array $openedIds): Category
-    {
-        $category->_active = $category->id == $activeCategoryId ? 1 : 0;
-        $category->_opened = in_array($category->id, $openedIds) ? 1 : 0;
-        /**
-         * Process all child categories recursively.
-         */
-        $category->childrenRecursive = $category->childrenRecursive->map(function ($child) use ($activeCategoryId, $openedIds) {
-            return $this->markCategoryTree($child, $activeCategoryId, $openedIds);
-        });
-        /**
-         * Count visible products in the current category and all its descendants.
-         */
-        $category->products_count = Product::visible()
-            ->whereIn('category_id', Category::whereDescendantOrSelf($category)->pluck('id'))
-            ->count();
-        return $category;
-    }
+
     /**
      * Get a single product by ID.
      */
@@ -89,6 +89,7 @@ class ShopRepository
             ->where('id', $id)
             ->firstOrFail();
     }
+
     /**
      * Get a visible category by slug.
      */
@@ -98,37 +99,146 @@ class ShopRepository
             ->where('slug', $slug)
             ->firstOrFail();
     }
+
     /**
      * Build breadcrumbs for the current category.
      */
-    public function breadcrumbs(Category $category): array
+    public function breadcrumbs(Category $category): Collection
     {
-        return Category::visible()
+        $categoryBreadcrumbs = Category::visible()
             ->where('_lft', '<=', $category->_lft)
             ->where('_rgt', '>=', $category->_rgt)
             ->orderBy('_lft')
             ->get()
-            ->map(fn($item) => [
-                'name' => $item->title,
-                'url' => module_url(PageModule::SHOP, [$item->slug]),
-            ])
-            ->toArray();
+            ->map(fn(Category $category) => new BreadcrumbData(
+                title: $category->title,
+                url: module_url(PageModule::SHOP, [$category->slug]),
+            ));
+
+        return collect(view()->shared('breadcrumbs'))
+            ->merge($categoryBreadcrumbs)
+            ->values();
     }
+
     /**
      * Prepare all available filters for the shop page.
      * This includes categories, brands, and price range.
      */
     public function prepareFilter(?Category $category, Request $request): array
     {
+        /*
+         * TODO: Refactor filters using DTO + Enum
+         *
+         * Current approach — plain arrays. Proposed approach — typed DTOs:
+         *
+         * 1. Filter type enum:
+         *
+         *    enum FilterType: string
+         *    {
+         *        case IN     = 'in';
+         *        case RANGE  = 'range';
+         *        case SEARCH = 'search';
+         *        case SORT   = 'sort';
+         *    }
+         *
+         * 2. DTO per filter type (with apply method):
+         *
+         *    abstract class BaseFilterDto extends Data
+         *    {
+         *        abstract public function apply(Builder $query): void;
+         *    }
+         *
+         *    class InFilterDto extends BaseFilterDto
+         *    {
+         *        public function __construct(
+         *            public readonly string     $key,
+         *            public readonly FilterType $type,
+         *            public readonly Collection $items,    // for display (brands, options)
+         *            public readonly array      $selected, // selected ids
+         *        ) {}
+         *
+         *        public function apply(Builder $query): void
+         *        {
+         *            if (empty($this->selected)) return;
+         *            $column = $this->key === 'brand' ? 'brand_id' : $this->key;
+         *            $query->whereIn($column, $this->selected);
+         *        }
+         *    }
+         *
+         *    class RangeFilterDto extends BaseFilterDto
+         *    {
+         *        public function __construct(
+         *            public readonly string     $key,
+         *            public readonly FilterType $type,
+         *            public readonly float      $min,
+         *            public readonly float      $max,
+         *            public readonly ?float     $from,
+         *            public readonly ?float     $to,
+         *        ) {}
+         *
+         *        public function apply(Builder $query): void
+         *        {
+         *            if ($this->from !== null) $query->where($this->key, '>=', $this->from);
+         *            if ($this->to   !== null) $query->where($this->key, '<=', $this->to);
+         *        }
+         *    }
+         *
+         *    class SearchFilterDto extends BaseFilterDto
+         *    {
+         *        public function __construct(
+         *            public readonly FilterType $type,
+         *            public readonly ?string    $value,
+         *        ) {}
+         *
+         *        public function apply(Builder $query): void
+         *        {
+         *            if ($this->value) $query->where('title', 'like', "%{$this->value}%");
+         *        }
+         *    }
+         *
+         * 3. prepareFilter returns Collection<BaseFilterDto>:
+         *
+         *    public function prepareFilter(?Category $category, Request $request): Collection
+         *    {
+         *        $filters = collect([
+         *            'brand' => new InFilterDto(
+         *                key: 'brand', type: FilterType::IN, items: collect(),
+         *                selected: array_filter(array_map('intval', (array) $request->query('brand'))),
+         *            ),
+         *            'price' => new RangeFilterDto(
+         *                key: 'price', type: FilterType::RANGE,
+         *                min: 0, max: 0,
+         *                from: $request->float('price_from'),
+         *                to: $request->float('price_to'),
+         *            ),
+         *            'search' => new SearchFilterDto(type: FilterType::SEARCH, value: $request->query('search')),
+         *        ]);
+         *
+         *        $filters['brand'] = $filters['brand']->with(items: $this->prepareBrandFilter($category, $filters));
+         *        $filters['price'] = $this->prepareRangeFilter($category, $filters, $filters['price']);
+         *
+         *        return $filters;
+         *    }
+         *
+         * 4. buildProductsQuery simplifies to:
+         *
+         *    $filters
+         *        ->reject(fn ($f, $key) => $key === $except)
+         *        ->each(fn (BaseFilterDto $f) => $f->apply($query));
+         *
+         * 5. Blade — partial per type (no if/switch):
+         *
+         *    @foreach($filters as $key => $filter)
+         *        @includeIf('pages.shop.filters.' . $filter->type->value, ['filter' => $filter])
+         *    @endforeach
+         *
+         *    resources/views/pages/shop/filters/
+         *        range.blade.php   ← $filter->min, $filter->max, $filter->from
+         *        in.blade.php      ← @foreach($filter->items as $item)
+         *        search.blade.php  ← <input value="{{ $filter->value }}">
+         * 6. After refactoring, consider splitting this repository — it is getting large
+         */
         $filter = [
-            /**
-             * Category tree filter.
-             */
-            'categories' => [
-                'key' => 'categories',
-                'type' => 'tree',
-                'data' => $this->allCategories($category?->id),
-            ],
             /**
              * Brand filter.
              */
@@ -216,6 +326,7 @@ class ShopRepository
 
         return $filter;
     }
+
     /**
      * Get paginated products for the current category and selected filters.
      */
@@ -229,6 +340,7 @@ class ShopRepository
             ->paginate($this->paginate)
             ->withQueryString();
     }
+
     /**
      * Prepare brand filter options.
      * Counts products for each brand while excluding the brand filter itself.
@@ -252,6 +364,7 @@ class ShopRepository
                 return $brand;
             });
     }
+
     /**
      * Prepare min and max values for a range filter.
      * The current range filter is excluded to avoid locking its own values.
@@ -265,6 +378,7 @@ class ShopRepository
             'max' => (float)((clone $query)->max($currentFilter['key']) ?? 0),
         ];
     }
+
     /**
      * Build the base product query.
      * Applies category restriction and all selected filters except the excluded one.
@@ -310,6 +424,7 @@ class ShopRepository
 
         return $query;
     }
+
     /**
      * Apply a single filter to the product query.
      */
@@ -407,6 +522,7 @@ class ShopRepository
             }
         }
     }
+
     /**
      * Apply selected sorting to the products query.
      * Falls back to default shop sorting when no valid sort option is provided.
@@ -422,6 +538,7 @@ class ShopRepository
             default => $query->orderBy('id', 'desc'),
         };
     }
+
     /**
      * Detect filter type by parameter type.
      */
@@ -435,6 +552,7 @@ class ShopRepository
             default => 'equal',
         };
     }
+
     /**
      * Extract filterable parameter IDs from serialized category parameters.
      */
@@ -456,6 +574,7 @@ class ShopRepository
 
         return $ids;
     }
+
     /**
      * Convert a comma-separated string or an array into a clean integer array.
      */

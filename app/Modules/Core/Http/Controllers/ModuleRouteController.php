@@ -53,7 +53,7 @@ class ModuleRouteController extends Controller
                 $moduleSegments = array_slice($segments, 1);
                 view()->share([
                     'page' => $page,
-                    'breadcrumbs' => $this->pages->getBreadcrumbs(),
+                    'breadcrumbs' => $this->pages->getBreadcrumbs($page),
                     'meta_title' => $page->meta_title,
                     'meta_description' => $page->meta_description,
                 ]);

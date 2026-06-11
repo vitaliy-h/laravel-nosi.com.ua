@@ -3,13 +3,7 @@
 @php use Illuminate\Support\Str; @endphp
 
 @section('content')
-    @include('blocks.page_title', [
-        'title' => $category->title,
-        'items' => array_merge([
-            ['name' => 'Main Page', 'url' => module_url(\App\Modules\Core\Enums\PageModule::INDEX)],
-            ['name' => $page->title ?? 'Shop', 'url' => module_url(\App\Modules\Core\Enums\PageModule::SHOP)],
-        ], array_slice($breadcrumbs, 0, -1)),
-    ])
+    @include('blocks.page_title')
 
     <div class="container mt-4">
         <div class="row">
@@ -25,11 +19,12 @@
                         <div class="product-categories-widget widget-item">
                             <h3 class="widget-title">Categories</h3>
                             @include('pages.shop.partials.category-tree', [
-                                'categories' => $filter['categories']['data'],
+                                'categories' => $categories,
                                 'level' => 0,
                             ])
                         </div>
                         @php
+                        /*todo remove @php blocks from templates*/
                             $priceFilter = $filter['price'] ?? [];
                             $priceData = $priceFilter['data'] ?? [];
 
@@ -48,6 +43,7 @@
                             }
                         @endphp
                         <div class="pricing-range-widget widget-item">
+                            {{--todo add translations here and in the product template--}}
                             <h3 class="widget-title">Price Range</h3>
 
                             <div class="price-range-container">
@@ -180,7 +176,7 @@
 
             <div class="col-lg-8">
 
-                @if($category->text)
+                @if(isset($category) && $category->text)
                     <div class="mb-4">
                         {!! $category->text !!}
                     </div>

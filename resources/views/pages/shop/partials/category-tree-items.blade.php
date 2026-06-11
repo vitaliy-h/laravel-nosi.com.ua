@@ -1,6 +1,6 @@
 @foreach($categories as $item)
     @php
-        $children = $item->childrenRecursive ?? collect();
+        $children = $item->children ?? collect();
         $hasChildren = $children->isNotEmpty();
         $isActive = (int)($item->_active ?? 0) === 1;
         $isOpened = (int)($item->_opened ?? 0) === 1;

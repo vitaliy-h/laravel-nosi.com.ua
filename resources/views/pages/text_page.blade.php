@@ -8,7 +8,7 @@
         <div>
             {!! $page->text !!}
 
-            @foreach($page->content as $block)
+            @foreach($page->content ?? [] as $block)
                 @includeIf('blocks.' . $block['type'], [
                     'data' => $block['data']
                 ])
