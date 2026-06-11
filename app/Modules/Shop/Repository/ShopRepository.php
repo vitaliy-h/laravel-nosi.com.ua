@@ -112,7 +112,7 @@ class ShopRepository
             ->get()
             ->map(fn(Category $category) => new BreadcrumbData(
                 title: $category->title,
-                url: module_url(PageModule::SHOP, [$category->slug]),
+                url: module_url('shop', [$category->slug]),
             ));
 
         return collect(view()->shared('breadcrumbs'))

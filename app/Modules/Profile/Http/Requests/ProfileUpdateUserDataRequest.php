@@ -2,10 +2,10 @@
 
 namespace App\Modules\Profile\Http\Requests;
 
-use App\Modules\Core\Http\Requests\BaseRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
 
-class ProfileUpdateUserDataRequest extends BaseRequest
+class ProfileUpdateUserDataRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -20,7 +20,7 @@
                 @endif
             >
                 <a
-                    href="{{ module_url(\App\Modules\Core\Enums\PageModule::SHOP, $item->slug) }}"
+                    href="{{ module_url('shop', $item->slug) }}"
                     class="{{ $level === 0 ? 'category-link' : 'subcategory-link' }} {{ $isActive ? 'active' : '' }}"
                 >
                     {{ $item->title }}

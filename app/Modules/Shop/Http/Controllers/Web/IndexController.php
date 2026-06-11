@@ -81,7 +81,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
          * @todo if the slug doesn't match, the category won't be found at all — this redirect only makes sense once canonical_url is supported
          */
         if ($categorySlug !== $category->slug) {
-            return redirect()->to(module_url(PageModule::SHOP, $category->slug), 301);
+            return redirect()->to(module_url('shop', $category->slug), 301);
         }
         /**
          * Set category meta tags.
@@ -134,7 +134,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
          */
         if ($categorySlug !== $category->slug || $productSlug !== $product->slug) {
             return redirect()->to(
-                module_url(PageModule::SHOP, [
+                module_url('shop', [
                     $category->slug,
                     $product->slug . '-' . $product->id,
                 ]),
@@ -156,7 +156,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         $breadcrumbs->push(
             new BreadcrumbData(
                 title:$product->name ?? $product->title,
-                url:module_url(PageModule::SHOP, [$category->product->category->slug,$product->product->slug_with_id])
+                url:module_url('shop', [$category->slug,$product->slug_with_id])
                 /* TODO: added slug_with_id getter in app/Modules/Shop/Models/Product.php for convenient {slug}-{id} formatting */
             )
         );

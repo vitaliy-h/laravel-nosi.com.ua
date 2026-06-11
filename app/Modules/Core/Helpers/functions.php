@@ -9,7 +9,7 @@ function t(string $key, array $replace = []): string
 }
 
 if (!function_exists('module_url')) {
-    function module_url(PageModule $module, array|string $params = [], array $query = []): string
+    function module_url(PageModule|string $module, array|string $params = [], array $query = []): string
     {
         return \App\Modules\Core\Facades\UrlFacade::getModuleUrl($module, $params, $query);
     }

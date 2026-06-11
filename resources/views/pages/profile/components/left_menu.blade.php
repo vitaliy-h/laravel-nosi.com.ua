@@ -11,14 +11,14 @@
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link {{ ($activeSection ?? '') === 'edit' ? 'active' : '' }}"
-                       href="{{ module_url(\App\Modules\Core\Enums\PageModule::PROFILE, 'edit') }}">
+                       href="{{ module_url('profile', 'edit') }}">
                         <i class="bi bi-gear"></i>
                         <span>{{t('profile.account_settings')}}</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ ($activeSection ?? '') === 'orders' ? 'active' : '' }}"
-                       href="{{ module_url(\App\Modules\Core\Enums\PageModule::PROFILE, 'orders') }}">
+                       href="{{ module_url('profile', 'orders') }}">
                         <i class="bi bi-bag"></i>
                         <span>{{t('profile.orders')}}</span>
                     </a>

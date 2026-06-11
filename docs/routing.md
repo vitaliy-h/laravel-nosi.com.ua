@@ -221,7 +221,7 @@ It is executed before rendering module content and can be used for:
 public function accessCheck(): \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse|null
     {
         if (auth()->check()) {
-            return redirect()->to(module_url(PageModule::INDEX));
+            return redirect()->to(module_url('index'));
         }
         return null;
     }
@@ -251,14 +251,21 @@ This ensures:
 A helper function is used for generating module URLs:
 
 ```
-module_url(PageModule $module, array|string $params = [], array $query = []): string
+module_url(PageModule|string $module, array|string $params = [], array $query = []): string
 ```
 
 ### Parameters
 
-* **$module** → Target module (PageModule enum)
+* **$module** → Target module — `PageModule` enum instance **or** its string value (e.g. `'shop'`, `'news'`)
 * **$params** → Route parameters (slug segments)
 * **$query** → Query string parameters
+
+### String value behavior
+
+When a string is passed, it is resolved via `PageModule::tryFrom()` inside `UrlHelper::getModuleUrl()`.
+
+* Valid string → converted to `PageModule` enum, URL generated normally
+* Invalid string → returns `'#'` (no exception thrown)
 
 ---
 
@@ -268,6 +275,8 @@ module_url(PageModule $module, array|string $params = [], array $query = []): st
 
 ```php
 module_url(PageModule::AUTH, [], ['login' => null]);
+// or
+module_url('auth', [], ['login' => null]);
 ```
 
 Result:
@@ -282,6 +291,8 @@ http://localhost/auth-test?login
 
 ```php
 module_url(PageModule::NEWS, [$item->slug]);
+// or
+module_url('news', [$item->slug]);
 ```
 
 Result:
@@ -296,6 +307,8 @@ http://localhost/news/{slug}
 
 ```php
 module_url(PageModule::SHOP, [$category->slug, $product->slug]);
+// or
+module_url('shop', [$category->slug, $product->slug]);
 ```
 
 Result:

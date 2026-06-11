@@ -2,12 +2,11 @@
 
 namespace App\Modules\Profile\Http\Requests;
 
-use App\Modules\Core\Http\Requests\BaseRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
-class ProfileUpdateUserPasswordRequest extends BaseRequest
+class ProfileUpdateUserPasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -48,23 +47,4 @@ class ProfileUpdateUserPasswordRequest extends BaseRequest
             'password' => t('auth.new_password'),
         ];
     }
-
-    /**
-     * Overrides the default validation error response.
-     *
-     * Temporary method for testing custom validation responses.
-     * Remove after testing is completed.
-     *
-     * @param Validator $validator The validator instance.
-     * @return array The custom validation error response.
-     */
-//    public function abcResponse(Validator $validator): array
-//    {
-//        return [
-//            [
-//                'method'=>'alert',
-//                'content'=>  'test',
-//            ]
-//        ];
-//    }
 }

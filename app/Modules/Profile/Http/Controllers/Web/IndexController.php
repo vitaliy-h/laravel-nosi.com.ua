@@ -23,7 +23,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
     public function accessCheck(): Response|RedirectResponse|null
     {
         if (!auth()->check()) {
-            return redirect()->to(module_url(PageModule::AUTH));
+            return redirect()->to(module_url('auth'));
         }
         return null;
     }
@@ -31,7 +31,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
     public function index(Request $request, array $segments = [])
     {
         if (empty($segments)) {
-            return redirect()->to(module_url(PageModule::PROFILE, 'edit'));
+            return redirect()->to(module_url('profile', 'edit'));
         }
 
         $segment = $segments[0];

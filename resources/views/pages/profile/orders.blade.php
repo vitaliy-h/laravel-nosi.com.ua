@@ -5,7 +5,7 @@
         <h2>{{ t('profile.orders') }}</h2>
         <div class="header-actions">
             <form method="GET"
-                  action="{{ module_url(\App\Modules\Core\Enums\PageModule::PROFILE, 'orders') }}"
+                  action="{{ module_url('profile', 'orders') }}"
                   class="search-box">
                 @if($filter->status)
                     <input type="hidden" name="status" value="{{ $filter->status->value }}">
@@ -25,14 +25,14 @@
                 <ul class="dropdown-menu">
                     <li>
                         <a class="dropdown-item {{ !$filter->status ? 'active' : '' }}"
-                           href="{{ module_url(\App\Modules\Core\Enums\PageModule::PROFILE, 'orders') }}{{ $filter->search ? '?search=' . urlencode($filter->search) : '' }}">
+                           href="{{ module_url('profile', 'orders') }}{{ $filter->search ? '?search=' . urlencode($filter->search) : '' }}">
                             {{ t('profile.orders_all') }}
                         </a>
                     </li>
                     @foreach(\App\Modules\Shop\Enums\PaymentStatusEnum::cases() as $case)
                         <li>
                             @php
-                                $statusUrl = module_url(\App\Modules\Core\Enums\PageModule::PROFILE, 'orders')
+                                $statusUrl = module_url('profile', 'orders')
                                     . '?status=' . $case->value
                                     . ($filter->search ? '&search=' . urlencode($filter->search) : '');
                             @endphp
@@ -93,7 +93,7 @@
                        class="btn btn-track">
                         {{ t('profile.order_pay') }}
                     </a>
-                    <a href="{{ module_url(\App\Modules\Core\Enums\PageModule::PROFILE, ['orders', $order->id]) }}"
+                    <a href="{{ module_url('profile', ['orders', $order->id]) }}"
                        role="button"
                        class="btn btn-details">
                         {{ t('profile.order_view_details') }}

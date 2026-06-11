@@ -11,9 +11,9 @@ use App\Modules\Profile\Dtos\ProfileUpdateUserDataData;
 use App\Modules\Profile\Http\Requests\ProfileDeleteUserAccountRequest;
 use App\Modules\Profile\Http\Requests\ProfileUpdateUserDataRequest;
 use App\Modules\Profile\Http\Requests\ProfileUpdateUserPasswordRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
@@ -25,30 +25,24 @@ class ProfileController extends Controller
     {
     }
 
-    public function updateUserData(ProfileUpdateUserDataRequest $request): JsonResponse|RedirectResponse {
+    public function updateUserData(ProfileUpdateUserDataRequest $request): JsonResponse|RedirectResponse
+    {
         $this->updateUserDataAction->handle(
             $request->user(),
             ProfileUpdateUserDataData::from($request->validated())
         );
-        //return back()->with('user_data_success', t('profile.user_data_updated'));
+//        return back()->with('user_data_success', t('profile.user_data_updated'));
         //abc-response
+        session()->now('user_data_success', t('profile.user_data_updated'));
+        // now() makes flash available only in the current request; flash() would survive a page reload and show again. Delete this after read
         return response()->json([
-            'actions'=>[
+            'actions' => [
                 [
-                    'method'=>'replaceWith',
-                    'selector'=>'#form-user-data',
+                    'method' => 'replaceWith',
+                    'selector' => '#form-user-data',
                     'content' => view('pages.profile.components.edit_user_data', [
                         'user' => $request->user(),
                     ])->render(),
-                ],
-                [
-                    'method'=>'show',
-                    'selector'=> '.alert[data-alert="user_data_success"]',
-                ],
-                [
-                    'method'=>'text',
-                    'selector'=> '.alert[data-alert="user_data_success"]',
-                    'content'=>  t('profile.user_data_updated'),
                 ]
             ]
         ]);
@@ -62,23 +56,15 @@ class ProfileController extends Controller
         );
 
 //        return back()->with('password_change_success', t('profile.password_updated'));
+        session()->now('password_change_success', t('profile.password_updated'));
         return response()->json([
-            'actions'=>[
+            'actions' => [
                 [
-                    'method'=>'replaceWith',
-                    'selector'=>'#form-user-password',
+                    'method' => 'replaceWith',
+                    'selector' => '#form-user-password',
                     'content' => view('pages.profile.components.edit_user_password', [
                         'user' => $request->user(),
                     ])->render(),
-                ],
-                [
-                    'method'=>'show',
-                    'selector'=> '.alert[data-alert="password_change_success"]',
-                ],
-                [
-                    'method'=>'text',
-                    'selector'=> '.alert[data-alert="password_change_success"]',
-                    'content'=>  t('profile.password_updated'),
                 ]
             ]
         ]);
@@ -95,6 +81,6 @@ class ProfileController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->to(module_url(PageModule::INDEX));
+        return redirect()->to(module_url('index'));
     }
 }

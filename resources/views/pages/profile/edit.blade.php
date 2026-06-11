@@ -10,11 +10,6 @@
         <div class="settings-section" data-aos="fade-up">
             <h3>{{t('profile.personal_information')}}</h3>
 
-            @include('blocks.alerts', [
-                'successKey' => 'user_data_success',
-                'errorKey' => 'user_data_error',
-            ])
-
             @include('pages.profile.components.edit_user_data')
 
         </div>
@@ -22,11 +17,6 @@
         <!-- Security Settings -->
         <div class="settings-section" data-aos="fade-up" data-aos-delay="200">
             <h3>{{t('profile.security')}}</h3>
-
-            @include('blocks.alerts', [
-                'successKey' => 'password_change_success',
-                'errorKey' => 'password_change_error',
-            ])
 
             @include('pages.profile.components.edit_user_password')
         </div>

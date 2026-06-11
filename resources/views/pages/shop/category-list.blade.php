@@ -6,8 +6,8 @@
     @include('blocks.page_title', [
     'title' => $category->title,
     'items' => array_merge([
-        ['name' => 'Main Page', 'url' => module_url(\App\Modules\Core\Enums\PageModule::INDEX)],
-        ['name' => $page->title ?? 'Shop', 'url' => module_url(\App\Modules\Core\Enums\PageModule::SHOP)],
+        ['name' => 'Main Page', 'url' => module_url('index')],
+        ['name' => $page->title ?? 'Shop', 'url' => module_url('shop')],
     ], array_slice($breadcrumbs, 0, -1)),
 ])
 
@@ -42,7 +42,7 @@
                                 </p>
                             @endif
 
-                            <a href="{{ module_url(\App\Modules\Core\Enums\PageModule::SHOP,[$item->slug]) }}" class="btn btn-primary">
+                            <a href="{{ module_url('shop',[$item->slug]) }}" class="btn btn-primary">
                                 Open category
                             </a>
                         </div>

@@ -2,7 +2,7 @@
 
 @section('profile_content')
     <div class="section-header" data-aos="fade-up">
-        <a href="{{ module_url(\App\Modules\Core\Enums\PageModule::PROFILE, 'orders') }}" class="back-link">
+        <a href="{{ module_url('profile', 'orders') }}" class="back-link">
             <i class="bi bi-arrow-left"></i>
             {{ t('profile.orders') }}
         </a>
@@ -39,7 +39,7 @@
                                     <h5>{{ t('profile.order_items') }} ({{ $order->items->count() }})</h5>
                                     <div class="order-items">
                                         @foreach($order->items as $item)
-                                            <a href="{{module_url(\App\Modules\Core\Enums\PageModule::SHOP,[$item->product->category->slug,$item->product->slug_with_id])}}"
+                                            <a href="{{module_url('shop',[$item->product->category->slug,$item->product->slug_with_id])}}"
                                                target="_blank">
                                                 <div class="item">
                                                     @if($item->product->image)

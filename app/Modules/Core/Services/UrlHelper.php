@@ -52,13 +52,20 @@ class UrlHelper
 
     /**
      * Get module url helper
-     * @param PageModule $module
+     * @param PageModule|string $module
      * @param array|string $params
      * @param array $query
      * @return string
      */
-    public function getModuleUrl(PageModule $module, array|string $params = [], array $query = []): string
+    public function getModuleUrl(PageModule|string $module, array|string $params = [], array $query = []): string
     {
+        if (is_string($module)) {
+            $module = PageModule::tryFrom($module);
+            if ($module === null) {
+                return '#';
+            }
+        }
+
         $page = $this->pages->findByModule($module);
 
         if (!$page) {
