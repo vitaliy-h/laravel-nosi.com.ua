@@ -45,6 +45,7 @@ return [
         'email' => 'Email',
         'email_verified_at' => 'Email verified at',
         'img' => 'Image',
+        'imgs' => 'Images',
         'ip' => 'IP',
         'code' => 'Code',
         'geo_country_id' => 'Country',

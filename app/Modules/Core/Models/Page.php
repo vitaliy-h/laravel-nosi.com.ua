@@ -3,12 +3,14 @@
 namespace App\Modules\Core\Models;
 
 use App\Modules\Core\Enums\PageModule;
+use App\Modules\Core\Traits\Models\HasBuilderContent;
 use App\Modules\Core\Traits\Models\HasSeoFields;
 use App\Modules\Core\Traits\Models\HasVisibility;
 use Illuminate\Database\Eloquent\Model;
 
 class Page extends Model
 {
+    use HasBuilderContent;
     use HasVisibility;
     use HasSeoFields;
 

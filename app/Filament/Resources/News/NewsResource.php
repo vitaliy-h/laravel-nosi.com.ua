@@ -55,6 +55,20 @@ class NewsResource extends Resource
                             'img',
                         );
                     }),
+                FileUpload::make('imgs')
+                    ->image()
+                    ->multiple()
+                    ->reorderable()
+                    ->panelLayout('grid')
+                    ->imagePreviewHeight('150')
+                    ->columnSpanFull()
+                    ->visibility('public')
+                    ->getUploadedFileNameForStorageUsing(function ($file, $record) {
+                        return ($record ?? new News())->getArrayFilePath(
+                            $file->getClientOriginalName(),
+                            'imgs',
+                        );
+                    }),
                 RichEditor::make('text')
                     ->columnSpanFull(),
                 static::getSeoSection(),
