@@ -511,15 +511,74 @@ function abc_response(response) {
 // ============================================
 
 class AbcResponse {
+    // Remove validation errors from previous submit attempts.
+    // Otherwise old messages remain visible after user edits the form.
+    static clearValidationErrors(form) {
+        form?.querySelectorAll(
+            '.invalid-feedback'
+        ).forEach(el => el.remove());
 
+        form?.querySelectorAll(
+            '.is-invalid'
+        ).forEach(el => {
+            el.classList.remove(
+                'is-invalid'
+            );
+        });
+
+    }
+
+    // Laravel returns validation errors in format:
+    // {
+    //     email: ["The email field is required."]
+    // }
+    static handleValidationErrors(
+        errors,
+        form
+    ) {
+        Object.entries(errors)
+            .forEach(([field, messages]) => {
+
+                const input =
+                    form?.querySelector(
+                        `[name="${field}"]`
+                    );
+
+                // Ignore errors for fields that do not exist in DOM.
+                if (!input) {
+                    return;
+                }
+
+                input.classList.add(
+                    'is-invalid'
+                );
+
+                const error =
+                    document.createElement(
+                        'div'
+                    );
+
+                error.className =
+                    'invalid-feedback';
+
+                // Display only the first validation message.
+                error.textContent =
+                    messages[0];
+
+                input.after(error);
+
+            });
+
+    }
     static async request({
                              url,
                              method = 'GET',
                              body = null,
                              button = null,
+                             form = null,
                          }) {
 
-        // Prevent double click
+        // Prevent duplicate requests caused by double-clicks.
         if (
             button?.classList.contains(
                 'abcr-wait'
@@ -550,6 +609,35 @@ class AbcResponse {
                             ?.content,
                     },
                 });
+
+            // Laravel validation failure.
+            // "message": "error text",
+            // "errors": {
+            //     "email": [
+            //         "error text"
+            //      ]
+            // }
+            if (response.status === 422) {
+
+                this.clearValidationErrors(form);
+
+                const json = await response.json();
+
+                if (json.errors) {
+                    this.handleValidationErrors(
+                        json.errors,
+                        form
+                    );
+                }
+                else if (json.message) {
+                    alert(json.message);
+                }
+                else {
+                    alert('error');
+                }
+
+                return;
+            }
 
             // HTTP error
             if (!response.ok) {
@@ -620,29 +708,21 @@ document.addEventListener(
 
         let valid = true;
 
-        // Optional jQuery validation
-        //todo
+        //todo validation
         if (
             form.classList.contains(
                 'validate'
             )
         ) {
 
-            if (
-                window.jQuery &&
-                jQuery.fn.validate
-            ) {
-
-                valid =
-                    jQuery(form).valid();
-
-            }
-
         }
 
         if (!valid) {
             return;
         }
+
+        // Clear previous validation errors before each submit.
+        AbcResponse.clearValidationErrors(form);
 
         const formData =
             new FormData(form);
@@ -652,6 +732,7 @@ document.addEventListener(
                 'button[type="submit"]'
             );
 
+        // Disable submit button while request is in progress.
         submitButton?.classList.add(
             'abcr-disabled'
         );
@@ -663,6 +744,7 @@ document.addEventListener(
                     form.method || 'POST',
                 body: formData,
                 button: submitButton,
+                form: form, // Used for Laravel validation error rendering.
             });
 
         setTimeout(() => {

@@ -31,10 +31,12 @@ class ProfileController extends Controller
             $request->user(),
             ProfileUpdateUserDataData::from($request->validated())
         );
-//        return back()->with('user_data_success', t('profile.user_data_updated'));
-        //abc-response
+        // For regular form submit use redirect response below.
+        // When form has data-abcr attribute, return ABC JSON actions instead.
+        // resources/views/pages/profile/components/edit_user_data.blade.php
+        // return back()->with('user_data_success', t('profile.user_data_updated'));
         session()->now('user_data_success', t('profile.user_data_updated'));
-        // now() makes flash available only in the current request; flash() would survive a page reload and show again. Delete this after read
+        // now() makes flash available only in the current request; flash() would survive a page reload and show again.
         return response()->json([
             'actions' => [
                 [
@@ -55,7 +57,9 @@ class ProfileController extends Controller
             $request->input('password')
         );
 
-//        return back()->with('password_change_success', t('profile.password_updated'));
+        // For regular form submit use redirect response below.
+        // When form has data-abcr attribute, return ABC JSON actions instead.
+        // return back()->with('password_change_success', t('profile.password_updated'));
         session()->now('password_change_success', t('profile.password_updated'));
         return response()->json([
             'actions' => [
