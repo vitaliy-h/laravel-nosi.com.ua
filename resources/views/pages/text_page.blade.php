@@ -5,10 +5,7 @@
 
     <div class="container mt-4">
 
-        <div>
-            {!! $page->text !!}
+        @include('components.builder', ['content' => $page->content])
 
-            @include('components.builder', ['content' => $page->content])
-        </div>
     </div>
 @endsection
