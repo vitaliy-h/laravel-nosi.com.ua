@@ -8,11 +8,7 @@
         <div>
             {!! $page->text !!}
 
-            @foreach($page->content ?? [] as $block)
-                @includeIf('blocks.' . $block['type'], [
-                    'data' => $block['data']
-                ])
-            @endforeach
+            @include('components.builder', ['content' => $page->content])
         </div>
     </div>
 @endsection

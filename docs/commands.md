@@ -10,4 +10,5 @@
 
 * `php artisan migrate:fresh --seed` — refresh database. **This will drop all tables!!!** 
 
+* `php artisan optimize:clear`
 

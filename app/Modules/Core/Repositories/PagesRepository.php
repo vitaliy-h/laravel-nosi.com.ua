@@ -29,12 +29,15 @@ class PagesRepository
 
     public function findBySlug(string $slug): ?Page
     {
-        return $this->getAllPages()
-            ->filter(fn (Page $page) => $page->module !== null)
-            ->first(fn (Page $page) => $slug === ''
-                ? $page->module === PageModule::INDEX
-                : $page->slug === $slug
-            );
+        if ($slug === '') {
+            return Page::visible()
+                ->where('module', PageModule::INDEX)
+                ->first();
+        }
+
+        return Page::visible()
+            ->where('slug', $slug)
+            ->first();
     }
 
     public function findByModule(PageModule $module): ?Page

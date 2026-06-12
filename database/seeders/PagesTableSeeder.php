@@ -17,18 +17,47 @@ class PagesTableSeeder extends Seeder
             [
                 'title' => 'Main Page',
                 'slug' => '',
-                'text' => '<h5>Main Page</h5>',
                 'module' => PageModule::INDEX,
                 'display' => true,
                 'display_menu' => false,
                 'display_menu_footer' => false,
                 'meta_title' => 'Main Page',
                 'meta_description' => 'Main Page',
+                'content' => [
+                    [
+                        'type' => 'teasers',
+                        'data' => [
+                            'title' => '',
+                            'style' => 'default',
+                            'items' => [
+                                [
+                                    'icon' => 'bi-truck',
+                                    'title' => 'Free Shipping',
+                                    'text' => 'Nulla sit morbi vestibulum eros duis amet, consectetur vitae lacus. Ut quis tempor felis sed nunc viverra.',
+                                ],
+                                [
+                                    'icon' => 'bi-piggy-bank',
+                                    'title' => 'Money Back Guarantee',
+                                    'text' => 'Nullam gravida felis ac nunc tincidunt, sed malesuada justo pulvinar. Vestibulum nec diam vitae eros.',
+                                ],
+                                [
+                                    'icon' => 'bi-percent',
+                                    'title' => 'Discount Offers',
+                                    'text' => 'Nulla ipsum nisi vel adipiscing amet, dignissim consectetur ornare. Vestibulum quis posuere elit auctor.',
+                                ],
+                                [
+                                    'icon' => 'bi-headset',
+                                    'title' => '24/7 Support',
+                                    'text' => 'Ipsum dolor amet sit consectetur adipiscing, nullam vitae euismod tempor nunc felis vestibulum ornare.',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ],
             [
                 'title' => 'News',
                 'slug' => 'news',
-                'text' => '<h5>News</h5>',
                 'module' => PageModule::NEWS,
                 'display' => true,
                 'display_menu' => true,
@@ -39,7 +68,6 @@ class PagesTableSeeder extends Seeder
             [
                 'title' => 'Feedback',
                 'slug' => 'feedback',
-                'text' => '<h5>Feedback</h5>',
                 'module' => PageModule::FEEDBACK,
                 'display' => true,
                 'display_menu' => false,
@@ -50,7 +78,6 @@ class PagesTableSeeder extends Seeder
             [
                 'title' => 'Shop',
                 'slug' => 'shop',
-                'text' => '<h5>Shop</h5>',
                 'module' => PageModule::SHOP,
                 'display' => true,
                 'display_menu' => true,
@@ -61,7 +88,6 @@ class PagesTableSeeder extends Seeder
             [
                 'title' => 'Auth',
                 'slug' => 'auth',
-                'text' => '<h5>Auth</h5>',
                 'module' => PageModule::AUTH,
                 'display' => true,
                 'display_menu' => false,
@@ -72,7 +98,6 @@ class PagesTableSeeder extends Seeder
             [
                 'title' => 'Profile',
                 'slug' => 'profile',
-                'text' => '<h5>Profile</h5>',
                 'module' => PageModule::PROFILE,
                 'display' => true,
                 'display_menu' => false,
@@ -83,24 +108,42 @@ class PagesTableSeeder extends Seeder
             [
                 'title' => 'Text Page',
                 'slug' => 'text-page-1',
-                'text' => '<h5>Text page</h5>',
                 'module' => PageModule::TEXT,
                 'display' => true,
                 'display_menu' => true,
                 'display_menu_footer' => true,
-                'meta_title' => 'Text Page',
-                'meta_description' => 'Text Page',
+                'meta_title' => 'Text Page 1',
+                'meta_description' => 'Text Page 1',
+                'content' => [
+                    [
+                        'type' => 'text',
+                        'data' => [
+                            'style' => 'default',
+                            'title' => null,
+                            'content' => '<p>text page 1</p>',
+                        ],
+                    ],
+                ],
             ],
             [
                 'title' => 'Text Page 2',
                 'slug' => 'text-page-2',
-                'text' => '<h5>Text page</h5>',
                 'module' => PageModule::TEXT,
                 'display' => true,
                 'display_menu' => true,
                 'display_menu_footer' => true,
-                'meta_title' => 'Text Page',
-                'meta_description' => 'Text Page',
+                'meta_title' => 'Text Page 2',
+                'meta_description' => 'Text Page 2',
+                'content' => [
+                    [
+                        'type' => 'text',
+                        'data' => [
+                            'style' => 'default',
+                            'title' => null,
+                            'content' => '<p>text page 2</p>',
+                        ],
+                    ],
+                ],
             ],
         ];
         $rank = 100;
