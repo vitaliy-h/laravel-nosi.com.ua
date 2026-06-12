@@ -13,11 +13,14 @@ class News extends Model
     use HasImage; // if there is an image
     use HasSeoFields;
 
+    protected array $imgArrayFields = ['imgs'];
+
     protected $fillable = [
         'published_at', // main field for sorting
         'display', // related to HasVisibility
         'slug',
         'img', // main image
+        'imgs',
         'title',
         'meta_title',
         'meta_description',
@@ -28,5 +31,6 @@ class News extends Model
     protected $casts = [
         'display' => 'boolean',
         'published_at' => 'datetime',
+        'imgs' => 'array',
     ];
 }

@@ -3,6 +3,7 @@
 namespace App\Modules\Core\Models;
 
 use App\Modules\Core\Enums\PageModule;
+use App\Modules\Core\Traits\Models\HasBuilderContent;
 use App\Modules\Core\Traits\Models\HasSeoFields;
 use App\Modules\Core\Traits\Models\HasVisibility;
 use Database\Factories\PageFactory;
@@ -13,6 +14,7 @@ class Page extends Model
 {
     /** @use HasFactory<PageFactory> */
     use HasFactory;
+    use HasBuilderContent;
     use HasVisibility;
     use HasSeoFields;
 

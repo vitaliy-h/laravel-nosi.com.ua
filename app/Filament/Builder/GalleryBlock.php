@@ -2,18 +2,15 @@
 
 namespace App\Filament\Builder;
 
-use Closure;
+use App\Filament\Support\BuilderContent;
 use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Support\Str;
 
 class GalleryBlock
 {
-    public static function make(
-        Closure|string|null $basePath = null
-    ): Block
+    public static function make(): Block
     {
         return Block::make('gallery')
 
@@ -35,20 +32,8 @@ class GalleryBlock
 
                 FileUpload::make('images')
                     ->image()
-                    ->directory(function ($component, $record) use ($basePath) {
-                        $base = $basePath instanceof Closure
-                            ? $basePath($record)
-                            : ($basePath ?? 'pages');
-                        $parts = explode('.', $component->getStatePath());
-                        $blockUuid = collect($parts)->first(fn($p) => Str::isUuid($p)) ?? Str::uuid();
-                        return $base . '/' . $blockUuid . '/imgs';
-                    })
-                    ->getUploadedFileNameForStorageUsing(function ($file) {
-                        $imageKey = (string) Str::uuid();
-                        $stem = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
-                        $ext = strtolower($file->getClientOriginalExtension());
-                        return $imageKey . '/' . $stem . '.' . $ext;
-                    })
+                    ->directory(BuilderContent::directoryClosure('imgs'))
+                    ->getUploadedFileNameForStorageUsing(BuilderContent::fileNameClosure(withUuidPrefix: true))
                     ->visibility('public')
                     ->multiple()
                     ->reorderable()
