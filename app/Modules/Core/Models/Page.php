@@ -5,10 +5,14 @@ namespace App\Modules\Core\Models;
 use App\Modules\Core\Enums\PageModule;
 use App\Modules\Core\Traits\Models\HasSeoFields;
 use App\Modules\Core\Traits\Models\HasVisibility;
+use Database\Factories\PageFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Page extends Model
 {
+    /** @use HasFactory<PageFactory> */
+    use HasFactory;
     use HasVisibility;
     use HasSeoFields;
 

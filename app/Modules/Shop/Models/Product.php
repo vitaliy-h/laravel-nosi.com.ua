@@ -5,10 +5,14 @@ namespace App\Modules\Shop\Models;
 use App\Modules\Core\Traits\Models\HasImage;
 use App\Modules\Core\Traits\Models\HasSeoFields;
 use App\Modules\Core\Traits\Models\HasVisibility;
+use Database\Factories\ProductFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    /** @use HasFactory<ProductFactory> */
+    use HasFactory;
     use HasVisibility;
     use HasImage;
     use HasSeoFields;

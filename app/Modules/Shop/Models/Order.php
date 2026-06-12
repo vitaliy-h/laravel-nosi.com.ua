@@ -5,10 +5,15 @@ namespace App\Modules\Shop\Models;
 use App\Modules\Core\Models\User;
 use App\Modules\Shop\Enums\PaymentStatusEnum;
 use App\Modules\Shop\Enums\PaymentTypeEnum;
+use Database\Factories\OrderFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    /** @use HasFactory<OrderFactory> */
+    use HasFactory;
+
     protected $table = 'shop_orders';
 
     protected $fillable = [

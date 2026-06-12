@@ -5,12 +5,16 @@ namespace App\Modules\Shop\Models;
 use App\Modules\Core\Traits\Models\HasImage;
 use App\Modules\Core\Traits\Models\HasSeoFields;
 use App\Modules\Core\Traits\Models\HasVisibility;
+use Database\Factories\CategoryFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kalnoy\Nestedset\NodeTrait;
 
 class Category extends Model
 {
+    /** @use HasFactory<CategoryFactory> */
+    use HasFactory;
     use HasVisibility;
     use HasImage;
     use NodeTrait;
