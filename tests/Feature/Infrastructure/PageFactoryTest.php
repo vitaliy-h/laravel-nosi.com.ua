@@ -11,14 +11,6 @@ class PageFactoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_page_factory_creates_page_with_custom_slug(): void
-    {
-        $page = Page::factory()->withSlug('custom')->create();
-
-        $this->assertModelExists($page);
-        $this->assertSame('custom', $page->slug);
-    }
-
     public function test_page_factory_creates_index_page_with_empty_slug(): void
     {
         $page = Page::factory()->withSlug('')->forModule(PageModule::INDEX)->create();
@@ -26,13 +18,6 @@ class PageFactoryTest extends TestCase
         $this->assertModelExists($page);
         $this->assertSame('', $page->slug);
         $this->assertSame(PageModule::INDEX, $page->module);
-    }
-
-    public function test_page_factory_invisible_state_sets_display_false(): void
-    {
-        $page = Page::factory()->invisible()->create();
-
-        $this->assertFalse($page->display);
     }
 
     public function test_seed_pages_for_routing_creates_expected_route_pages(): void

@@ -48,6 +48,7 @@ Production-ready starter based on Laravel + Filament.
     * [translations](translations.md)
     * [logs](logs.md)
     * [letters](letters.md)
+    * [testing](testing.md)
     * [API](./api/README.md)
 * [Filament Admin Panel](./filament.md)
     * [Resource Generation](filament/resource-generation.md)

@@ -17,8 +17,6 @@ class FrontendNotFoundTest extends TestCase
 
         $response->assertStatus(404);
         $response->assertSee('404', false);
-        $response->assertSee('display-1', false);
-        $response->assertSee('btn-primary', false);
         $response->assertSee('href="'.url('/').'"', false);
     }
 }

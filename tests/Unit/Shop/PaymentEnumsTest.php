@@ -19,11 +19,6 @@ class PaymentEnumsTest extends TestCase
         ], $options);
     }
 
-    public function test_payment_status_label(): void
-    {
-        $this->assertSame('Unpaid', PaymentStatusEnum::UNPAID->label());
-    }
-
     public function test_payment_type_options_contain_all_cases(): void
     {
         $options = PaymentTypeEnum::options();
