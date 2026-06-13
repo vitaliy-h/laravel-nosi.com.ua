@@ -145,10 +145,12 @@ class CategoryResource extends Resource
                 //
             ])
             ->recordActions([
-                /*ViewAction::make()
+                ViewAction::make()
                     ->iconButton()
-                    ->url(fn ($record) => route('news.show',['slug'=>$record->slug]))
-                    ->openUrlInNewTab(),*/
+                    ->url(fn (Category $record) => module_url('shop', [
+                        $record->slug,
+                    ]))
+                    ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()
                     ->iconButton()

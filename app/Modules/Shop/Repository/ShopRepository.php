@@ -85,7 +85,7 @@ class ShopRepository
      */
     public function getProductById(int $id): Product
     {
-        return Product::query()
+        return Product::visible()
             ->where('id', $id)
             ->firstOrFail();
     }

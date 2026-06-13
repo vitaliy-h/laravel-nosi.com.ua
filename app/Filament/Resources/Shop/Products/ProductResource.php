@@ -12,6 +12,7 @@ use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -148,6 +149,13 @@ class ProductResource extends Resource
                     ->preload(),
             ])
             ->recordActions([
+                ViewAction::make()
+                    ->iconButton()
+                    ->url(fn (Product $record) => module_url('shop', [
+                        $record->category->slug,
+                        $record->slug_with_id,
+                    ]))
+                    ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),
             ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
