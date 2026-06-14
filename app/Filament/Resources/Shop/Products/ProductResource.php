@@ -92,6 +92,21 @@ class ProductResource extends Resource
                     ->numeric()
                     ->columnSpan(2),
 
+                FileUpload::make('imgs')
+                    ->image()
+                    ->multiple()
+                    ->reorderable()
+                    ->columnSpan(12)
+                    ->panelLayout('grid')
+                    ->imagePreviewHeight('150')
+                    ->visibility('public')
+                    ->getUploadedFileNameForStorageUsing(function ($file, $record) {
+                        return ($record ?? new Product())->getFilePath(
+                            $file->getClientOriginalName(),
+                            'gallery',
+                        );
+                    }),
+
                 RichEditor::make('text')
                     ->columnSpanFull(),
                 static::getSeoSection(),

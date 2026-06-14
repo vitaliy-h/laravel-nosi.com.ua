@@ -29,6 +29,7 @@ class Product extends Model
         'title',
         'slug',
         'img',
+        'imgs',
         'text',
         'meta_title',
         'meta_description',
@@ -38,6 +39,7 @@ class Product extends Model
         'display' => 'boolean',
         'price' => 'float',
         'price2' => 'float',
+        'imgs' => 'array'
     ];
 
     public function category()
