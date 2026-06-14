@@ -52,6 +52,12 @@ class ModuleRouteController extends Controller
             $routerClass = '\\App\\Modules\\' . Str::ucfirst(Str::camel($page->module->value))  . '\\Http\\Controllers\\Web\\IndexController';
 
             if (class_exists($routerClass)) {
+                //todo add route
+                /*
+                Route::match(['get', 'post'], $page->slug . '/{segments?}', [self::class, 'handle'])
+                    ->where('segments', '.*')
+                    ->name('module.' . $page->module->value);
+                */
                 $moduleSegments = array_slice($segments, 1);
                 view()->share([
                     'page' => $page,

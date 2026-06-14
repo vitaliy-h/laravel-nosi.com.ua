@@ -4,7 +4,7 @@
 
 Download and install Node.js:
 
-[Node.js](https://nodejs.org/?utm_source=chatgpt.com)
+[Node.js](https://nodejs.org/)
 
 Check installation:
 
