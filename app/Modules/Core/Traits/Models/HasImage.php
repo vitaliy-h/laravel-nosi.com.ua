@@ -68,20 +68,10 @@ trait HasImage
         return "{$table}/{$id}/{$field}/{$filename}";
     }
 
-    public function getArrayFilePath(string $filename, string $field): string
-    {
-        $table = $this->getTable();
-        $id = $this->getKey() ?? 'temp';
-        $filename = self::normalizeFilename($filename);
-        $uuid = Str::uuid();
-
-        return "{$table}/{$id}/{$field}/{$uuid}/{$filename}";
-    }
-
     protected static function normalizeFilename(string $filename): string
     {
         $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-        $name = Str::slug(pathinfo($filename, PATHINFO_FILENAME), '-', 'uk');
+        $name = Str::slug(pathinfo($filename, PATHINFO_FILENAME));
 
         if (empty($name)) {
             $name = (string)Str::uuid();
@@ -121,7 +111,7 @@ trait HasImage
                     continue;
                 }
 
-                $newPath = $this->getArrayFilePath(basename($oldPath), $field);
+                $newPath = $this->getFilePath(basename($oldPath), $field);
                 Storage::move($oldPath, $newPath);
                 $paths[$i] = $newPath;
                 $movedDirs[] = dirname($oldPath);

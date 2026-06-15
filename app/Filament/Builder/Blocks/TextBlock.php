@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Builder;
+namespace App\Filament\Builder\Blocks;
 
 use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\RichEditor;

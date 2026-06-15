@@ -64,7 +64,7 @@ class NewsResource extends Resource
                     ->columnSpanFull()
                     ->visibility('public')
                     ->getUploadedFileNameForStorageUsing(function ($file, $record) {
-                        return ($record ?? new News())->getArrayFilePath(
+                        return ($record ?? new News())->getFilePath(
                             $file->getClientOriginalName(),
                             'imgs',
                         );

@@ -31,47 +31,51 @@ class ProfileController extends Controller
             $request->user(),
             ProfileUpdateUserDataData::from($request->validated())
         );
-        // For regular form submit use redirect response below.
-        // When form has data-abcr attribute, return ABC JSON actions instead.
-        // resources/views/pages/profile/components/edit_user_data.blade.php
-        // return back()->with('user_data_success', t('profile.user_data_updated'));
-        session()->now('user_data_success', t('profile.user_data_updated'));
-        // now() makes flash available only in the current request; flash() would survive a page reload and show again.
-        return response()->json([
-            'actions' => [
-                [
-                    'method' => 'replaceWith',
-                    'selector' => '#form-user-data',
-                    'content' => view('pages.profile.components.edit_user_data', [
-                        'user' => $request->user(),
-                    ])->render(),
+
+        // AJAX (data-abcr form): re-render the form fragment with a flash message visible in the current request.
+        // session()->now() keeps the flash in this request only — flash() would reappear after a reload.
+        if ($request->ajax()) {
+            session()->now('user_data_success', t('profile.user_data_updated'));
+            return response()->json([
+                'actions' => [
+                    [
+                        'method' => 'replaceWith',
+                        'selector' => '#form-user-data',
+                        'content' => view('pages.profile.components.edit_user_data', [
+                            'user' => $request->user(),
+                        ])->render(),
+                    ]
                 ]
-            ]
-        ]);
+            ]);
+        }
+        // Regular form submit: redirect back so the browser handles the POST/Redirect/GET cycle.
+        return back()->with('user_data_success', t('profile.user_data_updated'));
     }
 
-    public function updateUserPassword(ProfileUpdateUserPasswordRequest $request): \Illuminate\Http\RedirectResponse|JsonResponse
+    public function updateUserPassword(ProfileUpdateUserPasswordRequest $request): RedirectResponse|JsonResponse
     {
         $this->updateUserPasswordAction->handle(
             $request->user(),
             $request->input('password')
         );
 
-        // For regular form submit use redirect response below.
-        // When form has data-abcr attribute, return ABC JSON actions instead.
-        // return back()->with('password_change_success', t('profile.password_updated'));
-        session()->now('password_change_success', t('profile.password_updated'));
-        return response()->json([
-            'actions' => [
-                [
-                    'method' => 'replaceWith',
-                    'selector' => '#form-user-password',
-                    'content' => view('pages.profile.components.edit_user_password', [
-                        'user' => $request->user(),
-                    ])->render(),
+        // Same AJAX / regular-form branching as updateUserData above.
+        if ($request->ajax()) {
+            session()->now('password_change_success', t('profile.password_updated'));
+            return response()->json([
+                'actions' => [
+                    [
+                        'method' => 'replaceWith',
+                        'selector' => '#form-user-password',
+                        'content' => view('pages.profile.components.edit_user_password', [
+                            'user' => $request->user(),
+                        ])->render(),
+                    ]
                 ]
-            ]
-        ]);
+            ]);
+        }
+
+        return back()->with('password_change_success', t('profile.password_updated'));
     }
 
     public function deleteUserAccount(ProfileDeleteUserAccountRequest $request): \Illuminate\Http\RedirectResponse

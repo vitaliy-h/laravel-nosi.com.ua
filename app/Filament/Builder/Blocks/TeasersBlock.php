@@ -1,21 +1,19 @@
 <?php
 
-namespace App\Filament\Builder;
+namespace App\Filament\Builder\Blocks;
 
-use App\Filament\Support\BuilderContent;
 use Filament\Forms\Components\Builder\Block;
-use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 
-class GalleryBlock
+class TeasersBlock
 {
     public static function make(): Block
     {
-        return Block::make('gallery')
-
-            ->label('Gallery')
-
+        return Block::make('teasers')
+            ->label('Teasers')
             ->schema([
 
                 TextInput::make('title')
@@ -30,19 +28,24 @@ class GalleryBlock
                     ->native(false)
                     ->columnSpan(4),
 
-                FileUpload::make('images')
-                    ->image()
-                    ->directory(BuilderContent::directoryClosure('imgs'))
-                    ->getUploadedFileNameForStorageUsing(BuilderContent::fileNameClosure(withUuidPrefix: true))
-                    ->visibility('public')
-                    ->multiple()
-                    ->reorderable()
-                    ->panelLayout('grid')
-                    ->imagePreviewHeight('180')
+                Repeater::make('items')
+                    ->schema([
+
+                        TextInput::make('icon')
+                            ->helperText('heroicon name')
+                            ->columnSpan(4),
+
+                        TextInput::make('title')
+                            ->columnSpan(4),
+
+                        Textarea::make('text')
+                            ->columnSpan(4),
+
+                    ])
+                    ->columns(12)
                     ->columnSpan(12),
 
             ])
-
             ->columns(12);
     }
 }

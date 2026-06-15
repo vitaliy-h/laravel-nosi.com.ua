@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Builder;
+namespace App\Filament\Builder\Blocks;
 
-use App\Filament\Support\BuilderContent;
+use App\Filament\Builder\BuilderContent;
 use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;

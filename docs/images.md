@@ -155,7 +155,7 @@ FileUpload::make('imgs')
     ->panelLayout('grid')
     ->visibility('public')
     ->getUploadedFileNameForStorageUsing(function ($file, $record) {
-        return ($record ?? new News())->getArrayFilePath(
+        return ($record ?? new News())->getFilePath(
             $file->getClientOriginalName(),
             'imgs',
         );
@@ -222,7 +222,7 @@ No manual action required.
 # Notes
 
 * Always use `public` visibility on `FileUpload`
-* Single fields → `getFilePath()`, array fields → `getArrayFilePath()`
+* File path → `getFilePath()`
 * Never store paths manually — always go through trait methods
 * `$imgFields` defaults to `['img']` if not declared
 * `$imgArrayFields` defaults to `[]` if not declared

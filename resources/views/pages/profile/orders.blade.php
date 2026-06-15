@@ -88,11 +88,13 @@
                 </div>
 
                 <div class="order-footer">
-                    <a href="#"
-                       role="button"
-                       class="btn btn-track">
-                        {{ t('profile.order_pay') }}
-                    </a>
+                    @if($order->actions->canPay())
+                        <a href="#"
+                           role="button"
+                           class="btn btn-track">
+                            {{ t('profile.order_pay') }}
+                        </a>
+                    @endif
                     <a href="{{ module_url('profile', ['orders', $order->id]) }}"
                        role="button"
                        class="btn btn-details">

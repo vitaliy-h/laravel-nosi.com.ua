@@ -78,22 +78,13 @@
                     </div>
                 </div>
                 <div class="order-footer">
-                    <a href="#"
-                       role="button"
-                       class="btn btn-track">
-                        {{ t('profile.order_pay') }}
-                    </a>
-                    <a href="#"
-                       role="button"
-                       class="btn btn-review">
-                        {{ t('profile.order_review') }}
-                    </a>
-                    <a href="#"
-                       role="button"
-                       class="btn btn-reorder">
-                        {{ t('profile.order_reorder') }}
-                    </a>
-
+                    @if($order->actions->canPay())
+                        <a href="#"
+                           role="button"
+                           class="btn btn-track">
+                            {{ t('profile.order_pay') }}
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>

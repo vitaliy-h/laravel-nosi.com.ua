@@ -3,6 +3,11 @@
 namespace App\Filament\Resources\Pages;
 
 use App\Filament\Actions\BaseEditAction;
+use App\Filament\Builder\Blocks\GalleryBlock;
+use App\Filament\Builder\Blocks\ImageBlock;
+use App\Filament\Builder\Blocks\TeasersBlock;
+use App\Filament\Builder\Blocks\TextBlock;
+use App\Filament\Builder\Blocks\VideoBlock;
 use App\Filament\Resources\Pages\Pages\ManagePages;
 use App\Filament\Traits\HasSeoFields;
 use App\Modules\Core\Enums\PageModule;
@@ -13,7 +18,7 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -23,12 +28,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
-use Filament\Forms\Components\Builder;
-use App\Filament\Builder\TextBlock;
-use App\Filament\Builder\ImageBlock;
-use App\Filament\Builder\GalleryBlock;
-use App\Filament\Builder\VideoBlock;
-use App\Filament\Builder\TeasersBlock;
 
 class PageResource extends Resource
 {
