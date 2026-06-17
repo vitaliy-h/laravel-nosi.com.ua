@@ -49,6 +49,15 @@ trait HasImage
         return array_map(static fn($path) => Storage::url($path), $this->imgs);
     }
 
+    public function imageUrl(string $preset): string
+    {
+        if (empty($this->img)) {
+            return asset('/assets/images/no_image.svg');
+        }
+
+        return image_url($this->img, $preset);
+    }
+
     protected function getImgFields(): array
     {
         return property_exists($this, 'imgFields') ? $this->imgFields : ['img'];

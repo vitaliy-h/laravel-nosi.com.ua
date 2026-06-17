@@ -229,4 +229,237 @@ No manual action required.
 
 ---
 
+# Image Resizing
+
+The project supports **lazy-generated image previews**. On the first request the system
+resizes an original uploaded image according to a named preset (e.g. `thumb`, `large`),
+saves the result to storage, and serves it. Subsequent requests read the cached file
+without re-processing.
+
+Original uploads are unchanged. `$model->image` still returns the full-size original URL.
+
+---
+
+## How it works
+
+```
+Browser GET /img/thumb/shop_products/1/img/product.jpg
+  │
+  ├─ preset "thumb" exists in config/image_sizes.php?  → no  → 404
+  │
+  ├─ preview already cached at thumb/shop_products/1/img/product.jpg?  → yes  → serve file
+  │
+  ├─ original exists at shop_products/1/img/product.jpg?  → no  → 404
+  │
+  ├─ entity "shop_products" configured for preset "thumb"?  → no  → 404
+  │
+  └─ resize original → save preview → serve file
+```
+
+Route: `GET /img/{preset}/{path}` (registered in `app/Modules/Core/routes/web.php`).
+
+Image processing is handled by [Intervention Image](https://image.intervention.io/) via
+the `intervention/image-laravel` package. Driver defaults to GD (`config/image.php`).
+
+---
+
+## Storage paths
+
+| Type | Disk path | Web URL |
+|------|-----------|---------|
+| Original | `storage/app/public/{table}/{id}/{field}/{filename}` | `/storage/{table}/{id}/{field}/{filename}` |
+| Preview | `storage/app/public/{preset}/{table}/{id}/{field}/{filename}` | `/img/{preset}/{table}/{id}/{field}/{filename}` |
+
+Example:
+
+```text
+Original:  shop_products/1/img/product.jpg
+Preview:   thumb/shop_products/1/img/product.jpg
+```
+
+Previews live under a `{preset}/` prefix on the `public` disk. Deleting a model removes
+only the original directory (`{table}/{id}/`); cached previews are kept until cleared
+manually (see `images:clear` below).
+
+---
+
+## Preset configuration
+
+All available sizes are defined in **`config/image_sizes.php`** — the single source of
+truth for frontend and backend.
+
+```php
+return [
+    'thumb' => [
+        'shop_products' => [
+            'width'  => 300,
+            'height' => 300,
+            'mode'   => 'crop',
+        ],
+        'news' => [
+            'width' => 300,
+            'mode'  => 'contain',
+        ],
+    ],
+    'large' => [
+        'shop_products' => [
+            'width'  => 1200,
+            'height' => 1200,
+            'mode'   => 'contain',
+        ],
+    ],
+];
+```
+
+**Structure:**
+
+| Level | Key | Meaning |
+|-------|-----|---------|
+| 1 | `thumb`, `large`, … | Preset name (used in URLs and helpers) |
+| 2 | `shop_products`, `news`, … | Entity name — must match the **table name** (first segment of the image path) |
+
+**Fields per entity:**
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `width` | yes | Target width in pixels |
+| `height` | no | Target height in pixels; optional for `contain` (height scales proportionally) |
+| `mode` | yes | `crop` or `contain` (see below) |
+
+### Resize modes
+
+| Mode | Behaviour | Typical use |
+|------|-----------|-------------|
+| `crop` | Exact W×H, image is cropped to fill the box | Square thumbnails, cards |
+| `contain` | Fit inside W (and H if given), keep aspect ratio, never upscale | Banners, detail views |
+
+---
+
+## Building preview URLs
+
+### Global helper
+
+```php
+image_url(string $path, string $preset): string
+```
+
+`$path` is the raw relative path stored in the database (e.g. `shop_products/1/img/product.jpg`).
+
+```php
+image_url($product->img, 'thumb');
+// → http://localhost/img/thumb/shop_products/1/img/product.jpg
+```
+
+Pass a non-empty path. For models, prefer `imageUrl()` — it handles the empty-image fallback.
+
+### HasImage method
+
+```php
+$product->imageUrl('thumb');
+```
+
+* If `img` is empty → returns `/assets/images/no_image.svg` (same fallback as `$model->image`)
+* Otherwise → delegates to `image_url($this->img, $preset)`
+
+`imageUrl()` is an explicit method, not a JSON accessor. It is **not** appended to API
+responses automatically.
+
+### Original vs preview
+
+```php
+$product->image;              // full-size original: /storage/shop_products/1/img/product.jpg
+$product->imageUrl('thumb');   // resized preview:    /img/thumb/shop_products/1/img/product.jpg
+```
+
+---
+
+## Usage in Blade
+
+```blade
+{{-- Thumbnail in catalog --}}
+<img src="{{ $product->imageUrl('thumb') }}" alt="{{ $product->name }}">
+
+{{-- Large image on detail page --}}
+<img src="{{ $product->imageUrl('large') }}" alt="{{ $product->name }}">
+
+{{-- Raw path from DB (e.g. in a loop over imgs array) --}}
+<img src="{{ image_url($path, 'thumb') }}" alt="">
+```
+
+---
+
+## Clearing preview cache
+
+```bash
+php artisan images:clear                         # all presets from config/image_sizes.php
+php artisan images:clear thumb                     # entire thumb/ directory
+php artisan images:clear thumb shop_products       # only thumb/shop_products/
+```
+
+The command is idempotent: missing directories are ignored. An unknown preset name prints
+an error and exits with code `1`.
+
+After clearing, previews are regenerated on the next HTTP request.
+
+---
+
+## Adding a new preset or entity
+
+1. Open `config/image_sizes.php`.
+2. Add a preset key (or an entity under an existing preset).
+3. Set `width`, optional `height`, and `mode`.
+4. Use the preset name in templates: `$model->imageUrl('my_preset')`.
+
+**Entity name must match the Eloquent table name** — the first path segment of stored
+images. Current entities with images:
+
+| Entity key | Model |
+|------------|-------|
+| `shop_products` | `Product` |
+| `shop_categories` | `Category` |
+| `shop_brands` | `Brand` |
+| `news` | `News` |
+
+Example — add a `medium` preset for categories:
+
+```php
+'medium' => [
+    'shop_categories' => [
+        'width'  => 600,
+        'height' => 400,
+        'mode'   => 'crop',
+    ],
+],
+```
+
+```blade
+<img src="{{ $category->imageUrl('medium') }}" alt="">
+```
+
+No code changes are required beyond the config file.
+
+---
+
+## Image driver
+
+Intervention Image driver is configured in `config/image.php`:
+
+```php
+'driver' => env('IMAGE_DRIVER', \Intervention\Image\Drivers\Gd\Driver::class),
+```
+
+GD is the default and works out of the box in Sail. To use Imagick, set `IMAGE_DRIVER`
+in `.env` to `\Intervention\Image\Drivers\Imagick\Driver::class` (requires `ext-imagick`).
+
+---
+
+## Resizing notes
+
+* Previews are generated **on demand** — there is no queue or batch pre-generation.
+* First request for a new preview runs PHP image processing; later requests serve the cached file.
+* Array image fields (`imgs`) are not covered by `imageUrl()` — use `image_url($path, $preset)` with each path from the array.
+* If you change dimensions in `config/image_sizes.php`, run `images:clear` for the affected preset so old cached files are removed.
+
+---
+
 [Back to main readme](./README.md)

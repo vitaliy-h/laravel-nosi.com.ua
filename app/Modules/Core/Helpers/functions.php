@@ -14,3 +14,10 @@ if (!function_exists('module_url')) {
         return \App\Modules\Core\Facades\UrlFacade::getModuleUrl($module, $params, $query);
     }
 }
+
+if (!function_exists('image_url')) {
+    function image_url(string $path, string $preset): string
+    {
+        return url("/img/{$preset}/{$path}");
+    }
+}
