@@ -1043,5 +1043,18 @@ document.addEventListener('click', function (e) {
             product_id: btn.dataset.id,
             quantity: btn.dataset.count || 1
         })
-    });
-});
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+
+            // тут що робити після успішного запита
+            // наприклад:
+            alert('Товар додано в корзину');
+        })
+        .catch(error => {
+            console.error(error);
+
+            // тут якщо помилка
+            alert('Помилка додавання');
+        });});
