@@ -86,6 +86,16 @@ class PagesTableSeeder extends Seeder
                 'meta_description' => 'Shop',
             ],
             [
+                'title' => 'Basket',
+                'slug' => 'basket',
+                'module' => PageModule::BASKET,
+                'display' => true,
+                'display_menu' => true,
+                'display_menu_footer' => true,
+                'meta_title' => 'Basket',
+                'meta_description' => 'Basket',
+            ],
+            [
                 'title' => 'Auth',
                 'slug' => 'auth',
                 'module' => PageModule::AUTH,

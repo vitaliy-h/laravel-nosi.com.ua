@@ -4,6 +4,16 @@
 
     @include('blocks.page_title')
 
+<?php
+/*
+    <a href="#" onclick="openModal('cartModal'); return false;">
+        Відкрити модалку
+    </a>
+*/
+?>
+
+
+
     <section id="product-details" class="product-details section">
 
         <div class="container">
@@ -110,7 +120,7 @@
                                 <input
                                     type="number"
                                     class="quantity-input"
-                                    value="1"
+                                    value="{{ session('basket.products.' . $product->id . '.count', 1) }}"
                                     min="1"
                                 >
 
@@ -124,7 +134,7 @@
 
                         <div class="product-actions">
 
-                            <button class="btn btn-primary add-to-cart-btn">
+                            <button class="btn btn-primary add-to-cart-btn" data-id="{{ $product->id }}" data-count="{{ session('basket.products.' . $product->id . '.count', 1) }}">
                                 <i class="bi bi-cart-plus"></i>
                                 Add to Cart
                             </button>

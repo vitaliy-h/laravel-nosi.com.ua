@@ -265,7 +265,7 @@
                                             </div>
 
                                             <div class="add-to-cart-container">
-                                                <button type="button" class="add-to-cart-btn">Add to Cart</button>
+                                                <button type="button" class="add-to-cart-btn" data-id="{{$product->id}}" data-count="{{ session('basket.products.' . $product->id . '.count', 1) }}">Add to Cart</button>
                                             </div>
                                         </div>
                                     </div>

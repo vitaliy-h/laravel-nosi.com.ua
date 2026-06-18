@@ -9,6 +9,7 @@
     @if($page && !$page->is_indexable)
         <meta name="robots" content="noindex, nofollow">
     @endif
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Favicons -->
     <link href="/demo/assets/img/favicon.png" rel="icon">
@@ -49,6 +50,7 @@
 
 {{-- Footer --}}
 @include('components.footer')
+@include('components.modals')
 
 <!-- Vendor JS Files -->
 <script src="/demo/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>

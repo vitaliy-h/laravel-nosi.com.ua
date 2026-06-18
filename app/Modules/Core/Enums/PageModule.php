@@ -13,6 +13,7 @@ enum PageModule: string
     case NEWS = 'news';
     case FEEDBACK = 'feedback';
     case SHOP = 'shop';
+    case BASKET = 'basket';
     case AUTH = 'auth';
     case PROFILE = 'profile';
     case GEO = 'geo';
@@ -25,6 +26,7 @@ enum PageModule: string
             self::NEWS => 'News',
             self::FEEDBACK => 'Feedback',
             self::SHOP => 'Shop',
+            self::BASKET => 'Basket',
             self::AUTH => 'Auth',
             self::PROFILE => 'Profile',
             self::GEO => 'Geo',
