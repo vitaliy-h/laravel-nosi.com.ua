@@ -28,13 +28,13 @@ class ImagePreviewControllerTest extends TestCase
 
     public function test_returns_404_for_unknown_preset(): void
     {
-        $this->get('/img/nonexistent/shop_products/1/img/product.jpg')
+        $this->get('/storage/nonexistent/shop_products/1/img/product.jpg')
             ->assertStatus(404);
     }
 
     public function test_returns_404_when_original_image_does_not_exist(): void
     {
-        $this->get('/img/thumb/shop_products/999/img/missing.jpg')
+        $this->get('/storage/thumb/shop_products/999/img/missing.jpg')
             ->assertStatus(404);
     }
 
@@ -42,7 +42,7 @@ class ImagePreviewControllerTest extends TestCase
     {
         Config::set('image_sizes', ['thumb' => []]);
 
-        $this->get('/img/thumb/shop_products/1/img/product.jpg')
+        $this->get('/storage/thumb/shop_products/1/img/product.jpg')
             ->assertStatus(404);
     }
 
@@ -52,7 +52,7 @@ class ImagePreviewControllerTest extends TestCase
 
         $this->assertFalse(Storage::exists($previewPath));
 
-        $response = $this->get('/img/thumb/shop_products/1/img/product.jpg');
+        $response = $this->get('/storage/thumb/shop_products/1/img/product.jpg');
 
         $response->assertOk();
         $this->assertStringContainsString(
@@ -66,11 +66,11 @@ class ImagePreviewControllerTest extends TestCase
     {
         $previewPath = 'thumb/shop_products/1/img/product.jpg';
 
-        $this->get('/img/thumb/shop_products/1/img/product.jpg')->assertOk();
+        $this->get('/storage/thumb/shop_products/1/img/product.jpg')->assertOk();
 
         $mtime = filemtime(Storage::path($previewPath));
 
-        $this->get('/img/thumb/shop_products/1/img/product.jpg')->assertOk();
+        $this->get('/storage/thumb/shop_products/1/img/product.jpg')->assertOk();
 
         $this->assertSame($mtime, filemtime(Storage::path($previewPath)));
     }

@@ -243,11 +243,11 @@ Original uploads are unchanged. `$model->image` still returns the full-size orig
 ## How it works
 
 ```
-Browser GET /img/thumb/shop_products/1/img/product.jpg
+Browser GET /storage/thumb/shop_products/1/img/product.jpg
+  │
+  ├─ preview already cached at thumb/shop_products/1/img/product.jpg?  → yes  → webserver serves file (no PHP)
   │
   ├─ preset "thumb" exists in config/image_sizes.php?  → no  → 404
-  │
-  ├─ preview already cached at thumb/shop_products/1/img/product.jpg?  → yes  → serve file
   │
   ├─ original exists at shop_products/1/img/product.jpg?  → no  → 404
   │
@@ -256,7 +256,9 @@ Browser GET /img/thumb/shop_products/1/img/product.jpg
   └─ resize original → save preview → serve file
 ```
 
-Route: `GET /img/{preset}/{path}` (registered in `app/Modules/Core/routes/web.php`).
+Route: `GET /storage/{preset}/{path}` (registered in `app/Modules/Core/routes/web.php`).
+
+**Breaking change:** URLs under `/img/{preset}/…` are no longer served. Cached preview files on disk are unchanged — no cache rebuild is required.
 
 Image processing is handled by [Intervention Image](https://image.intervention.io/) via
 the `intervention/image-laravel` package. Driver defaults to GD (`config/image.php`).
@@ -268,7 +270,7 @@ the `intervention/image-laravel` package. Driver defaults to GD (`config/image.p
 | Type | Disk path | Web URL |
 |------|-----------|---------|
 | Original | `storage/app/public/{table}/{id}/{field}/{filename}` | `/storage/{table}/{id}/{field}/{filename}` |
-| Preview | `storage/app/public/{preset}/{table}/{id}/{field}/{filename}` | `/img/{preset}/{table}/{id}/{field}/{filename}` |
+| Preview | `storage/app/public/{preset}/{table}/{id}/{field}/{filename}` | `/storage/{preset}/{table}/{id}/{field}/{filename}` |
 
 Example:
 
@@ -347,7 +349,7 @@ image_url(string $path, string $preset): string
 
 ```php
 image_url($product->img, 'thumb');
-// → http://localhost/img/thumb/shop_products/1/img/product.jpg
+// → http://localhost/storage/thumb/shop_products/1/img/product.jpg
 ```
 
 Pass a non-empty path. For models, prefer `imageUrl()` — it handles the empty-image fallback.
@@ -368,7 +370,7 @@ responses automatically.
 
 ```php
 $product->image;              // full-size original: /storage/shop_products/1/img/product.jpg
-$product->imageUrl('thumb');   // resized preview:    /img/thumb/shop_products/1/img/product.jpg
+$product->imageUrl('thumb');   // resized preview:    /storage/thumb/shop_products/1/img/product.jpg
 ```
 
 ---

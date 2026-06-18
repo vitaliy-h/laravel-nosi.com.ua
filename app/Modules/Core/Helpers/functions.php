@@ -2,6 +2,7 @@
 
 use App\Modules\Core\Enums\PageModule;
 use App\Modules\Translation\Facade\Trans;
+use Illuminate\Support\Facades\Storage;
 
 function t(string $key, array $replace = []): string
 {
@@ -18,6 +19,6 @@ if (!function_exists('module_url')) {
 if (!function_exists('image_url')) {
     function image_url(string $path, string $preset): string
     {
-        return url("/img/{$preset}/{$path}");
+        return Storage::url("{$preset}/{$path}");
     }
 }
