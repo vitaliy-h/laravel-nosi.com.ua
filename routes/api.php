@@ -10,7 +10,7 @@ Route::middleware(['web'])->group(function () {
 
     //http://lv-floritta/api/
 
-    Route::post('/basket/change', [\App\Http\Controllers\ApiController::class, 'change'])->name('change_crm_order');
+    Route::post('/basket/change', [App\Modules\Basket\Http\Controllers\Web\IndexController::class, 'api_change'])->name('change_product_count');
 
 
 

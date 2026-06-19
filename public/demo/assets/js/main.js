@@ -1031,8 +1031,11 @@ document.addEventListener('click', function (e) {
 document.addEventListener('click', function (e) {
     let btn = e.target.closest('.add-to-cart-btn');
     if (!btn) return;
+    //alert(btn.dataset.id+' - '+btn.dataset.count)
 
-    fetch('/cart/add', {
+
+    /**/
+    fetch('/api/basket/change', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -1040,21 +1043,22 @@ document.addEventListener('click', function (e) {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
         },
         body: JSON.stringify({
-            product_id: btn.dataset.id,
-            quantity: btn.dataset.count || 1
+            id: btn.dataset.id,
+            count: btn.dataset.count || 1,
+            action: 'change_count',
         })
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            abc_response(data);
 
-            // тут що робити після успішного запита
-            // наприклад:
-            alert('Товар додано в корзину');
         })
         .catch(error => {
             console.error(error);
 
             // тут якщо помилка
             alert('Помилка додавання');
-        });});
+        });
+        /**/
+
+});

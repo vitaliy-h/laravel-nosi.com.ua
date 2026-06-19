@@ -8,6 +8,8 @@ use App\Modules\Shop\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Modules\Basket\Http\Requests\ChangeBasketRequest;
+
 
 class IndexController extends Controller implements ModuleIndexControllerInterface
 {
@@ -15,82 +17,83 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
     {
         return null;
     }
-
-    public function index(Request $request, array $segments = [])
+    public function api_change(ChangeBasketRequest $request)
     {
-        if ($request->isMethod('post')) {
-            return $this->change($request);
-        }
+        $productId = (int) $request->input('id');
+        $count = max(1, (int) $request->input('count'));
+        $action = $request->input('action');
 
         $basket = session('basket', [
             'products' => [],
+            'count' => 0,
+            'total' => 0,
         ]);
 
-        $basketProducts = $basket['products'] ?? [];
-
-        $ids = array_keys($basketProducts);
-
-        $products = Product::query()
-            ->whereIn('id', $ids)
-            ->get()
-            ->map(function ($product) use ($basketProducts) {
-                $product->basket_count = $basketProducts[$product->id]['count'] ?? 1;
-                $product->basket_sum = $product->price * $product->basket_count;
-
-                return $product;
-            });
-
-        $total = $products->sum('basket_sum');
-
-        return view('pages.basket.index', compact(
-            'basket',
-            'products',
-            'total',
-        ));
-    }
-
-    private function change(Request $request)
-    {
-        $productId = (int) $request->input('product_id');
-        $count = (int) $request->input('quantity', 1);
-
-        if ($productId <= 0) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Невірний товар',
-            ], 422);
+        if ($action === 'delete') {
+            unset($basket['products'][$productId]);
         }
 
-        if ($count < 1) {
-            $count = 1;
+        if ($action === 'change_count') {
+            $product = Product::query()->findOrFail($productId);
+
+            $basket['products'][$productId] = [
+                'id' => $product->id,
+                'name' => $product->title,
+                'count' => $count,
+                'price' => $product->price,
+                'summ' => 0,
+            ];
         }
 
-        $product = Product::query()->find($productId);
-
-        if (!$product) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Товар не знайдено',
-            ], 404);
-        }
-
-        $basket = session('basket', [
-            'products' => [],
-        ]);
-
-        $basket['products'][$product->id] = [
-            'id' => $product->id,
-            'count' => $count,
-        ];
+        $basket = $this->recalculateBasket($basket);
 
         session(['basket' => $basket]);
 
         return response()->json([
             'success' => true,
-            'basket' => $basket,
-            'product_id' => $product->id,
-            'count' => $count,
-            'message' => 'Товар додано в корзину',
+            'actions' => [
+                array(
+                    'selector' => '.js_basket_count',
+                    'method' => 'text',
+                    'content' => $basket['count']
+                )
+            ],
         ]);
     }
+    private function recalculateBasket(array $basket): array
+    {
+        $basket['count'] = 0;
+        $basket['total'] = 0;
+
+        $products = Product::query()
+            ->whereIn('id', array_keys($basket['products']))
+            ->get()
+            ->keyBy('id');
+
+        foreach ($basket['products'] as $id => &$item) {
+
+            if (!isset($products[$id])) {
+                unset($basket['products'][$id]);
+                continue;
+            }
+
+            $product = $products[$id];
+
+            $item['name'] = $product->title;
+            $item['price'] = $product->price;
+            $item['summ'] = $product->price * $item['count'];
+
+            $basket['count'] += $item['count'];
+            $basket['total'] += $item['summ'];
+        }
+
+        unset($item);
+
+        return $basket;
+    }
+    public function index(Request $request, array $segments = [])
+    {
+
+    }
+
 }
