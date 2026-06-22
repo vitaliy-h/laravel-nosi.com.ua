@@ -22,6 +22,8 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         $productId = (int) $request->input('id');
         $count = max(1, (int) $request->input('count'));
         $action = $request->input('action');
+        $actions = [];
+        $product = Product::query()->findOrFail($productId);
 
         $basket = session('basket', [
             'products' => [],
@@ -29,36 +31,63 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
             'total' => 0,
         ]);
 
-        if ($action === 'delete') {
+        if ($action === 'delete_modal') {
             unset($basket['products'][$productId]);
         }
 
-        if ($action === 'change_count') {
-            $product = Product::query()->findOrFail($productId);
-
+        if (in_array($action,array('change_count','change_count_modal','delete_modal'))) {
+            $sum = $count * $product->price;
             $basket['products'][$productId] = [
                 'id' => $product->id,
                 'name' => $product->title,
                 'count' => $count,
                 'price' => $product->price,
-                'summ' => 0,
+                'sum' => $sum,
             ];
+            $product-> _count = $count;
+            $product-> _sum = $sum;
+
+            $basket = $this->recalculateBasket($basket);
+            session(['basket' => $basket]);
+            $actions[] = array(
+                'selector' => '.js_basket_count',
+                'method' => 'text',
+                'content' => $basket['count']
+            );
+            if($action == 'change_count'){
+                $actions[] = array(
+                    'selector' => '.js_basket_modal_content',
+                    'method' => 'html',
+                    'content' => view('pages.shop.basket_modal_item',compact('product'))->render(),
+                );
+                $actions[] = array(
+                    'selector' => 'cartModal',
+                    'method' => 'modal',
+                );
+            }
+            if($action == 'change_count_modal'){
+                $actions[] = array(
+                    'selector' => '.js_product_total',
+                    'method' => 'text',
+                    'content' => $product-> _sum
+                );
+            }
+            if($action == 'delete_modal'){
+                $actions[] = array(
+                    'selector' => '.js_basket_modal_content',
+                    'method' => 'html',
+                    'content' => '',
+                );
+            }
         }
 
-        $basket = $this->recalculateBasket($basket);
-
-        session(['basket' => $basket]);
 
         return response()->json([
             'success' => true,
-            'actions' => [
-                array(
-                    'selector' => '.js_basket_count',
-                    'method' => 'text',
-                    'content' => $basket['count']
-                )
-            ],
+            'actions' => $actions,
         ]);
+
+
     }
     private function recalculateBasket(array $basket): array
     {

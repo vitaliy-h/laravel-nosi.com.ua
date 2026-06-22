@@ -405,31 +405,37 @@ const AbcResponseHandlers = {
 
     // Open bootstrap modal
     modal(item) {
-
-        const modal =
-            document.querySelector(
-                item.selector
-            );
-
-        if (!modal) {
-            return;
-        }
-
-        // Bootstrap 5 support
-        if (window.bootstrap) {
-
-            const instance =
-                bootstrap.Modal
-                    .getOrCreateInstance(
-                        modal
-                    );
-
-            instance.show();
-
-        }
-
+        openModal(item.selector);
     },
 
+    /*
+        // Open bootstrap modal
+        modal(item) {
+
+            const modal =
+                document.querySelector(
+                    item.selector
+                );
+
+            if (!modal) {
+                return;
+            }
+
+            // Bootstrap 5 support
+            if (window.bootstrap) {
+
+                const instance =
+                    bootstrap.Modal
+                        .getOrCreateInstance(
+                            modal
+                        );
+
+                instance.show();
+
+            }
+
+        },
+    /**/
     // Execute dynamic scripts
     script(item) {
 

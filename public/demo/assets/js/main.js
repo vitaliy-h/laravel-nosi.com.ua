@@ -1019,6 +1019,7 @@ document.addEventListener('click', function (e) {
     if (count < 1) count = 1;
 
     input.value = count;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
 
     let addBtn = wrap.closest('.product-info, .row').querySelector('.add-to-cart-btn');
 
@@ -1028,13 +1029,7 @@ document.addEventListener('click', function (e) {
 });
 
 
-document.addEventListener('click', function (e) {
-    let btn = e.target.closest('.add-to-cart-btn');
-    if (!btn) return;
-    //alert(btn.dataset.id+' - '+btn.dataset.count)
-
-
-    /**/
+function basketChange(data) {
     fetch('/api/basket/change', {
         method: 'POST',
         headers: {
@@ -1042,23 +1037,48 @@ document.addEventListener('click', function (e) {
             'Accept': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
         },
-        body: JSON.stringify({
-            id: btn.dataset.id,
-            count: btn.dataset.count || 1,
-            action: 'change_count',
-        })
+        body: JSON.stringify(data)
     })
         .then(response => response.json())
         .then(data => {
             abc_response(data);
-
         })
         .catch(error => {
             console.error(error);
-
-            // тут якщо помилка
-            alert('Помилка додавання');
+            //alert('Помилка запиту');
         });
-        /**/
+}
+document.addEventListener('click', function (e) {
+    let btn = e.target.closest('.add-to-cart-btn');
+    if (!btn) return;
+    basketChange({
+        id: btn.dataset.id,
+        count: btn.dataset.count || 1,
+        action: 'change_count',
+    });
+});
 
+document.addEventListener('change', function (e) {
+    if (e.target.matches('#cartModal .quantity-input')) {
+
+
+        //alert(111)
+        basketChange({
+            id: e.target.dataset.product,
+            count: e.target.value || 1,
+            action: 'change_count_modal',
+        });
+
+    }
+});
+
+
+document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.js_delete_product_modal');
+    if (!btn) return;
+    basketChange({
+        id: btn.dataset.product,
+        count: 0,
+        action: 'delete_modal',
+    });
 });

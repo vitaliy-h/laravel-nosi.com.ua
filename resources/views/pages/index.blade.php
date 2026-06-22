@@ -357,7 +357,7 @@
                                 <img src="/demo/assets/img/product/product-11.webp" alt="Product" class="img-fluid main-img">
                                 <img src="/demo/assets/img/product/product-11-variant.webp" alt="Product Hover" class="img-fluid hover-img">
                                 <div class="product-overlay">
-                                    <a href="cart.html" class="btn-cart"><i class="bi bi-cart-plus"></i> Add to Cart</a>
+                                    <a href="{{module_url('basket')}}" class="btn-cart"><i class="bi bi-cart-plus"></i> Add to Cart</a>
                                     <div class="product-actions">
                                         <a href="#" class="action-btn"><i class="bi bi-heart"></i></a>
                                         <a href="#" class="action-btn"><i class="bi bi-eye"></i></a>
@@ -390,7 +390,7 @@
                                 <img src="/demo/assets/img/product/product-9.webp" alt="Product" class="img-fluid main-img">
                                 <img src="/demo/assets/img/product/product-9-variant.webp" alt="Product Hover" class="img-fluid hover-img">
                                 <div class="product-overlay">
-                                    <a href="cart.html" class="btn-cart"><i class="bi bi-cart-plus"></i> Add to Cart</a>
+                                    <a href="{{module_url('basket')}}" class="btn-cart"><i class="bi bi-cart-plus"></i> Add to Cart</a>
                                     <div class="product-actions">
                                         <a href="#" class="action-btn"><i class="bi bi-heart"></i></a>
                                         <a href="#" class="action-btn"><i class="bi bi-eye"></i></a>
@@ -423,7 +423,7 @@
                                 <img src="/demo/assets/img/product/product-3.webp" alt="Product" class="img-fluid main-img">
                                 <img src="/demo/assets/img/product/product-3-variant.webp" alt="Product Hover" class="img-fluid hover-img">
                                 <div class="product-overlay">
-                                    <a href="cart.html" class="btn-cart"><i class="bi bi-cart-plus"></i> Add to Cart</a>
+                                    <a href="{{module_url('basket')}}" class="btn-cart"><i class="bi bi-cart-plus"></i> Add to Cart</a>
                                     <div class="product-actions">
                                         <a href="#" class="action-btn"><i class="bi bi-heart"></i></a>
                                         <a href="#" class="action-btn"><i class="bi bi-eye"></i></a>
@@ -455,7 +455,7 @@
                                 <img src="/demo/assets/img/product/product-4.webp" alt="Product" class="img-fluid main-img">
                                 <img src="/demo/assets/img/product/product-4-variant.webp" alt="Product Hover" class="img-fluid hover-img">
                                 <div class="product-overlay">
-                                    <a href="cart.html" class="btn-cart"><i class="bi bi-cart-plus"></i> Add to Cart</a>
+                                    <a href="{{module_url('basket')}}" class="btn-cart"><i class="bi bi-cart-plus"></i> Add to Cart</a>
                                     <div class="product-actions">
                                         <a href="#" class="action-btn"><i class="bi bi-heart"></i></a>
                                         <a href="#" class="action-btn"><i class="bi bi-eye"></i></a>
@@ -489,7 +489,7 @@
                                 <img src="/demo/assets/img/product/product-5.webp" alt="Product" class="img-fluid main-img">
                                 <img src="/demo/assets/img/product/product-5-variant.webp" alt="Product Hover" class="img-fluid hover-img">
                                 <div class="product-overlay">
-                                    <a href="cart.html" class="btn-cart"><i class="bi bi-cart-plus"></i> Add to Cart</a>
+                                    <a href="{{module_url('basket')}}" class="btn-cart"><i class="bi bi-cart-plus"></i> Add to Cart</a>
                                     <div class="product-actions">
                                         <a href="#" class="action-btn"><i class="bi bi-heart"></i></a>
                                         <a href="#" class="action-btn"><i class="bi bi-eye"></i></a>
@@ -522,7 +522,7 @@
                                 <img src="/demo/assets/img/product/product-6.webp" alt="Product" class="img-fluid main-img">
                                 <img src="/demo/assets/img/product/product-6-variant.webp" alt="Product Hover" class="img-fluid hover-img">
                                 <div class="product-overlay">
-                                    <a href="cart.html" class="btn-cart"><i class="bi bi-cart-plus"></i> Add to Cart</a>
+                                    <a href="{{module_url('basket')}}" class="btn-cart"><i class="bi bi-cart-plus"></i> Add to Cart</a>
                                     <div class="product-actions">
                                         <a href="#" class="action-btn"><i class="bi bi-heart"></i></a>
                                         <a href="#" class="action-btn"><i class="bi bi-eye"></i></a>
@@ -555,7 +555,7 @@
                                 <img src="/demo/assets/img/product/product-7.webp" alt="Product" class="img-fluid main-img">
                                 <img src="/demo/assets/img/product/product-7-variant.webp" alt="Product Hover" class="img-fluid hover-img">
                                 <div class="product-overlay">
-                                    <a href="cart.html" class="btn-cart"><i class="bi bi-cart-plus"></i> Add to Cart</a>
+                                    <a href="{{module_url('basket')}}" class="btn-cart"><i class="bi bi-cart-plus"></i> Add to Cart</a>
                                     <div class="product-actions">
                                         <a href="#" class="action-btn"><i class="bi bi-heart"></i></a>
                                         <a href="#" class="action-btn"><i class="bi bi-eye"></i></a>
@@ -587,7 +587,7 @@
                                 <img src="/demo/assets/img/product/product-8.webp" alt="Product" class="img-fluid main-img">
                                 <img src="/demo/assets/img/product/product-8-variant.webp" alt="Product Hover" class="img-fluid hover-img">
                                 <div class="product-overlay">
-                                    <a href="cart.html" class="btn-cart"><i class="bi bi-cart-plus"></i> Add to Cart</a>
+                                    <a href="{{module_url('basket')}}" class="btn-cart"><i class="bi bi-cart-plus"></i> Add to Cart</a>
                                     <div class="product-actions">
                                         <a href="#" class="action-btn"><i class="bi bi-heart"></i></a>
                                         <a href="#" class="action-btn"><i class="bi bi-eye"></i></a>

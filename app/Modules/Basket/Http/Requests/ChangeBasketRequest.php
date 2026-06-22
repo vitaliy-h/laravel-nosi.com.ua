@@ -24,7 +24,7 @@ class ChangeBasketRequest extends FormRequest
     {
         return [
             'id' => ['required', 'integer', 'exists:shop_products,id'],
-            'count' => ['required', 'integer', 'min:1'],
+            'count' => ['required', 'integer', 'min:0'],
             'action' => ['required', 'string'],
         ];
     }
