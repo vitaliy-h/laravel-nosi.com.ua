@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\LogLetters;
 
 use App\Filament\Resources\LogLetters\Pages\ManageLogLetters;
-use App\Modules\Core\Enums\LetterEnum;
-use App\Modules\Core\Enums\LogLetterSourceEnum;
-use App\Modules\Core\Enums\LogLetterStatusEnum;
-use App\Modules\Core\Models\LogLetter;
+use App\Modules\Notification\Enums\LetterEnum;
+use App\Modules\Notification\Enums\NotificationSourceEnum;
+use App\Modules\Notification\Enums\LogLetterStatusEnum;
+use App\Modules\Notification\Models\LogLetter;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -54,7 +54,7 @@ class LogLetterResource extends Resource
                 Textarea::make('error_message')
                     ->columnSpanFull(),
                 Select::make('source')
-                    ->options(LogLetterSourceEnum::options()),
+                    ->options(NotificationSourceEnum::options()),
                 TextInput::make('attachments'),
             ]);
     }
@@ -79,11 +79,7 @@ class LogLetterResource extends Resource
 
                 TextColumn::make('status')
                     ->badge()
-                    ->color(fn($state) => match ($state) {
-                        LogLetterStatusEnum::SENT => 'success',
-                        LogLetterStatusEnum::FAILED => 'danger',
-                        default => 'warning',
-                    }),
+                    ->color(fn ($state) => $state->color()),
 
                 TextColumn::make('source')
                     ->badge(),
@@ -99,7 +95,7 @@ class LogLetterResource extends Resource
 
                 SelectFilter::make('source')
                     ->label(__('admin.fields.source'))
-                    ->options(LogLetterSourceEnum::options()),
+                    ->options(NotificationSourceEnum::options()),
 
                 SelectFilter::make('template_key')
                     ->label(__('admin.fields.template_key'))
@@ -145,11 +141,7 @@ class LogLetterResource extends Resource
                             TextEntry::make('sender_name'),
                             TextEntry::make('status')
                                 ->badge()
-                                ->color(fn($state) => match ($state) {
-                                LogLetterStatusEnum::SENT => 'success',
-                                LogLetterStatusEnum::FAILED => 'danger',
-                                default => 'warning',
-                            }),
+                                ->color(fn ($state) => $state->color()),
 
                             TextEntry::make('created_at')->dateTime(),
                         ]),

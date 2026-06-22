@@ -1,3 +1,14 @@
+@if(session('impersonating_admin_id'))
+<div class="alert alert-warning mb-0 rounded-0 py-2 text-center d-flex align-items-center justify-content-center gap-3">
+    <span><i class="bi bi-person-fill-gear me-1"></i> {{ t('impersonation.banner_viewing_as') }}: <strong>{{ auth()->user()->name }} ({{ auth()->user()->email }})</strong></span>
+    <form method="post" action="{{ route('impersonate.leave') }}" class="mb-0">
+        @csrf
+        <button type="submit" class="btn btn-sm btn-warning py-0">
+            <i class="bi bi-arrow-return-left me-1"></i>{{ t('impersonation.banner_return') }}
+        </button>
+    </form>
+</div>
+@endif
 <header id="header" class="header position-relative">
 
     <!-- Main Header -->

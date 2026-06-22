@@ -14,3 +14,11 @@ Route::prefix('/auth')->middleware(['guest'])->group(function () {
 Route::post('/auth/logout', [\App\Modules\Auth\Http\Controllers\Web\AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
+
+Route::get('/auth/impersonate/{user}', [\App\Modules\Auth\Http\Controllers\Web\ImpersonationController::class, 'impersonate'])
+    ->name('impersonate')
+    ->middleware('signed');
+
+Route::post('/auth/impersonation/leave', [\App\Modules\Auth\Http\Controllers\Web\ImpersonationController::class, 'leave'])
+    ->name('impersonate.leave')
+    ->middleware('auth');

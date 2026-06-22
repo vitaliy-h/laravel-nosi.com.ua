@@ -38,6 +38,11 @@ return [
         'product_info'        => 'Product information',
     ],
 
+    'impersonation' => [
+        'banner_viewing_as' => 'Viewing as',
+        'banner_return' => 'Return to my account',
+    ],
+
     'auth' => [
         'login' => 'Sign In',
         'register' => 'Register',

@@ -3,10 +3,10 @@
 namespace App\Modules\Auth\Actions;
 
 use App\Modules\Auth\Dtos\PasswordRecoveryData;
-use App\Modules\Core\Dtos\SendLetterTemplateData;
-use App\Modules\Core\Enums\LetterEnum;
+use App\Modules\Notification\Dtos\SendLetterTemplateData;
+use App\Modules\Notification\Enums\LetterEnum;
 use App\Modules\Core\Enums\PageModule;
-use App\Modules\Core\Facades\LetterTemplateFacade;
+use App\Modules\Notification\Facades\LetterTemplateFacade;
 use App\Modules\Core\Facades\UrlFacade;
 use App\Modules\Core\Repositories\UsersRepository;
 use Illuminate\Support\Facades\Password;

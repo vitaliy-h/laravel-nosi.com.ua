@@ -70,6 +70,11 @@ class AdminPanelProvider extends PanelProvider
                             ->icon('heroicon-o-envelope')
                             ->url(\App\Filament\Resources\LetterTemplates\LetterTemplateResource::getUrl())
                             ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.letter-templates.*')),
+
+                        NavigationItem::make(__('admin.tables.sms_templates'))
+                            ->icon('heroicon-o-chat-bubble-left-right')
+                            ->url(\App\Filament\Resources\SmsTemplates\SmsTemplateResource::getUrl())
+                            ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.sms-templates.*')),
                     ])
                     ->groups([
                         // shop
@@ -126,6 +131,10 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-inbox')
                                     ->url(\App\Filament\Resources\LogLetters\LogLetterResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.log-letters.*')),
+                                NavigationItem::make(__('admin.tables.log_sms'))
+                                    ->icon('heroicon-o-chat-bubble-bottom-center-text')
+                                    ->url(\App\Filament\Resources\LogSms\LogSmsResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.log-sms.*')),
                             ]),
                     ]);
             })

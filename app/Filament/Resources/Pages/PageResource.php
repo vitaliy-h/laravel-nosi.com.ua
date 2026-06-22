@@ -75,24 +75,18 @@ class PageResource extends Resource
                         VideoBlock::make(),
                         TeasersBlock::make(),
                     ])
-                    ->afterStateHydrated(function ($state, $set) {
-
-                        if (blank($state)) {
-
-                            $set('content', [
-                                [
-                                    'type' => 'text',
-                                    'data' => [
-                                        'style' => 'default',
-                                    ],
-                                ],
-                            ]);
-                        }
-                    })
                     ->collapsible()
                     ->cloneable()
                     ->reorderable()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->default([
+                        [
+                            'type' => 'text',
+                            'data' => [
+                                'style' => 'default',
+                            ],
+                        ],
+                    ]),
 
                 static::getSeoSection(true),
             ]);

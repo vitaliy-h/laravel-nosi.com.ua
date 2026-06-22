@@ -1,40 +1,34 @@
 <?php
 
-namespace App\Modules\Core\Services;
+namespace App\Modules\Notification\Services;
 
-use App\Modules\Core\Dtos\LetterAttachmentData;
-use App\Modules\Core\Dtos\SendLetterTemplateData;
-use App\Modules\Core\Enums\LogLetterSourceEnum;
-use App\Modules\Core\Enums\LogLetterStatusEnum;
-use App\Modules\Core\Jobs\SendLetterTemplateJob;
-use App\Modules\Core\Models\LetterTemplate;
-use App\Modules\Core\Models\LogLetter;
+use App\Modules\Notification\Dtos\LetterAttachmentData;
+use App\Modules\Notification\Dtos\SendLetterTemplateData;
+use App\Modules\Notification\Enums\LogLetterStatusEnum;
+use App\Modules\Notification\Jobs\SendLetterTemplateJob;
+use App\Modules\Notification\Models\LetterTemplate;
+use App\Modules\Notification\Models\LogLetter;
+use App\Modules\Notification\Traits\DetectsNotificationSource;
 use Illuminate\Support\Facades\Storage;
 
 class LetterTemplateService
 {
+    use DetectsNotificationSource;
+
     public function send(SendLetterTemplateData $dto): void
     {
         $template = LetterTemplate::query()
             ->where('key', $dto->key)
             ->firstOrFail();
 
-        $subject = $this->replace(
-            $template->subject,
-            $dto->replace
-        );
-
-        $body = $this->replace(
-            $template->body,
-            $dto->replace
-        );
+        $subject = $this->replace($template->subject, $dto->replace);
+        $body = $this->replace($template->body, $dto->replace);
 
         $receivers = $dto->to
             ? [$dto->to]
             : $template->receivers_formatted;
 
         foreach ($receivers as $receiver) {
-
             $logLetter = LogLetter::query()->create([
                 'template_key' => $template->key,
                 'receiver' => $receiver,
@@ -47,54 +41,29 @@ class LetterTemplateService
                 'attachments' => $dto->attachments,
             ]);
 
-            $attachments = $this->saveAttachments(
-                $logLetter,
-                $dto->attachments,
-            );
+            $attachments = $this->saveAttachments($logLetter, $dto->attachments);
 
-            $logLetter->update([
-                'attachments' => $attachments,
-            ]);
+            $logLetter->update(['attachments' => $attachments]);
 
             SendLetterTemplateJob::dispatch($logLetter);
         }
     }
 
-    private function replace(string $content, array $replace,): string {
-
+    private function replace(string $content, array $replace): string
+    {
         foreach ($replace as $key => $value) {
-
             $pattern = '/{{\s*\$?' . preg_quote($key, '/') . '\s*}}/';
-
-            $content = preg_replace(
-                $pattern,
-                $value,
-                $content
-            );
+            $content = preg_replace($pattern, $value, $content);
         }
 
         return $content;
     }
 
-    private function detectSource(): LogLetterSourceEnum
+    private function saveAttachments(LogLetter $logLetter, array $attachments): array
     {
-        if (app()->runningInConsole()) {
-            return LogLetterSourceEnum::CONSOLE;
-        }
-
-        if (request()?->is('admin/*')) {
-            return LogLetterSourceEnum::ADMIN;
-        }
-
-        return LogLetterSourceEnum::SYSTEM;
-    }
-
-    private function saveAttachments(LogLetter $logLetter, array $attachments,): array {
-
         $paths = [];
 
-        foreach ($attachments as $k=>$attachment) {
-
+        foreach ($attachments as $k => $attachment) {
             if (!$attachment instanceof LetterAttachmentData) {
                 continue;
             }
@@ -103,15 +72,10 @@ class LetterTemplateService
                 continue;
             }
 
-
             $filename = basename($attachment->path);
-
             $storagePath = "log_letters/{$logLetter->id}/attachments/{$k}/{$filename}";
 
-            Storage::put(
-                $storagePath,
-                file_get_contents($attachment->path),
-            );
+            Storage::put($storagePath, file_get_contents($attachment->path));
 
             $paths[] = $storagePath;
         }

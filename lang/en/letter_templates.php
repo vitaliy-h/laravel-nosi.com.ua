@@ -1,8 +1,10 @@
 <?php
 
+use App\Modules\Notification\Enums\LetterEnum;
+
 return [
 
-    \App\Modules\Core\Enums\LetterEnum::FEEDBACK->value => [
+    LetterEnum::FEEDBACK->value => [
         'subject' => 'New feedback',
         'body' => '
             <p>User {{ $user_name}} {{ $user_email}} added new feedback.</p>
@@ -11,7 +13,7 @@ return [
         ',
     ],
 
-    \App\Modules\Core\Enums\LetterEnum::PASSWORD_RESET->value => [
+    LetterEnum::PASSWORD_RESET->value => [
         'subject' => 'Reset password',
         'body' => '
            <h2>Password recovery</h2>

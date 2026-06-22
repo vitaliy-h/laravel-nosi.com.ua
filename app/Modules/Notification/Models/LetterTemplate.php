@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Modules\Core\Models;
+namespace App\Modules\Notification\Models;
 
-use App\Modules\Core\Enums\LetterEnum;
+use App\Modules\Notification\Enums\LetterEnum;
 use Illuminate\Database\Eloquent\Model;
 
 class LetterTemplate extends Model

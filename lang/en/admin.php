@@ -21,6 +21,8 @@ return [
         'letters' => 'Letters',
         'letter_templates' => 'Letter templates',
         'log_letters' => 'Letters',
+        'sms_templates' => 'SMS templates',
+        'log_sms' => 'SMS',
         'logs' => 'Logs',
         'news' => 'News',
         'pages' => 'Pages',
@@ -115,6 +117,9 @@ return [
         'status' => 'Status',
         'generate_seo' => 'Generate SEO fields',
         'is_indexable' => 'Is indexable',
+        'date' => 'Date',
+        'date_from' => 'From',
+        'date_until' => 'Until',
     ],
     // messages
     'messages'=> [
@@ -126,5 +131,6 @@ return [
         'save' => 'Save',
         'saveClose' => 'Save & Close',
         'view_logs' => 'View Logs',
+        'impersonate' => 'Login as this user',
     ]
 ];

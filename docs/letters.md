@@ -81,7 +81,7 @@ resources/lang/uk/letters.php
 ```
 
 ```php
-\App\Modules\Core\Enums\LetterEnum::ORDER_CREATED->value => [
+\App\Modules\Notification\Enums\LetterEnum::ORDER_CREATED->value => [
     'subject' => 'Order created',
     'body' => 'Hello {{ user_name }}',
 ],
