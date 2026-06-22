@@ -13,18 +13,25 @@ class PagesRepository
 {
     private const CACHE_KEY = 'pages.all';
 
+    private ?Collection $allPages = null;
+
     public function clearCache(): void
     {
+        $this->allPages = null;
         Cache::forget(self::CACHE_KEY);
     }
 
     private function getAllPages(): Collection
     {
+        if ($this->allPages !== null) {
+            return $this->allPages;
+        }
+
         $rows = Cache::remember(self::CACHE_KEY, 60 * 60 * 24, static function () {
             return Page::visible()->select(['id', 'title', 'slug', 'module'])->get()->toArray();
         });
 
-        return Page::hydrate($rows);
+        return $this->allPages = Page::hydrate($rows);
     }
 
     public function findBySlug(string $slug): ?Page

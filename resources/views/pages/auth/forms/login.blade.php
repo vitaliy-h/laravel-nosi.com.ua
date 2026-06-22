@@ -5,7 +5,7 @@
     @csrf
     <div class="mb-4">
         <label for="login-register-login-email" class="form-label">{{t('auth.email')}}</label>
-        <input type="email" name="email" class="form-control" id="login-register-login-email" value="{{ old('email') }}"
+        <input type="text" name="email" class="form-control" id="login-register-login-email" value="{{ old('email') }}"
                required>
         @error('email')
         <div class="text-danger small mt-1">

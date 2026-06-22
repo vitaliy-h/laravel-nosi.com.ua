@@ -22,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->singleton(PagesRepository::class);
         $this->app->singleton('url-helper', function () {
             return new UrlHelper(app(PagesRepository::class));
         });
