@@ -126,5 +126,6 @@ return [
         'save' => 'Save',
         'saveClose' => 'Save & Close',
         'view_logs' => 'View Logs',
+        'impersonate' => 'Login as this user',
     ]
 ];
