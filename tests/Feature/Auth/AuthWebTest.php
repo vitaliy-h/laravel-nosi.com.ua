@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Modules\Core\Enums\LetterEnum;
 use App\Modules\Core\Enums\PageModule;
-use App\Modules\Core\Facades\LetterTemplateFacade;
 use App\Modules\Core\Models\User;
+use App\Modules\Notification\Enums\LetterEnum;
+use App\Modules\Notification\Facades\LetterTemplateFacade;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;

@@ -5,7 +5,8 @@ namespace App\Providers;
 use App\Modules\Core\Models\Page;
 use App\Modules\Core\Observers\PageObserver;
 use App\Modules\Core\Repositories\PagesRepository;
-use App\Modules\Core\Services\LetterTemplateService;
+use App\Modules\Notification\Services\LetterTemplateService;
+use App\Modules\Notification\Services\SmsTemplateService;
 use App\Modules\Core\Services\UrlHelper;
 use App\Modules\Shop\Models\Order;
 use App\Modules\Shop\Models\OrderProduct;
@@ -31,6 +32,9 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->singleton('letter-template-service', function () {
             return new LetterTemplateService();
+        });
+        $this->app->singleton('sms-template-service', function () {
+            return new SmsTemplateService();
         });
     }
 

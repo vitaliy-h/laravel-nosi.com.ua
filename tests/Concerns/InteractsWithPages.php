@@ -4,6 +4,7 @@ namespace Tests\Concerns;
 
 use Database\Seeders\LetterTemplateSeeder;
 use Database\Seeders\PagesTableSeeder;
+use Database\Seeders\SmsTemplateSeeder;
 
 trait InteractsWithPages
 {
@@ -15,5 +16,10 @@ trait InteractsWithPages
     protected function seedLetterTemplates(): void
     {
         $this->seed(LetterTemplateSeeder::class);
+    }
+
+    protected function seedSmsTemplates(): void
+    {
+        $this->seed(SmsTemplateSeeder::class);
     }
 }

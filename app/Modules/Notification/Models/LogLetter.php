@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Modules\Core\Models;
+namespace App\Modules\Notification\Models;
 
-use App\Modules\Core\Enums\LetterEnum;
-use App\Modules\Core\Enums\LogLetterSourceEnum;
-use App\Modules\Core\Enums\LogLetterStatusEnum;
 use App\Modules\Core\Traits\Models\HasImage;
+use App\Modules\Notification\Enums\LetterEnum;
+use App\Modules\Notification\Enums\NotificationSourceEnum;
+use App\Modules\Notification\Enums\LogLetterStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 
 class LogLetter extends Model
@@ -29,7 +29,7 @@ class LogLetter extends Model
     protected $casts = [
         'attachments' => 'array',
         'status' => LogLetterStatusEnum::class,
-        'source' => LogLetterSourceEnum::class,
+        'source' => NotificationSourceEnum::class,
         'template_key' => LetterEnum::class,
     ];
 }

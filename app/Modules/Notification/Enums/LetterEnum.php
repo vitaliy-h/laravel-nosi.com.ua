@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Core\Enums;
+namespace App\Modules\Notification\Enums;
 
 use App\Modules\Core\Traits\Enums\HasEnumHelpers;
 

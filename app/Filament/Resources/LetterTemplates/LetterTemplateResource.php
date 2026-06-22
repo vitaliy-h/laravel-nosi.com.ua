@@ -4,8 +4,8 @@ namespace App\Filament\Resources\LetterTemplates;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\LetterTemplates\Pages\ManageLetterTemplates;
-use App\Modules\Core\Enums\LetterEnum;
-use App\Modules\Core\Models\LetterTemplate;
+use App\Modules\Notification\Enums\LetterEnum;
+use App\Modules\Notification\Models\LetterTemplate;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Core\Facades;
+namespace App\Modules\Notification\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

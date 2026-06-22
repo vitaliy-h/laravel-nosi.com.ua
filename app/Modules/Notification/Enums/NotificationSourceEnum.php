@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Modules\Core\Enums;
+namespace App\Modules\Notification\Enums;
 
 use App\Modules\Core\Traits\Enums\HasEnumHelpers;
 
-enum LogLetterSourceEnum: string
+enum NotificationSourceEnum: string
 {
     use HasEnumHelpers;
 
     case CONSOLE = 'console';
-
     case ADMIN = 'admin';
-
     case SYSTEM = 'system';
 }
