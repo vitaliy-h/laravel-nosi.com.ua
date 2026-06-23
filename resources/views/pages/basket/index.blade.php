@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+{{--todo Str unused - remove--}}
 @php use Illuminate\Support\Str; @endphp
 
 @section('content')
@@ -23,6 +24,7 @@
                                     <div class="row align-items-center gy-4">
                                         <div class="col-lg-6">
                                             <h5>Product</h5>
+                                            {{--todo text translation--}}
                                         </div>
                                         <div class="col-lg-2 text-center">
                                             <h5>Price</h5>
@@ -46,6 +48,7 @@
                                                             </div>
                                                             <div class="product-details">
                                                                 <h6 class="product-title">{{$product['name']}}</h6>
+                                                                {{-- todo: these actions could be handled via a form processed as abc_response with action as a hidden field — less custom JS --}}
                                                                 <button class="remove-item js_remove_checkout_product" data-product="{{$product['id']}}" type="button">
                                                                     <i class="bi bi-trash"></i> Remove
                                                                 </button>

@@ -962,7 +962,12 @@
 
 })();
 
-/*modal*/
+/*
+ * todo why custom modal system instead of Bootstrap modals?
+ *
+ * bootstrap.bundle.min.js is already loaded on every page, so bootstrap.Modal
+ * is available and work.
+ */
 function openModal(id) {
     const modal = document.getElementById(id);
 

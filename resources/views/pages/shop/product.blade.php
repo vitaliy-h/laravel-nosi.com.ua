@@ -9,6 +9,7 @@
     <a href="#" onclick="openModal('cartModal'); return false;">
         Відкрити модалку
     </a>
+todo remove this
 */
 ?>
 
@@ -134,6 +135,7 @@
 
                         <div class="product-actions">
 
+                            {{-- todo: consider a form handled via abc_response — on click, request hits the backend, adds product to basket, response opens the modal with BasketItemData passed from the backend. Less custom JS per button. --}}
                             <button class="btn btn-primary add-to-cart-btn" data-id="{{ $product->id }}" data-count="{{ session('basket.products.' . $product->id . '.count', 1) }}">
                                 <i class="bi bi-cart-plus"></i>
                                 Add to Cart

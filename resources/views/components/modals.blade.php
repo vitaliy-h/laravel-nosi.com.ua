@@ -16,6 +16,7 @@
             </a>
 
             <a href="{{module_url('shop')}}" class="site-modal__button site-modal__button--primary">
+                {{-- todo: consider just closing the modal and keeping the user on the current page instead of redirecting to the catalog root --}}
                 Continue Shopping
             </a>
         </div>

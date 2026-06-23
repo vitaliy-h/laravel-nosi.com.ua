@@ -264,6 +264,7 @@
 
                                             </div>
 
+                                            {{-- todo: same note as in resources/views/pages/shop/product.blade.php:138 --}}
                                             <div class="add-to-cart-container">
                                                 <button type="button" class="add-to-cart-btn" data-id="{{$product->id}}" data-count="{{ session('basket.products.' . $product->id . '.count', 1) }}">Add to Cart</button>
                                             </div>
