@@ -1060,15 +1060,11 @@ document.addEventListener('click', function (e) {
 
 document.addEventListener('change', function (e) {
     if (e.target.matches('#cartModal .quantity-input')) {
-
-
-        //alert(111)
         basketChange({
             id: e.target.dataset.product,
             count: e.target.value || 1,
             action: 'change_count_modal',
         });
-
     }
 });
 
@@ -1082,3 +1078,29 @@ document.addEventListener('click', function (e) {
         action: 'delete_modal',
     });
 });
+
+document.addEventListener('change', function (e) {
+    if (e.target.matches('.checkout_item .js_change_checkout_products')) {
+        //alert(11)
+        /**/
+        basketChange({
+            id: e.target.dataset.product,
+            count: e.target.value || 1,
+            action: 'change_count_checkout',
+        });
+        /**/
+    }
+});
+
+
+document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.js_remove_checkout_product');
+    if (!btn) return;
+    basketChange({
+        id: btn.dataset.product,
+        count: 0,
+        action: 'delete_checkout',
+    });
+});
+
+
