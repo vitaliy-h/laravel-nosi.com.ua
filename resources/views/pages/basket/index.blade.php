@@ -1,8 +1,5 @@
 @extends('layouts.app')
 
-{{--todo Str unused - remove--}}
-@php use Illuminate\Support\Str; @endphp
-
 @section('content')
     @include('blocks.page_title')
 

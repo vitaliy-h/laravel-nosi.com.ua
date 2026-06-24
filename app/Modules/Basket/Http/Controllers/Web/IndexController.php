@@ -14,7 +14,6 @@ use App\Modules\Basket\Http\Requests\ChangeBasketRequest;
 // TODO: Refactor basket to use spatie/laravel-data DTOs instead of raw arrays.
 //
 // Current problem: basket lives as untyped array in session — no validation, no type safety,
-// shape can silently drift between methods (e.g. 'sum' vs 'sum' inconsistency in this file).
 //
 // Proposed structure:
 //   BasketItemData extends Data { int $id, string $name, int $count, float $price, float $sum }
@@ -32,6 +31,14 @@ use App\Modules\Basket\Http\Requests\ChangeBasketRequest;
 //   3. Replace raw array reads/writes in index(), api_change(), recalculateBasket()
 //   4. Replace compact() view calls with $basketData->toArray() or pass DTO directly
 //   5. Update ChangeBasketRequest to use BasketItemData::validateAndCreate() if applicable
+
+
+
+// Question:
+// Could you please explain what concrete issue the DTO approach would solve in the current basket implementation?
+// The basket currently has a small session-based structure: products, count and total.
+// The known issue with inconsistent array keys can be fixed locally without introducing a new package
+// and rewriting the basket flow.
 class IndexController extends Controller implements ModuleIndexControllerInterface
 {
     public function accessCheck(): RedirectResponse|Response|null
@@ -65,6 +72,18 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
     //   Cleanest HTTP semantics; requires JS to call different endpoints.
     //
     // Recommendation: Option A now (zero new files), Option B if JS side is refactored.
+
+    // Question:
+// Do we really need a PHP enum and a handler map here?
+//
+// The allowed action values should already be validated in ChangeBasketRequest,
+// so the enum would mostly duplicate that validation while adding an extra file
+// and another abstraction.
+//
+// Also, these actions are not fully independent handlers.
+// For example, change_count, change_count_modal and change_count_checkout share
+// the same basket mutation logic and differ only by the UI response actions.
+// A handler map may split this shared logic into multiple places and increase duplication.
     public function api_change(ChangeBasketRequest $request)
     {
         $productId = (int) $request->input('id');
@@ -136,7 +155,11 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
             $product->_count = $count;
             $product->_sum = $sum;
             // todo: with DTO this wouldn't be needed — just pass BasketItemData directly to the modal view
-
+// Question:
+// Do we really need to refactor this part and introduce BasketItemData just for the modal view?
+// The current code already works, and this looks like a local view-data issue rather than
+// a reason to refactor the basket flow.
+// Could you please clarify what concrete problem this change is expected to solve?
             $basket = $this->recalculateBasket($basket);
             session(['basket' => $basket]);
 
@@ -197,11 +220,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
             ->get()
             ->keyBy('id');
 
-        // TODO: Drop &$item reference magic — use direct key access instead.
-        // &$item mutates $basket['products'][$id] in-place but requires unset($item)
-        // after loop or next variable reuses the reference silently.
-        // Replace with: foreach ($basket['products'] as $id => $item) { $basket['products'][$id]['name'] = ...; }
-        foreach ($basket['products'] as $id => &$item) {
+        foreach ($basket['products'] as $id => $item) {
 
             if (!isset($products[$id])) {
                 unset($basket['products'][$id]);
@@ -210,30 +229,21 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
 
             $product = $products[$id];
 
-            $item['name'] = $product->title;
-            $item['price'] = $product->price;
-            $item['sum'] = $product->price * $item['count'];
+            $basket['products'][$id]['name'] = $product->title;
+            $basket['products'][$id]['price'] = $product->price;
+            $basket['products'][$id]['sum'] = $product->price * $item['count'];
 
             $basket['count'] += $item['count'];
-            $basket['total'] += $item['sum'];
+            $basket['total'] += $basket['products'][$id]['sum'];
         }
 
-        unset($item);
 
         return $basket;
     }
     public function checkout(Request $request){
-        echo 8888;
-        /*todo remove this*/
-
-
-
-
-
     }
     public function index(Request $request, array $segments = [])
     {
-        //dd($segments);
         $basket = session('basket', [
             'products' => [],
             'count' => 0,
@@ -243,7 +253,6 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         $basketProducts = $basket['products'] ?? [];
 
         $ids = array_keys($basketProducts);
-        //dd($ids);
         $products = Product::query()
             ->whereIn('id', $ids)
             ->get()
@@ -252,13 +261,9 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
 
                 $product->basket_count = $count;
                 $product->basket_total = $product->price * $count;
-                $basket['products'][$product->id]['img'] = $product->image??'/assets/images/no_image.svg';
-                /* todo app/Modules/Core/Traits/Models/HasImage.php already returns "/assets/images/no_image.svg" in image when no image is set*/
+                $basket['products'][$product->id]['img'] = $product->image;
                 return $product;
             });
-        //dd($basket);
-        //dd($basket);
-        /*todo remove comments*/
         $total = $basket['total'] ?? 0;
         $count = $basket['count'] ?? 0;
 
@@ -271,10 +276,15 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
             ));
 
         }
-        //dd($basket);
         elseif($count && $total && @$basket['products']){
-            //dd($count);
-            /*todo: why two separate views for basket and empty basket? */
+            /*todo: why two separate views for basket and empty basket?
+            This is intentional.
+
+An empty basket is not simply a basket without products. It is a separate page with a different purpose and may evolve into a mini catalog with featured categories, recommendations, promotions, and navigation to popular sections.
+
+Because of that, it has its own template and layout. The basket with products and the empty basket share very little UI, so keeping them separate is simpler, cleaner, and easier to maintain than handling both states in a single view.
+
+            */
             return view('pages.basket.index', compact(
                 'basket',
                 'products',
