@@ -30,6 +30,17 @@ If user picks **New module**:
   - Add `self::{CASE} => '{Label}',` to the `label()` match block
 - Create directory: `app/Modules/{ModuleName}/Models/`
 
+### Step 2b — Cascade delete relations
+
+Ask: **Does this model have child relations that should be deleted (and logged) when this model is deleted? List relation method names, or press Enter to skip.**
+
+Example input: `items payments shipments`
+
+- If user provides names → store as `$cascadeRelations` list, use in Step 7
+- If user skips → `$cascadeRelations` is empty, skip trait
+
+Note: these are Eloquent relation method names that must be defined on the model (Step 7 will add stubs if needed).
+
 ### Step 3 — Migration fields
 
 Ask the user to list fields in free form, e.g.:
@@ -207,6 +218,7 @@ Set in the model file:
 - If fields contain `display`: add `use HasVisibility;` inside the class body and `use App\Modules\Core\Traits\Models\HasVisibility;` to the top-level imports
 - If fields contain `img` or `imgs` (or both): add `use HasImage;` inside the class body and `use App\Modules\Core\Traits\Models\HasImage;` to the top-level imports; add `$imgFields` / `$imgArrayFields` overrides per image-field rules in Step 3
 - If fields contain any of `slug`, `meta_title`, `meta_description`: add `use HasSeoFields;` inside the class body and `use App\Modules\Core\Traits\Models\HasSeoFields;` to the top-level imports
+- If `$cascadeRelations` is not empty: add `use CascadesDeletes;` inside the class body and `use App\Modules\Core\Traits\Models\CascadesDeletes;` to the top-level imports; add `protected array $cascadeDeletes = ['relation1', 'relation2'];` with the provided relation names
 
 ### Step 8 — Summary
 

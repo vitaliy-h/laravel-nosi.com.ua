@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Modules\Core\Observers\LogObserver;
+use App\Modules\Core\Traits\Models\CascadesDeletes;
 use Illuminate\Console\Application as Artisan;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
@@ -134,8 +135,16 @@ class ModuleServiceProvider extends ServiceProvider
             string $event,
             array  $data
         ) {
+            $model = $data[0];
+
+            if (in_array(CascadesDeletes::class, class_uses_recursive($model))) {
+                foreach ($model->getCascadeDeletes() as $relation) {
+                    $model->{$relation}()->each(fn($child) => $child->delete());
+                }
+            }
+
             app(LogObserver::class)
-                ->deleting($data[0]);
+                ->deleting($model);
         });
     }
 }
