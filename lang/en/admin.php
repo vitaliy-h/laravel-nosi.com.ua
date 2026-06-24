@@ -90,6 +90,7 @@ return [
         'url' => 'Url',
         'url_helper' => 'URL is managed by system for this page type',
         '_position_id' => 'Position Before',
+        '_position_end_of_list' => 'End of list',
         'user' => 'User',
         'user_id' => 'User',
         'event' => 'Event',

@@ -45,27 +45,34 @@ class NestedSetFields
                 ->options(function (callable $get, $record) use ($modelClass, $labelField) {
                     $parentId = $get('parent_id');
 
-                    return $modelClass::query()
+                    $siblings = $modelClass::query()
                         ->when(
                             $parentId,
                             fn ($q) => $q->where('parent_id', $parentId),
                             fn ($q) => $q->whereNull('parent_id'),
                         )
+                        ->when($record, fn ($q) => $q->where('id', '!=', $record->id))
                         ->defaultOrder()
                         ->get()
                         ->mapWithKeys(fn ($node) => [
                             $node->id => $node->{$labelField},
-                        ]);
+                        ])
+                        ->toArray();
+
+                    return $siblings + ['end_of_list' => __('admin.fields._position_end_of_list')] ;
                 })
                 ->afterStateHydrated(function ($state, callable $set, $record) {
-                    if ($record && !$state) {
-                        $set('_position_id', $record->id);
+                    if (!$state) {
+                        if ($record) {
+                            $nextSibling = $record->nextSiblings()->defaultOrder()->first();
+                            $set('_position_id', $nextSibling ? (string) $nextSibling->id : 'end_of_list');
+                        } else {
+                            $set('_position_id', 'end_of_list');
+                        }
                     }
                 })
-                ->searchable()
                 ->preload()
                 ->live()
-                ->nullable()
                 ->columnSpan($columnSpan),
         ];
     }
@@ -90,7 +97,27 @@ class NestedSetFields
     {
         $positionId = $data['_position_id'] ?? null;
 
-        if (!$positionId || (int) $positionId === $record->id) {
+        if (!$positionId || $positionId === 'end_of_list') {
+            $parentId = $record->fresh()->parent_id;
+            $lastSibling = $record::query()
+                ->when(
+                    $parentId,
+                    fn ($q) => $q->where('parent_id', $parentId),
+                    fn ($q) => $q->whereIsRoot(),
+                )
+                ->defaultOrder()
+                ->where('id', '!=', $record->id)
+                ->get()
+                ->last();
+
+            if ($lastSibling) {
+                $record->fresh()->afterNode($lastSibling)->save();
+            }
+
+            return;
+        }
+
+        if ((int) $positionId === $record->id) {
             return;
         }
 
