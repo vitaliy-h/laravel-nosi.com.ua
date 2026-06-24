@@ -15,8 +15,7 @@
                 Place an order
             </a>
 
-            <a href="{{module_url('shop')}}" class="site-modal__button site-modal__button--primary">
-                {{-- todo: consider just closing the modal and keeping the user on the current page instead of redirecting to the catalog root --}}
+            <a href="javascript:;{{--module_url('shop')--}}"  data-modal-close class="site-modal__button site-modal__button--primary">
                 Continue Shopping
             </a>
         </div>

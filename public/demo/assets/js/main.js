@@ -968,6 +968,11 @@
  * bootstrap.bundle.min.js is already loaded on every page, so bootstrap.Modal
  * is available and work.
  */
+/*
+
+I asked about this in Telegram earlier, but did not receive a clear answer.
+
+*/
 function openModal(id) {
     const modal = document.getElementById(id);
 
