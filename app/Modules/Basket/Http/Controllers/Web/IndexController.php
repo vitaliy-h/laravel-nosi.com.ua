@@ -14,7 +14,7 @@ use App\Modules\Basket\Http\Requests\ChangeBasketRequest;
 // TODO: Refactor basket to use spatie/laravel-data DTOs instead of raw arrays.
 //
 // Current problem: basket lives as untyped array in session — no validation, no type safety,
-// shape can silently drift between methods (e.g. 'sum' vs 'summ' inconsistency in this file).
+// shape can silently drift between methods (e.g. 'sum' vs 'sum' inconsistency in this file).
 //
 // Proposed structure:
 //   BasketItemData extends Data { int $id, string $name, int $count, float $price, float $sum }
@@ -212,10 +212,10 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
 
             $item['name'] = $product->title;
             $item['price'] = $product->price;
-            $item['summ'] = $product->price * $item['count'];
+            $item['sum'] = $product->price * $item['count'];
 
             $basket['count'] += $item['count'];
-            $basket['total'] += $item['summ'];
+            $basket['total'] += $item['sum'];
         }
 
         unset($item);
