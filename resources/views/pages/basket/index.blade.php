@@ -73,7 +73,7 @@
                                                     </div>
                                                     <div class="col-12 col-lg-2 text-center mt-3 mt-lg-0">
                                                         <div class="item-total">
-                                                            <span>$<span class="js_product_checkout_total_{{$product['id']}}">{{$product['summ']}}</span></span>
+                                                            <span>$<span class="js_product_checkout_total_{{$product['id']}}">{{$product['sum']}}</span></span>
                                                         </div>
                                                     </div>
                                                 </div>
