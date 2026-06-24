@@ -2,6 +2,7 @@
 
 namespace App\Filament\Actions;
 
+use App\Filament\Support\NestedSetFields;
 use Filament\Actions\EditAction;
 
 
@@ -31,6 +32,7 @@ class BaseEditAction
             ])
             ->action(function (array $data, array $arguments, $record, $action): void {
                 $record->update($data);
+                NestedSetFields::applyPosition($record, $data);
                 $record = $record->fresh();
 
                 $livewire = $action->getLivewire();

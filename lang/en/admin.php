@@ -124,6 +124,8 @@ return [
     // messages
     'messages'=> [
         'delete_child_items_forbidden'=>'Delete child items first',
+        'delete_forbidden_has_children'=>'Remove child categories first',
+        'delete_forbidden_has_products'=>'Move or remove products from this category first',
         'page_delete_forbidden'=>'System modules cannot be deleted',
     ],
     // buttons & actions

@@ -23,6 +23,7 @@ Detailed documentation is split into separate files:
 
 * [Resource Generation Guide](./filament/resource-generation.md)
 * [Translations Guide](filament/translations.md)
+* [Nested Sets (Tree Structures)](filament/nested-sets.md)
 
 ---
 

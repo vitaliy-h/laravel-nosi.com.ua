@@ -54,5 +54,6 @@ Production-ready starter based on Laravel + Filament.
 * [Filament Admin Panel](./filament.md)
     * [Resource Generation](filament/resource-generation.md)
     * [Translations Guide](filament/translations.md)
+    * [Nested Sets (Tree Structures)](filament/nested-sets.md)
 
 

@@ -37,6 +37,7 @@ Read the model file. Extract:
   `published_at` (or any `*_at` timestamp), `meta_title`, `meta_description`,
   `text`, `body`, `short_text`
 - **SEO mode**: active when model has ANY of `slug`, `meta_title`, `meta_description`
+- **Nested set mode**: active when model `use`s `Kalnoy\Nestedset\NodeTrait`
 
 ### Step 2 — Confirm plan
 
@@ -96,7 +97,12 @@ Priority (first match wins):
 #### Columns order
 
 1. `ImageColumn::make('img')` — if `img` field exists (no label needed, it's visual)
-2. `TextColumn::make('title')->searchable()` or `TextColumn::make('name')->searchable()`
+2. `TextColumn::make('title')->searchable()` or `TextColumn::make('name')->searchable()` — **nested set mode**: wrap with depth prefix:
+   ```php
+   TextColumn::make('title')
+       ->formatStateUsing(fn ($record) => str_repeat('— ', $record->depth) . $record->title)
+       ->searchable(),
+   ```
 3. `TextColumn::make('slug')->searchable()` — if exists
 4. Enum fields (from `$casts` where cast is an Enum class):
    ```php
@@ -169,6 +175,38 @@ If no filters → leave `->filters([])` (empty, no comment).
 ])
 ```
 
+#### Record actions (nested set mode)
+
+Replace `DeleteAction` with a guarded version (prevent deletion of non-leaf nodes):
+
+```php
+->recordActions([
+    BaseEditAction::make()->iconButton(),
+    DeleteAction::make()
+        ->iconButton()
+        ->disabled(fn ($record) => $record->children()->exists())
+        ->tooltip(fn ($record) => match (true) {
+            $record->children()->exists() => __('admin.messages.delete_forbidden_has_children'),
+            default                        => null,
+        }),
+], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+->toolbarActions([
+    NestedSetFields::createAction(), // NOT CreateAction::make()
+    BulkActionGroup::make([
+        DeleteBulkAction::make(),
+    ]),
+])
+```
+
+Add to imports: `use App\Filament\Support\NestedSetFields;`
+
+#### Table query (nested set mode)
+
+```php
+->modifyQueryUsing(fn ($query) => $query->withDepth()->defaultOrder())
+->defaultSort('_lft')
+```
+
 ### Step 5 — Rewrite `form()`
 
 Structure: `->columns(12)` always.
@@ -197,6 +235,15 @@ Calculate fixed spans of other Row 1 fields:
 Example: `rank`+`display` → 2+2=4 → title gets `->columnSpan(8)`.
 Example: `display` only → 2 → title gets `->columnSpan(10)`.
 Example: no other fields → title gets `->columnSpan(12)`.
+
+**Row 1b — tree placement fields** (nested set mode only, after Row 1):
+
+```php
+...NestedSetFields::make(ModelName::class), // parent_id + _position_id, 6+6 cols
+```
+
+Import: `use App\Filament\Support\NestedSetFields;`
+See `docs/filament/nested-sets.md` for full details.
 
 **Row 2 — date/time fields** (non-hidden `*_at` fields, e.g. `published_at`):
 
@@ -282,6 +329,7 @@ After artisan generates the file, ensure:
     - `use Filament\Forms\Components\{FileUpload, RichEditor, Select, Textarea, TextInput, Toggle, DateTimePicker};`
     - All Enum and Model imports used
     - **SEO mode only**: `use App\Filament\Traits\HasSeoFields;`
+    - **Nested set mode only**: `use App\Filament\Support\NestedSetFields;`
 5. **SEO mode only**: add `use HasSeoFields;` inside the resource class body (after the opening brace, before `$model`)
 
 ### Step 7 — Add navigation to AdminPanelProvider
