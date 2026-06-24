@@ -51,6 +51,7 @@ Production-ready starter based on Laravel + Filament.
     * [SMS](sms.md)
     * [testing](testing.md)
     * [API](./api/README.md)
+    * [Sitemap](sitemap.md)
 * [Filament Admin Panel](./filament.md)
     * [Resource Generation](filament/resource-generation.md)
     * [Translations Guide](filament/translations.md)

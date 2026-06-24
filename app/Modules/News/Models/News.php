@@ -5,10 +5,14 @@ namespace App\Modules\News\Models;
 use App\Modules\Core\Traits\Models\HasImage;
 use App\Modules\Core\Traits\Models\HasSeoFields;
 use App\Modules\Core\Traits\Models\HasVisibility;
+use Database\Factories\NewsFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class News extends Model
 {
+    /** @use HasFactory<NewsFactory> */
+    use HasFactory;
     use HasVisibility; // for visibility on the website
     use HasImage; // if there is an image
     use HasSeoFields;
