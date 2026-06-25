@@ -4,9 +4,6 @@
 
 * XML sitemap.
 
-* Add handling for `_position_id` to rebuild the nested sets tree if it has been changed.
-`app/Filament/Resources/Shop/Categories/CategoryResource.php`
-
 * Add endpoints for the Telegram bot and the corresponding libraries.
  
 * OAuth authorization for Google, Telegram, and Facebook.

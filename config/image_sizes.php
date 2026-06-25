@@ -4,9 +4,9 @@ return [
 
     'thumb' => [
         'shop_products' => [
-            'width'  => 300,
-            'height' => 300,
-            'mode'   => 'crop',
+            'width'  => 500,
+            'height' => 500,
+            'mode'   => 'contain',
         ],
         'shop_categories' => [
             'width'  => 300,

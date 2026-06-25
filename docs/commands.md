@@ -2,6 +2,8 @@
 
 * `composer install` — install Composer dependencies
 
+* `composer update` — update Composer dependencies
+
 * `npx @anthropic-ai/claude-code` — run Claude Code
 
 * `php artisan migrate` — run migrations.
