@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Core\Http\Controllers;
+namespace App\Modules\Sitemap\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Core\Enums\PageModule;
