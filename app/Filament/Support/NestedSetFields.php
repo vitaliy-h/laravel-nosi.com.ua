@@ -36,6 +36,7 @@ class NestedSetFields
                         || $record->descendants->pluck('id')->contains($value);
                 })
                 ->live()
+                ->afterStateUpdated(fn (callable $set) => $set('_position_id', 'end_of_list'))
                 ->searchable()
                 ->preload()
                 ->nullable()
@@ -71,8 +72,11 @@ class NestedSetFields
                         }
                     }
                 })
+                ->selectablePlaceholder(false)
                 ->preload()
                 ->live()
+                ->default('end_of_list')
+                ->key(fn (callable $get) => 'position_id_' . ($get('parent_id') ?? 'root'))
                 ->columnSpan($columnSpan),
         ];
     }
