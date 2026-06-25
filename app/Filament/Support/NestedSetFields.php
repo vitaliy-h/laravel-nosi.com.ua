@@ -99,6 +99,10 @@ class NestedSetFields
      */
     public static function applyPosition(mixed $record, array $data): void
     {
+        if (!in_array(NodeTrait::class, class_uses_recursive($record))) {
+            return;
+        }
+
         $positionId = $data['_position_id'] ?? null;
 
         if (!$positionId || $positionId === 'end_of_list') {
