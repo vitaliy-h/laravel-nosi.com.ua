@@ -22,6 +22,15 @@ class SitemapController extends Controller
             ->exists();
     }
 
+    private function xmlResponse(string $view, array $data = []): Response
+    {
+        return response(
+            '<?xml version="1.0" encoding="UTF-8"?>' . view($view, $data)->render(),
+            200,
+            ['Content-Type' => 'application/xml']
+        );
+    }
+
     public function index(): Response
     {
         $newsEnabled = $this->isModuleIndexable(PageModule::NEWS);
@@ -31,9 +40,7 @@ class SitemapController extends Controller
         $categoriesTotalPages = $shopEnabled ? (int) ceil(Category::visible()->count() / self::PER_PAGE) : 0;
         $productsTotalPages = $shopEnabled ? (int) ceil(Product::visible()->count() / self::PER_PAGE) : 0;
 
-        return response()
-            ->view('sitemap.index', compact('newsTotalPages', 'categoriesTotalPages', 'productsTotalPages'))
-            ->header('Content-Type', 'application/xml');
+        return $this->xmlResponse('sitemap.index', compact('newsTotalPages', 'categoriesTotalPages', 'productsTotalPages'));
     }
 
     public function base(): Response
@@ -43,9 +50,7 @@ class SitemapController extends Controller
             ->orderBy('rank', 'DESC')
             ->get();
 
-        return response()
-            ->view('sitemap.base', compact('pages'))
-            ->header('Content-Type', 'application/xml');
+        return $this->xmlResponse('sitemap.base', compact('pages'));
     }
 
     public function news(int $page): Response
@@ -58,9 +63,7 @@ class SitemapController extends Controller
                 ->get()
             : collect();
 
-        return response()
-            ->view('sitemap.news', compact('items'))
-            ->header('Content-Type', 'application/xml');
+        return $this->xmlResponse('sitemap.news', compact('items'));
     }
 
     public function categories(int $page): Response
@@ -73,9 +76,7 @@ class SitemapController extends Controller
                 ->get()
             : collect();
 
-        return response()
-            ->view('sitemap.categories', compact('items'))
-            ->header('Content-Type', 'application/xml');
+        return $this->xmlResponse('sitemap.categories', compact('items'));
     }
 
     public function products(int $page): Response
@@ -89,8 +90,6 @@ class SitemapController extends Controller
                 ->get()
             : collect();
 
-        return response()
-            ->view('sitemap.products', compact('items'))
-            ->header('Content-Type', 'application/xml');
+        return $this->xmlResponse('sitemap.products', compact('items'));
     }
 }
