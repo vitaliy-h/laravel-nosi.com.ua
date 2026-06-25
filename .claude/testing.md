@@ -47,6 +47,7 @@ See also: [`.cursor/rules/run-tests-in-sail.mdc`](../.cursor/rules/run-tests-in-
 | `Feature/Errors/` | Custom 404 for frontend, admin, and API |
 | `Feature/Auth/` | API (`AuthApiTest`) and web (`AuthWebTest`) authentication |
 | `Feature/Admin/` | Filament login, permissions, panel access |
+| `Feature/Filament/{Module}/` | Filament resource CRUD tests (list, search, filter, create, edit, delete) |
 | `Feature/Shop/` | Shop catalog API |
 | `Feature/Profile/` | Authenticated profile API |
 | `Feature/Infrastructure/` | Factories, seeders, auth helpers smoke |
@@ -119,6 +120,16 @@ Do not mock internal classes. Mock only external boundaries (e.g. `LetterTemplat
 
 ## Factories and seeders
 
+### Rule: always create a factory for models that lack one
+
+Before writing a test for a model, check if `database/factories/{Model}Factory.php` exists. If not:
+
+1. Create `database/factories/{Model}Factory.php` — set `protected $model`, use `fake()`, add relevant states
+2. Add `HasFactory` + explicit factory import to the model class
+3. Use `Model::factory()` in the test — never create records via `Model::create()` inline
+
+Pattern follows existing factories (`NewsFactory`, `UserFactory`): explicit `protected $model`, `unique()` on email/slug fields, named states for boolean variants (e.g. `processed()`, `invisible()`).
+
 ### Factories (`database/factories/`)
 
 | Factory | Model |
@@ -130,6 +141,16 @@ Do not mock internal classes. Mock only external boundaries (e.g. `LetterTemplat
 | `ProductFactory` | `App\Modules\Shop\Models\Product` — `forCategory()`, `invisible()` |
 | `OrderFactory` | `App\Modules\Shop\Models\Order` |
 | `OrderProductFactory` | `App\Modules\Shop\Models\OrderProduct` |
+| `FeedbackFactory` | `App\Modules\Feedback\Models\Feedback` — states: `processed()` |
+| `LetterTemplateFactory` | `App\Modules\Notification\Models\LetterTemplate` |
+| `SmsTemplateFactory` | `App\Modules\Notification\Models\SmsTemplate` |
+| `LanguageFactory` | `App\Modules\Translation\Models\Language` — states: `forLocalization(Localization)` — loads real `lang/{locale}/dictionary.php` |
+| `GeoCountryFactory` | `App\Modules\Geo\Models\GeoCountry` |
+| `GeoRegionFactory` | `App\Modules\Geo\Models\GeoRegion` — states: `forCountry(GeoCountry)` |
+| `GeoCityFactory` | `App\Modules\Geo\Models\GeoCity` — states: `forCountry(GeoCountry)`, `forRegion(GeoRegion)` |
+| `LogLetterFactory` | `App\Modules\Notification\Models\LogLetter` — states: `failed()` |
+| `LogSmsFactory` | `App\Modules\Notification\Models\LogSms` — states: `failed()` |
+| `LogFactory` | `App\Modules\Core\Models\Log` — states: `forUser(User)`, `forEvent(LogEventEnum)` |
 
 Models under `App\Modules\…` set `protected $model` on the factory when namespace differs from Laravel defaults.
 
@@ -144,6 +165,151 @@ Default user password from factory: `password`.
 | `LetterTemplateSeeder` | Password recovery and other letter-sending flows — use via `seedLetterTemplates()` |
 
 `DatabaseSeeder` calls both in production-like setups; in tests seed only what you need.
+
+## Filament module tests
+
+### Directory
+
+```
+tests/Feature/Filament/{Module}/
+```
+
+Each Filament resource gets its own subdirectory. Name the class `{Resource}ResourceTest`.
+
+### What to test per resource
+
+| Test | What it covers |
+|------|----------------|
+| `test_list_renders_table` | ManageRecords page mounts, table renders |
+| `test_list_can_search_{field}` | `->searchTable()` finds matching record, hides non-matching |
+| `test_list_can_filter_by_{filter}` | `->filterTable()` narrows results |
+| `test_create_{resource}_with_valid_data` | CreateAction form submits, record in DB |
+| `test_create_{resource}_requires_{field}` | Required field empty → validation error |
+| `test_edit_{resource}_with_valid_data` | EditAction form submits, DB updated |
+| `test_delete_{resource}` | DeleteAction removes record from DB |
+
+### Conventions
+
+- All tests use `Livewire::test(ManageXxx::class)` — resources in this project are single-page `ManageRecords`
+- Always call `$this->actingAsAdmin()` + `$this->actingAs($admin)` before Livewire assertion
+- Use `callAction(TestAction::make(...)->table(...))` — `callTableAction` is deprecated in Filament v5
+- Toolbar action (Create, no record): `TestAction::make(CreateAction::getDefaultName())->table()`
+- Row action (Edit/Delete, with record): `TestAction::make(EditAction::getDefaultName())->table($record)`
+- Error assertions: `assertHasNoFormErrors()` / `assertHasFormErrors(['field'])` — `assertHasNoTableActionErrors` is deprecated
+- `filterTable('roles', $role)` — pass Model directly for single `SelectFilter`; no array wrapping needed
+- Do not assert translated strings — assert DB state or Livewire component state
+
+### Example: `tests/Feature/Filament/Users/UserResourceTest.php`
+
+```php
+namespace Tests\Feature\Filament\Users;
+
+use App\Filament\Resources\Users\Pages\ManageUsers;
+use App\Modules\Core\Models\User;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\Testing\TestAction;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
+use Spatie\Permission\Models\Role;
+use Tests\TestCase;
+
+class UserResourceTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected User $admin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->admin = $this->actingAsAdmin();
+        $this->actingAs($this->admin);
+    }
+
+    public function test_list_renders_table(): void
+    {
+        User::factory()->count(3)->create();
+
+        Livewire::test(ManageUsers::class)
+            ->assertSuccessful();
+    }
+
+    public function test_list_can_search_by_email(): void
+    {
+        $target = User::factory()->create(['email' => 'find@example.com']);
+        User::factory()->create(['email' => 'other@example.com']);
+
+        Livewire::test(ManageUsers::class)
+            ->searchTable('find@example.com')
+            ->assertCanSeeTableRecords([$target])
+            ->assertCanNotSeeTableRecords([/* other user */]);
+    }
+
+    public function test_list_can_filter_by_role(): void
+    {
+        $role = Role::firstOrCreate(['name' => 'editor', 'guard_name' => 'web']);
+
+        $withRole = User::factory()->create();
+        $withRole->assignRole($role);
+        $withoutRole = User::factory()->create();
+
+        Livewire::test(ManageUsers::class)
+            ->filterTable('roles', $role)          // pass Model directly for single SelectFilter
+            ->assertCanSeeTableRecords([$withRole])
+            ->assertCanNotSeeTableRecords([$withoutRole]);
+    }
+
+    public function test_create_user_with_valid_data(): void
+    {
+        Livewire::test(ManageUsers::class)
+            ->callAction(TestAction::make(CreateAction::getDefaultName())->table(), data: [
+                'name'     => 'John',
+                'email'    => 'john@example.com',
+                'password' => 'secret123',
+            ])
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('users', ['email' => 'john@example.com']);
+    }
+
+    public function test_create_user_requires_email(): void
+    {
+        Livewire::test(ManageUsers::class)
+            ->callAction(TestAction::make(CreateAction::getDefaultName())->table(), data: [
+                'name'     => 'No Email',
+                'password' => 'secret123',
+            ])
+            ->assertHasFormErrors(['email']);
+    }
+
+    public function test_edit_user_with_valid_data(): void
+    {
+        $user = User::factory()->create(['name' => 'Old']);
+
+        Livewire::test(ManageUsers::class)
+            ->callAction(TestAction::make(EditAction::getDefaultName())->table($user), data: [
+                'name'  => 'Updated',
+                'email' => $user->email,
+            ])
+            ->assertHasNoFormErrors();
+
+        $this->assertDatabaseHas('users', ['id' => $user->id, 'name' => 'Updated']);
+    }
+
+    public function test_delete_user(): void
+    {
+        $user = User::factory()->create();
+
+        Livewire::test(ManageUsers::class)
+            ->callAction(TestAction::make(DeleteAction::getDefaultName())->table($user))
+            ->assertSuccessful();
+
+        $this->assertModelMissing($user);
+    }
+}
+```
 
 ## Examples
 
