@@ -5,6 +5,7 @@ namespace App\Modules\Auth\Actions;
 use App\Modules\Auth\Dtos\LoginData;
 use App\Modules\Core\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\ValidationException;
 
 class LoginAction
@@ -14,11 +15,12 @@ class LoginAction
         $user = User::where('email', $dto->email)->first();
 
         if (!$user || !Hash::check($dto->password, $user->password)) {
-
             throw ValidationException::withMessages([
                 'email' => t('auth.invalid_credentials'),
             ]);
         }
+
+        $user->update(['ip' => Request::ip()]);
 
         return $user;
     }

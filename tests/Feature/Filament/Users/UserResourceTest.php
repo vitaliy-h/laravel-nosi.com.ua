@@ -94,17 +94,7 @@ class UserResourceTest extends TestCase
             ->assertHasFormErrors(['name']);
     }
 
-    public function test_create_user_requires_email(): void
-    {
-        Livewire::test(ManageUsers::class)
-            ->callAction(TestAction::make(CreateAction::getDefaultName())->table(), data: [
-                'name'     => 'John',
-                'password' => 'secret123',
-            ])
-            ->assertHasFormErrors(['email']);
-    }
-
-    public function test_create_user_requires_unique_email(): void
+public function test_create_user_requires_unique_email(): void
     {
         User::factory()->create(['email' => 'taken@example.com']);
 

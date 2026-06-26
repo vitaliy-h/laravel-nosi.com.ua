@@ -14,7 +14,9 @@ use App\Modules\Shop\Observers\OrderObserver;
 use App\Modules\Shop\Observers\OrderProductObserver;
 use App\Modules\Translation\Services\TranslationService;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use SocialiteProviders\Manager\SocialiteWasCalled;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -48,6 +50,16 @@ class AppServiceProvider extends ServiceProvider
         Page::observe(PageObserver::class);
         Order::observe(OrderObserver::class);
         OrderProduct::observe(OrderProductObserver::class);
+        $this->mergeSocialConfig();
+    }
+
+    private function mergeSocialConfig(): void
+    {
+        foreach (config('social.providers', []) as $provider) {
+            config(["services.{$provider}" => config("social.{$provider}")]);
+        }
+
+        Event::listen(SocialiteWasCalled::class, \SocialiteProviders\Telegram\TelegramExtendSocialite::class . '@handle');
     }
 
 }

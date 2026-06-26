@@ -22,3 +22,10 @@ Route::get('/auth/impersonate/{user}', [\App\Modules\Auth\Http\Controllers\Web\I
 Route::post('/auth/impersonation/leave', [\App\Modules\Auth\Http\Controllers\Web\ImpersonationController::class, 'leave'])
     ->name('impersonate.leave')
     ->middleware('auth');
+
+Route::prefix('/auth/social')->group(function () {
+    Route::get('/{provider}', [\App\Modules\Auth\Http\Controllers\Web\OAuthController::class, 'redirect'])
+        ->name('social.redirect');
+    Route::get('/{provider}/callback', [\App\Modules\Auth\Http\Controllers\Web\OAuthController::class, 'callback'])
+        ->name('social.callback');
+});

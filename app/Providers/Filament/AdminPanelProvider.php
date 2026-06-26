@@ -103,7 +103,11 @@ class AdminPanelProvider extends PanelProvider
                                 NavigationItem::make(__('admin.tables.users'))
                                     ->icon('heroicon-o-users')
                                     ->url(\App\Filament\Resources\Users\UserResource::getUrl())
-                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.users*')),
+                                    ->isActiveWhen(fn (): bool => Request::is('admin/users') || Request::is('admin/users/create') || Request::is('admin/users/*/edit')),
+                                NavigationItem::make(__('admin.tables.social_profiles'))
+                                    ->icon('heroicon-o-link')
+                                    ->url(\App\Filament\Resources\SocialProfiles\SocialProfileResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::is('admin/social-profiles*')),
                             ]),
 
                         NavigationGroup::make(__('admin.tables.geo'))

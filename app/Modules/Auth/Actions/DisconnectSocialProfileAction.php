@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Modules\Auth\Actions;
+
+use App\Modules\Core\Models\User;
+use Illuminate\Validation\ValidationException;
+
+class DisconnectSocialProfileAction
+{
+    public function handle(User $user, string $provider): void
+    {
+        $profile = $user->socialProfiles()->where('provider', $provider)->firstOrFail();
+
+        $hasPassword = !empty($user->password);
+        $hasEmail    = !empty($user->email);
+        $otherProviders = $user->socialProfiles()
+            ->where('provider', '!=', $provider)
+            ->exists();
+
+        if (!$hasPassword && !$hasEmail && !$otherProviders) {
+            throw ValidationException::withMessages([
+                'provider' => [__('dictionary.social.cannot_disconnect_last')],
+            ]);
+        }
+
+        $profile->delete();
+    }
+}

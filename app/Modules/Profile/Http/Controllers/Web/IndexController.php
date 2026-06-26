@@ -46,7 +46,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
 
     public function edit(Request $request, ?string $id = null)
     {
-        $user = auth()->user();
+        $user = auth()->user()->load('socialProfiles');
         $activeSection = 'edit';
         return view('pages.profile.edit', compact('user', 'activeSection'));
     }

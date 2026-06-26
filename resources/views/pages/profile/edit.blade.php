@@ -21,6 +21,46 @@
             @include('pages.profile.components.edit_user_password')
         </div>
 
+        <!-- Social Accounts -->
+        <div class="settings-section" data-aos="fade-up" data-aos-delay="250">
+            <h3>{{ t('social.section_title') }}</h3>
+            <p style="margin: -8px 0 20px; font-size: 14px; color: color-mix(in srgb, var(--default-color), transparent 40%);">
+                {{ t('social.section_subtitle') }}
+            </p>
+
+            @if ($errors->has('provider'))
+                <div class="alert alert-danger mb-3">{{ $errors->first('provider') }}</div>
+            @endif
+
+            @if (session('success'))
+                <div class="alert alert-success mb-3">{{ session('success') }}</div>
+            @endif
+
+            <div class="preferences-list">
+                @foreach (config('social.providers') as $provider)
+                    @php $connected = $user->socialProfiles->firstWhere('provider', $provider); @endphp
+                    <div class="preference-item">
+                        <div class="preference-info">
+                            <h4>{{ t('social.' . $provider) }}</h4>
+                            <p>{{ $connected ? __('dictionary.social.connected') : '' }}</p>
+                        </div>
+                        @if ($connected)
+                            <form action="{{ route('profile.social.disconnect', $provider) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn-social-disconnect">
+                                    {{ t('social.disconnect') }}
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('social.redirect', $provider) }}" class="btn-social-connect">
+                                {{ t('social.connect') }}
+                            </a>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
         <!-- Delete Account -->
         <div class="settings-section danger-zone" data-aos="fade-up" data-aos-delay="300">
             <h3>{{ t('profile.delete_account') }}</h3>

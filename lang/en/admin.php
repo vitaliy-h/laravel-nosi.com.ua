@@ -32,6 +32,7 @@ return [
         'shop_orders' => 'Orders',
         'shop_products' => 'Products',
         'users' => 'Users',
+        'social_profiles' => 'Social Profiles',
     ],
 
     // fields & filters
