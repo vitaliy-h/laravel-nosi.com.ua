@@ -112,6 +112,7 @@ class PageResource extends Resource
                 ToggleColumn::make('display_menu'),
                 ToggleColumn::make('display_menu_footer'),
                 ToggleColumn::make('display'),
+                ToggleColumn::make('is_indexable'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

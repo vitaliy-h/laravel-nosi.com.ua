@@ -2,12 +2,10 @@
 
 * Image resizing.
 
-* XML sitemap.
-
 * Add endpoints for the Telegram bot and the corresponding libraries.
  
 * OAuth authorization for Google, Telegram, and Facebook.
-* 
+
 * Upload/update the price list from an Excel file.
  
 * User roles in the admin panel. 
