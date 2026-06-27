@@ -75,6 +75,19 @@ class ImagePreviewControllerTest extends TestCase
         $this->assertSame($mtime, filemtime(Storage::path($previewPath)));
     }
 
+    public function test_serves_pre_generated_thumb_without_regenerating(): void
+    {
+        $previewPath = 'thumb/shop_products/1/img/product.jpg';
+
+        Storage::put($previewPath, $this->createJpeg(100, 100));
+
+        $mtime = filemtime(Storage::path($previewPath));
+
+        $this->get('/storage/thumb/shop_products/1/img/product.jpg')->assertOk();
+
+        $this->assertSame($mtime, filemtime(Storage::path($previewPath)));
+    }
+
     private function createJpeg(int $width, int $height): string
     {
         $image = imagecreatetruecolor($width, $height);

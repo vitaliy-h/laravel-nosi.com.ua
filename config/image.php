@@ -20,6 +20,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Eager Image Presets
+    |--------------------------------------------------------------------------
+    |
+    | Presets listed here are generated when a model with HasImage is saved.
+    | All other presets from config/image_sizes.php are generated on-demand
+    | on the first HTTP request.
+    |
+    */
+
+    'eager_presets' => ['thumb'],
+
+    /*
+    |--------------------------------------------------------------------------
     | Configuration Options
     |--------------------------------------------------------------------------
     |

@@ -27,8 +27,11 @@ Trait responsibilities:
 * Generates image path and normalizes filename (transliteration via `Str::slug(...)`)
 * Moves temp files to permanent path after record is created
 * Deletes old files when image field is replaced
+* Deletes image conversions (previews) when originals are replaced or removed
 * Deletes entire directory when model is deleted
+* Deletes all conversion directories for the record when model is deleted
 * Cleans up empty directories after file deletion
+* Generates eager presets (see [Eager thumb on save](#eager-thumb-on-save)) after create/update
 * Appends `$model->image` and `$model->images` URL accessors
 
 ---
@@ -145,6 +148,48 @@ protected $casts = [
 ];
 ```
 
+### Custom storage path segment (`$imgArrayPathFields`)
+
+By default, array field paths use the **database column name** as the path segment
+(`imgs` → `{table}/{id}/imgs/…`). When the Filament field name differs from the column
+name, map the column to the storage segment:
+
+```php
+class Product extends Model
+{
+    use HasImage;
+
+    protected array $imgArrayFields = ['imgs'];
+    protected array $imgArrayPathFields = ['imgs' => 'gallery'];
+
+    protected $casts = [
+        'imgs' => 'array',
+    ];
+}
+```
+
+Filament uploads gallery files with field `gallery`; after save the permanent path is:
+
+```text
+shop_products/15/gallery/photo.jpg
+```
+
+The `imgs` column still stores the path; only the on-disk directory name changes.
+
+Filament upload for Product gallery (note `gallery` in `getFilePath`, not `imgs`):
+
+```php
+FileUpload::make('imgs')
+    ->image()
+    ->multiple()
+    ->getUploadedFileNameForStorageUsing(function ($file, $record) {
+        return ($record ?? new Product())->getFilePath(
+            $file->getClientOriginalName(),
+            'gallery',
+        );
+    })
+```
+
 ## Filament upload
 
 ```php
@@ -213,9 +258,11 @@ No manual action required.
 
 | Event | What happens |
 |---|---|
-| Field value replaced | Old file deleted, empty parent dirs removed |
-| Image removed from array | Removed files deleted, empty parent dirs removed |
-| Model deleted | Entire `{table}/{id}/` directory deleted |
+| Field value replaced | Old original deleted; conversions for old path deleted; empty parent dirs removed |
+| Image removed from array | Removed originals deleted; conversions for removed paths deleted; empty parent dirs removed |
+| Model deleted | Entire `{table}/{id}/` original directory deleted; all `{preset}/{table}/{id}/` conversion directories deleted |
+
+Conversion cleanup uses every preset defined in `config/image_sizes.php` (not only eager presets).
 
 ---
 
@@ -231,12 +278,30 @@ No manual action required.
 
 # Image Resizing
 
-The project supports **lazy-generated image previews**. On the first request the system
-resizes an original uploaded image according to a named preset (e.g. `thumb`, `large`),
-saves the result to storage, and serves it. Subsequent requests read the cached file
-without re-processing.
+The project supports **named image presets** (e.g. `thumb`, `large`). Presets listed in
+`config/image.php` → `eager_presets` are generated when a model with `HasImage` is saved
+(admin create/update). All other presets from `config/image_sizes.php` are generated
+**on demand** on the first HTTP request.
 
 Original uploads are unchanged. `$model->image` still returns the full-size original URL.
+
+---
+
+## Eager thumb on save
+
+When a record with `HasImage` is created or an image field is updated, the trait calls
+`ImageConversionService::generateEager()` for each affected path. Eager presets are
+configured in `config/image.php`:
+
+```php
+'eager_presets' => ['thumb'],
+```
+
+Only presets in this list are pre-generated on save. Other presets (e.g. `large`) remain
+lazy — they are created on the first request to `/storage/{preset}/…`.
+
+Eager generation runs after temp→permanent move on create, and after old files are deleted
+on update. Failures are reported to the log and do not block the save.
 
 ---
 
@@ -255,6 +320,10 @@ Browser GET /storage/thumb/shop_products/1/img/product.jpg
   │
   └─ resize original → save preview → serve file
 ```
+
+For `thumb`, the preview is usually already on disk after admin save (eager generation).
+The on-demand branch above applies to non-eager presets and as a fallback when eager
+generation did not run or failed.
 
 Route: `GET /storage/{preset}/{path}` (registered in `app/Modules/Core/routes/web.php`).
 
@@ -279,9 +348,9 @@ Original:  shop_products/1/img/product.jpg
 Preview:   thumb/shop_products/1/img/product.jpg
 ```
 
-Previews live under a `{preset}/` prefix on the `public` disk. Deleting a model removes
-only the original directory (`{table}/{id}/`); cached previews are kept until cleared
-manually (see `images:clear` below).
+Previews live under a `{preset}/` prefix on the `public` disk. When an original is
+replaced, removed from an array field, or the model is deleted, `HasImage` removes the
+matching conversion files or `{preset}/{table}/{id}/` directories automatically.
 
 ---
 
@@ -457,10 +526,11 @@ in `.env` to `\Intervention\Image\Drivers\Imagick\Driver::class` (requires `ext-
 
 ## Resizing notes
 
-* Previews are generated **on demand** — there is no queue or batch pre-generation.
-* First request for a new preview runs PHP image processing; later requests serve the cached file.
+* **`thumb`** is generated eagerly on admin save (`config/image.php` → `eager_presets`).
+* Other presets are generated **on demand** — there is no queue or batch pre-generation.
+* First request for a lazy preset runs PHP image processing; later requests serve the cached file.
 * Array image fields (`imgs`) are not covered by `imageUrl()` — use `image_url($path, $preset)` with each path from the array.
-* If you change dimensions in `config/image_sizes.php`, run `images:clear` for the affected preset so old cached files are removed.
+* If you change dimensions in `config/image_sizes.php`, run `images:clear` for the affected preset so old cached files are removed; re-save records in admin to regenerate eager thumbs.
 
 ---
 

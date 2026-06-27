@@ -2,7 +2,7 @@
 
 namespace App\Modules\Core\Http\Controllers;
 
-use App\Modules\Core\Services\ImageResizer;
+use App\Modules\Core\Services\ImageConversionService;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -11,7 +11,7 @@ class ImagePreviewController
     public function __invoke(
         string $preset,
         string $path,
-        ImageResizer $resizer
+        ImageConversionService $conversions
     ): BinaryFileResponse {
         abort_unless(
             array_key_exists($preset, config('image_sizes', [])),
@@ -19,7 +19,7 @@ class ImagePreviewController
             "Image preset [{$preset}] is not defined."
         );
 
-        $previewPath = "{$preset}/{$path}";
+        $previewPath = $conversions->previewPath($preset, $path);
 
         if (Storage::exists($previewPath)) {
             return response()->file(Storage::path($previewPath));
@@ -33,15 +33,13 @@ class ImagePreviewController
 
         $entity = explode('/', $path)[0];
 
-        $sizeConfig = config("image_sizes.{$preset}.{$entity}");
-
         abort_unless(
-            $sizeConfig !== null,
+            $conversions->resolveSizeConfig($preset, $path) !== null,
             404,
             "No size config for preset [{$preset}] and entity [{$entity}]."
         );
 
-        $resizer->resize($path, $previewPath, $sizeConfig);
+        $conversions->generate($path, $preset);
 
         return response()->file(Storage::path($previewPath));
     }

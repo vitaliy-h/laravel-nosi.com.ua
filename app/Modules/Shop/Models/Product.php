@@ -17,6 +17,10 @@ class Product extends Model
     use HasImage;
     use HasSeoFields;
 
+    protected array $imgArrayFields = ['imgs'];
+
+    protected array $imgArrayPathFields = ['imgs' => 'gallery'];
+
     protected $table = 'shop_products';
 
     protected $fillable = [
