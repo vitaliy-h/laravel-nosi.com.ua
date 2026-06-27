@@ -229,7 +229,7 @@
                 <section id="category-product-list" class="category-product-list section">
                     <div class="row gy-4">
                         @foreach($products as $product)
-                            @include('pages.shop.product-card', ['product' => $product])
+                            @include('pages.shop.product-box', ['product' => $product])
                         @endforeach
                     </div>
 

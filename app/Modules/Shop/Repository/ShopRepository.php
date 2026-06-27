@@ -328,6 +328,14 @@ class ShopRepository
     }
 
     /**
+     * Get random visible products for homepage sections.
+     */
+    public function bestSellers(int $limit = 4)
+    {
+        return Product::visible()->with('category')->inRandomOrder()->limit($limit)->get();
+    }
+
+    /**
      * Get paginated products for the current category and selected filters.
      */
     public function productsByCategory(?Category $category = null, array $filter = [])
