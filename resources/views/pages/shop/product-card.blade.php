@@ -1,4 +1,5 @@
-<div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+<div class="col-md-6 col-lg-3 {{ $colClass ?? '' }}"
+    @foreach($dataAttrs ?? [] as $attr => $value) {{ $attr }}="{{ $value }}"@endforeach>
     <div class="product-card">
         <div class="product-image">
             <img src="{{ $product->imageUrl('thumb') }}" class="img-fluid default-image" alt="{{ $product->title }}" loading="lazy">

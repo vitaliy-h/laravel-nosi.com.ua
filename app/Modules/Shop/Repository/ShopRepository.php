@@ -328,11 +328,23 @@ class ShopRepository
     }
 
     /**
-     * Get random visible products for homepage sections.
+     * bestSellers block
      */
     public function bestSellers(int $limit = 4)
     {
         return Product::visible()->with('category')->inRandomOrder()->limit($limit)->get();
+    }
+
+    /**
+     * featured block
+     */
+    public function featuredCategories(int $limit = 8)
+    {
+        return Category::visible()->whereIsRoot()->orderBy('_lft')->get();
+    }
+    public function featuredProducts(int $limit = 8)
+    {
+        return Product::visible()->with(['category.ancestors'])->inRandomOrder()->limit($limit)->get();
     }
 
     /**

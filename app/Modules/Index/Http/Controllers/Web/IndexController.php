@@ -4,6 +4,7 @@ namespace App\Modules\Index\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Core\Interfaces\ModuleIndexControllerInterface;
+use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Repository\ShopRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,7 +24,9 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
     public function index(Request $request, array $segments = [])
     {
         $bestSellers = $this->shopRepository->bestSellers(4);
+        $featuredCategories = $this->shopRepository->featuredCategories(4);
+        $featuredProducts = $this->shopRepository->featuredProducts(8);
 
-        return view('pages.index', compact('bestSellers'));
+        return view('pages.index', compact('bestSellers', 'featuredCategories', 'featuredProducts'));
     }
 }
