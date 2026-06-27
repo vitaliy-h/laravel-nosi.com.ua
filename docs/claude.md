@@ -4,9 +4,39 @@
 
 Open [claude.ai](https://claude.ai) → Settings → Upgrade to Pro ($20/month)
 
+If you previously used an API key, logout first:
+
+```bash
+npx @anthropic-ai/claude-code logout
+```
+
 ---
 
-## 2. Install Node.js
+## 2. Choose How to Run Claude Code
+
+There are two ways to work with Claude Code. Pick one:
+
+---
+
+### Option A — Windows Desktop App (recommended)
+
+Download and install the Claude Code desktop app for Windows:
+
+[Claude Code for Windows](https://claude.ai/download)
+
+After installation:
+
+1. Open the app
+2. Sign in with your Claude.ai account
+3. Open your project folder via **File → Open Folder**
+
+No Node.js or terminal setup required.
+
+---
+
+### Option B — Console (CLI)
+
+#### Install Node.js
 
 Download and install Node.js:
 
@@ -19,9 +49,7 @@ node -v
 npm -v
 ```
 
----
-
-## 3. Install Claude Code
+#### Install Claude Code
 
 Install Claude Code globally:
 
@@ -29,9 +57,7 @@ Install Claude Code globally:
 npm install -g @anthropic-ai/claude-code
 ```
 
----
-
-## 4. Start Claude Code & Login
+#### Start Claude Code & Login
 
 Run inside project directory:
 
@@ -49,7 +75,7 @@ Browser will open — login with your Claude.ai account.
 
 ---
 
-## 5. Project AI Instructions Structure
+## 3. Project AI Instructions Structure
 
 Claude automatically reads these files on every session:
 
@@ -80,7 +106,7 @@ CLAUDE.md                   # root project summary (read first)
 
 ---
 
-## 6. First Project Analysis
+## 4. First Project Analysis
 
 Inside Claude Code run:
 
@@ -97,7 +123,7 @@ Claude will:
 
 ---
 
-## 7. Recommended Workflow
+## 5. Recommended Workflow
 
 1. Start Claude Code in project root
 2. Claude reads `.claude/` automatically
@@ -116,15 +142,3 @@ Recommended generation flow:
 * Controller + Resource
 * Filament Resource (`form()`, `table()`, filters, actions, bulk actions)
 * PHPUnit tests (Feature + Unit)
-
----
-
-## Switching from API Key to Claude.ai Subscription
-
-If you previously used an API key, logout first:
-
-```bash
-npx @anthropic-ai/claude-code logout
-```
-
-Then start Claude Code again and choose option 1 (Claude.ai subscription).
