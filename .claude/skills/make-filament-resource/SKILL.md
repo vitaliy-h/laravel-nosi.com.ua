@@ -138,6 +138,9 @@ Priority (first match wins):
         ->dateTime()
         ->sortable()
         ->toggleable(isToggledHiddenByDefault: true),
+    TextColumn::make('id')
+        ->sortable()
+        ->toggleable(isToggledHiddenByDefault: true),
     ```
 
 #### Filters
