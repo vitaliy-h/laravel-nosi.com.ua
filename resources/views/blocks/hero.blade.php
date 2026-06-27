@@ -6,10 +6,9 @@
                 <div class="content">
                     <span class="promo-badge">{!! $title !!}</span>
                     <h1>{!! $subtitle ?? '' !!}</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo. Vestibulum ante ipsum primis in faucibus.</p>
+                    <p>This is a demo version of a Laravel + Filament project. Visit the admin panel to see how it's built and explore its features.</p>
                     <div class="hero-cta">
-                        <a href="#" class="btn btn-shop">Shop Now <i class="bi bi-arrow-right"></i></a>
-                        <a href="#" class="btn btn-collection">View Collection</a>
+                        <a href="/admin" class="btn btn-shop">Go to Admin Panel <i class="bi bi-arrow-right"></i></a>
                     </div>
                     <div class="hero-features">
                         <div class="feature-item">
