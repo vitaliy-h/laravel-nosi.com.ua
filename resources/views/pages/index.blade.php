@@ -222,7 +222,7 @@
                 </div>
 
                 <div class="text-center mt-5" data-aos="fade-up">
-                    <a href="#" class="view-all-btn">View All Products <i class="bi bi-arrow-right"></i></a>
+                    <a href="{{module_url('shop')}}" class="view-all-btn">View All Products <i class="bi bi-arrow-right"></i></a>
                 </div>
 
             </div>
