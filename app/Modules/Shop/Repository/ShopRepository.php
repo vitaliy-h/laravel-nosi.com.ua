@@ -332,7 +332,7 @@ class ShopRepository
      */
     public function specialCategories(int $limit = 12)
     {
-        return Category::visible()->whereNotNull('img')->withCount('products')->inRandomOrder()->limit($limit)->get();
+        return Category::visible()->whereNotNull('img')->withCount('products')->having('products_count', '>', 0)->inRandomOrder()->limit($limit)->get();
     }
 
     /**
