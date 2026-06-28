@@ -21,7 +21,6 @@ class NewsFactory extends Factory
             'short_text'   => fake()->paragraph(),
             'content'      => null,
             'img'          => null,
-            'imgs'         => null,
             'published_at' => fake()->dateTimeBetween('-1 year', 'now'),
             'meta_title'   => null,
             'meta_description' => null,
