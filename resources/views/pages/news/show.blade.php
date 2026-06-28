@@ -17,7 +17,7 @@
             </div>
         @endif
 
-        @if($newsItem->image)
+        @if($newsItem->img)
             <img
                 src="{{ $newsItem->image }}"
                 class="img-fluid rounded mb-4 news-card-image"
@@ -26,7 +26,7 @@
         @endif
 
         <div>
-            {!! $newsItem->text !!}
+            @include('components.builder', ['content' => $newsItem->content])
         </div>
 
     </div>

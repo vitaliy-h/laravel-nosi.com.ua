@@ -1,19 +1,10 @@
 @extends('layouts.app')
 
+@section('body-class', 'product-details-page')
+
 @section('content')
 
     @include('blocks.page_title')
-
-<?php
-/*
-    <a href="#" onclick="openModal('cartModal'); return false;">
-        Відкрити модалку
-    </a>
-todo remove this
-*/
-?>
-
-
 
     <section id="product-details" class="product-details section">
 

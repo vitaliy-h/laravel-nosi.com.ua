@@ -19,9 +19,7 @@ class Product extends Model
 
     protected array $imgArrayFields = ['imgs'];
 
-    protected array $imgArrayPathFields = ['imgs' => 'gallery'];
-
-    protected $table = 'shop_products';
+protected $table = 'shop_products';
 
     protected $fillable = [
         'display',

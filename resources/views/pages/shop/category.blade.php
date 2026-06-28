@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('body-class', 'category-page')
+
 @php use Illuminate\Support\Str; @endphp
 
 @section('content')

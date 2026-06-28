@@ -121,22 +121,22 @@ class HasImageConversionTest extends TestCase
 
     public function test_deletes_conversions_when_removed_from_imgs_array(): void
     {
-        $news = News::factory()->create(['img' => null, 'imgs' => null]);
+        $product = Product::factory()->create(['img' => null, 'imgs' => null]);
 
-        $path1 = "news/{$news->id}/imgs/photo1.jpg";
-        $path2 = "news/{$news->id}/imgs/photo2.jpg";
+        $path1 = "shop_products/{$product->id}/imgs/photo1.jpg";
+        $path2 = "shop_products/{$product->id}/imgs/photo2.jpg";
 
         Storage::put($path1, $this->createJpeg(600, 400));
         Storage::put($path2, $this->createJpeg(600, 400));
 
-        $news->update(['imgs' => [$path1, $path2]]);
+        $product->update(['imgs' => [$path1, $path2]]);
 
         $this->assertTrue(Storage::exists("thumb/{$path1}"));
         $this->assertTrue(Storage::exists("thumb/{$path2}"));
 
         Storage::put("large/{$path1}", 'large-preview');
 
-        $news->update(['imgs' => [$path2]]);
+        $product->update(['imgs' => [$path2]]);
 
         $this->assertFalse(Storage::exists($path1));
         $this->assertFalse(Storage::exists("thumb/{$path1}"));
@@ -145,20 +145,20 @@ class HasImageConversionTest extends TestCase
         $this->assertTrue(Storage::exists("thumb/{$path2}"));
     }
 
-    public function test_product_gallery_temp_move_and_thumb(): void
+    public function test_product_imgs_temp_move_and_thumb(): void
     {
-        Storage::put('shop_products/temp/gallery/photo.jpg', $this->createJpeg(600, 400));
+        Storage::put('shop_products/temp/imgs/photo.jpg', $this->createJpeg(600, 400));
 
         $product = Product::factory()->create([
-            'imgs' => ['shop_products/temp/gallery/photo.jpg'],
+            'imgs' => ['shop_products/temp/imgs/photo.jpg'],
         ]);
 
-        $expectedPath = "shop_products/{$product->id}/gallery/photo.jpg";
+        $expectedPath = "shop_products/{$product->id}/imgs/photo.jpg";
 
         $this->assertSame([$expectedPath], $product->fresh()->imgs);
         $this->assertTrue(Storage::exists($expectedPath));
         $this->assertTrue(Storage::exists("thumb/{$expectedPath}"));
-        $this->assertFalse(Storage::exists('shop_products/temp/gallery/photo.jpg'));
+        $this->assertFalse(Storage::exists('shop_products/temp/imgs/photo.jpg'));
     }
 
     private function createJpeg(int $width, int $height): string

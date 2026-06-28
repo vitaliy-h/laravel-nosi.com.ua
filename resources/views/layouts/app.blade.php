@@ -38,8 +38,7 @@
     {{-- Page styles --}}
     @stack('styles')
 </head>
-<!-- todo body class -->
-<body class="index-page">
+<body class="@yield('body-class', 'default-page')">
 
 {{-- Navbar --}}
 @include('components.navbar')

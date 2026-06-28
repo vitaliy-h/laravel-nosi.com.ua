@@ -29,7 +29,7 @@ class PageFactory extends Factory
             'slug' => fake()->unique()->slug(),
             'module' => PageModule::TEXT,
             'rank' => fake()->numberBetween(1, 100),
-            'text' => null,
+            'content' => null,
             'meta_title' => null,
             'meta_description' => null,
         ];
