@@ -21,7 +21,6 @@ class Page extends Model
     protected $fillable = [
         'title',
         'slug',
-        'text',
         'module',
         'rank',
         'display',

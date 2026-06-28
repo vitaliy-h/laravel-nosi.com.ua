@@ -65,8 +65,6 @@ class PageResource extends Resource
                     ->columnSpan(3)
                     ->inline(false),
 
-                //RichEditor::make('text')->columnSpanFull(),
-
                 Builder::make('content')
                     ->blocks([
                         TextBlock::make(),

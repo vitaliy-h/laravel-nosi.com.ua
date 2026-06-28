@@ -24,17 +24,16 @@ class News extends Model
         'display', // related to HasVisibility
         'slug',
         'img', // main image
-        'imgs',
         'title',
         'meta_title',
         'meta_description',
         'short_text',
-        'text',
+        'content',
     ];
 
     protected $casts = [
         'display' => 'boolean',
         'published_at' => 'datetime',
-        'imgs' => 'array',
+        'content'=>'array'
     ];
 }
