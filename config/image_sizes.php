@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * see docs/images.md
+ * Clearing preview cache
+ * php artisan images:clear                         # all presets from config/image_sizes.php
+ * php artisan images:clear thumb                   # entire thumb/ directory
+ * php artisan images:clear thumb shop_products     # only thumb/shop_products/
+ */
+
 return [
 
     'thumb' => [
