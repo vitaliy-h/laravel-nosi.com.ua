@@ -19,7 +19,7 @@ class NewsFactory extends Factory
             'title'        => fake()->sentence(4),
             'slug'         => fake()->unique()->slug(),
             'short_text'   => fake()->paragraph(),
-            'text'         => null,
+            'content'      => null,
             'img'          => null,
             'imgs'         => null,
             'published_at' => fake()->dateTimeBetween('-1 year', 'now'),
