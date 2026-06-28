@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('body-class', 'cart-page')
+
 @section('content')
     @include('blocks.page_title')
 

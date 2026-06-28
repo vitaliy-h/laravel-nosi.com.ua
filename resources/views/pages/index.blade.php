@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('body-class', 'index-page')
+
 @section('content')
     <main class="main">
 

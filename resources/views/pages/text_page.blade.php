@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('body-class', 'text-page')
+
 @section('content')
     @include('blocks.page_title')
 
