@@ -119,14 +119,24 @@ class ImageConversionServiceTest extends TestCase
         );
     }
 
-    public function test_generate_eager_creates_only_eager_presets(): void
+    public function test_generate_eager_creates_all_configured_presets(): void
     {
         Storage::put('shop_products/1/img/product.jpg', $this->createJpeg(600, 400));
 
         $this->service->generateEager('shop_products/1/img/product.jpg');
 
         $this->assertTrue(Storage::exists('thumb/shop_products/1/img/product.jpg'));
-        $this->assertFalse(Storage::exists('large/shop_products/1/img/product.jpg'));
+        $this->assertTrue(Storage::exists('large/shop_products/1/img/product.jpg'));
+    }
+
+    public function test_generate_eager_skips_presets_without_entity_config(): void
+    {
+        Storage::put('shop_categories/1/img/category.jpg', $this->createJpeg(600, 400));
+
+        $this->service->generateEager('shop_categories/1/img/category.jpg');
+
+        $this->assertTrue(Storage::exists('thumb/shop_categories/1/img/category.jpg'));
+        $this->assertFalse(Storage::exists('large/shop_categories/1/img/category.jpg'));
     }
 
     public function test_generate_eager_skips_empty_path(): void
@@ -146,13 +156,27 @@ class ImageConversionServiceTest extends TestCase
 
         $resizer = Mockery::mock(ImageResizer::class);
         $resizer->shouldReceive('resize')
-            ->once()
+            ->twice()
             ->andThrow(new \RuntimeException('Resize failed'));
         $service = new ImageConversionService($resizer);
 
         $service->generateEager('shop_products/1/img/product.jpg');
 
         $this->assertFalse(Storage::exists('thumb/shop_products/1/img/product.jpg'));
+        $this->assertFalse(Storage::exists('large/shop_products/1/img/product.jpg'));
+    }
+
+    public function test_delete_for_field_removes_preset_field_directories(): void
+    {
+        Storage::put('thumb/shop_products/42/img/old.jpg', 'thumb-old');
+        Storage::put('large/shop_products/42/img/old.jpg', 'large-old');
+        Storage::put('thumb/shop_products/42/gallery/other.jpg', 'thumb-gallery');
+
+        $this->service->deleteForField('shop_products', 42, 'img');
+
+        $this->assertFalse(Storage::exists('thumb/shop_products/42/img'));
+        $this->assertFalse(Storage::exists('large/shop_products/42/img'));
+        $this->assertTrue(Storage::exists('thumb/shop_products/42/gallery/other.jpg'));
     }
 
     public function test_delete_for_path_removes_all_preset_previews(): void

@@ -31,7 +31,8 @@ Trait responsibilities:
 * Deletes entire directory when model is deleted
 * Deletes all conversion directories for the record when model is deleted
 * Cleans up empty directories after file deletion
-* Generates eager presets (see [Eager thumb on save](#eager-thumb-on-save)) after create/update
+* Generates all presets from `config/image_sizes.php` for the entity after create/update (see [Eager conversions on save](#eager-conversions-on-save))
+* For scalar image fields, calls `deleteForField` before regeneration to remove stale conversion directories
 * Appends `$model->image` and `$model->images` URL accessors
 
 ---
@@ -258,11 +259,11 @@ No manual action required.
 
 | Event | What happens |
 |---|---|
-| Field value replaced | Old original deleted; conversions for old path deleted; empty parent dirs removed |
+| Field value replaced | Old original deleted if present; conversions for old path deleted (even when original file is missing); for scalar fields, `deleteForField` clears all `{preset}/{table}/{id}/{field}/` directories before new conversions are generated; empty parent dirs removed |
 | Image removed from array | Removed originals deleted; conversions for removed paths deleted; empty parent dirs removed |
 | Model deleted | Entire `{table}/{id}/` original directory deleted; all `{preset}/{table}/{id}/` conversion directories deleted |
 
-Conversion cleanup uses every preset defined in `config/image_sizes.php` (not only eager presets).
+Conversion cleanup uses every preset defined in `config/image_sizes.php`.
 
 ---
 
@@ -278,30 +279,32 @@ Conversion cleanup uses every preset defined in `config/image_sizes.php` (not on
 
 # Image Resizing
 
-The project supports **named image presets** (e.g. `thumb`, `large`). Presets listed in
-`config/image.php` → `eager_presets` are generated when a model with `HasImage` is saved
-(admin create/update). All other presets from `config/image_sizes.php` are generated
-**on demand** on the first HTTP request.
+The project supports **named image presets** (e.g. `thumb`, `large`). All presets defined
+in `config/image_sizes.php` for the entity are generated when a model with `HasImage` is
+saved (admin create/update). The HTTP resize route remains a fallback when a preview is
+missing or generation failed on save.
 
 Original uploads are unchanged. `$model->image` still returns the full-size original URL.
 
 ---
 
-## Eager thumb on save
+## Eager conversions on save
 
 When a record with `HasImage` is created or an image field is updated, the trait calls
-`ImageConversionService::generateEager()` for each affected path. Eager presets are
-configured in `config/image.php`:
+`ImageConversionService::generateEager()` for each affected path. `generateEager()` iterates
+every preset key in `config/image_sizes.php` and generates a preview when the entity has
+a matching size config.
 
-```php
-'eager_presets' => ['thumb'],
-```
+Before generation:
 
-Only presets in this list are pre-generated on save. Other presets (e.g. `large`) remain
-lazy — they are created on the first request to `/storage/{preset}/…`.
+* **Scalar fields** — `deleteForField()` removes all `{preset}/{table}/{id}/{field}/`
+  conversion directories so stale previews are cleared even when the original file is
+  missing.
+* **Array fields** — only per-path cleanup via `deleteForPath()` when items are removed;
+  the field-level conversion directory is not wiped.
 
 Eager generation runs after temp→permanent move on create, and after old files are deleted
-on update. Failures are reported to the log and do not block the save.
+on update. Failures are logged via `report()` and do not block the save.
 
 ---
 
@@ -321,9 +324,8 @@ Browser GET /storage/thumb/shop_products/1/img/product.jpg
   └─ resize original → save preview → serve file
 ```
 
-For `thumb`, the preview is usually already on disk after admin save (eager generation).
-The on-demand branch above applies to non-eager presets and as a fallback when eager
-generation did not run or failed.
+After admin save, previews are usually already on disk (eager generation). The on-demand
+branch above applies as a fallback when generation did not run or failed.
 
 Route: `GET /storage/{preset}/{path}` (registered in `app/Modules/Core/routes/web.php`).
 
@@ -526,11 +528,11 @@ in `.env` to `\Intervention\Image\Drivers\Imagick\Driver::class` (requires `ext-
 
 ## Resizing notes
 
-* **`thumb`** is generated eagerly on admin save (`config/image.php` → `eager_presets`).
-* Other presets are generated **on demand** — there is no queue or batch pre-generation.
-* First request for a lazy preset runs PHP image processing; later requests serve the cached file.
+* All presets from `config/image_sizes.php` are generated eagerly on admin save.
+* The HTTP route regenerates missing previews on demand — there is no queue or batch pre-generation.
+* First request for a missing preview runs PHP image processing; later requests serve the cached file.
 * Array image fields (`imgs`) are not covered by `imageUrl()` — use `image_url($path, $preset)` with each path from the array.
-* If you change dimensions in `config/image_sizes.php`, run `images:clear` for the affected preset so old cached files are removed; re-save records in admin to regenerate eager thumbs.
+* If you change dimensions in `config/image_sizes.php`, run `images:clear` for the affected preset so old cached files are removed; re-save records in admin to regenerate conversions.
 
 ---
 

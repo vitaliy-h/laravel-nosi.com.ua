@@ -259,8 +259,11 @@ trait HasImage
 
             $oldPath = $this->getOriginal($field);
 
-            if ($oldPath && Storage::exists($oldPath)) {
+            if ($oldPath) {
                 $this->deleteConversionsForPath($oldPath);
+            }
+
+            if ($oldPath && Storage::exists($oldPath)) {
                 Storage::delete($oldPath);
                 $this->deleteEmptyParentDirs(dirname($oldPath), $recordRoot);
             }
@@ -281,8 +284,11 @@ trait HasImage
             $removed = array_diff($oldPaths ?: [], $newPaths);
 
             foreach ($removed as $path) {
-                if ($path && Storage::exists($path)) {
+                if ($path) {
                     $this->deleteConversionsForPath($path);
+                }
+
+                if ($path && Storage::exists($path)) {
                     Storage::delete($path);
                     $this->deleteEmptyParentDirs(dirname($path), $recordRoot);
                 }
@@ -319,11 +325,29 @@ trait HasImage
         }
     }
 
+    private function isScalarImagePath(string $path): bool
+    {
+        $segments = explode('/', $path);
+
+        if (count($segments) < 4) {
+            return false;
+        }
+
+        $fieldSegment = $segments[2];
+
+        return in_array($fieldSegment, $this->getImgFields(), true);
+    }
+
     private function generateEagerConversions(array $paths): void
     {
         $service = app(ImageConversionService::class);
 
         foreach ($paths as $path) {
+            if ($this->isScalarImagePath($path)) {
+                $segments = explode('/', $path);
+                $service->deleteForField($segments[0], $segments[1], $segments[2]);
+            }
+
             $service->generateEager($path);
         }
     }

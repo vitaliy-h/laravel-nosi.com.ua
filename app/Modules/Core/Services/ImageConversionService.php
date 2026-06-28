@@ -50,11 +50,22 @@ class ImageConversionService
             return;
         }
 
-        foreach (config('image.eager_presets', []) as $preset) {
+        foreach (array_keys(config('image_sizes', [])) as $preset) {
             try {
                 $this->generate($originalPath, $preset);
             } catch (Throwable $e) {
                 report($e);
+            }
+        }
+    }
+
+    public function deleteForField(string $table, int|string $id, string $fieldSegment): void
+    {
+        foreach (array_keys(config('image_sizes', [])) as $preset) {
+            $directory = "{$preset}/{$table}/{$id}/{$fieldSegment}";
+
+            if (Storage::exists($directory)) {
+                Storage::deleteDirectory($directory);
             }
         }
     }
