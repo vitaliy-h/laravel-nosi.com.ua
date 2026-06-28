@@ -34,6 +34,6 @@ class News extends Model
     protected $casts = [
         'display' => 'boolean',
         'published_at' => 'datetime',
-        'content'=>'array'
+        'content' => 'array'
     ];
 }
