@@ -26,7 +26,8 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         $bestSellers = $this->shopRepository->bestSellers(4);
         $featuredCategories = $this->shopRepository->featuredCategories(4);
         $featuredProducts = $this->shopRepository->featuredProducts(8);
+        $specialCategories = $this->shopRepository->specialCategories(12);
 
-        return view('pages.index', compact('bestSellers', 'featuredCategories', 'featuredProducts'));
+        return view('pages.index', compact('bestSellers', 'featuredCategories', 'featuredProducts', 'specialCategories'));
     }
 }
