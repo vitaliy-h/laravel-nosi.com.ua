@@ -6,6 +6,7 @@ use App\Modules\Auth\Dtos\RegisterData;
 use App\Modules\Core\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Request;
 
 class RegisterAction
 {
@@ -13,9 +14,11 @@ class RegisterAction
     {
         return DB::transaction(function () use ($dto) {
             return User::create([
-                'name' => $dto->name,
-                'email' => $dto->email,
-                'password' => Hash::make($dto->password),
+                'name'              => $dto->name,
+                'email'             => $dto->email,
+                'password'          => $dto->password ? Hash::make($dto->password) : null,
+                'email_verified_at' => $dto->emailVerifiedAt,
+                'ip'                => Request::ip(),
             ]);
         });
     }

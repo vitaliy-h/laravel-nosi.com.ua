@@ -4,7 +4,9 @@ namespace App\Filament\Resources\Users;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Users\Pages\ManageUsers;
+use App\Modules\Auth\Actions\GenerateImpersonationTokenAction;
 use App\Modules\Core\Models\User;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -33,7 +35,6 @@ class UserResource extends Resource
                     ->maxLength(255),
                 TextInput::make('email')
                     ->email()
-                    ->required()
                     ->unique(ignoreRecord: true),
                 TextInput::make('phone')
                     ->numeric()
@@ -82,12 +83,22 @@ class UserResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('id')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('roles')
                     ->relationship('roles', 'name'),
             ])
             ->recordActions([
+                Action::make('impersonate')
+                    ->icon('heroicon-o-identification')
+                    ->iconButton()
+                    ->tooltip(__('admin.actions.impersonate'))
+                    ->url(fn(User $record): string => app(GenerateImpersonationTokenAction::class)->handle($record))
+                    ->openUrlInNewTab()
+                    ->hidden(fn(User $record): bool => $record->id === auth()->id()),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),
             ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)

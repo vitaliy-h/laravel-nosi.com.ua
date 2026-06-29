@@ -23,7 +23,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
-use Filament\Forms\Components\Select;
+use App\Filament\Support\NestedSetFields;
 
 class CategoryResource extends Resource
 {
@@ -51,50 +51,7 @@ class CategoryResource extends Resource
                     ->default(true)
                     ->inline(false)
                     ->columnSpan(6),
-                Select::make('parent_id')
-                    ->options(
-                        Category::defaultOrder()
-                            ->withDepth()
-                            ->get()
-                            ->toFlatTree()
-                            ->mapWithKeys(fn ($category) => [
-                                $category->id => str_repeat('— ', $category->depth) . $category->title
-                            ])
-                    )
-                    ->disableOptionWhen(function ($value, $record) {
-                        if (!$record) return false;
-
-                        return $value == $record->id ||
-                            $record->descendants->pluck('id')->contains($value);
-                    })
-                    ->searchable()
-                    ->preload()
-                    ->nullable()
-                    ->columnSpan(6),
-                Select::make('_position_id')
-                    ->options(function (callable $get, $record) {
-                        $parentId = $get('parent_id');
-                        return Category::query()
-                            ->when($parentId,
-                                fn ($q) => $q->where('parent_id', $parentId),
-                                fn ($q) => $q->whereNull('parent_id')
-                            )
-                            ->defaultOrder()
-                            ->get()
-                            ->mapWithKeys(fn ($c) => [
-                                $c->id => $c->title
-                            ]);
-                    })
-                    ->afterStateHydrated(function ($state, callable $set, $record) {
-                        if ($record && !$state) {
-                            $set('_position_id', $record->id);
-                        }
-                    })
-                    ->searchable()
-                    ->preload()
-                    ->live()
-                    ->nullable()
-                    ->columnSpan(6),
+                ...NestedSetFields::make(Category::class),
 
                 FileUpload::make('img')
                     ->image()
@@ -139,16 +96,21 @@ class CategoryResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('id')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
             ])
             ->filters([
                 //
             ])
             ->recordActions([
-                /*ViewAction::make()
+                ViewAction::make()
                     ->iconButton()
-                    ->url(fn ($record) => route('news.show',['slug'=>$record->slug]))
-                    ->openUrlInNewTab(),*/
+                    ->url(fn (Category $record) => module_url('shop', [
+                        $record->slug,
+                    ]))
+                    ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()
                     ->iconButton()
@@ -156,15 +118,14 @@ class CategoryResource extends Resource
                         $record->children()->exists() ||
                         $record->products()->exists()
                     )
-                    ->tooltip(fn ($record) => (
-                        $record->children()->exists() || $record->products()->exists()
-                    )
-                        ? __('admin.messages.delete_child_items_forbidden')
-                        : null
-                    ),
+                    ->tooltip(fn ($record) => match (true) {
+                        $record->children()->exists() => __('admin.messages.delete_forbidden_has_children'),
+                        $record->products()->exists()  => __('admin.messages.delete_forbidden_has_products'),
+                        default                        => null,
+                    }),
             ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
-                \Filament\Actions\CreateAction::make(),
+                NestedSetFields::createAction(),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

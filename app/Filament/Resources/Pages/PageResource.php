@@ -2,8 +2,12 @@
 
 namespace App\Filament\Resources\Pages;
 
-use App\Filament\Actions\BaseCreateAction;
 use App\Filament\Actions\BaseEditAction;
+use App\Filament\Builder\Blocks\GalleryBlock;
+use App\Filament\Builder\Blocks\ImageBlock;
+use App\Filament\Builder\Blocks\TeasersBlock;
+use App\Filament\Builder\Blocks\TextBlock;
+use App\Filament\Builder\Blocks\VideoBlock;
 use App\Filament\Resources\Pages\Pages\ManagePages;
 use App\Filament\Traits\HasSeoFields;
 use App\Modules\Core\Enums\PageModule;
@@ -14,7 +18,7 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -61,8 +65,27 @@ class PageResource extends Resource
                     ->columnSpan(3)
                     ->inline(false),
 
-                RichEditor::make('text')
-                    ->columnSpanFull(),
+                Builder::make('content')
+                    ->blocks([
+                        TextBlock::make(),
+                        ImageBlock::make(),
+                        GalleryBlock::make(),
+                        VideoBlock::make(),
+                        TeasersBlock::make(),
+                    ])
+                    ->collapsible()
+                    ->cloneable()
+                    ->reorderable()
+                    ->columnSpanFull()
+                    ->default([
+                        [
+                            'type' => 'text',
+                            'data' => [
+                                'style' => 'default',
+                            ],
+                        ],
+                    ]),
+
                 static::getSeoSection(true),
             ]);
     }
@@ -87,12 +110,16 @@ class PageResource extends Resource
                 ToggleColumn::make('display_menu'),
                 ToggleColumn::make('display_menu_footer'),
                 ToggleColumn::make('display'),
+                ToggleColumn::make('is_indexable'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
                     ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('id')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

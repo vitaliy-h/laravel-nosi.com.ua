@@ -2,19 +2,20 @@
 
 namespace App\Modules\Core\Traits\Models;
 
+use App\Modules\Core\Services\ImageConversionService;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 trait HasImage
 {
-    protected array $imgFields = ['img'];
-    protected array $imgArrayFields = [];
+    /** @var array<int, list<string>> */
+    private static array $pendingEagerImagePaths = [];
 
     public function initializeHasImage(): void
     {
         $appends = ['image'];
 
-        if (!empty($this->imgArrayFields)) {
+        if (!empty($this->getImgArrayFields())) {
             $appends[] = 'images';
         }
 
@@ -25,89 +26,25 @@ trait HasImage
     {
         static::created(function ($model) {
             $model->moveTempFile();
+            $model->generateEagerConversions($model->collectImagePaths());
         });
         static::updating(function ($model) {
             $model->deleteOldImages();
+            static::$pendingEagerImagePaths[spl_object_id($model)] = $model->collectDirtyImagePaths();
+        });
+        static::updated(function ($model) {
+            $objectId = spl_object_id($model);
+            $paths = static::$pendingEagerImagePaths[$objectId] ?? [];
+            unset(static::$pendingEagerImagePaths[$objectId]);
+
+            if ($paths !== []) {
+                $model->generateEagerConversions($paths);
+            }
         });
         static::deleted(function ($model) {
             $model->deleteFilesDirectory();
+            $model->deleteConversionsForRecord();
         });
-    }
-
-    public function getFilePath(string $filename, string $field = 'img'): string
-    {
-        $table = $this->getTable();
-        $id = $this->getKey() ?? 'temp';
-        $filename = self::normalizeFilename($filename);
-
-        return "{$table}/{$id}/{$field}/{$filename}";
-    }
-
-    protected static function normalizeFilename(string $filename): string
-    {
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        $name = Str::uuid();
-
-        return $ext ? "{$name}.{$ext}" : $name;
-    }
-
-    public function moveTempFile(): void
-    {
-        foreach ($this->imgFields as $field) {
-            $oldPath = $this->{$field};
-
-            if (
-                !$oldPath ||
-                !Storage::exists($oldPath) ||
-                !str_contains($oldPath, '/temp/')
-            ) {
-                continue;
-            }
-
-            $newPath = $this->getFilePath(basename($oldPath), $field);
-            Storage::move($oldPath, $newPath);
-            $this->{$field} = $newPath;
-        }
-
-        foreach ($this->imgArrayFields as $field) {
-            $paths = $this->{$field};
-
-            if (empty($paths) || !is_array($paths)) {
-                continue;
-            }
-
-            $updated = false;
-
-            foreach ($paths as $i => $oldPath) {
-                if (
-                    !$oldPath ||
-                    !Storage::exists($oldPath) ||
-                    !str_contains($oldPath, '/temp/')
-                ) {
-                    continue;
-                }
-
-                $newPath = $this->getFilePath(basename($oldPath), $field);
-                Storage::move($oldPath, $newPath);
-                $paths[$i] = $newPath;
-                $updated = true;
-            }
-
-            if ($updated) {
-                $this->{$field} = $paths;
-            }
-        }
-
-        $this->saveQuietly();
-    }
-
-    public function deleteFilesDirectory(): void
-    {
-        $directory = "{$this->getTable()}/{$this->getKey()}";
-
-        if (Storage::exists($directory)) {
-            Storage::deleteDirectory($directory);
-        }
     }
 
     public function getImageAttribute(): string
@@ -125,12 +62,197 @@ trait HasImage
             return [];
         }
 
-        return array_map(fn($path) => Storage::url($path), $this->imgs);
+        return array_map(static fn($path) => Storage::url($path), $this->imgs);
     }
 
-    protected function deleteOldImages(): void
+    public function imageUrl(string $preset): string
     {
-        foreach ($this->imgFields as $field) {
+        if (empty($this->img)) {
+            return asset('/assets/images/no_image.svg');
+        }
+
+        return image_url($this->img, $preset);
+    }
+
+    protected function getImgFields(): array
+    {
+        return property_exists($this, 'imgFields') ? $this->imgFields : ['img'];
+    }
+
+    protected function getImgArrayFields(): array
+    {
+        return property_exists($this, 'imgArrayFields') ? $this->imgArrayFields : [];
+    }
+
+    protected function getImgArrayPathFields(): array
+    {
+        return property_exists($this, 'imgArrayPathFields') ? $this->imgArrayPathFields : [];
+    }
+
+    protected function getPathSegmentForField(string $field): string
+    {
+        return $this->getImgArrayPathFields()[$field] ?? $field;
+    }
+
+    protected function collectImagePaths(): array
+    {
+        $paths = [];
+
+        foreach ($this->getImgFields() as $field) {
+            $path = $this->{$field};
+
+            if ($path) {
+                $paths[] = $path;
+            }
+        }
+
+        foreach ($this->getImgArrayFields() as $field) {
+            $fieldPaths = $this->{$field};
+
+            if (empty($fieldPaths) || !is_array($fieldPaths)) {
+                continue;
+            }
+
+            foreach ($fieldPaths as $path) {
+                if ($path) {
+                    $paths[] = $path;
+                }
+            }
+        }
+
+        return $paths;
+    }
+
+    protected function collectDirtyImagePaths(): array
+    {
+        $paths = [];
+
+        foreach ($this->getImgFields() as $field) {
+            if (!$this->isDirty($field)) {
+                continue;
+            }
+
+            $path = $this->{$field};
+
+            if ($path) {
+                $paths[] = $path;
+            }
+        }
+
+        foreach ($this->getImgArrayFields() as $field) {
+            if (!$this->isDirty($field)) {
+                continue;
+            }
+
+            $newPaths = $this->{$field} ?? [];
+
+            if (!is_array($newPaths)) {
+                continue;
+            }
+
+            $oldPaths = $this->getOriginal($field);
+
+            if (is_string($oldPaths)) {
+                $oldPaths = json_decode($oldPaths, true) ?? [];
+            }
+
+            foreach (array_diff($newPaths, $oldPaths ?: []) as $path) {
+                if ($path) {
+                    $paths[] = $path;
+                }
+            }
+        }
+
+        return $paths;
+    }
+
+    public function getFilePath(string $filename, string $field = 'img'): string
+    {
+        $table = $this->getTable();
+        $id = $this->getKey() ?? 'temp';
+        $filename = self::normalizeFilename($filename);
+
+        return "{$table}/{$id}/{$field}/{$filename}";
+    }
+
+    protected static function normalizeFilename(string $filename): string
+    {
+        $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $name = Str::slug(pathinfo($filename, PATHINFO_FILENAME));
+
+        if (empty($name)) {
+            $name = (string)Str::uuid();
+        }
+
+        return $ext ? "{$name}.{$ext}" : $name;
+    }
+
+    private function moveTempFile(): void
+    {
+        $movedDirs = [];
+
+        foreach ($this->getImgFields() as $field) {
+            $oldPath = $this->{$field};
+
+            if (!$oldPath || !Storage::exists($oldPath) || !str_contains($oldPath, '/temp/')) {
+                continue;
+            }
+
+            $newPath = $this->getFilePath(basename($oldPath), $field);
+            Storage::move($oldPath, $newPath);
+            $this->{$field} = $newPath;
+            $movedDirs[] = dirname($oldPath);
+        }
+
+        foreach ($this->getImgArrayFields() as $field) {
+            $paths = $this->{$field};
+
+            if (empty($paths) || !is_array($paths)) {
+                continue;
+            }
+
+            $updated = false;
+
+            foreach ($paths as $i => $oldPath) {
+                if (!$oldPath || !Storage::exists($oldPath) || !str_contains($oldPath, '/temp/')) {
+                    continue;
+                }
+
+                $newPath = $this->getFilePath(basename($oldPath), $this->getPathSegmentForField($field));
+                Storage::move($oldPath, $newPath);
+                $paths[$i] = $newPath;
+                $movedDirs[] = dirname($oldPath);
+                $updated = true;
+            }
+
+            if ($updated) {
+                $this->{$field} = $paths;
+            }
+        }
+
+        $this->saveQuietly();
+
+        $tempRoot = $this->getTable() . '/temp';
+
+        foreach (array_unique($movedDirs) as $dir) {
+            $this->deleteEmptyParentDirs($dir, $tempRoot);
+        }
+    }
+
+    private function deleteFilesDirectory(): void
+    {
+        $directory = $this->getTable() . '/' . $this->getKey();
+
+        if (Storage::exists($directory)) {
+            Storage::deleteDirectory($directory);
+        }
+    }
+
+    private function deleteOldImages(): void
+    {
+        $recordRoot = $this->getTable() . '/' . $this->getKey();
+
+        foreach ($this->getImgFields() as $field) {
             if (!$this->isDirty($field)) {
                 continue;
             }
@@ -138,11 +260,13 @@ trait HasImage
             $oldPath = $this->getOriginal($field);
 
             if ($oldPath && Storage::exists($oldPath)) {
+                $this->deleteConversionsForPath($oldPath);
                 Storage::delete($oldPath);
+                $this->deleteEmptyParentDirs(dirname($oldPath), $recordRoot);
             }
         }
 
-        foreach ($this->imgArrayFields as $field) {
+        foreach ($this->getImgArrayFields() as $field) {
             if (!$this->isDirty($field)) {
                 continue;
             }
@@ -158,9 +282,49 @@ trait HasImage
 
             foreach ($removed as $path) {
                 if ($path && Storage::exists($path)) {
+                    $this->deleteConversionsForPath($path);
                     Storage::delete($path);
+                    $this->deleteEmptyParentDirs(dirname($path), $recordRoot);
                 }
             }
+        }
+    }
+
+    private function deleteConversionsForPath(?string $path): void
+    {
+        if ($path === null || $path === '') {
+            return;
+        }
+
+        app(ImageConversionService::class)->deleteForPath($path);
+    }
+
+    private function deleteConversionsForRecord(): void
+    {
+        app(ImageConversionService::class)->deleteForRecord(
+            $this->getTable(),
+            $this->getKey(),
+        );
+    }
+
+    private function deleteEmptyParentDirs(string $dir, string $stopAt): void
+    {
+        while ($dir !== $stopAt && str_starts_with($dir, $stopAt)) {
+            if (!empty(Storage::files($dir)) || !empty(Storage::directories($dir))) {
+                break;
+            }
+
+            Storage::deleteDirectory($dir);
+            $dir = dirname($dir);
+        }
+    }
+
+    private function generateEagerConversions(array $paths): void
+    {
+        $service = app(ImageConversionService::class);
+
+        foreach ($paths as $path) {
+            $service->generateEager($path);
         }
     }
 }

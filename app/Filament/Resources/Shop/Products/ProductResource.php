@@ -12,6 +12,7 @@ use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -91,6 +92,21 @@ class ProductResource extends Resource
                     ->numeric()
                     ->columnSpan(2),
 
+                FileUpload::make('imgs')
+                    ->image()
+                    ->multiple()
+                    ->reorderable()
+                    ->columnSpan(12)
+                    ->panelLayout('grid')
+                    ->imagePreviewHeight('150')
+                    ->visibility('public')
+                    ->getUploadedFileNameForStorageUsing(function ($file, $record) {
+                        return ($record ?? new Product())->getFilePath(
+                            $file->getClientOriginalName(),
+                            'gallery',
+                        );
+                    }),
+
                 RichEditor::make('text')
                     ->columnSpanFull(),
                 static::getSeoSection(),
@@ -127,6 +143,9 @@ class ProductResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('id')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('category_id')
@@ -148,6 +167,13 @@ class ProductResource extends Resource
                     ->preload(),
             ])
             ->recordActions([
+                ViewAction::make()
+                    ->iconButton()
+                    ->url(fn (Product $record) => module_url('shop', [
+                        $record->category->slug,
+                        $record->slug_with_id,
+                    ]))
+                    ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),
             ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)

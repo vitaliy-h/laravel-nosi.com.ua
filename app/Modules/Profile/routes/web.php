@@ -6,4 +6,6 @@ Route::prefix('/profile')->middleware('auth')->group(function () {
         ->name('profile.update.user.password');
     Route::post('/delete-user-account', [\App\Modules\Profile\Http\Controllers\Web\ProfileController::class, 'deleteUserAccount'])
         ->name('profile.delete.user.account');
+    Route::post('/social/{provider}/disconnect', [\App\Modules\Profile\Http\Controllers\Web\SocialProfileController::class, 'disconnect'])
+        ->name('profile.social.disconnect');
 });

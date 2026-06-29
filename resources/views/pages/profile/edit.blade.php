@@ -10,84 +10,55 @@
         <div class="settings-section" data-aos="fade-up">
             <h3>{{t('profile.personal_information')}}</h3>
 
-            @include('blocks.alerts', [
-                'successKey' => 'user_data_success',
-                'errorKey' => 'user_data_error',
-            ])
+            @include('pages.profile.components.edit_user_data')
 
-            <form class="settings-form" action="{{route('profile.update.user.data')}}" method="POST">
-                @csrf
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="login-register-reg-firstname" class="form-label">{{t('auth.name')}}</label>
-                        <input type="text" name="name" class="form-control" id="login-register-reg-firstname"
-                               value="{{ old('name',$user->name) }}" required>
-                        @error('name')
-                        <div class="text-danger small mt-1">
-                            {{ $message }}
-                        </div>
-                        @enderror
-                    </div>
-                    <div class="col-md-6">
-                        <label for="login-register-reg-email" class="form-label">{{t('auth.email')}}</label>
-                        <input type="email" name="email" class="form-control" id="login-register-reg-email"
-                               value="{{ old('email',$user->email) }}" required>
-                        @error('email')
-                        <div class="text-danger small mt-1">
-                            {{ $message }}
-                        </div>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="form-buttons">
-                    <button type="submit" class="btn-save">{{t('buttons.save_changes')}}</button>
-                </div>
-            </form>
         </div>
 
         <!-- Security Settings -->
         <div class="settings-section" data-aos="fade-up" data-aos-delay="200">
             <h3>{{t('profile.security')}}</h3>
 
-            @include('blocks.alerts', [
-                'successKey' => 'password_change_success',
-                'errorKey' => 'password_change_error',
-            ])
+            @include('pages.profile.components.edit_user_password')
+        </div>
 
-            <form class="settings-form" action="{{route('profile.update.user.password')}}" method="POST">
-                @csrf
-                <div class="row g-3">
-                    <div class="col-md-12">
-                        <label for="currentPassword" class="form-label">{{t('auth.current_password')}}</label>
-                        <input type="password" name="current_password" class="form-control" id="currentPassword"
-                               required>
-                        @error('current_password')
-                        <div class="text-danger small mt-1">
-                            {{ $message }}
-                        </div>
-                        @enderror
-                    </div>
-                    <div class="col-md-6">
-                        <label for="newPassword" class="form-label">{{t('auth.new_password')}}</label>
-                        <input type="password" name="password" class="form-control" id="newPassword" required>
-                        @error('password')
-                        <div class="text-danger small mt-1">
-                            {{ $message }}
-                        </div>
-                        @enderror
-                    </div>
-                    <div class="col-md-6">
-                        <label for="confirmPassword" class="form-label">{{t('auth.password_confirmation')}}</label>
-                        <input type="password" name="password_confirmation" class="form-control" id="confirmPassword"
-                               required>
-                    </div>
-                </div>
+        <!-- Social Accounts -->
+        <div class="settings-section" data-aos="fade-up" data-aos-delay="250">
+            <h3>{{ t('social.section_title') }}</h3>
+            <p style="margin: -8px 0 20px; font-size: 14px; color: color-mix(in srgb, var(--default-color), transparent 40%);">
+                {{ t('social.section_subtitle') }}
+            </p>
 
-                <div class="form-buttons">
-                    <button type="submit" class="btn-save">{{t('buttons.update_password')}}</button>
-                </div>
-            </form>
+            @if ($errors->has('provider'))
+                <div class="alert alert-danger mb-3">{{ $errors->first('provider') }}</div>
+            @endif
+
+            @if (session('success'))
+                <div class="alert alert-success mb-3">{{ session('success') }}</div>
+            @endif
+
+            <div class="preferences-list">
+                @foreach (config('social.providers') as $provider)
+                    @php $connected = $user->socialProfiles->firstWhere('provider', $provider); @endphp
+                    <div class="preference-item">
+                        <div class="preference-info">
+                            <h4>{{ t('social.' . $provider) }}</h4>
+                            <p>{{ $connected ? __('dictionary.social.connected') : '' }}</p>
+                        </div>
+                        @if ($connected)
+                            <form action="{{ route('profile.social.disconnect', $provider) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn-social-disconnect">
+                                    {{ t('social.disconnect') }}
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('social.redirect', $provider) }}" class="btn-social-connect">
+                                {{ t('social.connect') }}
+                            </a>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
         </div>
 
         <!-- Delete Account -->

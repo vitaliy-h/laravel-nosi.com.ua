@@ -1,5 +1,5 @@
 <?php
-
+/* TODO: This may no longer be needed */
 Route::prefix('/shop')
     ->group(function () {
         Route::get('/categories', [\App\Modules\Shop\Http\Controllers\Api\ShopController::class, 'categories'])

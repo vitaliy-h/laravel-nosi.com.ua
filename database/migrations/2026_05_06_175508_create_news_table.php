@@ -18,10 +18,11 @@ return new class extends Migration {
             $table->string('title')->nullable();
             $table->string('slug')->unique()->nullable();
             $table->string('img')->nullable();
+            $table->text('imgs')->nullable();
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();
             $table->text('short_text')->nullable();
-            $table->longText('text')->nullable();
+            $table->json('content')->nullable();
         });
     }
 

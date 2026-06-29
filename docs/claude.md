@@ -1,10 +1,46 @@
 # Claude Code Installation & Setup
 
-## 1. Install Node.js
+## 1. Buy Claude Pro
+
+Open [claude.ai](https://claude.ai) → Settings → Upgrade to Pro ($20/month)
+
+If you previously used an API key, logout first:
+
+```bash
+npx @anthropic-ai/claude-code logout
+```
+
+---
+
+## 2. Choose How to Run Claude Code
+
+There are two ways to work with Claude Code. Pick one:
+
+---
+
+### Option A — Windows Desktop App (recommended)
+
+Download and install the Claude Code desktop app for Windows:
+
+[Claude Code for Windows](https://claude.ai/download)
+
+After installation:
+
+1. Open the app
+2. Sign in with your Claude.ai account
+3. Open your project folder via **File → Open Folder**
+
+No Node.js or terminal setup required.
+
+---
+
+### Option B — Console (CLI)
+
+#### Install Node.js
 
 Download and install Node.js:
 
-[Node.js](https://nodejs.org/?utm_source=chatgpt.com)
+[Node.js](https://nodejs.org/)
 
 Check installation:
 
@@ -13,9 +49,7 @@ node -v
 npm -v
 ```
 
----
-
-## 2. Install Claude Code
+#### Install Claude Code
 
 Install Claude Code globally:
 
@@ -23,42 +57,7 @@ Install Claude Code globally:
 npm install -g @anthropic-ai/claude-code
 ```
 
----
-
-## 3. Create Anthropic API Key
-
-Open Anthropic Console:
-
-[Anthropic Console](https://console.anthropic.com/?utm_source=chatgpt.com)
-
-Steps:
-
-1. Create account or login
-2. Open API Keys
-3. Create new API key
-4. Copy the key
-
----
-
-## 4. Configure API Key
-
-### Linux / macOS
-
-```bash
-export ANTHROPIC_API_KEY=your_key
-```
-
-### Windows PowerShell
-
-```powershell
-setx ANTHROPIC_API_KEY "your_key"
-```
-
-Restart terminal after updating environment variables.
-
----
-
-## 5. Start Claude Code
+#### Start Claude Code & Login
 
 Run inside project directory:
 
@@ -66,21 +65,48 @@ Run inside project directory:
 npx @anthropic-ai/claude-code
 ```
 
----
-
-## 6. Login Method
-
-When Claude starts choose:
+When Claude starts, choose:
 
 ```text
-2. Anthropic Console account · API usage billing
+1. Claude.ai subscription · claude.ai billing
 ```
 
-This mode uses Anthropic API billing.
+Browser will open — login with your Claude.ai account.
 
 ---
 
-## 7. First Project Analysis
+## 3. Project AI Instructions Structure
+
+Claude automatically reads these files on every session:
+
+```
+.claude/
+├── skills/
+│   ├── make-api/           # skill: generating API layer
+│   ├── make-filament-resource/  # skill: generating Filament resources
+│   └── make-model/         # skill: generating models
+├── backend.md              # backend conventions (routing, actions, DTOs)
+├── frontend.md             # frontend stack (Vite, Tailwind, Blade)
+└── testing.md              # testing guide (PHPUnit, Sail, Filament tests)
+
+CLAUDE.md                   # root project summary (read first)
+```
+
+### What each file covers
+
+**`CLAUDE.md`** — project overview, stack, entry point for Claude
+
+**`.claude/backend.md`** — routing conventions, API layer (Actions/Controllers/DTOs/Resources), code style (`pint`)
+
+**`.claude/frontend.md`** — Vite 8, Tailwind CSS 4, Blade components, `t()` helper, asset references
+
+**`.claude/testing.md`** — PHPUnit 12, Sail, Filament resource tests, factories, seeders, auth patterns
+
+**`.claude/skills/`** — step-by-step generation guides for common tasks
+
+---
+
+## 4. First Project Analysis
 
 Inside Claude Code run:
 
@@ -93,60 +119,26 @@ Claude will:
 * analyze project structure
 * detect architecture
 * inspect Filament Resources
-* understand project conventions
+* understand project conventions from `.claude/`
 
 ---
 
-## 8. AI Project Instructions
+## 5. Recommended Workflow
 
-Project AI instructions are stored in:
-
-```text
-CLAUDE.md
-.ai/
-```
-
-Claude automatically reads these files to understand:
-
-* project architecture
-* stack
-* coding conventions
-* generation rules
-* Filament patterns
-
----
-
-## 9. Recommended AI Structure
-
-```text
-.ai/
-├── stack.md
-├── architecture.md
-├── conventions.md
-├── filament.md
-├── generators.md
-├── prompts/
-└── examples/
-```
-
----
-
-## 10. Recommended Workflow
-
-1. Analyze project
-2. Generate AI documentation
-3. Create/update CLAUDE.md
-4. Generate small modules first
-5. Improve prompts and conventions over time
+1. Start Claude Code in project root
+2. Claude reads `.claude/` automatically
+3. Use skills for generation tasks:
+    - `make-model` → migration + model + factory
+    - `make-api` → DTO + Action + Controller + Resource
+    - `make-filament-resource` → Filament Resource + tests
 
 Recommended generation flow:
 
 * migration
 * seeder
-* model
-* Filament Resource
-* form()
-* table()
-* filters
-* actions
-* bulk actions
+* model + factory
+* DTO
+* Action
+* Controller + Resource
+* Filament Resource (`form()`, `table()`, filters, actions, bulk actions)
+* PHPUnit tests (Feature + Unit)

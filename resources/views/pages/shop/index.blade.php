@@ -35,7 +35,7 @@
                                 </p>
                             @endif
 
-                            <a href="{{ module_url(\App\Modules\Core\Enums\PageModule::SHOP,[$category->slug]) }}" class="btn btn-primary">
+                            <a href="{{ module_url('shop',[$category->slug]) }}" class="btn btn-primary">
                                 Open category
                             </a>
                         </div>

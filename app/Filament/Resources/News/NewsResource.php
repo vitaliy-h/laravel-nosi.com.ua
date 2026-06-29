@@ -3,6 +3,11 @@
 namespace App\Filament\Resources\News;
 
 use App\Filament\Actions\BaseEditAction;
+use App\Filament\Builder\Blocks\GalleryBlock;
+use App\Filament\Builder\Blocks\ImageBlock;
+use App\Filament\Builder\Blocks\TeasersBlock;
+use App\Filament\Builder\Blocks\TextBlock;
+use App\Filament\Builder\Blocks\VideoBlock;
 use App\Filament\Resources\News\Pages\ManageNews;
 use App\Filament\Traits\HasSeoFields;
 use App\Modules\Core\Enums\PageModule;
@@ -11,6 +16,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
@@ -43,6 +49,7 @@ class NewsResource extends Resource
                 Toggle::make('display')
                     ->inline(false)
                     ->default(true),
+
                 Textarea::make('short_text')
                     ->columnSpan(6),
                 FileUpload::make('img')
@@ -55,10 +62,29 @@ class NewsResource extends Resource
                             'img',
                         );
                     }),
-                RichEditor::make('text')
-                    ->columnSpanFull(),
-                static::getSeoSection(),
 
+                Builder::make('content')
+                    ->blocks([
+                        TextBlock::make(),
+                        ImageBlock::make(),
+                        GalleryBlock::make(),
+                        VideoBlock::make(),
+                        TeasersBlock::make(),
+                    ])
+                    ->collapsible()
+                    ->cloneable()
+                    ->reorderable()
+                    ->columnSpanFull()
+                    ->default([
+                        [
+                            'type' => 'text',
+                            'data' => [
+                                'style' => 'default',
+                            ],
+                        ],
+                    ]),
+
+                static::getSeoSection(),
             ]);
     }
 
@@ -84,7 +110,9 @@ class NewsResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-
+                TextColumn::make('id')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -92,7 +120,7 @@ class NewsResource extends Resource
             ->recordActions([
                 ViewAction::make()
                     ->iconButton()
-                    ->url(fn($record) => module_url(PageModule::NEWS, [$record->slug]))
+                    ->url(fn($record) => module_url('news', [$record->slug]))
                     ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),

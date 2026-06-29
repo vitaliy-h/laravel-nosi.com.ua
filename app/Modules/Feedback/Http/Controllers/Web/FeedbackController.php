@@ -3,9 +3,9 @@
 namespace App\Modules\Feedback\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Core\Dtos\SendLetterTemplateData;
-use App\Modules\Core\Enums\LetterEnum;
-use App\Modules\Core\Facades\LetterTemplateFacade;
+use App\Modules\Notification\Dtos\SendLetterTemplateData;
+use App\Modules\Notification\Enums\LetterEnum;
+use App\Modules\Notification\Facades\LetterTemplateFacade;
 use App\Modules\Feedback\Models\Feedback;
 use Illuminate\Http\Request;
 

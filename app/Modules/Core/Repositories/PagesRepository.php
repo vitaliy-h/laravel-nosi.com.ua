@@ -2,39 +2,72 @@
 
 namespace App\Modules\Core\Repositories;
 
+use App\Modules\Core\Dtos\BreadcrumbData;
 use App\Modules\Core\Enums\PageModule;
+use App\Modules\Core\Facades\UrlFacade;
 use App\Modules\Core\Models\Page;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class PagesRepository
 {
+    private const CACHE_KEY = 'pages.all';
+
+    private ?Collection $allPages = null;
+
+    public function clearCache(): void
+    {
+        $this->allPages = null;
+        Cache::forget(self::CACHE_KEY);
+    }
+
+    private function getAllPages(): Collection
+    {
+        if ($this->allPages !== null) {
+            return $this->allPages;
+        }
+
+        $rows = Cache::remember(self::CACHE_KEY, 60 * 60 * 24, static function () {
+            return Page::visible()->select(['id', 'title', 'slug', 'module'])->get()->toArray();
+        });
+
+        return $this->allPages = Page::hydrate($rows);
+    }
+
     public function findBySlug(string $slug): ?Page
     {
-        return Page::when($slug === '', function ($query) {
-                $query->whereModule(PageModule::INDEX);
-            })->when($slug !== '', function ($query) use ($slug) {
-                $query->where('slug', $slug);
-            })
-            ->whereNotNull('module')
-            ->visible()
+        if ($slug === '') {
+            return Page::visible()
+                ->where('module', PageModule::INDEX)
+                ->first();
+        }
+
+        return Page::visible()
+            ->where('slug', $slug)
             ->first();
     }
 
     public function findByModule(PageModule $module): ?Page
     {
-        return Page::where('module', $module)
-            ->visible()
-            ->first();
+        return $this->getAllPages()
+            ->first(fn (Page $page) => $page->module === $module);
     }
 
-    /**
-     * For first time only index page in breadcrumbs
-     * @return Collection
-     */
-    public function getBreadcrumbs(): Collection
+    public function getBreadcrumbs(?Page $currentPage = null): Collection
     {
-        return Page::where('module', PageModule::INDEX)
-            ->visible()
-            ->get();
+        $breadcrumbs = $this->getAllPages()
+            ->filter(fn (Page $page) => $page->module === PageModule::INDEX)
+            ->map(fn (Page $page) => new BreadcrumbData(
+                title: $page->title,
+                url: UrlFacade::normalizeForLink($page->slug),
+            ));
+
+        if ($currentPage !== null && $currentPage->module !== PageModule::INDEX) {
+            $breadcrumbs->push(new BreadcrumbData(
+                title: $currentPage->title,
+                url: UrlFacade::normalizeForLink($currentPage->slug),
+            ));
+        }
+        return $breadcrumbs->values();
     }
 }

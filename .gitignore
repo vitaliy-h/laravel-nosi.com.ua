@@ -5,11 +5,12 @@
 .env.production
 .phpactor.json
 .phpunit.result.cache
-/.cursor/
+/.osp
 /.idea
 /.nova
 /.phpunit.cache
 /.vscode
+/.cursor
 /.zed
 /auth.json
 /node_modules

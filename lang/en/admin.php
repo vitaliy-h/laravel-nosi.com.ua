@@ -21,6 +21,8 @@ return [
         'letters' => 'Letters',
         'letter_templates' => 'Letter templates',
         'log_letters' => 'Letters',
+        'sms_templates' => 'SMS templates',
+        'log_sms' => 'SMS',
         'logs' => 'Logs',
         'news' => 'News',
         'pages' => 'Pages',
@@ -30,6 +32,7 @@ return [
         'shop_orders' => 'Orders',
         'shop_products' => 'Products',
         'users' => 'Users',
+        'social_profiles' => 'Social Profiles',
     ],
 
     // fields & filters
@@ -45,6 +48,7 @@ return [
         'email' => 'Email',
         'email_verified_at' => 'Email verified at',
         'img' => 'Image',
+        'imgs' => 'Images',
         'ip' => 'IP',
         'code' => 'Code',
         'geo_country_id' => 'Country',
@@ -87,6 +91,7 @@ return [
         'url' => 'Url',
         'url_helper' => 'URL is managed by system for this page type',
         '_position_id' => 'Position Before',
+        '_position_end_of_list' => 'End of list',
         'user' => 'User',
         'user_id' => 'User',
         'event' => 'Event',
@@ -114,10 +119,15 @@ return [
         'status' => 'Status',
         'generate_seo' => 'Generate SEO fields',
         'is_indexable' => 'Is indexable',
+        'date' => 'Date',
+        'date_from' => 'From',
+        'date_until' => 'Until',
     ],
     // messages
     'messages'=> [
         'delete_child_items_forbidden'=>'Delete child items first',
+        'delete_forbidden_has_children'=>'Remove child categories first',
+        'delete_forbidden_has_products'=>'Move or remove products from this category first',
         'page_delete_forbidden'=>'System modules cannot be deleted',
     ],
     // buttons & actions
@@ -125,5 +135,6 @@ return [
         'save' => 'Save',
         'saveClose' => 'Save & Close',
         'view_logs' => 'View Logs',
+        'impersonate' => 'Login as this user',
     ]
 ];

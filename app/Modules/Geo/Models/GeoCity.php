@@ -3,11 +3,15 @@
 namespace App\Modules\Geo\Models;
 
 use App\Modules\Core\Traits\Models\HasVisibility;
+use Database\Factories\GeoCityFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class GeoCity extends Model
 {
+    /** @use HasFactory<GeoCityFactory> */
+    use HasFactory;
     use HasVisibility;
 
     protected $fillable = [

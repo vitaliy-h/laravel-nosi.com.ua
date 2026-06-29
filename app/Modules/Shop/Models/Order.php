@@ -3,12 +3,22 @@
 namespace App\Modules\Shop\Models;
 
 use App\Modules\Core\Models\User;
+use App\Modules\Core\Traits\Models\CascadesDeletes;
 use App\Modules\Shop\Enums\PaymentStatusEnum;
 use App\Modules\Shop\Enums\PaymentTypeEnum;
+use App\Modules\Shop\Services\OrderActions;
+use Database\Factories\OrderFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    /** @use HasFactory<OrderFactory> */
+    use HasFactory;
+    use CascadesDeletes;
+
+    protected array $cascadeDeletes = ['items'];
+
     protected $table = 'shop_orders';
 
     protected $fillable = [
@@ -43,5 +53,10 @@ class Order extends Model
     public function getTotalAmountFormattedAttribute(): string
     {
         return t('shop.currency') . number_format($this->total_amount, 2);
+    }
+
+    public function getActionsAttribute(): OrderActions
+    {
+        return new OrderActions($this);
     }
 }

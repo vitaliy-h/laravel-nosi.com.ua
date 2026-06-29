@@ -2,6 +2,7 @@
 
 namespace App\Filament\Actions;
 
+use App\Filament\Support\NestedSetFields;
 use Filament\Actions\EditAction;
 
 
@@ -31,6 +32,7 @@ class BaseEditAction
             ])
             ->action(function (array $data, array $arguments, $record, $action): void {
                 $record->update($data);
+                NestedSetFields::applyPosition($record, $data);
                 $record = $record->fresh();
 
                 $livewire = $action->getLivewire();
@@ -41,12 +43,11 @@ class BaseEditAction
                 foreach ($formData as $key => $value) {
                     $existing = $livewire->mountedActions[$mountedActionIndex]['data'][$key] ?? null;
                     // FileUpload and similar components store state as array; DB value is scalar — keep form state
-                    if (is_array($existing) && !is_array($value)) {
+                    if (is_array($existing)) {
                         continue;
                     }
                     $livewire->mountedActions[$mountedActionIndex]['data'][$key] = $value;
                 }
-
 
                 if (!($arguments['close'] ?? true)) {
                     $action->callAfter();

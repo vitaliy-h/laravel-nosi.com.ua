@@ -3,7 +3,7 @@
 @section('content')
     <div class="container py-5">
 
-        <a href="{{ module_url(\App\Modules\Core\Enums\PageModule::NEWS) }}" class="btn btn-light mb-4">
+        <a href="{{ module_url('news') }}" class="btn btn-light mb-4">
             ← Back
         </a>
 
@@ -17,7 +17,7 @@
             </div>
         @endif
 
-        @if($newsItem->image)
+        @if($newsItem->img)
             <img
                 src="{{ $newsItem->image }}"
                 class="img-fluid rounded mb-4 news-card-image"
@@ -26,7 +26,7 @@
         @endif
 
         <div>
-            {!! $newsItem->text !!}
+            @include('components.builder', ['content' => $newsItem->content])
         </div>
 
     </div>

@@ -2,10 +2,15 @@
 
 namespace App\Modules\Shop\Models;
 
+use Database\Factories\OrderProductFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class OrderProduct extends Model
 {
+    /** @use HasFactory<OrderProductFactory> */
+    use HasFactory;
+
     protected $table = 'shop_order_shop_products';
 
     protected $fillable = [

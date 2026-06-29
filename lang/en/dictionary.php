@@ -38,6 +38,11 @@ return [
         'product_info'        => 'Product information',
     ],
 
+    'impersonation' => [
+        'banner_viewing_as' => 'Viewing as',
+        'banner_return' => 'Return to my account',
+    ],
+
     'auth' => [
         'login' => 'Sign In',
         'register' => 'Register',
@@ -49,6 +54,7 @@ return [
         'current_password' => 'Current Password',
         'password_confirmation' => 'Confirm password',
         'remember_me' => 'Remember me',
+        'or_continue_with' => 'or continue with',
         'invalid_credentials' => 'Invalid credentials',
         'forgot_password' => 'Forgot Password?',
         'terms:html' => 'I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>',
@@ -130,5 +136,20 @@ return [
         'login_success' => 'Login successful.',
         'register_success' => 'Registration successful.',
         'logout_success' => 'Logged out.',
+    ],
+
+    'social' => [
+        'section_title'             => 'Social Accounts',
+        'section_subtitle'          => 'Connect your social accounts to sign in faster.',
+        'connect'                   => 'Connect',
+        'disconnect'                => 'Disconnect',
+        'connected'                 => 'Social account connected successfully.',
+        'disconnected'              => 'Social account disconnected.',
+        'auth_failed'               => 'Social authentication failed. Please try again.',
+        'cannot_disconnect_last'    => 'Cannot disconnect the only login method. Add a password or email first.',
+        'sign_in_with'              => 'Sign in with :provider',
+        'google'                    => 'Google',
+        'facebook'                  => 'Facebook',
+        'telegram'                  => 'Telegram',
     ],
 ];

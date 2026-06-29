@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('img')->nullable();
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();
+            $table->json('imgs')->nullable();
             $table->longText('text')->nullable();
         });
     }

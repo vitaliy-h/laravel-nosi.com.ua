@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Modules\Core\Enums\LetterEnum;
-use App\Modules\Core\Models\LetterTemplate;
+use App\Modules\Notification\Enums\LetterEnum;
+use App\Modules\Notification\Models\LetterTemplate;
 use Illuminate\Database\Seeder;
 
 class LetterTemplateSeeder extends Seeder

@@ -9,6 +9,7 @@
     @if($page && !$page->is_indexable)
         <meta name="robots" content="noindex, nofollow">
     @endif
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Favicons -->
     <link href="/demo/assets/img/favicon.png" rel="icon">
@@ -37,8 +38,7 @@
     {{-- Page styles --}}
     @stack('styles')
 </head>
-<!-- todo body class -->
-<body class="index-page">
+<body class="@yield('body-class', 'default-page')">
 
 {{-- Navbar --}}
 @include('components.navbar')
@@ -49,6 +49,7 @@
 
 {{-- Footer --}}
 @include('components.footer')
+@include('components.modals')
 
 <!-- Vendor JS Files -->
 <script src="/demo/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -63,6 +64,9 @@
 
 <!-- Main JS File -->
 <script src="/demo/assets/js/main.js"></script>
+
+<!-- abc-response -->
+<script src="/assets/js/abc-response.js?2"></script>
 
 {{-- Global scripts --}}
 @include('components.scripts')

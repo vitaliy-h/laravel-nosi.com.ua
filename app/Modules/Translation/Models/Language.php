@@ -5,10 +5,14 @@ namespace App\Modules\Translation\Models;
 use App\Modules\Core\Traits\Models\HasVisibility;
 use App\Modules\Translation\Enums\Localization;
 use App\Modules\Translation\Services\TranslationService;
+use Database\Factories\LanguageFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Language extends Model
 {
+    /** @use HasFactory<LanguageFactory> */
+    use HasFactory;
     use HasVisibility;
 
     protected $fillable = [

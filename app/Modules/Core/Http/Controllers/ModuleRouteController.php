@@ -4,13 +4,15 @@ namespace App\Modules\Core\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Core\Repositories\PagesRepository;
+use App\Modules\Core\Services\MenuService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class ModuleRouteController extends Controller
 {
     public function __construct(
-        private PagesRepository $pages
+        private PagesRepository $pages,
+        private MenuService $menu
     )
     {
     }
@@ -50,12 +52,20 @@ class ModuleRouteController extends Controller
             $routerClass = '\\App\\Modules\\' . Str::ucfirst(Str::camel($page->module->value))  . '\\Http\\Controllers\\Web\\IndexController';
 
             if (class_exists($routerClass)) {
+                //todo add route
+                /*
+                Route::match(['get', 'post'], $page->slug . '/{segments?}', [self::class, 'handle'])
+                    ->where('segments', '.*')
+                    ->name('module.' . $page->module->value);
+                */
                 $moduleSegments = array_slice($segments, 1);
                 view()->share([
                     'page' => $page,
-                    'breadcrumbs' => $this->pages->getBreadcrumbs(),
+                    'breadcrumbs' => $this->pages->getBreadcrumbs($page),
                     'meta_title' => $page->meta_title,
                     'meta_description' => $page->meta_description,
+                    'headerMenu' => $this->menu->getHeaderMenu(),
+                    'footerMenu' => $this->menu->getFooterMenu(),
                 ]);
                 $result = app($routerClass)->accessCheck();
                 if ($result instanceof \Illuminate\Http\Response

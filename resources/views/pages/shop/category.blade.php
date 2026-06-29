@@ -1,15 +1,11 @@
 @extends('layouts.app')
 
+@section('body-class', 'category-page')
+
 @php use Illuminate\Support\Str; @endphp
 
 @section('content')
-    @include('blocks.page_title', [
-        'title' => $category->title,
-        'items' => array_merge([
-            ['name' => 'Main Page', 'url' => module_url(\App\Modules\Core\Enums\PageModule::INDEX)],
-            ['name' => $page->title ?? 'Shop', 'url' => module_url(\App\Modules\Core\Enums\PageModule::SHOP)],
-        ], array_slice($breadcrumbs, 0, -1)),
-    ])
+    @include('blocks.page_title')
 
     <div class="container mt-4">
         <div class="row">
@@ -25,11 +21,12 @@
                         <div class="product-categories-widget widget-item">
                             <h3 class="widget-title">Categories</h3>
                             @include('pages.shop.partials.category-tree', [
-                                'categories' => $filter['categories']['data'],
+                                'categories' => $categories,
                                 'level' => 0,
                             ])
                         </div>
                         @php
+                        /*todo remove @php blocks from templates*/
                             $priceFilter = $filter['price'] ?? [];
                             $priceData = $priceFilter['data'] ?? [];
 
@@ -48,6 +45,7 @@
                             }
                         @endphp
                         <div class="pricing-range-widget widget-item">
+                            {{--todo add translations here and in the product template--}}
                             <h3 class="widget-title">Price Range</h3>
 
                             <div class="price-range-container">
@@ -118,10 +116,12 @@
                             <h3 class="widget-title">Filter by Brand</h3>
 
                             <div class="brand-filter-content">
+                                {{--
                                 <div class="brand-search">
                                     <input type="text" class="form-control" placeholder="Search brands...">
                                     <i class="bi bi-search"></i>
                                 </div>
+                                --}}
                                 <div class="brand-list">
                                     @foreach($filter['brand']['data'] ?? [] as $brand)
                                         @php
@@ -150,11 +150,16 @@
                                         </div>
                                     @endforeach
                                 </div>
-                                <div class="filter-actions mt-3">
-                                    <button type="submit" class="btn btn-sm btn-primary w-100">Apply Filter</button>
-                                </div>
+                                {{--
+                                --}}
                                 <div class="brand-actions">
+                                    {{--
                                     <button type="submit" class="btn btn-sm btn-outline-primary">Apply Filter</button>
+                                    --}}
+                                    <div class="filter-actions mt-3" style="width: 70% !important">
+                                        <button type="submit" class="btn btn-sm btn-primary w-100">Apply Filter</button>
+                                    </div>
+
                                     <a href="{{ url()->current() }}" class="btn btn-sm btn-link">Clear All</a>
                                 </div>
                             </div>
@@ -173,7 +178,7 @@
 
             <div class="col-lg-8">
 
-                @if($category->text)
+                @if(isset($category) && $category->text)
                     <div class="mb-4">
                         {!! $category->text !!}
                     </div>
@@ -226,86 +231,7 @@
                 <section id="category-product-list" class="category-product-list section">
                     <div class="row gy-4">
                         @foreach($products as $product)
-                            <div class="col-lg-6">
-                                <div class="product-box">
-                                    <div class="product-thumb">
-                                        @if($product->price2)
-                                            <span class="product-label product-label-sale">Sale</span>
-                                        @endif
-
-                                        @if($product->image)
-                                            <img
-                                                src="{{ $product->image }}"
-                                                alt="{{ $product->title ?? $product->name }}"
-                                                class="main-img"
-                                                loading="lazy"
-                                            >
-                                        @endif
-
-                                        <div class="product-overlay">
-                                            <div class="product-quick-actions">
-                                                <button type="button" class="quick-action-btn">
-                                                    <i class="bi bi-heart"></i>
-                                                </button>
-                                                {{--
-                                                <button type="button" class="quick-action-btn">
-                                                    <i class="bi bi-arrow-repeat"></i>
-                                                </button>
-                                                <a
-                                                    href="{{ module_url(\App\Modules\Core\Enums\PageModule::SHOP, [$product->category->slug, $product->slug. '-' . $product->id]) }}"
-                                                    class="quick-action-btn"
-                                                >
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                --}}
-
-                                            </div>
-
-                                            <div class="add-to-cart-container">
-                                                <button type="button" class="add-to-cart-btn">Add to Cart</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="product-content">
-                                        <div class="product-details">
-                                            <h3 class="product-title">
-                                                <a href="{{ module_url(\App\Modules\Core\Enums\PageModule::SHOP, [$product->category->slug, $product->slug_with_id]) }}">
-                                                    {{ $product->title ?? $product->name }}
-                                                </a>
-                                            </h3>
-
-                                            <div class="product-price">
-                                                @if($product->price2)
-                                                    <span class="original">{{ $product->price }}</span>
-                                                    <span class="sale">{{ $product->price2 }}</span>
-                                                @elseif($product->price)
-                                                    <span>{{ $product->price }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        {{--
-                                        <div class="product-rating-container">
-                                            <div class="rating-stars">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star"></i>
-                                            </div>
-                                            <span class="rating-number">4.0</span>
-                                        </div>
-
-                                        <div class="product-color-options">
-                                            <span class="color-option active" style="background-color: #3b82f6;"></span>
-                                            <span class="color-option" style="background-color: #22c55e;"></span>
-                                            <span class="color-option" style="background-color: #f97316;"></span>
-                                        </div>
-                                        --}}
-                                    </div>
-                                </div>
-                            </div>
+                            @include('pages.shop.product-box', ['product' => $product])
                         @endforeach
                     </div>
 

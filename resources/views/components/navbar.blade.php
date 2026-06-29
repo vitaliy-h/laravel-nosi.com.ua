@@ -1,3 +1,14 @@
+@if(session('impersonating_admin_id'))
+<div class="alert alert-warning mb-0 rounded-0 py-2 text-center d-flex align-items-center justify-content-center gap-3">
+    <span><i class="bi bi-person-fill-gear me-1"></i> {{ t('impersonation.banner_viewing_as') }}: <strong>{{ auth()->user()->name }} ({{ auth()->user()->email }})</strong></span>
+    <form method="post" action="{{ route('impersonate.leave') }}" class="mb-0">
+        @csrf
+        <button type="submit" class="btn btn-sm btn-warning py-0">
+            <i class="bi bi-arrow-return-left me-1"></i>{{ t('impersonation.banner_return') }}
+        </button>
+    </form>
+</div>
+@endif
 <header id="header" class="header position-relative">
 
     <!-- Main Header -->
@@ -13,9 +24,9 @@
                 </a>
 
                 <!-- Search -->
-                <form class="search-form desktop-search-form">
+                <form class="search-form desktop-search-form" action="{{module_url('shop')}}">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for products">
+                        <input type="text" class="form-control" name="search" placeholder="Search for products" value="{{ request('search') }}">
                         <button class="btn" type="submit">
                             <i class="bi bi-search"></i>
                         </button>
@@ -39,8 +50,8 @@
                             @guest
                                 <div class="dropdown-footer">
 
-                                    <a href="{{module_url(\App\Modules\Core\Enums\PageModule::AUTH,[],['login'=>null])}}" class="btn btn-primary w-100 mb-2">{{t('auth.login')}}</a>
-                                    <a href="{{module_url(\App\Modules\Core\Enums\PageModule::AUTH,[],['register'=>null])}}" class="btn btn-outline-primary w-100">{{t('auth.register')}}</a>
+                                    <a href="{{module_url('auth',[],['login'=>null])}}" class="btn btn-primary w-100 mb-2">{{t('auth.login')}}</a>
+                                    <a href="{{module_url('auth',[],['register'=>null])}}" class="btn btn-outline-primary w-100">{{t('auth.register')}}</a>
                                 </div>
                             @endguest
                             @auth
@@ -49,11 +60,11 @@
                                     <p class="mb-0">{{t('profile.profile_dropdown_header_subtext')}}</p>
                                 </div>
                                 <div class="dropdown-body">
-                                    <a class="dropdown-item d-flex align-items-center" href="{{module_url(\App\Modules\Core\Enums\PageModule::PROFILE, 'edit')}}">
+                                    <a class="dropdown-item d-flex align-items-center" href="{{module_url('profile', 'edit')}}">
                                         <i class="bi bi-person-circle me-2"></i>
                                         <span>{{t('profile.my_profile')}}</span>
                                     </a>
-                                    <a class="dropdown-item d-flex align-items-center" href="{{module_url(\App\Modules\Core\Enums\PageModule::PROFILE, 'orders')}}">
+                                    <a class="dropdown-item d-flex align-items-center" href="{{module_url('profile', 'orders')}}">
                                         <i class="bi bi-bag me-2"></i>
                                         <span>{{t('profile.orders')}}</span>
                                     </a>
@@ -77,9 +88,9 @@
                     </a>
 
                     <!-- Cart -->
-                    <a href="cart.html" class="header-action-btn">
+                    <a href="{{module_url('basket')}}" class="header-action-btn">
                         <i class="bi bi-cart3"></i>
-                        <span class="badge">3</span>
+                        <span class="badge js_basket_count">{{ session('basket.count', 0) }}</span>
                     </a>
 
                     <!-- Mobile Navigation Toggle -->
@@ -699,9 +710,9 @@
     <!-- Mobile Search Form -->
     <div class="collapse" id="mobileSearch">
         <div class="container">
-            <form class="search-form">
+            <form class="search-form" action="{{module_url('shop')}}">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for products">
+                    <input type="text" name="search" class="form-control" placeholder="Search for products" value="{{ request('search') }}">
                     <button class="btn" type="submit">
                         <i class="bi bi-search"></i>
                     </button>

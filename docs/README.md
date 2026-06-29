@@ -48,9 +48,14 @@ Production-ready starter based on Laravel + Filament.
     * [translations](translations.md)
     * [logs](logs.md)
     * [letters](letters.md)
+    * [SMS](sms.md)
+    * [testing](testing.md)
     * [API](./api/README.md)
+    * [Sitemap](sitemap.md)
+    * [OAuth](oauth.md)
 * [Filament Admin Panel](./filament.md)
     * [Resource Generation](filament/resource-generation.md)
     * [Translations Guide](filament/translations.md)
+    * [Nested Sets (Tree Structures)](filament/nested-sets.md)
 
 

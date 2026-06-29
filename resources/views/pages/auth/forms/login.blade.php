@@ -5,7 +5,7 @@
     @csrf
     <div class="mb-4">
         <label for="login-register-login-email" class="form-label">{{t('auth.email')}}</label>
-        <input type="email" name="email" class="form-control" id="login-register-login-email" value="{{ old('email') }}"
+        <input type="text" name="email" class="form-control" id="login-register-login-email" value="{{ old('email') }}"
                required>
         @error('email')
         <div class="text-danger small mt-1">
@@ -30,7 +30,7 @@
                    value="1">
             <label class="form-check-label" for="login-register-remember-me">{{t('auth.remember_me')}}</label>
         </div>
-        <a href="{{module_url(\App\Modules\Core\Enums\PageModule::AUTH,[],['password_recovery'=>null])}}"
+        <a href="{{module_url('auth',[],['password_recovery'=>null])}}"
            class="forgot-password">{{t('auth.forgot_password')}}</a>
     </div>
 
@@ -38,3 +38,14 @@
         <button type="submit" class="btn btn-primary btn-lg">{{t('buttons.login')}}</button>
     </div>
 </form>
+
+<div class="social-divider">{{ t('auth.or_continue_with') }}</div>
+
+<div class="social-buttons">
+    @foreach (config('social.providers') as $provider)
+        <a href="{{ route('social.redirect', $provider) }}" class="btn-social btn-{{ $provider }}">
+            <i class="bi bi-{{ $provider }}"></i>
+            {{ t('social.sign_in_with', ['provider' => t('social.' . $provider)]) }}
+        </a>
+    @endforeach
+</div>

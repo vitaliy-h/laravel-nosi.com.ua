@@ -19,8 +19,9 @@ class Login extends BaseLogin
                     ->required()
                     ->autocomplete('login')
                     ->autofocus()
+                    ->default(request()->getHost() === 'abc-cms.com' ? 'admin' : null)
                     ->extraInputAttributes(['tabindex' => 1]),
-                $this->getPasswordFormComponent(),
+                $this->getPasswordFormComponent()->default(request()->getHost() === 'abc-cms.com' ? 'password' : null),
                 $this->getRememberFormComponent(),
             ]);
     }

@@ -8,9 +8,11 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Lang;
 
-readonly class TranslationService
+class TranslationService
 {
-    public function __construct(private TranslationRepository $translationRepository)
+    private array $dictionaries = [];
+
+    public function __construct(private readonly TranslationRepository $translationRepository)
     {
     }
 
@@ -71,7 +73,11 @@ readonly class TranslationService
 
     public function getDictionary(string $locale): array
     {
-        return Cache::remember(
+        if (isset($this->dictionaries[$locale])) {
+            return $this->dictionaries[$locale];
+        }
+
+        return $this->dictionaries[$locale] = Cache::remember(
             $this->getCacheKey($locale),
             now()->addDay(),
             function () use ($locale) {
@@ -86,9 +92,8 @@ readonly class TranslationService
             $locale = $locale->value;
         }
 
-        Cache::forget(
-            $this->getCacheKey($locale)
-        );
+        unset($this->dictionaries[$locale]);
+        Cache::forget($this->getCacheKey($locale));
     }
 
     protected function getCacheKey(string $locale): string

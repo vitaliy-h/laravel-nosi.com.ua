@@ -33,7 +33,7 @@ class AuthController extends Controller
         Auth::login($user, $remember);
         $request->session()->regenerate();
 
-        return redirect()->to(module_url(PageModule::PROFILE));
+        return redirect()->to(module_url('profile'));
     }
 
     public function logout(Request $request): RedirectResponse
@@ -44,7 +44,7 @@ class AuthController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect(module_url(PageModule::INDEX));
+        return redirect(module_url('index'));
     }
 
     public function register(RegisterRequest $request, RegisterAction $action): RedirectResponse
@@ -57,7 +57,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect(module_url(PageModule::PROFILE));
+        return redirect(module_url('profile'));
     }
 
     public function passwordRecovery(PasswordRecoveryRequest $request, SendPasswordResetAction $action): RedirectResponse
@@ -75,7 +75,7 @@ class AuthController extends Controller
             PasswordResetData::from($request)
         );
         return redirect()
-            ->to(module_url(PageModule::AUTH))
+            ->to(module_url('auth'))
             ->with('success', t('auth.password_reset_success'));
     }
 }

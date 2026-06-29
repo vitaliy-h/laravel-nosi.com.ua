@@ -13,6 +13,6 @@ class Authenticate extends Middleware
             return null;
         }
 
-        return module_url(PageModule::AUTH);
+        return module_url('auth');
     }
 }

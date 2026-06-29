@@ -1,42 +1,10 @@
 @extends('layouts.app')
 
+@section('body-class', 'product-details-page')
+
 @section('content')
 
-    <div class="page-title light-background">
-        <div class="container d-lg-flex justify-content-between align-items-center">
-            <h1 class="mb-2 mb-lg-0">
-                {{ $product->title ?? $product->name }}
-            </h1>
-
-            <nav class="breadcrumbs">
-                <ol>
-                    <li>
-                        <a href="{{ module_url(\App\Modules\Core\Enums\PageModule::INDEX) }}">
-                            Main Page
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="{{ module_url(\App\Modules\Core\Enums\PageModule::SHOP) }}">
-                            {{ $page->title ?? 'Shop' }}
-                        </a>
-                    </li>
-
-                    @foreach($breadcrumbs as $breadcrumb)
-                        <li class="{{ $loop->last ? 'current' : '' }}">
-                            @if($loop->last)
-                                {{ $breadcrumb['name'] }}
-                            @else
-                                <a href="{{ $breadcrumb['url'] }}">
-                                    {{ $breadcrumb['name'] }}
-                                </a>
-                            @endif
-                        </li>
-                    @endforeach
-                </ol>
-            </nav>
-        </div>
-    </div>
+    @include('blocks.page_title')
 
     <section id="product-details" class="product-details section">
 
@@ -52,6 +20,7 @@
 
                             <div class="image-zoom-container">
 
+                                {{--todo app/Modules/Core/Traits/Models/HasImage.php already returns "/assets/images/no_image.svg" in image when no image is set--}}
                                 @if($product->image)
                                     <img
                                         src="{{ $product->image }}"
@@ -143,7 +112,7 @@
                                 <input
                                     type="number"
                                     class="quantity-input"
-                                    value="1"
+                                    value="{{ session('basket.products.' . $product->id . '.count', 1) }}"
                                     min="1"
                                 >
 
@@ -157,7 +126,8 @@
 
                         <div class="product-actions">
 
-                            <button class="btn btn-primary add-to-cart-btn">
+                            {{-- todo: consider a form handled via abc_response — on click, request hits the backend, adds product to basket, response opens the modal with BasketItemData passed from the backend. Less custom JS per button. --}}
+                            <button class="btn btn-primary add-to-cart-btn" data-id="{{ $product->id }}" data-count="{{ session('basket.products.' . $product->id . '.count', 1) }}">
                                 <i class="bi bi-cart-plus"></i>
                                 Add to Cart
                             </button>

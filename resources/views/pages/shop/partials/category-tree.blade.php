@@ -1,7 +1,7 @@
 <ul class="{{ $level === 0 ? 'category-tree list-unstyled mb-0' : 'subcategory-list list-unstyled ps-3 mt-2 collapse' }} {{ $level > 0 && !empty($parentOpened) ? 'show' : '' }}">
     @foreach($categories as $item)
         @php
-            $children = $item->childrenRecursive ?? collect();
+            $children = $item->children ?? collect();
             $hasChildren = $children->isNotEmpty();
             $isActive = (int)($item->_active ?? 0) === 1;
             $isOpened = (int)($item->_opened ?? 0) === 1;
@@ -20,7 +20,7 @@
                 @endif
             >
                 <a
-                    href="{{ module_url(\App\Modules\Core\Enums\PageModule::SHOP, $item->slug) }}"
+                    href="{{ module_url('shop', $item->slug) }}"
                     class="{{ $level === 0 ? 'category-link' : 'subcategory-link' }} {{ $isActive ? 'active' : '' }}"
                 >
                     {{ $item->title }}
