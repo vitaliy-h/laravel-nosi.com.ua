@@ -9,6 +9,7 @@ return new class extends Migration {
     {
         Schema::create('shop_orders', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->uuid('uuid')->unique();
             $table->bigInteger('order_number')->unique()->nullable();
             $table->foreignId('user_id')->constrained();
             $table->decimal('total_amount', 10, 2)->default(0);

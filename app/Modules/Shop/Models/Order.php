@@ -4,6 +4,7 @@ namespace App\Modules\Shop\Models;
 
 use App\Modules\Core\Models\User;
 use App\Modules\Core\Traits\Models\CascadesDeletes;
+use App\Modules\Core\Traits\Models\HasUuid;
 use App\Modules\Shop\Enums\PaymentStatusEnum;
 use App\Modules\Shop\Enums\PaymentTypeEnum;
 use App\Modules\Shop\Services\OrderActions;
@@ -16,12 +17,16 @@ class Order extends Model
     /** @use HasFactory<OrderFactory> */
     use HasFactory;
     use CascadesDeletes;
+    use HasUuid;
+
+    protected array $uuidFields = ['uuid'];
 
     protected array $cascadeDeletes = ['items'];
 
     protected $table = 'shop_orders';
 
     protected $fillable = [
+        'uuid',
         'user_id',
         'total_amount',
         'payment_status',

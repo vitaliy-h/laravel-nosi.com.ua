@@ -36,6 +36,11 @@ return [
         'category_info'   => 'Full category information',
         'category_products'   => 'Products list',
         'product_info'        => 'Product information',
+        'view_order'                  => 'View Order',
+        'payment_success_title'       => 'Payment Successful!',
+        'payment_success_description' => 'Thank you for your purchase. Your order has been confirmed.',
+        'payment_error_title'         => 'Payment Failed',
+        'payment_error_description'   => 'Something went wrong while processing your payment. Please try again.',
     ],
 
     'impersonation' => [
