@@ -47,7 +47,7 @@
                                                             </div>
                                                             <div class="product-details">
                                                                 <h6 class="product-title">{{$product['name']}}</h6>
-                                                                {{-- todo: these actions could be handled via a form processed as abc_response with action as a hidden field — less custom JS --}}
+
                                                                 <button class="remove-item js_remove_checkout_product" data-product="{{$product['id']}}" type="button">
                                                                     <i class="bi bi-trash"></i> Remove
                                                                 </button>

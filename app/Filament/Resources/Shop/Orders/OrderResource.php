@@ -9,6 +9,7 @@ use App\Modules\Shop\Enums\PaymentTypeEnum;
 use App\Modules\Shop\Models\Order;
 use App\Modules\Shop\Models\Product;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -159,6 +160,11 @@ class OrderResource extends Resource
                     ->preload(),
             ])
             ->recordActions([
+               Action::make('view_public')
+                    ->icon(Heroicon::OutlinedGlobeAlt)
+                    ->iconButton()
+                    ->url(fn (Order $record) => route('order.show', $record->uuid))
+                    ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),
             ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
