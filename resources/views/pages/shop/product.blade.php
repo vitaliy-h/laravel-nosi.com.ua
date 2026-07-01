@@ -20,16 +20,16 @@
 
                             <div class="image-zoom-container">
 
-                                {{--todo app/Modules/Core/Traits/Models/HasImage.php already returns "/assets/images/no_image.svg" in image when no image is set--}}
+                                <?php /*
+                                //If there's no image, we use this condition to avoid displaying the placeholder.
+                                @if($product->img)
+                                This option always returns an image. If no image is available, it returns a placeholder.
+                                if($product->image)
+                                */
+                                ?>
                                 @if($product->image)
                                     <img
                                         src="{{ $product->image }}"
-                                        alt="{{ $product->title ?? $product->name }}"
-                                        class="img-fluid main-image"
-                                    >
-                                @else
-                                    <img
-                                        src="/assets/images/no_image.svg"
                                         alt="{{ $product->title ?? $product->name }}"
                                         class="img-fluid main-image"
                                     >

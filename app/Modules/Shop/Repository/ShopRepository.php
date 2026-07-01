@@ -29,7 +29,7 @@ class ShopRepository
 
     /**
      * Get shop categories tree.
-     * TODO: used in API — kept for that reason
+     * used in API
      * \App\Modules\Shop\Http\Controllers\Api\ShopController::categories
      */
     public function getTree()
@@ -39,7 +39,7 @@ class ShopRepository
 
     /**
      * Get product by slug and category.
-     * TODO: used in API — kept for that reason
+     * used in API
      * \App\Modules\Shop\Http\Controllers\Api\ShopController::product
      */
     public function getProductBySlug(string $slug, Category $category): Product
@@ -54,7 +54,6 @@ class ShopRepository
     /**
      * Get all root categories with their recursive children.
      * Also marks the active category and opened parent categories.
-     * @todo extracted from filters and rewrote to reduce DB queries
      */
     public function allCategories(?int $activeCategoryId = null)
     {

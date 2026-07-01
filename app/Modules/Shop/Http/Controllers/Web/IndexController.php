@@ -77,13 +77,6 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
     {
         $category = $this->repository->getCategoryBySlug($categorySlug);
         /**
-         * Redirect to canonical category URL if the slug is not exact.
-         * @todo if the slug doesn't match, the category won't be found at all — this redirect only makes sense once canonical_url is supported
-         */
-        if ($categorySlug !== $category->slug) {
-            return redirect()->to(module_url('shop', $category->slug), 301);
-        }
-        /**
          * Set category meta tags.
          */
         view()->share([
