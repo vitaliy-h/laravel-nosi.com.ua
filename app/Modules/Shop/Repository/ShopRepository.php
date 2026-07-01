@@ -3,7 +3,14 @@
 namespace App\Modules\Shop\Repository;
 
 use App\Modules\Core\Dtos\BreadcrumbData;
-use App\Modules\Core\Enums\PageModule;
+use App\Modules\Shop\Dtos\Filters\BaseFilterDto;
+use App\Modules\Shop\Dtos\Filters\InFilterDto;
+use App\Modules\Shop\Dtos\Filters\RangeFilterDto;
+use App\Modules\Shop\Dtos\Filters\SearchFilterDto;
+use App\Modules\Shop\Dtos\Filters\ShopFilterDto;
+use App\Modules\Shop\Dtos\Filters\SortFilterDto;
+use App\Modules\Shop\Enums\FilterTypeEnum;
+use App\Modules\Shop\Enums\PerPageOptionEnum;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Parameter;
@@ -16,15 +23,15 @@ class ShopRepository
     /**
      * Number of products displayed per page.
      */
-    private int $paginate = 12;
+    private int $paginate;
 
     public function __construct()
     {
-        $count = (int)request('c', 12);
+        $count = (int)request('c', PerPageOptionEnum::default()->value);
 
-        $this->paginate = in_array($count, [12, 24, 48, 96], true)
+        $this->paginate = in_array($count, PerPageOptionEnum::values(), true)
             ? $count
-            : 12;
+            : PerPageOptionEnum::default()->value;
     }
 
     /**
@@ -123,205 +130,39 @@ class ShopRepository
      * Prepare all available filters for the shop page.
      * This includes categories, brands, and price range.
      */
-    public function prepareFilter(?Category $category, Request $request): array
+    public function prepareFilter(?Category $category, Request $request): ShopFilterDto
     {
-        /*
-         * TODO: Refactor filters using DTO + Enum
-         *
-         * Current approach — plain arrays. Proposed approach — typed DTOs:
-         *
-         * 1. Filter type enum:
-         *
-         *    enum FilterType: string
-         *    {
-         *        case IN     = 'in';
-         *        case RANGE  = 'range';
-         *        case SEARCH = 'search';
-         *        case SORT   = 'sort';
-         *    }
-         *
-         * 2. DTO per filter type (with apply method):
-         *
-         *    abstract class BaseFilterDto extends Data
-         *    {
-         *        abstract public function apply(Builder $query): void;
-         *    }
-         *
-         *    class InFilterDto extends BaseFilterDto
-         *    {
-         *        public function __construct(
-         *            public readonly string     $key,
-         *            public readonly FilterType $type,
-         *            public readonly Collection $items,    // for display (brands, options)
-         *            public readonly array      $selected, // selected ids
-         *        ) {}
-         *
-         *        public function apply(Builder $query): void
-         *        {
-         *            if (empty($this->selected)) return;
-         *            $column = $this->key === 'brand' ? 'brand_id' : $this->key;
-         *            $query->whereIn($column, $this->selected);
-         *        }
-         *    }
-         *
-         *    class RangeFilterDto extends BaseFilterDto
-         *    {
-         *        public function __construct(
-         *            public readonly string     $key,
-         *            public readonly FilterType $type,
-         *            public readonly float      $min,
-         *            public readonly float      $max,
-         *            public readonly ?float     $from,
-         *            public readonly ?float     $to,
-         *        ) {}
-         *
-         *        public function apply(Builder $query): void
-         *        {
-         *            if ($this->from !== null) $query->where($this->key, '>=', $this->from);
-         *            if ($this->to   !== null) $query->where($this->key, '<=', $this->to);
-         *        }
-         *    }
-         *
-         *    class SearchFilterDto extends BaseFilterDto
-         *    {
-         *        public function __construct(
-         *            public readonly FilterType $type,
-         *            public readonly ?string    $value,
-         *        ) {}
-         *
-         *        public function apply(Builder $query): void
-         *        {
-         *            if ($this->value) $query->where('title', 'like', "%{$this->value}%");
-         *        }
-         *    }
-         *
-         * 3. prepareFilter returns Collection<BaseFilterDto>:
-         *
-         *    public function prepareFilter(?Category $category, Request $request): Collection
-         *    {
-         *        $filters = collect([
-         *            'brand' => new InFilterDto(
-         *                key: 'brand', type: FilterType::IN, items: collect(),
-         *                selected: array_filter(array_map('intval', (array) $request->query('brand'))),
-         *            ),
-         *            'price' => new RangeFilterDto(
-         *                key: 'price', type: FilterType::RANGE,
-         *                min: 0, max: 0,
-         *                from: $request->float('price_from'),
-         *                to: $request->float('price_to'),
-         *            ),
-         *            'search' => new SearchFilterDto(type: FilterType::SEARCH, value: $request->query('search')),
-         *        ]);
-         *
-         *        $filters['brand'] = $filters['brand']->with(items: $this->prepareBrandFilter($category, $filters));
-         *        $filters['price'] = $this->prepareRangeFilter($category, $filters, $filters['price']);
-         *
-         *        return $filters;
-         *    }
-         *
-         * 4. buildProductsQuery simplifies to:
-         *
-         *    $filters
-         *        ->reject(fn ($f, $key) => $key === $except)
-         *        ->each(fn (BaseFilterDto $f) => $f->apply($query));
-         *
-         * 5. Blade — partial per type (no if/switch):
-         *
-         *    @foreach($filters as $key => $filter)
-         *        @includeIf('pages.shop.filters.' . $filter->type->value, ['filter' => $filter])
-         *    @endforeach
-         *
-         *    resources/views/pages/shop/filters/
-         *        range.blade.php   ← $filter->min, $filter->max, $filter->from
-         *        in.blade.php      ← @foreach($filter->items as $item)
-         *        search.blade.php  ← <input value="{{ $filter->value }}">
-         * 6. After refactoring, consider splitting this repository — it is getting large
-         */
-        $filter = [
-            /**
-             * Brand filter.
-             */
-            'brand' => [
-                'key' => 'brand',
-                'type' => 'in',
-                'value' => $request->query('brand'),
-                'data' => collect(),
-            ],
-            /**
-             * Price range filter.
-             */
-            'price' => [
-                'key' => 'price',
-                'type' => 'range',
-                'from' => $request->query('price_from'),
-                'to' => $request->query('price_to'),
-                'data' => [
-                    'min' => 0,
-                    'max' => 0,
-                ],
-            ],
-            'search' => [
-                'key' => 'search',
-                'type' => 'search',
-                'value' => $request->query('search'),
-            ],
+        $filter = new ShopFilterDto(
+            brand: new InFilterDto(
+                key: 'brand',
+                type: FilterTypeEnum::IN,
+                items: collect(),
+                selected: $this->stringToIntArray($request->query('brand')),
+            ),
+            price: new RangeFilterDto(
+                key: 'price',
+                type: FilterTypeEnum::RANGE,
+                min: 0,
+                max: 0,
+                from: $request->query('price_from') !== null ? (float)$request->query('price_from') : null,
+                to: $request->query('price_to') !== null ? (float)$request->query('price_to') : null,
+            ),
+            search: new SearchFilterDto(
+                key: 'search',
+                type: FilterTypeEnum::SEARCH,
+                value: $request->query('search'),
+            ),
+            sort: new SortFilterDto(
+                key: 'sort',
+                type: FilterTypeEnum::SORT,
+                value: $request->query('sort'),
+            ),
+        );
 
-            'sort' => [
-                'key' => 'sort',
-                'type' => 'sort',
-                'value' => $request->query('sort'),
-            ],
-            /*
-             * commented parameters
-             */
-            /*
-            'parameters' => [],
-            'shop_parameters' => collect(),
-            */
-        ];
+        $filter = $filter->withBrand($filter->brand->withItems($this->prepareBrandFilter($category, $filter)));
 
-        /*
-         * commented parameters
-         */
-        /*
-        if ($category && !empty($category->parameters)) {
-            $parameterIds = $this->getFilterableParameterIds($category->parameters);
-
-            if (!empty($parameterIds)) {
-                $shopParameters = Parameter::visible()
-                    ->whereIn('id', $parameterIds)
-                    ->orderBy('rank', 'desc')
-                    ->get()
-                    ->keyBy('id');
-
-                foreach ($shopParameters as $parameter) {
-                    $key = 'p' . $parameter->id;
-
-                    $filter['parameters'][$parameter->id] = [
-                        'key' => $key,
-                        'type' => $this->getParameterFilterType($parameter),
-                        'value' => $request->query($key),
-                        'data' => [],
-                    ];
-                }
-
-                $filter['shop_parameters'] = $shopParameters;
-            }
-        }
-        */
-        /**
-         * Prepare dynamic filter data based on the current category and selected filters.
-         */
-        $filter['brand']['data'] = $this->prepareBrandFilter($category, $filter);
-        $filter['price']['data'] = $this->prepareRangeFilter($category, $filter, $filter['price']);
-
-        /*
-        foreach ($filter['parameters'] ?? [] as $parameterFilter) {
-            if (($parameterFilter['type'] ?? null) === 'range') {
-                $filter['parameters'][$parameterFilter['key']]['data'] = $this->prepareRangeFilter($category, $filter, $parameterFilter);
-            }
-        }
-        */
+        $rangeData = $this->prepareRangeFilter($category, $filter, $filter->price);
+        $filter = $filter->withPrice($filter->price->withRange($rangeData['min'], $rangeData['max']));
 
         return $filter;
     }
@@ -349,6 +190,7 @@ class ShopRepository
     {
         return Category::visible()->whereIsRoot()->orderBy('_lft')->get();
     }
+
     public function featuredProducts(int $limit = 8)
     {
         return Product::visible()->with(['category.ancestors'])->inRandomOrder()->limit($limit)->get();
@@ -357,7 +199,7 @@ class ShopRepository
     /**
      * Get paginated products for the current category and selected filters.
      */
-    public function productsByCategory(?Category $category = null, array $filter = [])
+    public function productsByCategory(?Category $category = null, ?ShopFilterDto $filter = null)
     {
         $query = $this->buildProductsQuery($category, $filter);
 
@@ -372,7 +214,7 @@ class ShopRepository
      * Prepare brand filter options.
      * Counts products for each brand while excluding the brand filter itself.
      */
-    private function prepareBrandFilter(?Category $category = null, array $filter = [])
+    private function prepareBrandFilter(?Category $category, ShopFilterDto $filter): Collection
     {
         $query = $this->buildProductsQuery($category, $filter, 'brand');
 
@@ -396,13 +238,13 @@ class ShopRepository
      * Prepare min and max values for a range filter.
      * The current range filter is excluded to avoid locking its own values.
      */
-    private function prepareRangeFilter(?Category $category, array $filter, array $currentFilter): array
+    private function prepareRangeFilter(?Category $category, ShopFilterDto $filter, RangeFilterDto $currentFilter): array
     {
-        $query = $this->buildProductsQuery($category, $filter, $currentFilter['key']);
+        $query = $this->buildProductsQuery($category, $filter, $currentFilter->key);
 
         return [
-            'min' => (float)((clone $query)->min($currentFilter['key']) ?? 0),
-            'max' => (float)((clone $query)->max($currentFilter['key']) ?? 0),
+            'min' => (float)((clone $query)->min($currentFilter->key) ?? 0),
+            'max' => (float)((clone $query)->max($currentFilter->key) ?? 0),
         ];
     }
 
@@ -410,7 +252,7 @@ class ShopRepository
      * Build the base product query.
      * Applies category restriction and all selected filters except the excluded one.
      */
-    private function buildProductsQuery(?Category $category = null, array $filter = [], ?string $except = null)
+    private function buildProductsQuery(?Category $category = null, ?ShopFilterDto $filter = null, ?string $except = null)
     {
         $query = Product::visible()
             ->with('brand', 'category');
@@ -426,128 +268,13 @@ class ShopRepository
         /**
          * Apply all active filters except the one currently being recalculated.
          */
-        foreach ($filter as $item) {
-            if (!is_array($item)) {
-                continue;
-            }
-
-            if (($item['key'] ?? null) === $except) {
-                continue;
-            }
-
-            $this->applyFilter($query, $item);
+        if ($filter) {
+            $filter->toApplicable()
+                ->reject(fn(BaseFilterDto $item) => $item->key === $except)
+                ->each(fn(BaseFilterDto $item) => $item->apply($query));
         }
-
-        /*
-        foreach ($filter['parameters'] ?? [] as $item) {
-            if (($item['key'] ?? null) === $except) {
-                continue;
-            }
-
-            $this->applyFilter($query, $item);
-        }
-        */
-        //$this->applySorting($query, request('sort'));
 
         return $query;
-    }
-
-    /**
-     * Apply a single filter to the product query.
-     */
-    private function applyFilter($query, ?array $filter): void
-    {
-        if (!$filter) {
-            return;
-        }
-
-        $key = $filter['key'] ?? null;
-        $type = $filter['type'] ?? null;
-        $value = $filter['value'] ?? null;
-        /**
-         * Tree filters are used only for display and are not applied here.
-         */
-        if (!$key || !$type || $type === 'tree') {
-            return;
-        }
-        /**
-         * Apply range filter.
-         */
-        if ($type === 'range') {
-            $from = $filter['from'] ?? null;
-            $to = $filter['to'] ?? null;
-
-            if ($from !== null && $from !== '') {
-                $query->where($key, '>=', (float)$from);
-            }
-
-            if ($to !== null && $to !== '') {
-                $query->where($key, '<=', (float)$to);
-            }
-
-            return;
-        }
-        if ($type === 'search') {
-            if ($value !== null && trim($value) !== '') {
-                $query->where('title', 'like', '%' . trim($value) . '%');
-            }
-
-            return;
-        }
-
-        if ($type === 'sort') {
-            return;
-        }
-        if ($value === null || $value === '') {
-            return;
-        }
-        /**
-         * Apply multiple selected values.
-         */
-        if ($type === 'in') {
-            $ids = $this->stringToIntArray($value);
-
-            if (!empty($ids)) {
-                $query->whereIn($key === 'brand' ? 'brand_id' : $key, $ids);
-            }
-
-            return;
-        }
-        /**
-         * Apply exact value filters.
-         */
-        if ($type === 'equal' || $type === 'boolean') {
-            $query->where($key, (int)$value);
-            return;
-        }
-        /**
-         * Apply minimum value filter.
-         */
-        if ($type === 'min') {
-            $query->where($key, '>=', (float)$value);
-            return;
-        }
-        /**
-         * Apply maximum value filter.
-         */
-        if ($type === 'max') {
-            $query->where($key, '<=', (float)$value);
-            return;
-        }
-        /**
-         * Apply FIND_IN_SET filter for comma-separated database fields.
-         */
-        if ($type === 'find_in_set') {
-            $ids = $this->stringToIntArray($value);
-
-            if (!empty($ids)) {
-                $query->where(function ($q) use ($ids, $key) {
-                    foreach ($ids as $id) {
-                        $q->orWhereRaw("FIND_IN_SET(?, {$key})", [$id]);
-                    }
-                });
-            }
-        }
     }
 
     /**

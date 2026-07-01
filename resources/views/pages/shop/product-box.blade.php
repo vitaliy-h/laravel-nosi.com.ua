@@ -2,7 +2,7 @@
     <div class="product-box">
         <div class="product-thumb">
             @if($product->price2)
-                <span class="product-label product-label-sale">Sale</span>
+                <span class="product-label product-label-sale">{{ t('shop.sale') }}</span>
             @endif
 
             @if($product->img)
@@ -39,7 +39,7 @@
                         <input type="hidden" name="id" value="{{ $product->id }}">
                         <input type="hidden" name="count" value="1">
                         <input type="hidden" name="action" value="change_count">
-                        <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+                        <button type="submit" class="add-to-cart-btn">{{ t('shop.add_to_cart') }}</button>
                     </form>
                 </div>
             </div>
@@ -55,10 +55,10 @@
 
                 <div class="product-price">
                     @if($product->price2)
-                        <span class="original">${{ $product->price }}</span>
-                        <span class="sale">${{ $product->price2 }}</span>
+                        <span class="original">{{ t('shop.currency') }}{{ $product->price }}</span>
+                        <span class="sale">{{ t('shop.currency') }}{{ $product->price2 }}</span>
                     @elseif($product->price)
-                        <span>${{ $product->price }}</span>
+                        <span>{{ t('shop.currency') }}{{ $product->price }}</span>
                     @endif
                 </div>
             </div>
