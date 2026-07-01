@@ -5,7 +5,7 @@
                 <span class="product-label product-label-sale">Sale</span>
             @endif
 
-            @if($product->image)
+            @if($product->img)
                 <img
                     src="{{ $product->imageUrl('thumb') }}"
                     alt="{{ $product->title ?? $product->name }}"
@@ -33,9 +33,14 @@
 
                 </div>
 
-                {{-- todo: same note as in resources/views/pages/shop/product.blade.php:138 --}}
                 <div class="add-to-cart-container">
-                    <button type="button" class="add-to-cart-btn" data-id="{{$product->id}}" data-count="{{ session('basket.products.' . $product->id . '.count', 1) }}">Add to Cart</button>
+                    <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="id" value="{{ $product->id }}">
+                        <input type="hidden" name="count" value="1">
+                        <input type="hidden" name="action" value="change_count">
+                        <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
                 </div>
             </div>
         </div>

@@ -28,9 +28,15 @@
                     <span class="current-price">${{ $product->price }}</span>
                 @endif
             </div>
-            <button type="button" class="btn btn-add-to-cart add-to-cart-btn" data-id="{{ $product->id }}" data-count="{{ session('basket.products.' . $product->id . '.count', 1) }}">
-                <i class="bi bi-bag-plus me-2"></i>Add to Cart
-            </button>
+            <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
+                @csrf
+                <input type="hidden" name="id" value="{{ $product->id }}">
+                <input type="hidden" name="count" value="1">
+                <input type="hidden" name="action" value="change_count">
+                <button type="submit" class="btn btn-add-to-cart add-to-cart-btn">
+                    <i class="bi bi-bag-plus me-2"></i>Add to Cart
+                </button>
+            </form>
         </div>
     </div>
 </div>

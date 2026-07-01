@@ -20,14 +20,7 @@
 
                             <div class="image-zoom-container">
 
-                                <?php /*
-                                //If there's no image, we use this condition to avoid displaying the placeholder.
                                 @if($product->img)
-                                This option always returns an image. If no image is available, it returns a placeholder.
-                                if($product->image)
-                                */
-                                ?>
-                                @if($product->image)
                                     <img
                                         src="{{ $product->image }}"
                                         alt="{{ $product->title ?? $product->name }}"
@@ -97,51 +90,57 @@
                             <span>In Stock</span>
                         </div>
 
-                        <div class="product-quantity mb-4">
+                        <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="id" value="{{ $product->id }}">
+                            <input type="hidden" name="action" value="change_count">
 
-                            <h6 class="option-title">
-                                Quantity:
-                            </h6>
+                            <div class="product-quantity mb-4">
 
-                            <div class="quantity-selector">
+                                <h6 class="option-title">
+                                    Quantity:
+                                </h6>
 
-                                <button class="quantity-btn decrease">
-                                    <i class="bi bi-dash"></i>
-                                </button>
+                                <div class="quantity-selector">
 
-                                <input
-                                    type="number"
-                                    class="quantity-input"
-                                    value="{{ session('basket.products.' . $product->id . '.count', 1) }}"
-                                    min="1"
-                                >
+                                    <button type="button" class="quantity-btn decrease">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
 
-                                <button class="quantity-btn increase">
-                                    <i class="bi bi-plus"></i>
-                                </button>
+                                    <input
+                                        type="number"
+                                        name="count"
+                                        class="quantity-input"
+                                        value="{{ session('basket.products.' . $product->id . '.count', 1) }}"
+                                        min="1"
+                                    >
+
+                                    <button type="button" class="quantity-btn increase">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+
+                                </div>
 
                             </div>
 
-                        </div>
+                            <div class="product-actions">
 
-                        <div class="product-actions">
+                                <button type="submit" class="btn btn-primary add-to-cart-btn">
+                                    <i class="bi bi-cart-plus"></i>
+                                    Add to Cart
+                                </button>
 
-                            {{-- todo: consider a form handled via abc_response — on click, request hits the backend, adds product to basket, response opens the modal with BasketItemData passed from the backend. Less custom JS per button. --}}
-                            <button class="btn btn-primary add-to-cart-btn" data-id="{{ $product->id }}" data-count="{{ session('basket.products.' . $product->id . '.count', 1) }}">
-                                <i class="bi bi-cart-plus"></i>
-                                Add to Cart
-                            </button>
+                                <button type="button" class="btn btn-outline-primary buy-now-btn">
+                                    <i class="bi bi-lightning-fill"></i>
+                                    Buy Now
+                                </button>
 
-                            <button class="btn btn-outline-primary buy-now-btn">
-                                <i class="bi bi-lightning-fill"></i>
-                                Buy Now
-                            </button>
+                                <button type="button" class="btn btn-outline-secondary wishlist-btn">
+                                    <i class="bi bi-heart"></i>
+                                </button>
 
-                            <button class="btn btn-outline-secondary wishlist-btn">
-                                <i class="bi bi-heart"></i>
-                            </button>
-
-                        </div>
+                            </div>
+                        </form>
 
                         <div class="additional-info mt-4">
 

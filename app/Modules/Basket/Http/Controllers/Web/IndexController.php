@@ -84,7 +84,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
 // For example, change_count, change_count_modal and change_count_checkout share
 // the same basket mutation logic and differ only by the UI response actions.
 // A handler map may split this shared logic into multiple places and increase duplication.
-    public function api_change(ChangeBasketRequest $request)
+    public function ajax_basket_change(ChangeBasketRequest $request)
     {
         $productId = (int) $request->input('id');
         $count = max(1, (int) $request->input('count'));
@@ -177,7 +177,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
                 ];
 
                 $actions[] = [
-                    'selector' => 'cartModal',
+                    'selector' => '#cartModal',
                     'method' => 'modal',
                 ];
             }

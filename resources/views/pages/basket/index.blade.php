@@ -48,9 +48,15 @@
                                                             <div class="product-details">
                                                                 <h6 class="product-title">{{$product['name']}}</h6>
 
-                                                                <button class="remove-item js_remove_checkout_product" data-product="{{$product['id']}}" type="button">
-                                                                    <i class="bi bi-trash"></i> Remove
-                                                                </button>
+                                                                <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
+                                                                    @csrf
+                                                                    <input type="hidden" name="id" value="{{$product['id']}}">
+                                                                    <input type="hidden" name="count" value="0">
+                                                                    <input type="hidden" name="action" value="delete_checkout">
+                                                                    <button type="submit" class="remove-item">
+                                                                        <i class="bi bi-trash"></i> Remove
+                                                                    </button>
+                                                                </form>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -60,15 +66,20 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-12 col-lg-2 text-center">
-                                                        <div class="quantity-selector">
-                                                            <button class="quantity-btn decrease">
-                                                                <i class="bi bi-dash"></i>
-                                                            </button>
-                                                            <input type="number" class="quantity-input js_change_checkout_products" data-product="{{$product['id']}}" value="{{$product['count']}}" min="1">
-                                                            <button class="quantity-btn increase">
-                                                                <i class="bi bi-plus"></i>
-                                                            </button>
-                                                        </div>
+                                                        <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
+                                                            @csrf
+                                                            <input type="hidden" name="id" value="{{$product['id']}}">
+                                                            <input type="hidden" name="action" value="change_count_checkout">
+                                                            <div class="quantity-selector">
+                                                                <button type="button" class="quantity-btn decrease">
+                                                                    <i class="bi bi-dash"></i>
+                                                                </button>
+                                                                <input type="number" name="count" class="quantity-input js_change_checkout_products" data-product="{{$product['id']}}" value="{{$product['count']}}" min="1">
+                                                                <button type="button" class="quantity-btn increase">
+                                                                    <i class="bi bi-plus"></i>
+                                                                </button>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                     <div class="col-12 col-lg-2 text-center mt-3 mt-lg-0">
                                                         <div class="item-total">
