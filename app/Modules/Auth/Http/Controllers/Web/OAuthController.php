@@ -5,6 +5,7 @@ namespace App\Modules\Auth\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Modules\Auth\Actions\ConnectSocialProfileAction;
 use App\Modules\Auth\Actions\FindOrCreateSocialUserAction;
+use App\Modules\Basket\Actions\MergeBasketOnAuthAction;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -13,6 +14,7 @@ class OAuthController extends Controller
     public function __construct(
         private readonly FindOrCreateSocialUserAction $findOrCreate,
         private readonly ConnectSocialProfileAction   $connect,
+        private readonly MergeBasketOnAuthAction      $mergeBasket,
     ) {}
 
     public function redirect(string $provider): RedirectResponse
@@ -43,6 +45,8 @@ class OAuthController extends Controller
         $user = $this->findOrCreate->handle($provider, $socialUser);
 
         auth()->login($user, true);
+
+        $this->mergeBasket->handle($user);
 
         return redirect()->intended(module_url('profile', 'edit'));
     }

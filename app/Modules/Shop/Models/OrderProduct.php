@@ -17,15 +17,15 @@ class OrderProduct extends Model
         'shop_order_id',
         'shop_product_id',
         'product_name',
-        'product_sku',
-        'sale_price',
+        'product_article',
+        'selling_price',
         'quantity',
         'total',
     ];
 
     protected $casts = [
-        'sale_price' => 'decimal:2',
-        'quantity'   => 'decimal:2',
+        'selling_price' => 'decimal:2',
+        'quantity'   => 'integer',
         'total'      => 'decimal:2',
     ];
 

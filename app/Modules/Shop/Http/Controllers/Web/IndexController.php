@@ -3,6 +3,7 @@
 namespace App\Modules\Shop\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Basket\Actions\FindBasketAction;
 use App\Modules\Core\Dtos\BreadcrumbData;
 use App\Modules\Core\Enums\PageModule;
 use App\Modules\Core\Interfaces\ModuleIndexControllerInterface;
@@ -10,12 +11,14 @@ use App\Modules\Shop\Repository\ShopRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class IndexController extends Controller implements ModuleIndexControllerInterface
 {
-    public function __construct(private readonly ShopRepository $repository)
-    {
-    }
+    public function __construct(
+        private readonly ShopRepository $repository,
+        private readonly FindBasketAction $findBasket,
+    ) {}
 
     public function accessCheck(): RedirectResponse|Response|null
     {
@@ -106,11 +109,21 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         );
         $filter = $this->repository->prepareFilter($category, $request);
 
+        $basketQuantity = $this->basketQuantityFor($product->id) ?? 1;
+
         return view('pages.shop.product', compact(
             'category',
             'product',
             'filter',
-            'breadcrumbs'
+            'breadcrumbs',
+            'basketQuantity',
         ));
+    }
+
+    private function basketQuantityFor(int $productId): ?int
+    {
+        $basket = $this->findBasket->handle(Auth::user());
+
+        return $basket?->items()->where('shop_product_id', $productId)->value('quantity');
     }
 }

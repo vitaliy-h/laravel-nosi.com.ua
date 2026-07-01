@@ -10,6 +10,7 @@ return [
 
     // table names in the database
     'tables' => [
+        'baskets' => 'Baskets',
         'dashboard' => 'Dashboard',
         'feedback' => 'Feedback',
         'general' => 'General',
@@ -74,12 +75,12 @@ return [
         'phone' => 'Phone',
         'price' => 'Price',
         'product_name' => 'Product name',
-        'product_sku' => 'SKU',
+        'product_article' => 'Product Article',
         'price2' => 'Price2',
         'published_at' => 'Published at',
         'quantity' => 'Quantity',
         'rank' => 'Rank',
-        'sale_price' => 'Sale price',
+        'selling_price' => 'Selling price',
         'roles' => 'Roles',
         'short_text' => 'Short text',
         'slug' => 'Slug',
@@ -88,6 +89,7 @@ return [
         'title' => 'Title',
         'total_amount' => 'Total amount',
         'updated_at' => 'Updated at',
+        'uuid' => 'UUID',
         'url' => 'Url',
         'url_helper' => 'URL is managed by system for this page type',
         '_position_id' => 'Position Before',

@@ -22,39 +22,39 @@
                                 <div class="cart-header d-none d-lg-block">
                                     <div class="row align-items-center gy-4">
                                         <div class="col-lg-6">
-                                            <h5>Product</h5>
-                                            {{--todo text translation--}}
+                                            <h5>{{ t('shop.table_header_product') }}</h5>
                                         </div>
                                         <div class="col-lg-2 text-center">
-                                            <h5>Price</h5>
+                                            <h5>{{ t('shop.price') }}</h5>
                                         </div>
                                         <div class="col-lg-2 text-center">
-                                            <h5>Quantity</h5>
+                                            <h5>{{ t('shop.quantity') }}</h5>
                                         </div>
                                         <div class="col-lg-2 text-center">
-                                            <h5>Total</h5>
+                                            <h5>{{ t('shop.total') }}</h5>
                                         </div>
                                     </div>
                                 </div>
 
-                                        @foreach($basket['products'] as $product)
-                                            <div class="cart-item aos-init aos-animate checkout_item" data-product="{{$product['id']}}" data-aos="fade-up" data-aos-delay="100">
+                                        @foreach($basket->items as $item)
+                                            <div class="cart-item aos-init aos-animate checkout_item" data-product="{{$item->product->id}}" data-aos="fade-up" data-aos-delay="100">
                                                 <div class="row align-items-center gy-4">
                                                     <div class="col-lg-6 col-12 mb-3 mb-lg-0">
                                                         <div class="product-info d-flex align-items-center">
                                                             <div class="product-image">
-                                                                <img src="{{$product['img']}}" alt="Product" class="img-fluid" loading="lazy">
+                                                                <img src="{{$item->product->image}}" alt="Product" class="img-fluid" loading="lazy">
                                                             </div>
                                                             <div class="product-details">
-                                                                <h6 class="product-title">{{$product['name']}}</h6>
+                                                                <h6 class="product-title">{{$item->product_name}}</h6>
 
                                                                 <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
                                                                     @csrf
-                                                                    <input type="hidden" name="id" value="{{$product['id']}}">
+                                                                    <input type="hidden" name="id" value="{{$item->product->id}}">
                                                                     <input type="hidden" name="count" value="0">
-                                                                    <input type="hidden" name="action" value="delete_checkout">
+                                                                    <input type="hidden" name="basket_uuid" value="{{$basket->uuid}}">
+                                                                    <input type="hidden" name="action" value="{{ \App\Modules\Basket\Enums\BasketAction::DeleteCheckout->value }}">
                                                                     <button type="submit" class="remove-item">
-                                                                        <i class="bi bi-trash"></i> Remove
+                                                                        <i class="bi bi-trash"></i> {{ t('shop.remove') }}
                                                                     </button>
                                                                 </form>
                                                             </div>
@@ -62,19 +62,20 @@
                                                     </div>
                                                     <div class="col-12 col-lg-2 text-center">
                                                         <div class="price-tag">
-                                                            <span class="current-price">${{$product['price']}}</span>
+                                                            <span class="current-price">${{$item->selling_price}}</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-12 col-lg-2 text-center">
                                                         <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
                                                             @csrf
-                                                            <input type="hidden" name="id" value="{{$product['id']}}">
-                                                            <input type="hidden" name="action" value="change_count_checkout">
+                                                            <input type="hidden" name="id" value="{{$item->product->id}}">
+                                                            <input type="hidden" name="basket_uuid" value="{{$basket->uuid}}">
+                                                            <input type="hidden" name="action" value="{{ \App\Modules\Basket\Enums\BasketAction::ChangeCountCheckout->value }}">
                                                             <div class="quantity-selector">
                                                                 <button type="button" class="quantity-btn decrease">
                                                                     <i class="bi bi-dash"></i>
                                                                 </button>
-                                                                <input type="number" name="count" class="quantity-input js_change_checkout_products" data-product="{{$product['id']}}" value="{{$product['count']}}" min="1">
+                                                                <input type="number" name="count" class="quantity-input js_change_checkout_products" data-product="{{$item->product->id}}" value="{{$item->quantity}}" min="1">
                                                                 <button type="button" class="quantity-btn increase">
                                                                     <i class="bi bi-plus"></i>
                                                                 </button>
@@ -83,7 +84,7 @@
                                                     </div>
                                                     <div class="col-12 col-lg-2 text-center mt-3 mt-lg-0">
                                                         <div class="item-total">
-                                                            <span>$<span class="js_product_checkout_total_{{$product['id']}}">{{$product['sum']}}</span></span>
+                                                            <span>$<span class="js_product_checkout_total_{{$item->product->id}}">{{$item->total}}</span></span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -126,7 +127,7 @@
 
                         <div class="col-lg-4 aos-init aos-animate" data-aos="fade-up" data-aos-delay="300">
                             <div class="cart-summary">
-                                <h4 class="summary-title">Order Summary</h4>
+                                <h4 class="summary-title">{{ t('shop.order_summary') }}</h4>
                                 {{--
                                 <div class="summary-item">
                                     <span class="summary-label">Subtotal</span>
@@ -169,19 +170,19 @@
                                 --}}
 
                                 <div class="summary-total">
-                                    <span class="summary-label">Total</span>
-                                    <span class="summary-value ">$<span class="js_checkout_total">{{$basket['total']}}</span></span>
+                                    <span class="summary-label">{{ t('shop.total') }}</span>
+                                    <span class="summary-value ">$<span class="js_checkout_total">{{$basket->total_amount}}</span></span>
                                 </div>
 
                                 <div class="checkout-button">
                                     <a href="{{module_url('basket',['checkout'])}}" class="btn btn-accent w-100">
-                                        Proceed to Checkout <i class="bi bi-arrow-right"></i>
+                                        {{ t('shop.proceed_to_checkout') }} <i class="bi bi-arrow-right"></i>
                                     </a>
                                 </div>
 
                                 <div class="continue-shopping">
                                     <a href="{{module_url('shop')}}" class="btn btn-link w-100">
-                                        <i class="bi bi-arrow-left"></i> Continue Shopping
+                                        <i class="bi bi-arrow-left"></i> {{ t('shop.continue_shopping') }}
                                     </a>
                                 </div>
                                 {{--

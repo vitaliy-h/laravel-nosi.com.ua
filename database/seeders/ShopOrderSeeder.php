@@ -92,8 +92,8 @@ class ShopOrderSeeder extends Seeder
             $items = $chunk->take($config['item_count'])->map(fn(Product $product) => new OrderItemData(
                 shop_product_id: $product->id,
                 product_name: $product->title,
-                product_sku: $product->article ?? null,
-                sale_price: $product->price,
+                product_article: $product->article ?? null,
+                selling_price: $product->price,
                 quantity: fake()->randomElement([1, 2, 3]),
             ))->values()->all();
 

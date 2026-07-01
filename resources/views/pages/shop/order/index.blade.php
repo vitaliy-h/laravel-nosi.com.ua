@@ -40,8 +40,8 @@
                                                 <div class="product-title">{{ $item->product_name }}</div>
                                             @endif
                                             <div class="product-meta">
-                                                @if($item->product_sku)
-                                                    <span>{{ t('profile.sku') }}: {{ $item->product_sku }}</span>
+                                                @if($item->product_article)
+                                                    <span>{{ t('profile.sku') }}: {{ $item->product_article }}</span>
                                                 @endif
                                                 <span>{{ t('profile.qty') }}: {{ (int)$item->quantity }}</span>
                                             </div>

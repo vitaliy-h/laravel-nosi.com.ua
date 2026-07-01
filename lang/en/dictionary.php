@@ -72,6 +72,22 @@ return [
         'free_shipping'      => 'Free shipping on orders over $50',
         'return_policy'      => '30-day return policy',
         'warranty'           => '2-year warranty',
+
+        'main_page'      => 'Main Page',
+        'open_category'  => 'Open category',
+        'products_count' => ':count Products',
+        'badge_new'      => 'New',
+        'badge_sold_out' => 'Sold Out',
+        'remove'         => 'Remove',
+
+        'table_header_product' => 'Product',
+        'total'                => 'Total',
+        'order_summary'        => 'Order Summary',
+        'proceed_to_checkout'  => 'Proceed to Checkout',
+        'continue_shopping'    => 'Continue Shopping',
+
+        'empty_basket_title' => 'Your shopping cart is currently empty.',
+        'empty_basket_text'  => 'You haven\'t added any products yet. Browse our catalog and choose the items you need. Once you add products to your cart, they will appear here and be ready for checkout.',
     ],
 
     'impersonation' => [

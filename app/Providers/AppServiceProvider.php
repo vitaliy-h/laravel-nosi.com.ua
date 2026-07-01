@@ -8,6 +8,8 @@ use App\Modules\Core\Repositories\PagesRepository;
 use App\Modules\Notification\Services\LetterTemplateService;
 use App\Modules\Notification\Services\SmsTemplateService;
 use App\Modules\Core\Services\UrlHelper;
+use App\Modules\Basket\Models\BasketProduct;
+use App\Modules\Basket\Observers\BasketProductObserver;
 use App\Modules\Shop\Models\Order;
 use App\Modules\Shop\Models\OrderProduct;
 use App\Modules\Shop\Observers\OrderObserver;
@@ -50,6 +52,7 @@ class AppServiceProvider extends ServiceProvider
         Page::observe(PageObserver::class);
         Order::observe(OrderObserver::class);
         OrderProduct::observe(OrderProductObserver::class);
+        BasketProduct::observe(BasketProductObserver::class);
         $this->mergeSocialConfig();
     }
 

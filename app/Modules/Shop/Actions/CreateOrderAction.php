@@ -24,10 +24,10 @@ readonly class CreateOrderAction
             $order->items()->create([
                 'shop_product_id' => $item->shop_product_id,
                 'product_name'    => $item->product_name,
-                'product_sku'     => $item->product_sku,
-                'sale_price'      => $item->sale_price,
+                'product_article'     => $item->product_article,
+                'selling_price'      => $item->selling_price,
                 'quantity'        => $item->quantity,
-                'total'           => round($item->sale_price * $item->quantity, 2),
+                'total'           => round($item->selling_price * $item->quantity, 2),
             ]);
         }
 

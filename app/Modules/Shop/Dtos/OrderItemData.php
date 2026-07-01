@@ -9,8 +9,8 @@ class OrderItemData extends Data
     public function __construct(
         public readonly int $shop_product_id,
         public readonly string $product_name,
-        public readonly ?string $product_sku,
-        public readonly float $sale_price,
-        public readonly float $quantity,
+        public readonly ?string $product_article,
+        public readonly float $selling_price,
+        public readonly int $quantity,
     ) {}
 }

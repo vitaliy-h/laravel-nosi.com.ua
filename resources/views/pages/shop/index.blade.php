@@ -36,7 +36,7 @@
                             @endif
 
                             <a href="{{ module_url('shop',[$category->slug]) }}" class="btn btn-primary">
-                                Open category
+                                {{ t('shop.open_category') }}
                             </a>
                         </div>
                     </div>

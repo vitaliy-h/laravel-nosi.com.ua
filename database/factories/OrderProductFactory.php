@@ -26,8 +26,8 @@ class OrderProductFactory extends Factory
             'shop_order_id' => Order::factory(),
             'shop_product_id' => Product::factory(),
             'product_name' => fake()->words(2, true),
-            'product_sku' => fake()->bothify('SKU-####'),
-            'sale_price' => fake()->randomFloat(2, 1, 500),
+            'product_article' => fake()->bothify('SKU-####'),
+            'selling_price' => fake()->randomFloat(2, 1, 500),
             'quantity' => fake()->numberBetween(1, 5),
         ];
     }

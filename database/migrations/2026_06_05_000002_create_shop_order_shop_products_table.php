@@ -13,9 +13,9 @@ return new class extends Migration
             $table->foreignId('shop_order_id')->constrained('shop_orders');
             $table->foreignId('shop_product_id')->constrained('shop_products');
             $table->string('product_name')->nullable();
-            $table->string('product_sku')->nullable();
-            $table->decimal('sale_price', 10, 2)->nullable();
-            $table->decimal('quantity', 10, 2)->nullable();
+            $table->string('product_article')->nullable();
+            $table->decimal('selling_price', 10, 2)->nullable();
+            $table->unsignedInteger('quantity')->nullable();
             $table->decimal('total', 10, 2)->nullable();
             $table->timestamps();
         });

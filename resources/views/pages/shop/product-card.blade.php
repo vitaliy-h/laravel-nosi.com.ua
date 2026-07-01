@@ -4,7 +4,7 @@
         <div class="product-image">
             <img src="{{ $product->imageUrl('thumb') }}" class="img-fluid default-image" alt="{{ $product->title }}" loading="lazy">
             <img src="{{ $product->imageUrl('thumb') }}" class="img-fluid hover-image" alt="{{ $product->title }}" loading="lazy">
-            @php $badge = [['class' => 'bg-accent', 'label' => 'New'], ['class' => 'bg-sale', 'label' => 'Sale'], ['class' => 'bg-sold-out', 'label' => 'Sold Out']][array_rand([0,1,2])]; @endphp
+            @php $badge = [['class' => 'bg-accent', 'label' => t('shop.badge_new')], ['class' => 'bg-sale', 'label' => t('shop.sale')], ['class' => 'bg-sold-out', 'label' => t('shop.badge_sold_out')]][array_rand([0,1,2])]; @endphp
             <div class="product-tags">
                 <span class="badge {{ $badge['class'] }}">{{ $badge['label'] }}</span>
             </div>
@@ -32,9 +32,9 @@
                 @csrf
                 <input type="hidden" name="id" value="{{ $product->id }}">
                 <input type="hidden" name="count" value="1">
-                <input type="hidden" name="action" value="change_count">
+                <input type="hidden" name="action" value="{{ \App\Modules\Basket\Enums\BasketAction::ChangeCount->value }}">
                 <button type="submit" class="btn btn-add-to-cart add-to-cart-btn">
-                    <i class="bi bi-bag-plus me-2"></i>Add to Cart
+                    <i class="bi bi-bag-plus me-2"></i>{{ t('shop.add_to_cart') }}
                 </button>
             </form>
         </div>

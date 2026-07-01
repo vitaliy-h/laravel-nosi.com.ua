@@ -6,8 +6,8 @@
     @include('blocks.page_title', [
     'title' => $category->title,
     'items' => array_merge([
-        ['name' => 'Main Page', 'url' => module_url('index')],
-        ['name' => $page->title ?? 'Shop', 'url' => module_url('shop')],
+        ['name' => t('shop.main_page'), 'url' => module_url('index')],
+        ['name' => $page->title ?? t('shop.categories'), 'url' => module_url('shop')],
     ], array_slice($breadcrumbs, 0, -1)),
 ])
 
@@ -43,7 +43,7 @@
                             @endif
 
                             <a href="{{ module_url('shop',[$item->slug]) }}" class="btn btn-primary">
-                                Open category
+                                {{ t('shop.open_category') }}
                             </a>
                         </div>
                     </div>

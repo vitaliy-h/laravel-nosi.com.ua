@@ -52,7 +52,7 @@
                                     <img src="{{ Storage::url($category->img) }}" alt="{{ $category->title }}" class="img-fluid">
                                 </div>
                                 <h3 class="category-title">{{ $category->title }}</h3>
-                                <p class="category-count">{{ $category->products_count }} Products</p>
+                                <p class="category-count">{{ t('shop.products_count', ['count' => $category->products_count]) }}</p>
                                 <a href="{{ module_url('shop', [$category->slug]) }}" class="stretched-link"></a>
                             </div>
                         </div>

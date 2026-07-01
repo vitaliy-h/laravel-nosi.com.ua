@@ -93,7 +93,7 @@
                         <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
                             @csrf
                             <input type="hidden" name="id" value="{{ $product->id }}">
-                            <input type="hidden" name="action" value="change_count">
+                            <input type="hidden" name="action" value="{{ \App\Modules\Basket\Enums\BasketAction::ChangeCount->value }}">
 
                             <div class="product-quantity mb-4">
 
@@ -111,7 +111,7 @@
                                         type="number"
                                         name="count"
                                         class="quantity-input"
-                                        value="{{ session('basket.products.' . $product->id . '.count', 1) }}"
+                                        value="{{ $basketQuantity }}"
                                         min="1"
                                     >
 

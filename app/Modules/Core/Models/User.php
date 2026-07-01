@@ -45,6 +45,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(SocialProfile::class);
     }
 
+    public function basket(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(\App\Modules\Basket\Models\Basket::class);
+    }
+
     public function getFormattedNameAttribute()
     {
         return $this->name;
