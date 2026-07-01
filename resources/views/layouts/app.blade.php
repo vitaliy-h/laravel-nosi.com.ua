@@ -32,6 +32,9 @@
     <link href="/demo/assets/css/main.css?v={{ file_exists(public_path('demo/assets/css/main.css')) ? filemtime(public_path('demo/assets/css/main.css')) : time() }}" rel="stylesheet">
     <link href="{{asset('css/static/static.css')}}?v={{ file_exists(public_path('css/static/static.css')) ? filemtime(public_path('css/static/static.css')) : time() }}" rel="stylesheet">
 
+    <!-- App CSS File (our styles on top of the template) -->
+    <link href="{{asset('assets/css/app.css')}}?v={{ file_exists(public_path('assets/css/app.css')) ? filemtime(public_path('assets/css/app.css')) : time() }}" rel="stylesheet">
+
     {{-- Global styles --}}
     @include('components.head')
 
@@ -67,6 +70,9 @@
 
 <!-- abc-response -->
 <script src="/assets/js/abc-response.js?2"></script>
+
+<!-- App JS File (our scripts on top of the template) -->
+<script src="{{asset('assets/js/app.js')}}?v={{ file_exists(public_path('assets/js/app.js')) ? filemtime(public_path('assets/js/app.js')) : time() }}"></script>
 
 {{-- Global scripts --}}
 @include('components.scripts')

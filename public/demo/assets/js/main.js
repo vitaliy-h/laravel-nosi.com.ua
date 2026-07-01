@@ -162,9 +162,35 @@
    */
 
   function ecommerceCartTools() {
-    // Manual quantity inputs
+    // Get all quantity buttons and inputs directly
+    const decreaseButtons = document.querySelectorAll('.quantity-btn.decrease');
+    const increaseButtons = document.querySelectorAll('.quantity-btn.increase');
     const quantityInputs = document.querySelectorAll('.quantity-input');
+    const removeButtons = document.querySelectorAll('.remove-item');
 
+    // Decrease quantity buttons
+    decreaseButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const quantityInput = btn.closest('.quantity-selector').querySelector('.quantity-input');
+        let currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) {
+          quantityInput.value = currentValue - 1;
+        }
+      });
+    });
+
+    // Increase quantity buttons
+    increaseButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const quantityInput = btn.closest('.quantity-selector').querySelector('.quantity-input');
+        let currentValue = parseInt(quantityInput.value);
+        if (currentValue < parseInt(quantityInput.getAttribute('max'))) {
+          quantityInput.value = currentValue + 1;
+        }
+      });
+    });
+
+    // Manual quantity inputs
     quantityInputs.forEach(input => {
       input.addEventListener('change', function() {
         let currentValue = parseInt(input.value);
@@ -174,9 +200,16 @@
         // Validate input
         if (isNaN(currentValue) || currentValue < min) {
           input.value = min;
-        } else if (!isNaN(max) && currentValue > max) {
+        } else if (currentValue > max) {
           input.value = max;
         }
+      });
+    });
+
+    // Remove item buttons
+    removeButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        btn.closest('.cart-item').remove();
       });
     });
   }
@@ -928,32 +961,3 @@
   });
 
 })();
-
-//change products count
-document.addEventListener('click', function (e) {
-    let btn = e.target.closest('.quantity-btn');
-    if (!btn) return;
-
-    let wrap = btn.closest('.quantity-selector');
-    let input = wrap.querySelector('.quantity-input');
-
-    let count = parseInt(input.value) || 1;
-
-    if (btn.classList.contains('increase')) count++;
-    if (btn.classList.contains('decrease')) count--;
-
-    if (count < 1) count = 1;
-
-    input.value = count;
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-});
-
-
-document.addEventListener('change', function (e) {
-    if (e.target.matches('#cartModal .quantity-input, .checkout_item .js_change_checkout_products')) {
-        const form = e.target.closest('form[data-abcr]');
-        if (form) form.requestSubmit();
-    }
-});
-
-

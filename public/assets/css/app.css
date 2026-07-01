@@ -1,0 +1,547 @@
+/**
+ * Project-specific styles on top of the /demo template.
+ * Keep /demo/assets/css/main.css untouched (vendor template) — add all our
+ * customizations here so template updates don't wipe out our changes.
+ */
+
+/* order status badges: extra statuses beyond the template's shipped/delivered */
+.account .content-area .orders-grid .order-card .order-content .order-info .info-row .status.unpaid {
+  background-color: #ecfeff;
+  color: #06b6d4;
+}
+
+.account .content-area .orders-grid .order-card .order-content .order-info .info-row .status.paid {
+  background-color: #f0fdf4;
+  color: #22c55e;
+}
+
+/* order footer buttons: markup uses .btn (links) instead of the template's <button> */
+.account .content-area .orders-grid .order-card .order-footer .btn {
+  flex: 1;
+  height: 40px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.account .content-area .orders-grid .order-card .order-footer a.btn {
+  padding: 9px;
+}
+
+.account .content-area .orders-grid .order-card .order-footer .btn-track {
+  background-color: var(--accent-color);
+  color: var(--contrast-color);
+  border: none;
+}
+
+.account .content-area .orders-grid .order-card .order-footer .btn-track:hover {
+  background-color: color-mix(in srgb, var(--accent-color), transparent 15%);
+}
+
+.account .content-area .orders-grid .order-card .order-footer .btn-details {
+  background-color: color-mix(in srgb, var(--accent-color), transparent 92%);
+  color: var(--accent-color);
+  border: none;
+}
+
+.account .content-area .orders-grid .order-card .order-footer .btn-details:hover {
+  background-color: color-mix(in srgb, var(--accent-color), transparent 88%);
+}
+
+.account .content-area .orders-grid .order-card .order-footer .btn-review {
+  background-color: #f0fdf4;
+  color: #22c55e;
+  border: none;
+}
+
+.account .content-area .orders-grid .order-card .order-footer .btn-review:hover {
+  background-color: #dcfce7;
+}
+
+.account .content-area .orders-grid .order-card .order-footer .btn-reorder {
+  background-color: #fef2f2;
+  color: #ef4444;
+  border: none;
+}
+
+.account .content-area .orders-grid .order-card .order-footer .btn-reorder:hover {
+  background-color: #fee2e2;
+}
+
+/* social account connect/disconnect buttons (settings page) */
+.account .settings-content .preferences-list .preference-item .btn-social-connect {
+  height: 40px;
+  padding: 0 20px;
+  background-color: var(--accent-color);
+  color: var(--contrast-color);
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.account .settings-content .preferences-list .preference-item .btn-social-connect:hover {
+  background-color: color-mix(in srgb, var(--accent-color), transparent 15%);
+  color: var(--contrast-color);
+}
+
+.account .settings-content .preferences-list .preference-item .btn-social-disconnect {
+  height: 40px;
+  padding: 0 20px;
+  background-color: transparent;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.account .settings-content .preferences-list .preference-item .btn-social-disconnect:hover {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+/* social login buttons (login/register page) */
+.login-register .social-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  color: color-mix(in srgb, var(--default-color), transparent 50%);
+  font-size: 0.875rem;
+}
+
+.login-register .social-divider::before,
+.login-register .social-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.login-register .social-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.login-register .btn-social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: var(--surface-color);
+  color: var(--default-color);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.login-register .btn-social:hover {
+  background-color: color-mix(in srgb, var(--default-color), transparent 94%);
+  border-color: rgba(0, 0, 0, 0.2);
+  color: var(--default-color);
+  text-decoration: none;
+}
+
+.login-register .btn-social i {
+  font-size: 1.1rem;
+}
+
+.login-register .btn-social.btn-google i { color: #EA4335; }
+.login-register .btn-social.btn-facebook i { color: #1877F2; }
+.login-register .btn-social.btn-telegram i { color: #2CA5E0; }
+
+/* shop sidebar: highlight active category/subcategory */
+.product-categories-widget .category-link.active,
+.product-categories-widget .subcategory-link.active {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+/* generic site modal (mini-cart, confirmations, etc.) */
+.site-modal[hidden] {
+  display: none;
+}
+
+.site-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+}
+
+.site-modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.site-modal__dialog {
+  position: relative;
+  z-index: 1;
+  width: calc(100% - 30px);
+  max-width: 440px;
+  margin: 10vh auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.site-modal__close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  border: 0;
+  background: none;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.site-modal__title {
+  padding-right: 30px;
+  margin-bottom: 12px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.site-modal__content {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.site-modal__content p {
+  margin: 0;
+}
+
+.site-modal__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.site-modal__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #f5f5f5;
+  color: #222;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.site-modal__button--primary {
+  background: #222;
+  border-color: #222;
+  color: #fff;
+}
+
+.site-modal--sm .site-modal__dialog {
+  max-width: 320px;
+}
+
+.site-modal--md .site-modal__dialog {
+  max-width: 440px;
+}
+
+.site-modal--lg .site-modal__dialog {
+  max-width: 700px;
+}
+
+.site-modal--xl .site-modal__dialog {
+  max-width: 960px;
+}
+
+/* cart items inside the mini-cart modal */
+.site-modal .cart-item {
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+  background-color: color-mix(in srgb, var(--surface-color), transparent 50%);
+}
+
+.site-modal .cart-item .product-info .product-image {
+  width: 5.5rem;
+  height: 5.5rem;
+  min-width: 5.5rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  margin-right: 1.25rem;
+  background-color: var(--surface-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 92%);
+  transition: transform 0.3s ease;
+}
+
+.site-modal .cart-item .product-info .product-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.site-modal .cart-item .product-info .product-image:hover img {
+  transform: scale(1.05);
+}
+
+@media (max-width: 767.98px) {
+  .site-modal .cart-item .product-info .product-image {
+    width: 4.5rem;
+    height: 4.5rem;
+    min-width: 4.5rem;
+  }
+}
+
+.site-modal .cart-item .product-info .product-details {
+  flex: 1;
+}
+
+.site-modal .cart-item .product-info .product-details .product-title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+  color: var(--heading-color);
+  transition: color 0.3s ease;
+}
+
+.site-modal .cart-item .product-info .product-details .product-title:hover {
+  color: var(--accent-color);
+}
+
+.site-modal .cart-item .product-info .product-details .product-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, var(--default-color), transparent 30%);
+}
+
+.site-modal .cart-item .product-info .product-details .product-meta span {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  background-color: color-mix(in srgb, var(--background-color), transparent 50%);
+  border-radius: 0.375rem;
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+}
+
+.site-modal .cart-item .product-info .product-details .remove-item {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, var(--default-color), transparent 30%);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.site-modal .cart-item .product-info .product-details .remove-item::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: #dc3545;
+  transition: width 0.3s ease;
+}
+
+.site-modal .cart-item .product-info .product-details .remove-item:hover {
+  color: #dc3545;
+}
+
+.site-modal .cart-item .product-info .product-details .remove-item:hover::after {
+  width: 100%;
+}
+
+.site-modal .cart-item .product-info .product-details .remove-item i {
+  font-size: 0.875rem;
+  transition: transform 0.3s ease;
+}
+
+.site-modal .cart-item .product-info .product-details .remove-item:hover i {
+  transform: translateX(-2px);
+}
+
+.site-modal .cart-item .price-tag .current-price {
+  font-weight: 600;
+  color: var(--heading-color);
+  font-size: 1.05rem;
+}
+
+.site-modal .cart-item .price-tag .original-price {
+  text-decoration: line-through;
+  color: color-mix(in srgb, var(--default-color), transparent 40%);
+  font-size: 0.875rem;
+  margin-left: 0.5rem;
+}
+
+.site-modal .cart-item .quantity-selector {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 2rem;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--background-color), transparent 50%);
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 85%);
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+}
+
+.site-modal .cart-item .quantity-selector:hover {
+  border-color: color-mix(in srgb, var(--accent-color), transparent 70%);
+}
+
+.site-modal .cart-item .quantity-selector .quantity-btn {
+  background: none;
+  border: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--default-color);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.site-modal .cart-item .quantity-selector .quantity-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: color-mix(in srgb, var(--accent-color), transparent 90%);
+  transform: scale(0);
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  z-index: -1;
+}
+
+.site-modal .cart-item .quantity-selector .quantity-btn:hover {
+  color: var(--accent-color);
+}
+
+.site-modal .cart-item .quantity-selector .quantity-btn:hover::before {
+  transform: scale(1);
+}
+
+.site-modal .cart-item .quantity-selector .quantity-btn:active {
+  transform: scale(0.95);
+}
+
+.site-modal .cart-item .quantity-selector .quantity-input {
+  width: 2.5rem;
+  text-align: center;
+  border: none;
+  font-size: 0.9375rem;
+  color: var(--heading-color);
+  font-weight: 600;
+  padding: 0.25rem 0;
+  background-color: transparent;
+}
+
+.site-modal .cart-item .quantity-selector .quantity-input:focus {
+  outline: none;
+}
+
+.site-modal .cart-item .quantity-selector .quantity-input::-webkit-inner-spin-button,
+.site-modal .cart-item .quantity-selector .quantity-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.site-modal .cart-item .item-total {
+  font-weight: 700;
+  color: var(--heading-color);
+  font-size: 1.125rem;
+}
+
+.site-modal .cart-item .item-total span {
+  position: relative;
+  display: inline-block;
+}
+
+.site-modal .cart-item .item-total span::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-color), transparent);
+  border-radius: 1px;
+}
+
+@media (max-width: 767.98px) {
+  .site-modal .cart-item {
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* empty basket state */
+.empty_basket {
+  margin-top: 45px;
+}
+
+.empty_basket .continue-shopping {
+  margin-bottom: 1.5rem;
+}
+
+.empty_basket .continue-shopping .btn-link {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  transition: all 0.3s ease;
+  border-radius: 2rem;
+  background-color: color-mix(in srgb, var(--accent-color), transparent 95%);
+}
+
+.empty_basket .continue-shopping .btn-link i {
+  transition: transform 0.3s ease;
+}
+
+.empty_basket .continue-shopping .btn-link:hover {
+  background-color: color-mix(in srgb, var(--accent-color), transparent 90%);
+  color: color-mix(in srgb, var(--accent-color), transparent 25%);
+}
+
+.empty_basket .continue-shopping .btn-link:hover i {
+  transform: translateX(-0.25rem);
+}
