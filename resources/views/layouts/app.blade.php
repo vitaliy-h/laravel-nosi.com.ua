@@ -29,8 +29,8 @@
     <link href="/demo/vendors/drift-zoom/drift-basic.css" rel="stylesheet">
 
     <!-- Main CSS File -->
-    <link href="/demo/assets/css/main.css" rel="stylesheet">
-    <link href="{{asset('css/static/static.css')}}" rel="stylesheet">
+    <link href="/demo/assets/css/main.css?v={{ file_exists(public_path('demo/assets/css/main.css')) ? filemtime(public_path('demo/assets/css/main.css')) : time() }}" rel="stylesheet">
+    <link href="{{asset('css/static/static.css')}}?v={{ file_exists(public_path('css/static/static.css')) ? filemtime(public_path('css/static/static.css')) : time() }}" rel="stylesheet">
 
     {{-- Global styles --}}
     @include('components.head')
@@ -63,7 +63,7 @@
 <script src="/demo/vendors/purecounter/purecounter_vanilla.js"></script>
 
 <!-- Main JS File -->
-<script src="/demo/assets/js/main.js"></script>
+<script src="/demo/assets/js/main.js?v={{ file_exists(public_path('demo/assets/js/main.js')) ? filemtime(public_path('demo/assets/js/main.js')) : time() }}"></script>
 
 <!-- abc-response -->
 <script src="/assets/js/abc-response.js?2"></script>
