@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Shop;
 
-use App\Modules\Shop\Models\Order;
-use App\Modules\Shop\Repository\OrderRepository;
+use App\Modules\Orders\Models\Order;
+use App\Modules\Orders\Repository\OrderRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

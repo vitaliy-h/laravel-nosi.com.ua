@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Modules\Shop\Services;
+namespace App\Modules\Orders\Services;
 
-use App\Modules\Shop\Enums\PaymentStatusEnum;
-use App\Modules\Shop\Models\Order;
+use App\Modules\Orders\Enums\PaymentStatusEnum;
+use App\Modules\Orders\Models\Order;
 
 readonly class OrderActions
 {

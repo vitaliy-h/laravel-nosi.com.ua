@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Shop;
 
-use App\Modules\Shop\Models\Order;
+use App\Modules\Orders\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

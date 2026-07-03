@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Shop\Enums;
+namespace App\Modules\Orders\Enums;
 
 use App\Modules\Core\Traits\Enums\HasEnumHelpers;
 

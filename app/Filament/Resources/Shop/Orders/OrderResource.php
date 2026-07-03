@@ -4,9 +4,9 @@ namespace App\Filament\Resources\Shop\Orders;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Shop\Orders\Pages\ManageOrders;
-use App\Modules\Shop\Enums\PaymentStatusEnum;
-use App\Modules\Shop\Enums\PaymentTypeEnum;
-use App\Modules\Shop\Models\Order;
+use App\Modules\Orders\Enums\PaymentStatusEnum;
+use App\Modules\Orders\Enums\PaymentTypeEnum;
+use App\Modules\Orders\Models\Order;
 use App\Modules\Shop\Models\Product;
 use BackedEnum;
 use Filament\Actions\Action;

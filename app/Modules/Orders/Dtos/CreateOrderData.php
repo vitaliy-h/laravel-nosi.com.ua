@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Modules\Shop\Dtos;
+namespace App\Modules\Orders\Dtos;
 
-use App\Modules\Shop\Enums\PaymentStatusEnum;
-use App\Modules\Shop\Enums\PaymentTypeEnum;
+use App\Modules\Orders\Enums\PaymentStatusEnum;
+use App\Modules\Orders\Enums\PaymentTypeEnum;
 use Spatie\LaravelData\Data;
 
 class CreateOrderData extends Data

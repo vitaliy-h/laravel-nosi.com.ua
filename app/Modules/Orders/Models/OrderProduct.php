@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Shop\Models;
+namespace App\Modules\Orders\Models;
 
 use Database\Factories\OrderProductFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -36,7 +36,7 @@ class OrderProduct extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class, 'shop_product_id');
+        return $this->belongsTo(\App\Modules\Shop\Models\Product::class, 'shop_product_id');
     }
 
     public function getTotalFormattedAttribute(): string

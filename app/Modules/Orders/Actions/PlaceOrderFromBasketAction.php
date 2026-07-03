@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Modules\Shop\Actions;
+namespace App\Modules\Orders\Actions;
 
 use App\Modules\Basket\Models\Basket;
-use App\Modules\Shop\Dtos\CreateOrderData;
-use App\Modules\Shop\Dtos\OrderItemData;
-use App\Modules\Shop\Models\Order;
+use App\Modules\Orders\Dtos\CreateOrderData;
+use App\Modules\Orders\Dtos\OrderItemData;
+use App\Modules\Orders\Models\Order;
 
 readonly class PlaceOrderFromBasketAction
 {

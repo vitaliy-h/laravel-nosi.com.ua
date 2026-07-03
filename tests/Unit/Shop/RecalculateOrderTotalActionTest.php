@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Shop;
 
-use App\Modules\Shop\Actions\RecalculateOrderTotalAction;
-use App\Modules\Shop\Models\Order;
-use App\Modules\Shop\Models\OrderProduct;
+use App\Modules\Orders\Actions\RecalculateOrderTotalAction;
+use App\Modules\Orders\Models\Order;
+use App\Modules\Orders\Models\OrderProduct;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

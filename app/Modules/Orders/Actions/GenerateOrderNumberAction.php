@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Modules\Shop\Actions;
+namespace App\Modules\Orders\Actions;
 
-use App\Modules\Shop\Models\Order;
+use App\Modules\Orders\Models\Order;
 
 class GenerateOrderNumberAction
 {

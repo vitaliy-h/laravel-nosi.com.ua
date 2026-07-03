@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Shop\Dtos;
+namespace App\Modules\Orders\Dtos;
 
 use Spatie\LaravelData\Data;
 

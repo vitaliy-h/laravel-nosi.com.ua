@@ -3,7 +3,7 @@
 namespace App\Modules\Profile\Repository;
 
 use App\Modules\Profile\Dtos\OrderFilterData;
-use App\Modules\Shop\Models\Order;
+use App\Modules\Orders\Models\Order;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class OrderRepository

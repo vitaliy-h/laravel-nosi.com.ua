@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Modules\Shop\Observers;
+namespace App\Modules\Orders\Observers;
 
-use App\Modules\Shop\Actions\RecalculateOrderTotalAction;
-use App\Modules\Shop\Models\OrderProduct;
+use App\Modules\Orders\Actions\RecalculateOrderTotalAction;
+use App\Modules\Orders\Models\OrderProduct;
 
 readonly class OrderProductObserver
 {

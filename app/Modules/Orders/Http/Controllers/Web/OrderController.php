@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Modules\Shop\Http\Controllers\Web;
+namespace App\Modules\Orders\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Basket\Models\Basket;
 use App\Modules\Core\Services\MenuService;
-use App\Modules\Shop\Actions\PlaceOrderFromBasketAction;
-use App\Modules\Shop\Repository\OrderRepository;
+use App\Modules\Orders\Actions\PlaceOrderFromBasketAction;
+use App\Modules\Orders\Repository\OrderRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -14,8 +14,8 @@ use Illuminate\View\View;
 class OrderController extends Controller
 {
     public function __construct(
-        private readonly OrderRepository         $repository,
-        private readonly MenuService             $menu,
+        private readonly OrderRepository            $repository,
+        private readonly MenuService                $menu,
         private readonly PlaceOrderFromBasketAction $placeOrder,
     ) {}
 

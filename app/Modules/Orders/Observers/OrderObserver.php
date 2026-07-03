@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Modules\Shop\Observers;
+namespace App\Modules\Orders\Observers;
 
-use App\Modules\Shop\Actions\GenerateOrderNumberAction;
-use App\Modules\Shop\Models\Order;
+use App\Modules\Orders\Actions\GenerateOrderNumberAction;
+use App\Modules\Orders\Models\Order;
 
 readonly class OrderObserver
 {
     public function __construct(
         private GenerateOrderNumberAction $generateOrderNumber,
-    )
-    {
-    }
+    ) {}
 
     public function created(Order $order): void
     {

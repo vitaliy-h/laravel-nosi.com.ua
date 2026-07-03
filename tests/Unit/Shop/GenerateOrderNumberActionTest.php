@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Shop;
 
-use App\Modules\Shop\Actions\GenerateOrderNumberAction;
-use App\Modules\Shop\Models\Order;
+use App\Modules\Orders\Actions\GenerateOrderNumberAction;
+use App\Modules\Orders\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

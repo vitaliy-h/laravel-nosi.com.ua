@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Modules\Shop\Repository;
+namespace App\Modules\Orders\Repository;
 
-use App\Modules\Shop\Models\Order;
+use App\Modules\Orders\Models\Order;
 
 class OrderRepository
 {

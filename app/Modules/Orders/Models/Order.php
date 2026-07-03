@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Modules\Shop\Models;
+namespace App\Modules\Orders\Models;
 
 use App\Modules\Core\Models\User;
 use App\Modules\Core\Traits\Models\CascadesDeletes;
 use App\Modules\Core\Traits\Models\HasUuid;
-use App\Modules\Shop\Enums\PaymentStatusEnum;
-use App\Modules\Shop\Enums\PaymentTypeEnum;
-use App\Modules\Shop\Services\OrderActions;
+use App\Modules\Orders\Enums\PaymentStatusEnum;
+use App\Modules\Orders\Enums\PaymentTypeEnum;
+use App\Modules\Orders\Services\OrderActions;
 use Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
