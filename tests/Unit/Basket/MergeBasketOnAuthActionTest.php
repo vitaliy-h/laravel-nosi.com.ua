@@ -75,13 +75,13 @@ class MergeBasketOnAuthActionTest extends TestCase
 
         $this->assertModelMissing($sessionBasket);
         $this->assertSame(2, $userBasket->items()->count());
-        $this->assertDatabaseHas('basket_shop_products', [
+        $this->assertDatabaseHas('shop_basket_products', [
             'basket_id' => $userBasket->id,
             'shop_product_id' => $sharedProduct->id,
             'quantity' => 3,
             'total' => 30,
         ]);
-        $this->assertDatabaseHas('basket_shop_products', [
+        $this->assertDatabaseHas('shop_basket_products', [
             'basket_id' => $userBasket->id,
             'shop_product_id' => $uniqueItem->shop_product_id,
         ]);

@@ -23,7 +23,7 @@ class ForkBasketActionTest extends TestCase
 
         $this->assertNotSame($source->id, $result->id);
         $this->assertNull($result->user_id);
-        $this->assertDatabaseCount('basket_shop_products', 4);
+        $this->assertDatabaseCount('shop_basket_products', 4);
         $this->assertSame(2, $result->items()->count());
         $this->assertSame($result->uuid, Session::get('basket_uuid'));
     }

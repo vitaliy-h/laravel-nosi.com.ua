@@ -39,7 +39,7 @@ class AddOrUpdateBasketItemActionTest extends TestCase
         $action->handle($basket, $product, 1);
         $item = $action->handle($basket, $product, 5);
 
-        $this->assertDatabaseCount('basket_shop_products', 1);
+        $this->assertDatabaseCount('shop_basket_products', 1);
         $this->assertSame(5, $item->quantity);
         $this->assertSame('50.00', (string) $item->total);
     }

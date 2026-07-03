@@ -28,7 +28,7 @@ class ChangeBasketRequest extends FormRequest
             'id' => ['required', 'integer', 'exists:shop_products,id'],
             'count' => ['required', 'integer', 'min:0'],
             'action' => ['required', Rule::enum(BasketAction::class)],
-            'basket_uuid' => ['nullable', 'uuid', 'exists:baskets,uuid'],
+            'basket_uuid' => ['nullable', 'uuid', 'exists:shop_baskets,uuid'],
         ];
     }
 }

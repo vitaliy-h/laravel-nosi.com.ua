@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('baskets', function (Blueprint $table) {
+        Schema::create('shop_baskets', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->uuid('uuid')->unique();
             $table->foreignId('user_id')->nullable()->constrained();
@@ -18,6 +18,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('baskets');
+        Schema::dropIfExists('shop_baskets');
     }
 };

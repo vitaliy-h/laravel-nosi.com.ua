@@ -25,7 +25,7 @@ class AjaxBasketControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonPath('success', true);
-        $this->assertDatabaseHas('basket_shop_products', [
+        $this->assertDatabaseHas('shop_basket_products', [
             'shop_product_id' => $product->id,
             'quantity' => 2,
         ]);
@@ -45,7 +45,7 @@ class AjaxBasketControllerTest extends TestCase
         $response->assertStatus(200);
         $basket = $user->fresh()->basket;
         $this->assertNotNull($basket);
-        $this->assertDatabaseHas('basket_shop_products', [
+        $this->assertDatabaseHas('shop_basket_products', [
             'basket_id' => $basket->id,
             'shop_product_id' => $product->id,
         ]);
@@ -66,7 +66,7 @@ class AjaxBasketControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonPath('success', true);
-        $this->assertDatabaseMissing('basket_shop_products', ['basket_id' => $basket->id, 'shop_product_id' => $product->id]);
+        $this->assertDatabaseMissing('shop_basket_products', ['basket_id' => $basket->id, 'shop_product_id' => $product->id]);
     }
 
     public function test_delete_checkout_returns_updated_total_action(): void
@@ -97,7 +97,7 @@ class AjaxBasketControllerTest extends TestCase
         ]);
 
         $response->assertStatus(200);
-        $this->assertDatabaseHas('basket_shop_products', [
+        $this->assertDatabaseHas('shop_basket_products', [
             'shop_product_id' => $product->id,
             'quantity' => 1,
         ]);
@@ -116,7 +116,7 @@ class AjaxBasketControllerTest extends TestCase
         ]);
 
         $response->assertStatus(200);
-        $this->assertDatabaseCount('baskets', 1);
+        $this->assertDatabaseCount('shop_baskets', 1);
     }
 
     public function test_viewing_foreign_basket_forks_and_returns_redirect_action(): void
@@ -135,7 +135,7 @@ class AjaxBasketControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonPath('success', true);
         $this->assertSame('location', $response->json('actions.0.method'));
-        $this->assertDatabaseCount('baskets', 2);
+        $this->assertDatabaseCount('shop_baskets', 2);
     }
 
     public function test_invalid_action_returns_validation_error(): void

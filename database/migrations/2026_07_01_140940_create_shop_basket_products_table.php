@@ -8,9 +8,9 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('basket_shop_products', function (Blueprint $table) {
+        Schema::create('shop_basket_products', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('basket_id')->constrained('baskets');
+            $table->foreignId('basket_id')->constrained('shop_baskets');
             $table->foreignId('shop_product_id')->constrained('shop_products');
             $table->string('product_name')->nullable();
             $table->string('product_article')->nullable();
@@ -23,6 +23,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('basket_shop_products');
+        Schema::dropIfExists('shop_basket_products');
     }
 };

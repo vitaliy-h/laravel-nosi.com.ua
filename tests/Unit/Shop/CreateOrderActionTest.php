@@ -44,7 +44,7 @@ class CreateOrderActionTest extends TestCase
         $order = app(CreateOrderAction::class)->handle($dto);
 
         $this->assertDatabaseHas('shop_orders', ['id' => $order->id]);
-        $this->assertDatabaseCount('shop_order_shop_products', 2);
+        $this->assertDatabaseCount('shop_order_products', 2);
         $this->assertSame('36.50', (string) $order->total_amount);
     }
 
@@ -93,7 +93,7 @@ class CreateOrderActionTest extends TestCase
 
         $order = app(CreateOrderAction::class)->handle($dto);
 
-        $this->assertDatabaseHas('shop_order_shop_products', [
+        $this->assertDatabaseHas('shop_order_products', [
             'shop_order_id'   => $order->id,
             'shop_product_id' => $product->id,
             'total'           => '30.02',

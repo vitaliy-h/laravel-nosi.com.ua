@@ -12,7 +12,7 @@ class BasketProduct extends Model
     /** @use HasFactory<BasketProductFactory> */
     use HasFactory;
 
-    protected $table = 'basket_shop_products';
+    protected $table = 'shop_basket_products';
 
     protected $fillable = [
         'basket_id',

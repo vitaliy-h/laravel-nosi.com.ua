@@ -20,7 +20,7 @@ class Basket extends Model
 
     protected array $cascadeDeletes = ['items'];
 
-    protected $table = 'baskets';
+    protected $table = 'shop_baskets';
 
     protected $fillable = [
         'uuid',

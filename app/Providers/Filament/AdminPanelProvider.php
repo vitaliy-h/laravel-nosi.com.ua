@@ -96,7 +96,7 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-shopping-cart')
                                     ->url(\App\Filament\Resources\Shop\Orders\OrderResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.shop.orders.*')),
-                                NavigationItem::make(__('admin.tables.baskets'))
+                                NavigationItem::make(__('admin.tables.shop_baskets'))
                                     ->icon('heroicon-o-shopping-bag')
                                     ->url(\App\Filament\Resources\Basket\BasketResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.basket.baskets.*')),

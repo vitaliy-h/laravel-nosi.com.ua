@@ -41,7 +41,7 @@ class GetOrCreateBasketActionTest extends TestCase
 
         $result = app(GetOrCreateBasketAction::class)->handle($user);
 
-        $this->assertDatabaseHas('baskets', ['id' => $result->id, 'user_id' => $user->id]);
+        $this->assertDatabaseHas('shop_baskets', ['id' => $result->id, 'user_id' => $user->id]);
         $this->assertSame($result->uuid, Session::get('basket_uuid'));
     }
 
@@ -72,7 +72,7 @@ class GetOrCreateBasketActionTest extends TestCase
     {
         $result = app(GetOrCreateBasketAction::class)->handle(null);
 
-        $this->assertDatabaseHas('baskets', ['id' => $result->id, 'user_id' => null]);
+        $this->assertDatabaseHas('shop_baskets', ['id' => $result->id, 'user_id' => null]);
         $this->assertSame($result->uuid, Session::get('basket_uuid'));
     }
 }
