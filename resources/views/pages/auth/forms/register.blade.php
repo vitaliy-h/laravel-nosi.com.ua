@@ -31,7 +31,7 @@
 
         <div class="col-12">
             <div class="mb-4">
-                <label for="login-register-reg-email" class="form-label">{{t('auth.email')}}</label>
+                <label for="login-register-reg-email" class="form-label">{{t('profile.user_email')}}</label>
                 <input type="email" name="email" class="form-control" id="login-register-reg-email"
                        value="{{ old('email') }}" required>
                 @error('email')
@@ -43,7 +43,7 @@
         </div>
         <div class="col-12">
             <div class="mb-4">
-                <label for="login-register-reg-phone" class="form-label">{{t('auth.phone')}}</label>
+                <label for="login-register-reg-phone" class="form-label">{{t('profile.user_phone')}}</label>
                 <input name="phone" class="form-control" id="login-register-reg-phone"
                        value="{{ old('phone') }}" required>
                 @error('phone')

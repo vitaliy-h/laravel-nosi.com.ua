@@ -136,25 +136,27 @@
                                         @php $user = auth()->user(); @endphp
                                         <div class="row">
                                             <div class="col-md-6 form-group">
-                                                <label for="user_name">First Name</label>
+                                                <label for="user_name">{{t('profile.user_name')}}</label>
                                                 <input type="text" name="user_name" class="form-control" id="user_name" placeholder="Your First Name" value="{{ $user?->name }}">
                                             </div>
                                             <div class="col-md-6 form-group">
-                                                <label for="user_surname">Last Name</label>
+                                                <label for="user_surname">{{t('profile.user_surname')}}</label>
                                                 <input type="text" name="user_surname" class="form-control" id="user_surname" placeholder="Your Last Name" value="{{ $user?->surname }}">
                                             </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="user_email">Email Address</label>
-                                            <input type="email" class="form-control" name="user_email" id="user_email" placeholder="Your Email" required="" value="{{ $user?->email }}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="user_phone">Phone Number</label>
-                                            <input type="tel" class="form-control" name="user_phone" id="user_phone" placeholder="Your Phone Number" value="{{ $user?->phone }}">
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label for="user_email">{{t('profile.user_email')}}</label>
+                                                <input type="email" class="form-control" name="user_email" id="user_email" placeholder="Your Email" required="" value="{{ $user?->email }}">
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label for="user_phone">{{t('profile.user_phone')}}</label>
+                                                <input type="tel" class="form-control" name="user_phone" id="user_phone" placeholder="Your Phone Number" value="{{ $user?->phone }}">
+                                            </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="phone">Comment</label>
+                                            <label for="comment">{{t('profile.order_comment')}}</label>
                                             <textarea class="form-control" name="comment"></textarea>
                                         </div>
 
