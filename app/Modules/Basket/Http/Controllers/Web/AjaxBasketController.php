@@ -87,6 +87,12 @@ class AjaxBasketController extends Controller
         $remove->handle($basket, $product);
         $basket->refresh();
 
+        if ($basket->items()->count() === 0) {
+            return [
+                ['method' => 'location', 'content' => module_url('basket', [$basket->uuid])],
+            ];
+        }
+
         return [
             $this->basketCountAction($basket),
             [

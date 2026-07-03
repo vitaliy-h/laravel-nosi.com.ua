@@ -26,7 +26,7 @@ readonly class PlaceOrderFromBasketAction
         ))->all();
 
         $order = $this->createOrder->handle(new CreateOrderData(
-            user_id:      $basket->user_id ?? 0,
+            user_id:      $basket->user_id ?? null,
             items:        $items,
             user_name:    $customer['user_name'] ?? null,
             user_surname: $customer['user_surname'] ?? null,
