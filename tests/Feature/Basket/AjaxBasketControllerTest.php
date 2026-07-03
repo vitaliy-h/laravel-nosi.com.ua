@@ -73,7 +73,9 @@ class AjaxBasketControllerTest extends TestCase
     {
         $basket = Basket::factory()->create();
         $product = Product::factory()->create();
+        $other = Product::factory()->create();
         BasketProduct::factory()->create(['basket_id' => $basket->id, 'shop_product_id' => $product->id, 'total' => 10]);
+        BasketProduct::factory()->create(['basket_id' => $basket->id, 'shop_product_id' => $other->id, 'total' => 5]);
 
         $response = $this->withSession(['basket_uuid' => $basket->uuid])->postJson('/basket/change', [
             'id' => $product->id,
@@ -83,7 +85,23 @@ class AjaxBasketControllerTest extends TestCase
 
         $response->assertStatus(200);
         $actions = $response->json('actions');
-        $this->assertTrue(collect($actions)->contains(fn ($a) => $a['selector'] === '.js_checkout_total' && $a['content'] === '0.00'));
+        $this->assertTrue(collect($actions)->contains(fn ($a) => ($a['selector'] ?? null) === '.js_checkout_total' && $a['content'] === '5.00'));
+    }
+
+    public function test_delete_checkout_last_item_redirects_to_basket(): void
+    {
+        $basket = Basket::factory()->create();
+        $product = Product::factory()->create();
+        BasketProduct::factory()->create(['basket_id' => $basket->id, 'shop_product_id' => $product->id, 'total' => 10]);
+
+        $response = $this->withSession(['basket_uuid' => $basket->uuid])->postJson('/basket/change', [
+            'id' => $product->id,
+            'count' => 1,
+            'action' => 'delete_checkout',
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertSame('location', $response->json('actions.0.method'));
     }
 
     public function test_change_count_zero_is_clamped_to_minimum_one(): void
