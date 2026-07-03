@@ -6,10 +6,22 @@
     <div class="row g-3">
         <div class="col-12">
             <div class="mb-4">
-                <label for="login-register-reg-firstname" class="form-label">{{t('auth.name')}}</label>
+                <label for="login-register-reg-firstname" class="form-label">{{t('profile.user_name')}}</label>
                 <input type="text" name="name" class="form-control" id="login-register-reg-firstname"
                        value="{{ old('name') }}" required>
                 @error('name')
+                <div class="text-danger small mt-1">
+                    {{ $message }}
+                </div>
+                @enderror
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="mb-4">
+                <label for="login-register-reg-firstname" class="form-label">{{t('profile.user_surname')}}</label>
+                <input type="text" name="surname" class="form-control" id="login-register-reg-surname"
+                       value="{{ old('surname') }}" required>
+                @error('surname')
                 <div class="text-danger small mt-1">
                     {{ $message }}
                 </div>
@@ -23,6 +35,18 @@
                 <input type="email" name="email" class="form-control" id="login-register-reg-email"
                        value="{{ old('email') }}" required>
                 @error('email')
+                <div class="text-danger small mt-1">
+                    {{ $message }}
+                </div>
+                @enderror
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="mb-4">
+                <label for="login-register-reg-phone" class="form-label">{{t('auth.phone')}}</label>
+                <input name="phone" class="form-control" id="login-register-reg-phone"
+                       value="{{ old('phone') }}" required>
+                @error('phone')
                 <div class="text-danger small mt-1">
                     {{ $message }}
                 </div>

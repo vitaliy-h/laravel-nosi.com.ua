@@ -73,6 +73,34 @@
                             </span>
                         </div>
 
+                        @if($order->user_name || $order->user_surname)
+                            <div class="summary-item">
+                                <span class="summary-label">{{ t('profile.user_name') }}</span>
+                                <span class="summary-value">{{ trim($order->user_name . ' ' . $order->user_surname) }}</span>
+                            </div>
+                        @endif
+
+                        @if($order->user_email)
+                            <div class="summary-item">
+                                <span class="summary-label">{{ t('profile.user_email') }}</span>
+                                <span class="summary-value">{{ $order->user_email }}</span>
+                            </div>
+                        @endif
+
+                        @if($order->user_phone)
+                            <div class="summary-item">
+                                <span class="summary-label">{{ t('profile.user_phone') }}</span>
+                                <span class="summary-value">{{ $order->user_phone }}</span>
+                            </div>
+                        @endif
+
+                        @if($order->comment)
+                            <div class="summary-item">
+                                <span class="summary-label">{{ t('profile.order_comment') }}</span>
+                                <span class="summary-value">{!! nl2br(e($order->comment)) !!}</span>
+                            </div>
+                        @endif
+
                         <div class="summary-total">
                             <span class="summary-label">{{ t('profile.order_total') }}</span>
                             <span class="summary-value">{{ $order->total_amount_formatted }}</span>

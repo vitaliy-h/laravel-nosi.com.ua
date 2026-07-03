@@ -99,7 +99,6 @@ return [
         'login' => 'Sign In',
         'register' => 'Register',
         'password_recovery' => 'Password recovery',
-        'name' => 'Name',
         'email' => 'Email address',
         'password' => 'Password',
         'new_password' => 'New password',
@@ -117,6 +116,10 @@ return [
     ],
 
     'profile' => [
+        'user_name'=>'Name',
+        'user_surname'=>'Surname',
+        'user_email'=>'Email',
+        'user_phone'=>'Phone',
         'profile_dropdown_header_text' => 'Welcome to',
         'profile_dropdown_header_subtext' => 'Access account & manage orders',
         'my_profile' => 'My profile',
@@ -148,6 +151,7 @@ return [
         'order_pay' => 'Pay Order',
         'order_review' => 'Write Review',
         'order_reorder' => 'Reorder',
+        'order_comment' => 'Comment',
         'qty' => 'Qty',
         'sku' => 'SKU',
     ],
