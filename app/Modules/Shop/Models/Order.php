@@ -32,6 +32,11 @@ class Order extends Model
         'payment_status',
         'payment_type',
         'payment_date',
+        'user_name',
+        'user_surname',
+        'user_email',
+        'user_phone',
+        'comment',
     ];
 
     protected $guarded = [

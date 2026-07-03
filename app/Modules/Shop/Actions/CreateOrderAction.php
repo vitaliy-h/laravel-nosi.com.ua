@@ -18,6 +18,11 @@ readonly class CreateOrderAction
             'payment_status' => $dto->payment_status,
             'payment_type'   => $dto->payment_type,
             'total_amount'   => 0,
+            'user_name'      => $dto->user_name,
+            'user_surname'   => $dto->user_surname,
+            'user_email'     => $dto->user_email,
+            'user_phone'     => $dto->user_phone,
+            'comment'        => $dto->comment,
         ]);
 
         foreach ($dto->items as $item) {

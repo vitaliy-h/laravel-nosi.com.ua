@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('body-class', 'cart-page')
+@section('body-class', 'cart-page checkout-page')
 
 @section('content')
     @include('blocks.page_title')
@@ -12,9 +12,9 @@
             </div>
         @endif
 
-            <section id="cart" class="cart section">
+            <section id="cart" class="cart section checkout">
 
-                <div class="container aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">
+                <div class="checkout-container container aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">
 
                     <div class="row g-4">
                         <div class="col-lg-8 aos-init aos-animate" data-aos="fade-up" data-aos-delay="200">
@@ -36,62 +36,62 @@
                                     </div>
                                 </div>
 
-                                        @foreach($basket->items as $item)
-                                            <div class="cart-item aos-init aos-animate checkout_item" data-product="{{$item->product->id}}" data-aos="fade-up" data-aos-delay="100">
-                                                <div class="row align-items-center gy-4">
-                                                    <div class="col-lg-6 col-12 mb-3 mb-lg-0">
-                                                        <div class="product-info d-flex align-items-center">
-                                                            <div class="product-image">
-                                                                <img src="{{$item->product->image}}" alt="Product" class="img-fluid" loading="lazy">
-                                                            </div>
-                                                            <div class="product-details">
-                                                                <h6 class="product-title">{{$item->product_name}}</h6>
+                                @foreach($basket->items as $item)
+                                    <div class="cart-item aos-init aos-animate checkout_item" data-product="{{$item->product->id}}" data-aos="fade-up" data-aos-delay="100">
+                                        <div class="row align-items-center gy-4">
+                                            <div class="col-lg-6 col-12 mb-3 mb-lg-0">
+                                                <div class="product-info d-flex align-items-center">
+                                                    <div class="product-image">
+                                                        <img src="{{$item->product->image}}" alt="Product" class="img-fluid" loading="lazy">
+                                                    </div>
+                                                    <div class="product-details">
+                                                        <h6 class="product-title">{{$item->product_name}}</h6>
 
-                                                                <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
-                                                                    @csrf
-                                                                    <input type="hidden" name="id" value="{{$item->product->id}}">
-                                                                    <input type="hidden" name="count" value="0">
-                                                                    <input type="hidden" name="basket_uuid" value="{{$basket->uuid}}">
-                                                                    <input type="hidden" name="action" value="{{ \App\Modules\Basket\Enums\BasketAction::DeleteCheckout->value }}">
-                                                                    <button type="submit" class="remove-item">
-                                                                        <i class="bi bi-trash"></i> {{ t('shop.remove') }}
-                                                                    </button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-12 col-lg-2 text-center">
-                                                        <div class="price-tag">
-                                                            <span class="current-price">${{$item->selling_price}}</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-12 col-lg-2 text-center">
                                                         <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
                                                             @csrf
                                                             <input type="hidden" name="id" value="{{$item->product->id}}">
+                                                            <input type="hidden" name="count" value="0">
                                                             <input type="hidden" name="basket_uuid" value="{{$basket->uuid}}">
-                                                            <input type="hidden" name="action" value="{{ \App\Modules\Basket\Enums\BasketAction::ChangeCountCheckout->value }}">
-                                                            <div class="quantity-selector">
-                                                                <button type="button" class="quantity-btn decrease">
-                                                                    <i class="bi bi-dash"></i>
-                                                                </button>
-                                                                <input type="number" name="count" class="quantity-input js_change_checkout_products" data-product="{{$item->product->id}}" value="{{$item->quantity}}" min="1">
-                                                                <button type="button" class="quantity-btn increase">
-                                                                    <i class="bi bi-plus"></i>
-                                                                </button>
-                                                            </div>
+                                                            <input type="hidden" name="action" value="{{ \App\Modules\Basket\Enums\BasketAction::DeleteCheckout->value }}">
+                                                            <button type="submit" class="remove-item">
+                                                                <i class="bi bi-trash"></i> {{ t('shop.remove') }}
+                                                            </button>
                                                         </form>
                                                     </div>
-                                                    <div class="col-12 col-lg-2 text-center mt-3 mt-lg-0">
-                                                        <div class="item-total">
-                                                            <span>$<span class="js_product_checkout_total_{{$item->product->id}}">{{$item->total}}</span></span>
-                                                        </div>
-                                                    </div>
                                                 </div>
-                                            </div><!-- End Cart Item -->
+                                            </div>
+                                            <div class="col-12 col-lg-2 text-center">
+                                                <div class="price-tag">
+                                                    <span class="current-price">${{$item->selling_price}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-lg-2 text-center">
+                                                <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="id" value="{{$item->product->id}}">
+                                                    <input type="hidden" name="basket_uuid" value="{{$basket->uuid}}">
+                                                    <input type="hidden" name="action" value="{{ \App\Modules\Basket\Enums\BasketAction::ChangeCountCheckout->value }}">
+                                                    <div class="quantity-selector">
+                                                        <button type="button" class="quantity-btn decrease">
+                                                            <i class="bi bi-dash"></i>
+                                                        </button>
+                                                        <input type="number" name="count" class="quantity-input js_change_checkout_products" data-product="{{$item->product->id}}" value="{{$item->quantity}}" min="1">
+                                                        <button type="button" class="quantity-btn increase">
+                                                            <i class="bi bi-plus"></i>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="col-12 col-lg-2 text-center mt-3 mt-lg-0">
+                                                <div class="item-total">
+                                                    <span>$<span class="js_product_checkout_total_{{$item->product->id}}">{{$item->total}}</span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div><!-- End Cart Item -->
 
 
-                                        @endforeach
+                                @endforeach
 
 
                                             {{--
@@ -123,7 +123,53 @@
                                             {{--
                                             --}}
                             </div>
+
+                            <form id="checkout-form" class="checkout-form checkout-section" action="{{ route('order.place') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="basket_uuid" value="{{ $basket->uuid }}">
+                                <!-- Customer Information -->
+                                <div class="checkout-section" id="customer-info">
+                                    <div class="section-header">
+                                        <h3>Customer Information</h3>
+                                    </div>
+                                    <div class="section-content">
+                                        @php $user = auth()->user(); @endphp
+                                        <div class="row">
+                                            <div class="col-md-6 form-group">
+                                                <label for="user_name">First Name</label>
+                                                <input type="text" name="user_name" class="form-control" id="user_name" placeholder="Your First Name" value="{{ $user?->name }}">
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <label for="user_surname">Last Name</label>
+                                                <input type="text" name="user_surname" class="form-control" id="user_surname" placeholder="Your Last Name" value="{{ $user?->surname }}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="user_email">Email Address</label>
+                                            <input type="email" class="form-control" name="user_email" id="user_email" placeholder="Your Email" required="" value="{{ $user?->email }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="user_phone">Phone Number</label>
+                                            <input type="tel" class="form-control" name="user_phone" id="user_phone" placeholder="Your Phone Number" value="{{ $user?->phone }}">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="phone">Comment</label>
+                                            <textarea class="form-control" name="comment"></textarea>
+                                        </div>
+
+                                        <div class="place-order-container">
+                                            <button type="submit" class="btn btn-primary place-order-btn">
+                                                <span class="btn-text">{{ t('shop.place_order') }}</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+
                         </div>
+
 
                         <div class="col-lg-4 aos-init aos-animate" data-aos="fade-up" data-aos-delay="300">
                             <div class="cart-summary">
@@ -175,9 +221,9 @@
                                 </div>
 
                                 <div class="checkout-button">
-                                    <a href="{{module_url('basket',['checkout'])}}" class="btn btn-accent w-100">
-                                        {{ t('shop.proceed_to_checkout') }} <i class="bi bi-arrow-right"></i>
-                                    </a>
+                                    <button type="submit" form="checkout-form" class="btn btn-accent w-100">
+                                        {{ t('shop.place_order') }} <i class="bi bi-arrow-right"></i>
+                                    </button>
                                 </div>
 
                                 <div class="continue-shopping">
@@ -204,12 +250,6 @@
                 </div>
 
             </section>
-
-
-
-
-
-
-
     </div>
 @endsection
+

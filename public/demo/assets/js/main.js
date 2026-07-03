@@ -447,10 +447,9 @@
   }
   priceRangeWidget();
 
-  /**
-   * Ecommerce Checkout Section
-   * This script handles the functionality of both multi-step and one-page checkout processes
-   */
+  /*
+   * Ecommerce Checkout Section — disabled, using native Laravel form submit instead
+   *
 
   function initCheckout() {
     // Detect checkout type
@@ -477,6 +476,7 @@
   initCheckout();
 
   // Function to initialize multi-step checkout
+
   function initMultiStepCheckout() {
     // Get all checkout elements
     const checkoutSteps = document.querySelectorAll('.checkout-steps .step');
@@ -938,6 +938,8 @@
       }
     }
   }
+
+  */ // end disabled checkout section
 
   /**
    * Initiate glightbox

@@ -1,4 +1,7 @@
 <?php
+Route::post('/order/place', [\App\Modules\Shop\Http\Controllers\Web\OrderController::class, 'placeOrder'])
+    ->name('order.place');
+
 Route::get('/order/{uuid}', [\App\Modules\Shop\Http\Controllers\Web\OrderController::class, 'show'])
     ->name('order.show');
 

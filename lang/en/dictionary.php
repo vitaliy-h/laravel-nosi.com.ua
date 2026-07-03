@@ -83,7 +83,7 @@ return [
         'table_header_product' => 'Product',
         'total'                => 'Total',
         'order_summary'        => 'Order Summary',
-        'proceed_to_checkout'  => 'Proceed to Checkout',
+        'place_order'          => 'Place Order',
         'continue_shopping'    => 'Continue Shopping',
 
         'empty_basket_title' => 'Your shopping cart is currently empty.',

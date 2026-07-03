@@ -65,6 +65,19 @@ class OrderResource extends Resource
                     ->options(PaymentTypeEnum::options())
                     ->columnSpan(4),
 
+                TextInput::make('user_name')
+                    ->columnSpan(3),
+                TextInput::make('user_surname')
+                    ->columnSpan(3),
+                TextInput::make('user_email')
+                    ->email()
+                    ->columnSpan(3),
+                TextInput::make('user_phone')
+                    ->tel()
+                    ->columnSpan(3),
+                \Filament\Forms\Components\Textarea::make('comment')
+                    ->columnSpanFull(),
+
                 Repeater::make('items')
                     ->relationship()
                     ->columnSpanFull()
