@@ -51,7 +51,7 @@
                                                         <h6>{{ $item->product_name }}</h6>
                                                         <div class="item-meta">
                                                             <span
-                                                                class="sku">{{ t('profile.sku') }}: {{ $item->product_sku }}</span>
+                                                                class="sku">{{ t('profile.sku') }}: {{ $item->product_article }}</span>
                                                             <span
                                                                 class="qty">{{ t('profile.qty') }}: {{ (int)$item->quantity }}</span>
                                                         </div>

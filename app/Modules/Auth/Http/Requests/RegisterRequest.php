@@ -49,8 +49,10 @@ class RegisterRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name' => t('auth.name'),
-            'email' => t('auth.email'),
+            'name' => t('profile.user_name'),
+            'surname' => t('profile.user_surname'),
+            'email' => t('profile.user_email'),
+            'phone' => t('profile.user_phone'),
             'password' => t('auth.password'),
             'terms' => t('auth.terms'),
         ];

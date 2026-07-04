@@ -3,16 +3,19 @@
 namespace App\Modules\Core\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Basket\Actions\FindBasketAction;
 use App\Modules\Core\Repositories\PagesRepository;
 use App\Modules\Core\Services\MenuService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class ModuleRouteController extends Controller
 {
     public function __construct(
         private PagesRepository $pages,
-        private MenuService $menu
+        private MenuService $menu,
+        private FindBasketAction $findBasket,
     )
     {
     }
@@ -52,13 +55,9 @@ class ModuleRouteController extends Controller
             $routerClass = '\\App\\Modules\\' . Str::ucfirst(Str::camel($page->module->value))  . '\\Http\\Controllers\\Web\\IndexController';
 
             if (class_exists($routerClass)) {
-                //todo add route
-                /*
-                Route::match(['get', 'post'], $page->slug . '/{segments?}', [self::class, 'handle'])
-                    ->where('segments', '.*')
-                    ->name('module.' . $page->module->value);
-                */
                 $moduleSegments = array_slice($segments, 1);
+                $basket = $this->findBasket->handle(Auth::user());
+
                 view()->share([
                     'page' => $page,
                     'breadcrumbs' => $this->pages->getBreadcrumbs($page),
@@ -66,6 +65,7 @@ class ModuleRouteController extends Controller
                     'meta_description' => $page->meta_description,
                     'headerMenu' => $this->menu->getHeaderMenu(),
                     'footerMenu' => $this->menu->getFooterMenu(),
+                    'basketCount' => $basket?->items()->sum('quantity') ?? 0,
                 ]);
                 $result = app($routerClass)->accessCheck();
                 if ($result instanceof \Illuminate\Http\Response

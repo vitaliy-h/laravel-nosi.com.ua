@@ -2,8 +2,6 @@
 
 @section('body-class', 'category-page')
 
-@php use Illuminate\Support\Str; @endphp
-
 @section('content')
     @include('blocks.page_title')
 
@@ -19,39 +17,19 @@
 
 
                         <div class="product-categories-widget widget-item">
-                            <h3 class="widget-title">Categories</h3>
+                            <h3 class="widget-title">{{ t('shop.categories') }}</h3>
                             @include('pages.shop.partials.category-tree', [
                                 'categories' => $categories,
                                 'level' => 0,
                             ])
                         </div>
-                        @php
-                        /*todo remove @php blocks from templates*/
-                            $priceFilter = $filter['price'] ?? [];
-                            $priceData = $priceFilter['data'] ?? [];
-
-                            $priceMin = (float)($priceData['min'] ?? 0);
-                            $priceMax = (float)($priceData['max'] ?? 0);
-
-                            $priceFromGet = $priceFilter['from'] ?? $priceMin;
-                            $priceToGet = $priceFilter['to'] ?? $priceMax;
-
-                            $priceFromSlider = max($priceMin, min((float)$priceFromGet, $priceMax));
-                            $priceToSlider = max($priceMin, min((float)$priceToGet, $priceMax));
-
-                            if ($priceFromSlider > $priceToSlider) {
-                                $priceFromSlider = $priceMin;
-                                $priceToSlider = $priceMax;
-                            }
-                        @endphp
                         <div class="pricing-range-widget widget-item">
-                            {{--todo add translations here and in the product template--}}
-                            <h3 class="widget-title">Price Range</h3>
+                            <h3 class="widget-title">{{ t('shop.price_range') }}</h3>
 
                             <div class="price-range-container">
                                 <div class="current-range mb-3">
-                                    <span class="min-price">{{ $priceFromSlider }}</span>
-                                    <span class="max-price float-end">{{ $priceToSlider }}</span>
+                                    <span class="min-price">{{ $filter->price->fromSlider() }}</span>
+                                    <span class="max-price float-end">{{ $filter->price->toSlider() }}</span>
                                 </div>
 
                                 <div class="range-slider">
@@ -62,9 +40,9 @@
                                         type="range"
                                         name=""
                                         class="min-range"
-                                        min="{{ $priceMin }}"
-                                        max="{{ $priceMax }}"
-                                        value="{{ $priceFromSlider }}"
+                                        min="{{ $filter->price->min }}"
+                                        max="{{ $filter->price->max }}"
+                                        value="{{ $filter->price->fromSlider() }}"
                                         step="1"
                                     >
 
@@ -72,9 +50,9 @@
                                         type="range"
                                         name=""
                                         class="max-range"
-                                        min="{{ $priceMin }}"
-                                        max="{{ $priceMax }}"
-                                        value="{{ $priceToSlider }}"
+                                        min="{{ $filter->price->min }}"
+                                        max="{{ $filter->price->max }}"
+                                        value="{{ $filter->price->toSlider() }}"
                                         step="1"
                                     >
                                 </div>
@@ -83,12 +61,12 @@
                                     <div class="row g-2">
                                         <div class="col-6">
                                             <div class="input-group input-group-sm">
-                                                <span class="input-group-text">₴</span>
+                                                <span class="input-group-text">{{ t('shop.currency') }}</span>
                                                 <input
                                                     type="number"
                                                     data-name="price_from"
                                                     class="form-control min-price-input"
-                                                    value="{{ $priceFromGet }}"
+                                                    value="{{ $filter->price->fromValue() }}"
                                                     {{ request()->has('price_from') ? 'name=price_from' : '' }}
                                                 >
                                             </div>
@@ -96,12 +74,12 @@
 
                                         <div class="col-6">
                                             <div class="input-group input-group-sm">
-                                                <span class="input-group-text">₴</span>
+                                                <span class="input-group-text">{{ t('shop.currency') }}</span>
                                                 <input
                                                     type="number"
                                                     data-name="price_to"
                                                     class="form-control max-price-input"
-                                                    value="{{ $priceToGet }}"
+                                                    value="{{ $filter->price->toValue() }}"
                                                     {{ request()->has('price_to') ? 'name=price_to' : '' }}
                                                 >
                                             </div>
@@ -113,7 +91,7 @@
                         </div>
 
                         <div class="brand-filter-widget widget-item">
-                            <h3 class="widget-title">Filter by Brand</h3>
+                            <h3 class="widget-title">{{ t('shop.filter_by_brand') }}</h3>
 
                             <div class="brand-filter-content">
                                 {{--
@@ -123,14 +101,7 @@
                                 </div>
                                 --}}
                                 <div class="brand-list">
-                                    @foreach($filter['brand']['data'] ?? [] as $brand)
-                                        @php
-                                            $selectedBrands = collect((array)($filter['brand']['value'] ?? []))
-                                            ->map(fn($id) => (int)$id)
-                                            ->filter()
-                                            ->toArray();
-                                        @endphp
-
+                                    @foreach($filter->brand->items as $brand)
                                         <div class="brand-item">
                                             <div class="form-check">
                                                 <input
@@ -139,7 +110,7 @@
                                                     name="brand[]"
                                                     value="{{ $brand->id }}"
                                                     id="brand{{ $brand->id }}"
-                                                    {{ in_array($brand->id, $selectedBrands) ? 'checked' : '' }}
+                                                    {{ in_array($brand->id, $filter->brand->selected, true) ? 'checked' : '' }}
                                                 >
 
                                                 <label class="form-check-label" for="brand{{ $brand->id }}">
@@ -157,10 +128,10 @@
                                     <button type="submit" class="btn btn-sm btn-outline-primary">Apply Filter</button>
                                     --}}
                                     <div class="filter-actions mt-3" style="width: 70% !important">
-                                        <button type="submit" class="btn btn-sm btn-primary w-100">Apply Filter</button>
+                                        <button type="submit" class="btn btn-sm btn-primary w-100">{{ t('shop.apply_filter') }}</button>
                                     </div>
 
-                                    <a href="{{ url()->current() }}" class="btn btn-sm btn-link">Clear All</a>
+                                    <a href="{{ url()->current() }}" class="btn btn-sm btn-link">{{ t('shop.clear_all') }}</a>
                                 </div>
                             </div>
                         </div>
@@ -189,9 +160,9 @@
                         <div class="row g-3">
                             <div class="col-12 col-md-6 col-lg-4">
                                 <div class="filter-item search-form">
-                                    <label for="productSearch" class="form-label">Search Products</label>
+                                    <label for="productSearch" class="form-label">{{ t('shop.search_products') }}</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" id="productSearch" name="search" value="{{ request('search') }}" placeholder="Search for products...">
+                                        <input type="text" class="form-control" id="productSearch" name="search" value="{{ request('search') }}" placeholder="{{ t('shop.search_placeholder') }}">
                                         <button class="btn search-btn" type="button">
                                             <i class="bi bi-search"></i>
                                         </button>
@@ -203,23 +174,22 @@
 
                             <div class="col-12 col-md-6 col-lg-2">
                                 <div class="filter-item">
-                                    <label for="sortBy" class="form-label">Sort By</label>
+                                    <label for="sortBy" class="form-label">{{ t('shop.sort_by') }}</label>
                                     <select class="form-select" id="sortBy" name="sort">
-                                        <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest Arrivals</option>
-                                        <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
-                                        <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Price: High to Low</option>
+                                        @foreach(\App\Modules\Shop\Enums\SortOptionEnum::cases() as $option)
+                                            <option value="{{ $option->value }}" @selected(request('sort') === $option->value)>{{ $option->label() }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
 
                             <div class="col-12 col-md-6 col-lg-2">
                                 <div class="filter-item">
-                                    <label for="itemsPerPage" class="form-label">Items</label>
+                                    <label for="itemsPerPage" class="form-label">{{ t('shop.items') }}</label>
                                     <select class="form-select" id="itemsPerPage" name="c">
-                                        <option value="12" {{ request('c') == 12 ? 'selected' : '' }}>12 per page</option>
-                                        <option value="24" {{ request('c') == 24 ? 'selected' : '' }}>24 per page</option>
-                                        <option value="48" {{ request('c') == 48 ? 'selected' : '' }}>48 per page</option>
-                                        <option value="96" {{ request('c') == 96 ? 'selected' : '' }}>96 per page</option>
+                                        @foreach(\App\Modules\Shop\Enums\PerPageOptionEnum::cases() as $option)
+                                            <option value="{{ $option->value }}" @selected((int)request('c') === $option->value)>{{ $option->label() }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>

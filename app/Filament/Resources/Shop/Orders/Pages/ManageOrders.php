@@ -38,7 +38,7 @@ class ManageOrders extends ManageRecords
                 ->orWhereHas('items', function (Builder $query) use ($search) {
                     $query
                         ->where('product_name', 'like', "%{$search}%")
-                        ->orWhere('product_sku', 'like', "%{$search}%");
+                        ->orWhere('product_article', 'like', "%{$search}%");
                 });
         });
     }

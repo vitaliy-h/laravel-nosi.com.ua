@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'password', 'ip', 'email_verified_at'])]
+#[Fillable(['name', 'surname', 'email', 'phone', 'password', 'ip', 'email_verified_at'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {
@@ -43,6 +43,11 @@ class User extends Authenticatable implements FilamentUser
     public function socialProfiles(): HasMany
     {
         return $this->hasMany(SocialProfile::class);
+    }
+
+    public function basket(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(\App\Modules\Basket\Models\Basket::class);
     }
 
     public function getFormattedNameAttribute()

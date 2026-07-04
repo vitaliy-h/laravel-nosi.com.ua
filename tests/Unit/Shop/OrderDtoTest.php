@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Shop;
 
-use App\Modules\Shop\Dtos\CreateOrderData;
-use App\Modules\Shop\Dtos\OrderItemData;
-use App\Modules\Shop\Enums\PaymentStatusEnum;
-use App\Modules\Shop\Enums\PaymentTypeEnum;
+use App\Modules\Orders\Dtos\CreateOrderData;
+use App\Modules\Orders\Dtos\OrderItemData;
+use App\Modules\Orders\Enums\PaymentStatusEnum;
+use App\Modules\Orders\Enums\PaymentTypeEnum;
 use Tests\TestCase;
 
 class OrderDtoTest extends TestCase
@@ -15,16 +15,16 @@ class OrderDtoTest extends TestCase
         $item = OrderItemData::from([
             'shop_product_id' => 10,
             'product_name'    => 'Widget',
-            'product_sku'     => 'SKU-1',
-            'sale_price'      => '19.99',
+            'product_article'     => 'SKU-1',
+            'selling_price'      => '19.99',
             'quantity'        => '2',
         ]);
 
         $this->assertSame(10, $item->shop_product_id);
         $this->assertSame('Widget', $item->product_name);
-        $this->assertSame('SKU-1', $item->product_sku);
-        $this->assertSame(19.99, $item->sale_price);
-        $this->assertSame(2.0, $item->quantity);
+        $this->assertSame('SKU-1', $item->product_article);
+        $this->assertSame(19.99, $item->selling_price);
+        $this->assertSame(2, $item->quantity);
     }
 
     public function test_order_item_data_allows_null_sku(): void
@@ -32,12 +32,12 @@ class OrderDtoTest extends TestCase
         $item = OrderItemData::from([
             'shop_product_id' => 1,
             'product_name'    => 'No SKU',
-            'product_sku'     => null,
-            'sale_price'      => 5,
+            'product_article'     => null,
+            'selling_price'      => 5,
             'quantity'        => 1,
         ]);
 
-        $this->assertNull($item->product_sku);
+        $this->assertNull($item->product_article);
     }
 
     public function test_create_order_data_applies_defaults(): void
@@ -58,8 +58,8 @@ class OrderDtoTest extends TestCase
                 [
                     'shop_product_id' => 10,
                     'product_name'    => 'Widget',
-                    'product_sku'     => 'SKU-1',
-                    'sale_price'      => 19.99,
+                    'product_article'     => 'SKU-1',
+                    'selling_price'      => 19.99,
                     'quantity'        => 2,
                 ],
             ],

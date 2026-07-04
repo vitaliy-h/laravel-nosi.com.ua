@@ -2,8 +2,10 @@
 
 namespace App\Modules\Basket\Http\Requests;
 
+use App\Modules\Basket\Enums\BasketAction;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ChangeBasketRequest extends FormRequest
 {
@@ -25,7 +27,8 @@ class ChangeBasketRequest extends FormRequest
         return [
             'id' => ['required', 'integer', 'exists:shop_products,id'],
             'count' => ['required', 'integer', 'min:0'],
-            'action' => ['required', 'string'],
+            'action' => ['required', Rule::enum(BasketAction::class)],
+            'basket_uuid' => ['nullable', 'uuid', 'exists:shop_baskets,uuid'],
         ];
     }
 }

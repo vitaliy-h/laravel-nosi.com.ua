@@ -3,14 +3,14 @@
 namespace Database\Seeders;
 
 use App\Modules\Core\Models\User;
-use App\Modules\Shop\Actions\CreateOrderAction;
-use App\Modules\Shop\Actions\GenerateOrderNumberAction;
-use App\Modules\Shop\Dtos\CreateOrderData;
-use App\Modules\Shop\Dtos\OrderItemData;
-use App\Modules\Shop\Enums\PaymentStatusEnum;
-use App\Modules\Shop\Enums\PaymentTypeEnum;
-use App\Modules\Shop\Models\Order;
-use App\Modules\Shop\Models\OrderProduct;
+use App\Modules\Orders\Actions\CreateOrderAction;
+use App\Modules\Orders\Actions\GenerateOrderNumberAction;
+use App\Modules\Orders\Dtos\CreateOrderData;
+use App\Modules\Orders\Dtos\OrderItemData;
+use App\Modules\Orders\Enums\PaymentStatusEnum;
+use App\Modules\Orders\Enums\PaymentTypeEnum;
+use App\Modules\Orders\Models\Order;
+use App\Modules\Orders\Models\OrderProduct;
 use App\Modules\Shop\Models\Product;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -92,8 +92,8 @@ class ShopOrderSeeder extends Seeder
             $items = $chunk->take($config['item_count'])->map(fn(Product $product) => new OrderItemData(
                 shop_product_id: $product->id,
                 product_name: $product->title,
-                product_sku: $product->article ?? null,
-                sale_price: $product->price,
+                product_article: $product->article ?? null,
+                selling_price: $product->price,
                 quantity: fake()->randomElement([1, 2, 3]),
             ))->values()->all();
 

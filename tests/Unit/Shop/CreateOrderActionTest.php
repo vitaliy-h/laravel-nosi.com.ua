@@ -3,10 +3,10 @@
 namespace Tests\Unit\Shop;
 
 use App\Modules\Core\Models\User;
-use App\Modules\Shop\Actions\CreateOrderAction;
-use App\Modules\Shop\Dtos\CreateOrderData;
-use App\Modules\Shop\Models\Order;
-use App\Modules\Shop\Models\OrderProduct;
+use App\Modules\Orders\Actions\CreateOrderAction;
+use App\Modules\Orders\Dtos\CreateOrderData;
+use App\Modules\Orders\Models\Order;
+use App\Modules\Orders\Models\OrderProduct;
 use App\Modules\Shop\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -27,15 +27,15 @@ class CreateOrderActionTest extends TestCase
                 [
                     'shop_product_id' => $productA->id,
                     'product_name'    => 'Product A',
-                    'product_sku'     => 'SKU-A',
-                    'sale_price'      => 10.00,
+                    'product_article'     => 'SKU-A',
+                    'selling_price'      => 10.00,
                     'quantity'        => 2,
                 ],
                 [
                     'shop_product_id' => $productB->id,
                     'product_name'    => 'Product B',
-                    'product_sku'     => 'SKU-B',
-                    'sale_price'      => 5.50,
+                    'product_article'     => 'SKU-B',
+                    'selling_price'      => 5.50,
                     'quantity'        => 3,
                 ],
             ],
@@ -44,7 +44,7 @@ class CreateOrderActionTest extends TestCase
         $order = app(CreateOrderAction::class)->handle($dto);
 
         $this->assertDatabaseHas('shop_orders', ['id' => $order->id]);
-        $this->assertDatabaseCount('shop_order_shop_products', 2);
+        $this->assertDatabaseCount('shop_order_products', 2);
         $this->assertSame('36.50', (string) $order->total_amount);
     }
 
@@ -59,8 +59,8 @@ class CreateOrderActionTest extends TestCase
                 [
                     'shop_product_id' => $product->id,
                     'product_name'    => 'Product',
-                    'product_sku'     => 'SKU-1',
-                    'sale_price'      => 10.00,
+                    'product_article'     => 'SKU-1',
+                    'selling_price'      => 10.00,
                     'quantity'        => 1,
                 ],
             ],
@@ -84,8 +84,8 @@ class CreateOrderActionTest extends TestCase
                 [
                     'shop_product_id' => $product->id,
                     'product_name'    => 'Rounded Product',
-                    'product_sku'     => 'SKU-ROUND',
-                    'sale_price'      => 10.005,
+                    'product_article'     => 'SKU-ROUND',
+                    'selling_price'      => 10.005,
                     'quantity'        => 3,
                 ],
             ],
@@ -93,7 +93,7 @@ class CreateOrderActionTest extends TestCase
 
         $order = app(CreateOrderAction::class)->handle($dto);
 
-        $this->assertDatabaseHas('shop_order_shop_products', [
+        $this->assertDatabaseHas('shop_order_products', [
             'shop_order_id'   => $order->id,
             'shop_product_id' => $product->id,
             'total'           => '30.02',

@@ -53,6 +53,8 @@ Production-ready starter based on Laravel + Filament.
     * [API](./api/README.md)
     * [Sitemap](sitemap.md)
     * [OAuth](oauth.md)
+    * [uuid](uuid.md)
+    * [Basket](basket.md)
 * [Filament Admin Panel](./filament.md)
     * [Resource Generation](filament/resource-generation.md)
     * [Translations Guide](filament/translations.md)

@@ -447,10 +447,9 @@
   }
   priceRangeWidget();
 
-  /**
-   * Ecommerce Checkout Section
-   * This script handles the functionality of both multi-step and one-page checkout processes
-   */
+  /*
+   * Ecommerce Checkout Section — disabled, using native Laravel form submit instead
+   *
 
   function initCheckout() {
     // Detect checkout type
@@ -477,6 +476,7 @@
   initCheckout();
 
   // Function to initialize multi-step checkout
+
   function initMultiStepCheckout() {
     // Get all checkout elements
     const checkoutSteps = document.querySelectorAll('.checkout-steps .step');
@@ -939,6 +939,8 @@
     }
   }
 
+  */ // end disabled checkout section
+
   /**
    * Initiate glightbox
    */
@@ -961,156 +963,3 @@
   });
 
 })();
-
-/*
- * todo why custom modal system instead of Bootstrap modals?
- *
- * bootstrap.bundle.min.js is already loaded on every page, so bootstrap.Modal
- * is available and work.
- */
-/*
-
-I asked about this in Telegram earlier, but did not receive a clear answer.
-
-*/
-function openModal(id) {
-    const modal = document.getElementById(id);
-
-    if (!modal) return;
-
-    modal.hidden = false;
-}
-
-function closeModal(id) {
-    const modal = document.getElementById(id);
-
-    if (!modal) return;
-
-    modal.hidden = true;
-}
-
-function closeCurrentModal(element) {
-    const modal = element.closest('.site-modal');
-
-    if (!modal) return;
-
-    modal.hidden = true;
-}
-
-document.addEventListener('click', function (e) {
-    const closeButton = e.target.closest('[data-modal-close]');
-
-    if (closeButton) {
-        closeCurrentModal(closeButton);
-    }
-});
-
-document.addEventListener('keydown', function (e) {
-    if (e.key !== 'Escape') return;
-
-    document.querySelectorAll('.site-modal:not([hidden])').forEach(function (modal) {
-        modal.hidden = true;
-    });
-});
-
-//change products count
-document.addEventListener('click', function (e) {
-    let btn = e.target.closest('.quantity-btn');
-    if (!btn) return;
-
-    let wrap = btn.closest('.quantity-selector');
-    let input = wrap.querySelector('.quantity-input');
-
-    let count = parseInt(input.value) || 1;
-
-    if (btn.classList.contains('increase')) count++;
-    if (btn.classList.contains('decrease')) count--;
-
-    if (count < 1) count = 1;
-
-    input.value = count;
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-
-    let addBtn = wrap.closest('.product-info, .row').querySelector('.add-to-cart-btn');
-
-    if (addBtn) {
-        addBtn.dataset.count = count;
-    }
-});
-
-
-function basketChange(data) {
-    fetch('/api/basket/change', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        },
-        body: JSON.stringify(data)
-    })
-        .then(response => response.json())
-        .then(data => {
-            abc_response(data);
-        })
-        .catch(error => {
-            console.error(error);
-            //alert('Помилка запиту');
-        });
-}
-document.addEventListener('click', function (e) {
-    let btn = e.target.closest('.add-to-cart-btn');
-    if (!btn) return;
-    basketChange({
-        id: btn.dataset.id,
-        count: btn.dataset.count || 1,
-        action: 'change_count',
-    });
-});
-
-document.addEventListener('change', function (e) {
-    if (e.target.matches('#cartModal .quantity-input')) {
-        basketChange({
-            id: e.target.dataset.product,
-            count: e.target.value || 1,
-            action: 'change_count_modal',
-        });
-    }
-});
-
-
-document.addEventListener('click', function (e) {
-    const btn = e.target.closest('.js_delete_product_modal');
-    if (!btn) return;
-    basketChange({
-        id: btn.dataset.product,
-        count: 0,
-        action: 'delete_modal',
-    });
-});
-
-document.addEventListener('change', function (e) {
-    if (e.target.matches('.checkout_item .js_change_checkout_products')) {
-        //alert(11)
-        /**/
-        basketChange({
-            id: e.target.dataset.product,
-            count: e.target.value || 1,
-            action: 'change_count_checkout',
-        });
-        /**/
-    }
-});
-
-
-document.addEventListener('click', function (e) {
-    const btn = e.target.closest('.js_remove_checkout_product');
-    if (!btn) return;
-    basketChange({
-        id: btn.dataset.product,
-        count: 0,
-        action: 'delete_checkout',
-    });
-});
-
-

@@ -4,9 +4,9 @@ namespace Tests\Feature\Filament\Shop;
 
 use App\Filament\Resources\Shop\Orders\Pages\ManageOrders;
 use App\Modules\Core\Models\User;
-use App\Modules\Shop\Enums\PaymentStatusEnum;
-use App\Modules\Shop\Enums\PaymentTypeEnum;
-use App\Modules\Shop\Models\Order;
+use App\Modules\Orders\Enums\PaymentStatusEnum;
+use App\Modules\Orders\Enums\PaymentTypeEnum;
+use App\Modules\Orders\Models\Order;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;

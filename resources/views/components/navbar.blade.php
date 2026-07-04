@@ -90,7 +90,7 @@
                     <!-- Cart -->
                     <a href="{{module_url('basket')}}" class="header-action-btn">
                         <i class="bi bi-cart3"></i>
-                        <span class="badge js_basket_count">{{ session('basket.count', 0) }}</span>
+                        <span class="badge js_basket_count">{{ $basketCount ?? 0 }}</span>
                     </a>
 
                     <!-- Mobile Navigation Toggle -->

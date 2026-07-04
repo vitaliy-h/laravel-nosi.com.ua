@@ -4,11 +4,12 @@ namespace App\Filament\Resources\Shop\Orders;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Shop\Orders\Pages\ManageOrders;
-use App\Modules\Shop\Enums\PaymentStatusEnum;
-use App\Modules\Shop\Enums\PaymentTypeEnum;
-use App\Modules\Shop\Models\Order;
+use App\Modules\Orders\Enums\PaymentStatusEnum;
+use App\Modules\Orders\Enums\PaymentTypeEnum;
+use App\Modules\Orders\Models\Order;
 use App\Modules\Shop\Models\Product;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -64,6 +65,19 @@ class OrderResource extends Resource
                     ->options(PaymentTypeEnum::options())
                     ->columnSpan(4),
 
+                TextInput::make('user_name')
+                    ->columnSpan(3),
+                TextInput::make('user_surname')
+                    ->columnSpan(3),
+                TextInput::make('user_email')
+                    ->email()
+                    ->columnSpan(3),
+                TextInput::make('user_phone')
+                    ->tel()
+                    ->columnSpan(3),
+                \Filament\Forms\Components\Textarea::make('comment')
+                    ->columnSpanFull(),
+
                 Repeater::make('items')
                     ->relationship()
                     ->columnSpanFull()
@@ -78,13 +92,13 @@ class OrderResource extends Resource
                             ->afterStateUpdated(function ($state, callable $set) {
                                 if ($product = Product::find($state)) {
                                     $set('product_name', $product->title);
-                                    $set('product_sku', $product->article);
-                                    $set('sale_price', $product->price);
+                                    $set('product_article', $product->article);
+                                    $set('selling_price', $product->price);
                                     $set('total', round($product->price, 2));
                                 } else {
                                     $set('product_name', '');
-                                    $set('product_sku', '');
-                                    $set('sale_price', 0);
+                                    $set('product_article', '');
+                                    $set('selling_price', 0);
                                     $set('total', 0);
                                 }
                             })
@@ -92,20 +106,20 @@ class OrderResource extends Resource
                         TextInput::make('product_name')
                             ->required()
                             ->columnSpan(4),
-                        TextInput::make('product_sku')
+                        TextInput::make('product_article')
                             ->columnSpan(2),
-                        TextInput::make('sale_price')
+                        TextInput::make('selling_price')
                             ->numeric()
                             ->required()
                             ->live()
                             ->afterStateUpdated(fn($state, callable $get, callable $set) => $set('total', round((float)$state * (float)$get('quantity'), 2)))
                             ->columnSpan(2),
                         TextInput::make('quantity')
-                            ->numeric()
+                            ->integer()
                             ->default(1)
                             ->required()
                             ->live()
-                            ->afterStateUpdated(fn($state, callable $get, callable $set) => $set('total', round((float)$get('sale_price') * (float)$state, 2)))
+                            ->afterStateUpdated(fn($state, callable $get, callable $set) => $set('total', round((float)$get('selling_price') * (float)$state, 2)))
                             ->columnSpan(2),
                         TextInput::make('total')
                             ->numeric()
@@ -159,6 +173,11 @@ class OrderResource extends Resource
                     ->preload(),
             ])
             ->recordActions([
+               Action::make('view_public')
+                    ->icon(Heroicon::OutlinedGlobeAlt)
+                    ->iconButton()
+                    ->url(fn (Order $record) => route('order.show', $record->uuid))
+                    ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),
             ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)

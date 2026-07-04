@@ -2,10 +2,10 @@
     <div class="product-box">
         <div class="product-thumb">
             @if($product->price2)
-                <span class="product-label product-label-sale">Sale</span>
+                <span class="product-label product-label-sale">{{ t('shop.sale') }}</span>
             @endif
 
-            @if($product->image)
+            @if($product->img)
                 <img
                     src="{{ $product->imageUrl('thumb') }}"
                     alt="{{ $product->title ?? $product->name }}"
@@ -33,9 +33,14 @@
 
                 </div>
 
-                {{-- todo: same note as in resources/views/pages/shop/product.blade.php:138 --}}
                 <div class="add-to-cart-container">
-                    <button type="button" class="add-to-cart-btn" data-id="{{$product->id}}" data-count="{{ session('basket.products.' . $product->id . '.count', 1) }}">Add to Cart</button>
+                    <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="id" value="{{ $product->id }}">
+                        <input type="hidden" name="count" value="1">
+                        <input type="hidden" name="action" value="{{ \App\Modules\Basket\Enums\BasketAction::ChangeCount->value }}">
+                        <button type="submit" class="add-to-cart-btn">{{ t('shop.add_to_cart') }}</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -50,10 +55,10 @@
 
                 <div class="product-price">
                     @if($product->price2)
-                        <span class="original">${{ $product->price }}</span>
-                        <span class="sale">${{ $product->price2 }}</span>
+                        <span class="original">{{ t('shop.currency') }}{{ $product->price }}</span>
+                        <span class="sale">{{ t('shop.currency') }}{{ $product->price2 }}</span>
                     @elseif($product->price)
-                        <span>${{ $product->price }}</span>
+                        <span>{{ t('shop.currency') }}{{ $product->price }}</span>
                     @endif
                 </div>
             </div>

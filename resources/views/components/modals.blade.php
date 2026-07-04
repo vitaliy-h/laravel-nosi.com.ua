@@ -1,23 +1,24 @@
-<div class="site-modal site-modal--lg" id="cartModal" hidden>
-    <div class="site-modal__overlay" data-modal-close></div>
+<div class="modal fade site-modal" id="cartModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header justify-content-end border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-    <div class="site-modal__dialog">
-        <button type="button" class="site-modal__close" data-modal-close>×</button>
+            <div class="modal-body js_basket_modal_content">
 
 
-        <div class="site-modal__content js_basket_modal_content">
+            </div>
 
+            <div class="modal-footer">
+                <a href="{{module_url('basket')}}" class="btn btn-primary">
+                    Place an order
+                </a>
 
-        </div>
-
-        <div class="site-modal__actions">
-            <a href="{{module_url('basket')}}" class="site-modal__button site-modal__button--primary">
-                Place an order
-            </a>
-
-            <a href="javascript:;{{--module_url('shop')--}}"  data-modal-close class="site-modal__button site-modal__button--primary">
-                Continue Shopping
-            </a>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Continue Shopping
+                </button>
+            </div>
         </div>
     </div>
 </div>

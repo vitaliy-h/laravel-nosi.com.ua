@@ -3,6 +3,7 @@
 namespace App\Modules\Auth\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Basket\Actions\MergeBasketOnAuthAction;
 use App\Modules\Auth\Actions\LoginAction;
 use App\Modules\Auth\Actions\RegisterAction;
 use App\Modules\Auth\Actions\ResetPasswordAction;
@@ -22,7 +23,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function login(LoginRequest $request, LoginAction $action): RedirectResponse
+    public function login(LoginRequest $request, LoginAction $action, MergeBasketOnAuthAction $mergeBasket): RedirectResponse
     {
         $remember = (bool)$request->boolean('remember_me');
 
@@ -32,6 +33,8 @@ class AuthController extends Controller
 
         Auth::login($user, $remember);
         $request->session()->regenerate();
+
+        $mergeBasket->handle($user);
 
         return redirect()->to(module_url('profile'));
     }
@@ -47,7 +50,7 @@ class AuthController extends Controller
         return redirect(module_url('index'));
     }
 
-    public function register(RegisterRequest $request, RegisterAction $action): RedirectResponse
+    public function register(RegisterRequest $request, RegisterAction $action, MergeBasketOnAuthAction $mergeBasket): RedirectResponse
     {
         $user = $action->handle(
             RegisterData::from($request)
@@ -56,6 +59,8 @@ class AuthController extends Controller
         Auth::login($user);
 
         $request->session()->regenerate();
+
+        $mergeBasket->handle($user);
 
         return redirect(module_url('profile'));
     }

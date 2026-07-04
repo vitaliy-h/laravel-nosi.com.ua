@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Shop;
 
-use App\Modules\Shop\Enums\PaymentStatusEnum;
-use App\Modules\Shop\Enums\PaymentTypeEnum;
+use App\Modules\Orders\Enums\PaymentStatusEnum;
+use App\Modules\Orders\Enums\PaymentTypeEnum;
 use Tests\TestCase;
 
 class PaymentEnumsTest extends TestCase

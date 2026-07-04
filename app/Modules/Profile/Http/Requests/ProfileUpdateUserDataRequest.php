@@ -23,14 +23,10 @@ class ProfileUpdateUserDataRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-
-            'email' => [
-                'required',
-                'email',
-                'max:255',
-                'unique:users,email,' . $this->user()->id,
-            ],
+            'name'    => ['required', 'string', 'max:255'],
+            'surname' => ['nullable', 'string', 'max:255'],
+            'email'   => ['required', 'email', 'max:255', 'unique:users,email,' . $this->user()->id],
+            'phone'   => ['nullable', 'string', 'max:20'],
         ];
     }
 
@@ -40,8 +36,10 @@ class ProfileUpdateUserDataRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name' => t('auth.name'),
-            'email' => t('auth.email'),
+            'name' => t('profile.user_name'),
+            'surname' => t('profile.user_surname'),
+            'email' => t('profile.user_email'),
+            'phone' => t('profile.user_phone'),
         ];
     }
 }

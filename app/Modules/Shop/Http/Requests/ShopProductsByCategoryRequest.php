@@ -13,7 +13,6 @@ class ShopProductsByCategoryRequest extends FormRequest
 
     public function rules(): array
     {
-        /*todo product filters*/
         return [];
     }
 

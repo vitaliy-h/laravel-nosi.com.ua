@@ -20,16 +20,9 @@
 
                             <div class="image-zoom-container">
 
-                                {{--todo app/Modules/Core/Traits/Models/HasImage.php already returns "/assets/images/no_image.svg" in image when no image is set--}}
-                                @if($product->image)
+                                @if($product->img)
                                     <img
                                         src="{{ $product->image }}"
-                                        alt="{{ $product->title ?? $product->name }}"
-                                        class="img-fluid main-image"
-                                    >
-                                @else
-                                    <img
-                                        src="/assets/images/no_image.svg"
                                         alt="{{ $product->title ?? $product->name }}"
                                         class="img-fluid main-image"
                                     >
@@ -72,15 +65,15 @@
 
                             @if($product->price2)
                                 <span class="current-price">
-                                    {{ $product->price2 }}
+                                    {{ t('shop.currency') }}{{ $product->price2 }}
                                 </span>
 
                                 <span class="original-price">
-                                    {{ $product->price }}
+                                    {{ t('shop.currency') }}{{ $product->price }}
                                 </span>
                             @elseif($product->price)
                                 <span class="current-price">
-                                    {{ $product->price }}
+                                    {{ t('shop.currency') }}{{ $product->price }}
                                 </span>
                             @endif
 
@@ -94,70 +87,76 @@
 
                         <div class="product-availability mb-4">
                             <i class="bi bi-check-circle-fill text-success"></i>
-                            <span>In Stock</span>
+                            <span>{{ t('shop.in_stock') }}</span>
                         </div>
 
-                        <div class="product-quantity mb-4">
+                        <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="id" value="{{ $product->id }}">
+                            <input type="hidden" name="action" value="{{ \App\Modules\Basket\Enums\BasketAction::ChangeCount->value }}">
 
-                            <h6 class="option-title">
-                                Quantity:
-                            </h6>
+                            <div class="product-quantity mb-4">
 
-                            <div class="quantity-selector">
+                                <h6 class="option-title">
+                                    {{ t('shop.quantity') }}:
+                                </h6>
 
-                                <button class="quantity-btn decrease">
-                                    <i class="bi bi-dash"></i>
-                                </button>
+                                <div class="quantity-selector">
 
-                                <input
-                                    type="number"
-                                    class="quantity-input"
-                                    value="{{ session('basket.products.' . $product->id . '.count', 1) }}"
-                                    min="1"
-                                >
+                                    <button type="button" class="quantity-btn decrease">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
 
-                                <button class="quantity-btn increase">
-                                    <i class="bi bi-plus"></i>
-                                </button>
+                                    <input
+                                        type="number"
+                                        name="count"
+                                        class="quantity-input"
+                                        value="{{ $basketQuantity }}"
+                                        min="1"
+                                    >
+
+                                    <button type="button" class="quantity-btn increase">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+
+                                </div>
 
                             </div>
 
-                        </div>
+                            <div class="product-actions">
 
-                        <div class="product-actions">
+                                <button type="submit" class="btn btn-primary add-to-cart-btn">
+                                    <i class="bi bi-cart-plus"></i>
+                                    {{ t('shop.add_to_cart') }}
+                                </button>
 
-                            {{-- todo: consider a form handled via abc_response — on click, request hits the backend, adds product to basket, response opens the modal with BasketItemData passed from the backend. Less custom JS per button. --}}
-                            <button class="btn btn-primary add-to-cart-btn" data-id="{{ $product->id }}" data-count="{{ session('basket.products.' . $product->id . '.count', 1) }}">
-                                <i class="bi bi-cart-plus"></i>
-                                Add to Cart
-                            </button>
+                                <button type="button" class="btn btn-outline-primary buy-now-btn">
+                                    <i class="bi bi-lightning-fill"></i>
+                                    {{ t('shop.buy_now') }}
+                                </button>
 
-                            <button class="btn btn-outline-primary buy-now-btn">
-                                <i class="bi bi-lightning-fill"></i>
-                                Buy Now
-                            </button>
+                                <button type="button" class="btn btn-outline-secondary wishlist-btn">
+                                    <i class="bi bi-heart"></i>
+                                </button>
 
-                            <button class="btn btn-outline-secondary wishlist-btn">
-                                <i class="bi bi-heart"></i>
-                            </button>
-
-                        </div>
+                            </div>
+                        </form>
 
                         <div class="additional-info mt-4">
 
                             <div class="info-item">
                                 <i class="bi bi-truck"></i>
-                                <span>Free shipping on orders over $50</span>
+                                <span>{{ t('shop.free_shipping') }}</span>
                             </div>
 
                             <div class="info-item">
                                 <i class="bi bi-arrow-repeat"></i>
-                                <span>30-day return policy</span>
+                                <span>{{ t('shop.return_policy') }}</span>
                             </div>
 
                             <div class="info-item">
                                 <i class="bi bi-shield-check"></i>
-                                <span>2-year warranty</span>
+                                <span>{{ t('shop.warranty') }}</span>
                             </div>
 
                         </div>
@@ -184,7 +183,7 @@
                                     data-bs-target="#description"
                                     type="button"
                                 >
-                                    Description
+                                    {{ t('shop.description') }}
                                 </button>
                             </li>
 
@@ -196,7 +195,7 @@
                                     data-bs-target="#specifications"
                                     type="button"
                                 >
-                                    Specifications
+                                    {{ t('shop.specifications') }}
                                 </button>
                             </li>
 
@@ -213,7 +212,7 @@
                                 <div class="product-description">
 
                                     <h4>
-                                        Product Overview
+                                        {{ t('shop.product_overview') }}
                                     </h4>
 
                                     @if($product->text)
@@ -235,14 +234,14 @@
                                     <div class="specs-group">
 
                                         <h4>
-                                            Product Information
+                                            {{ t('shop.product_information') }}
                                         </h4>
 
                                         <div class="specs-table">
 
                                             <div class="specs-row">
                                                 <div class="specs-label">
-                                                    Article
+                                                    {{ t('shop.article') }}
                                                 </div>
 
                                                 <div class="specs-value">
@@ -252,7 +251,7 @@
 
                                             <div class="specs-row">
                                                 <div class="specs-label">
-                                                    Category
+                                                    {{ t('shop.category') }}
                                                 </div>
 
                                                 <div class="specs-value">
@@ -262,11 +261,11 @@
 
                                             <div class="specs-row">
                                                 <div class="specs-label">
-                                                    Price
+                                                    {{ t('shop.price') }}
                                                 </div>
 
                                                 <div class="specs-value">
-                                                    {{ $product->price ?? '-' }}
+                                                    {{ $product->price ? t('shop.currency') . $product->price : '-' }}
                                                 </div>
                                             </div>
 
