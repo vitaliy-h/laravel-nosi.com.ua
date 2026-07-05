@@ -67,12 +67,13 @@ class ModuleRouteController extends Controller
                     'footerMenu' => $this->menu->getFooterMenu(),
                     'basketCount' => $basket?->items()->sum('quantity') ?? 0,
                 ]);
-                $result = app($routerClass)->accessCheck();
+                $controller = app($routerClass);
+                $result = $controller->accessCheck();
                 if ($result instanceof \Illuminate\Http\Response
                     || $result instanceof \Illuminate\Http\RedirectResponse) {
                     return $result;
                 }
-                return app($routerClass)->index($request,$moduleSegments);
+                return $controller->index($request, $moduleSegments);
             }
         }
 
