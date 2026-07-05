@@ -3,12 +3,9 @@
 namespace App\Modules\Core\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Basket\Actions\FindBasketAction;
 use App\Modules\Core\Repositories\PagesRepository;
 use App\Modules\Core\Services\MenuService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
 class ModuleRouteController extends Controller
@@ -16,9 +13,7 @@ class ModuleRouteController extends Controller
     public function __construct(
         private PagesRepository $pages,
         private MenuService $menu,
-        private FindBasketAction $findBasket,
-    )
-    {
+    ) {
     }
 
     public function __invoke(Request $request, ?string $slug = null)
@@ -58,14 +53,6 @@ class ModuleRouteController extends Controller
             if (class_exists($routerClass)) {
                 $moduleSegments = array_slice($segments, 1);
 
-                if (Session::has('basket_count')) {
-                    $basketCount = Session::get('basket_count');
-                } else {
-                    $basket = $this->findBasket->handle(Auth::user());
-                    $basketCount = $basket?->items()->sum('quantity') ?? 0;
-                    Session::put('basket_count', $basketCount);
-                }
-
                 view()->share([
                     'page' => $page,
                     'breadcrumbs' => $this->pages->getBreadcrumbs($page),
@@ -73,7 +60,6 @@ class ModuleRouteController extends Controller
                     'meta_description' => $page->meta_description,
                     'headerMenu' => $this->menu->getHeaderMenu(),
                     'footerMenu' => $this->menu->getFooterMenu(),
-                    'basketCount' => $basketCount,
                 ]);
                 $controller = app($routerClass);
                 $result = $controller->accessCheck();

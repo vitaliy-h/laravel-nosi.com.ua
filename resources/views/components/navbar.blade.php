@@ -88,10 +88,7 @@
                     </a>
 
                     <!-- Cart -->
-                    <a href="{{module_url('basket')}}" class="header-action-btn">
-                        <i class="bi bi-cart3"></i>
-                        <span class="badge js_basket_count">{{ $basketCount ?? 0 }}</span>
-                    </a>
+                    @include('pages.basket.basket-count')
 
                     <!-- Mobile Navigation Toggle -->
                     <i class="mobile-nav-toggle d-xl-none bi bi-list me-0"></i>
