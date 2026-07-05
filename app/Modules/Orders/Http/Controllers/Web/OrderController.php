@@ -4,6 +4,7 @@ namespace App\Modules\Orders\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Basket\Models\Basket;
+use App\Modules\Basket\Services\BasketService;
 use App\Modules\Core\Services\MenuService;
 use App\Modules\Orders\Actions\PlaceOrderFromBasketAction;
 use App\Modules\Orders\Repository\OrderRepository;
@@ -17,6 +18,7 @@ class OrderController extends Controller
         private readonly OrderRepository            $repository,
         private readonly MenuService                $menu,
         private readonly PlaceOrderFromBasketAction $placeOrder,
+        private readonly BasketService              $basket,
     ) {}
 
     public function placeOrder(Request $request): RedirectResponse
@@ -64,6 +66,7 @@ class OrderController extends Controller
             'breadcrumbs' => collect(),
             'headerMenu'  => $this->menu->getHeaderMenu(),
             'footerMenu'  => $this->menu->getFooterMenu(),
+            'basketCount' => $this->basket->getCount(),
         ]);
     }
 }
