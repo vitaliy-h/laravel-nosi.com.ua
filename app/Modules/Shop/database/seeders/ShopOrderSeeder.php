@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace App\Modules\Shop\Database\Seeders;
 
 use App\Modules\Core\Models\User;
 use App\Modules\Orders\Actions\CreateOrderAction;

@@ -30,6 +30,8 @@ class ModuleServiceProvider extends ServiceProvider
         $this->loadModuleRoutes();
 
         $this->loadModuleCommands();
+
+        $this->loadModuleMigrations();
     }
 
     /**
@@ -92,6 +94,29 @@ class ModuleServiceProvider extends ServiceProvider
                         $artisan->resolveCommands([$class]);
                     });
                 }
+            }
+        }
+    }
+
+    private function loadModuleMigrations(): void
+    {
+        $modulesPath = app_path('Modules');
+
+        if (!File::exists($modulesPath)) {
+            return;
+        }
+
+        foreach (File::directories($modulesPath) as $module) {
+            $moduleName = strtolower(basename($module));
+
+            if (isset(config('modules')[$moduleName]) && !config("modules.{$moduleName}")) {
+                continue;
+            }
+
+            $migrationsPath = $module . '/database/migrations';
+
+            if (File::exists($migrationsPath)) {
+                $this->loadMigrationsFrom($migrationsPath);
             }
         }
     }

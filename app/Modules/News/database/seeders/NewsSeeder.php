@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace App\Modules\News\Database\Seeders;
 
 use App\Modules\News\Models\News;
 use Illuminate\Database\Seeder;

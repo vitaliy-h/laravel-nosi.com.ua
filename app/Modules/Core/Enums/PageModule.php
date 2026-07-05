@@ -18,6 +18,25 @@ enum PageModule: string
     case PROFILE = 'profile';
     case GEO = 'geo';
 
+    public function isEnabled(): bool
+    {
+        return match ($this) {
+            self::GEO      => config('modules.geo', true),
+            self::SHOP     => config('modules.shop', true),
+            self::BASKET   => config('modules.shop', true),
+            self::NEWS     => config('modules.news', true),
+            self::FEEDBACK => config('modules.feedback', true),
+            self::AUTH     => config('modules.auth', true),
+            self::PROFILE  => config('modules.auth', true),
+            default        => true,
+        };
+    }
+
+    public static function active(): array
+    {
+        return array_values(array_filter(self::cases(), fn($case) => $case->isEnabled()));
+    }
+
     public function label(): string
     {
         return match ($this) {

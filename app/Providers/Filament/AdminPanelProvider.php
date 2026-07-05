@@ -45,7 +45,7 @@ class AdminPanelProvider extends PanelProvider
             ->login(\App\Filament\Pages\Auth\Login::class)
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
-                    ->items([
+                    ->items(array_filter([
                         NavigationItem::make(__('admin.tables.dashboard'))
                             ->icon('heroicon-o-home')
                             ->url(Dashboard::getUrl())
@@ -58,27 +58,26 @@ class AdminPanelProvider extends PanelProvider
                             ->icon('heroicon-o-language')
                             ->url(\App\Filament\Resources\Languages\LanguageResource::getUrl())
                             ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.languages.*')),
-                        NavigationItem::make(__('admin.tables.news'))
+                        config('modules.news') ? NavigationItem::make(__('admin.tables.news'))
                             ->icon('heroicon-o-newspaper')
                             ->url(\App\Filament\Resources\News\NewsResource::getUrl())
-                            ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.news.*')),
-                        NavigationItem::make(__('admin.tables.feedback'))
+                            ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.news.*')) : null,
+                        config('modules.feedback') ? NavigationItem::make(__('admin.tables.feedback'))
                             ->icon('heroicon-o-chat-bubble-left-right')
                             ->url(\App\Filament\Resources\Feedback\FeedbackResource::getUrl())
-                            ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.feedback.*')),
+                            ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.feedback.*')) : null,
                         NavigationItem::make(__('admin.tables.letter_templates'))
                             ->icon('heroicon-o-envelope')
                             ->url(\App\Filament\Resources\LetterTemplates\LetterTemplateResource::getUrl())
                             ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.letter-templates.*')),
-
-                        NavigationItem::make(__('admin.tables.sms_templates'))
+                        config('modules.sms') ? NavigationItem::make(__('admin.tables.sms_templates'))
                             ->icon('heroicon-o-chat-bubble-left-right')
                             ->url(\App\Filament\Resources\SmsTemplates\SmsTemplateResource::getUrl())
-                            ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.sms-templates.*')),
-                    ])
-                    ->groups([
+                            ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.sms-templates.*')) : null,
+                    ]))
+                    ->groups(array_filter([
                         // shop
-                        NavigationGroup::make(__('admin.tables.shop'))
+                        config('modules.shop') ? NavigationGroup::make(__('admin.tables.shop'))
                             ->items([
                                 NavigationItem::make(__('admin.tables.shop_products'))
                                     ->icon('heroicon-o-cube')
@@ -100,21 +99,21 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-shopping-bag')
                                     ->url(\App\Filament\Resources\Basket\BasketResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.basket.baskets.*')),
-                            ]),
+                            ]) : null,
                         // users
                         NavigationGroup::make(__('admin.tables.users'))
-                            ->items([
+                            ->items(array_filter([
                                 NavigationItem::make(__('admin.tables.users'))
                                     ->icon('heroicon-o-users')
                                     ->url(\App\Filament\Resources\Users\UserResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::is('admin/users') || Request::is('admin/users/create') || Request::is('admin/users/*/edit')),
-                                NavigationItem::make(__('admin.tables.social_profiles'))
+                                config('modules.auth') ? NavigationItem::make(__('admin.tables.social_profiles'))
                                     ->icon('heroicon-o-link')
                                     ->url(\App\Filament\Resources\SocialProfiles\SocialProfileResource::getUrl())
-                                    ->isActiveWhen(fn (): bool => Request::is('admin/social-profiles*')),
-                            ]),
+                                    ->isActiveWhen(fn (): bool => Request::is('admin/social-profiles*')) : null,
+                            ])),
 
-                        NavigationGroup::make(__('admin.tables.geo'))
+                        config('modules.geo') ? NavigationGroup::make(__('admin.tables.geo'))
                             ->items([
                                 NavigationItem::make(__('admin.tables.geo_countries'))
                                     ->icon('heroicon-o-globe-alt')
@@ -128,9 +127,10 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-building-office-2')
                                     ->url(\App\Filament\Resources\Geo\GeoCities\GeoCityResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.geo.geo-cities*')),
-                            ]),
+                            ]) : null,
+
                         NavigationGroup::make(__('admin.tables.logs'))
-                            ->items([
+                            ->items(array_filter([
                                 NavigationItem::make(__('admin.tables.logs'))
                                     ->icon('heroicon-o-archive-box')
                                     ->url(\App\Filament\Resources\Logs\LogResource::getUrl())
@@ -139,12 +139,12 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-inbox')
                                     ->url(\App\Filament\Resources\LogLetters\LogLetterResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.log-letters.*')),
-                                NavigationItem::make(__('admin.tables.log_sms'))
+                                config('modules.sms') ? NavigationItem::make(__('admin.tables.log_sms'))
                                     ->icon('heroicon-o-chat-bubble-bottom-center-text')
                                     ->url(\App\Filament\Resources\LogSms\LogSmsResource::getUrl())
-                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.log-sms.*')),
-                            ]),
-                    ]);
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.log-sms.*')) : null,
+                            ])),
+                    ]));
             })
             ->colors([
                 'primary' => Color::Sky,

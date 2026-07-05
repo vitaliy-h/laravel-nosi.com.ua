@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Filament\Geo;
 
+use PHPUnit\Framework\Attributes\Group;
+
 use App\Filament\Resources\Geo\GeoCountries\Pages\ManageGeoCountries;
 use App\Modules\Core\Models\User;
 use App\Modules\Geo\Models\GeoCountry;
@@ -13,6 +15,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
 
+#[Group('geo')]
 class GeoCountryResourceTest extends TestCase
 {
     use RefreshDatabase;
@@ -22,6 +25,11 @@ class GeoCountryResourceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        if (!config('modules.geo')) {
+            $this->markTestSkipped('Geo module is disabled');
+        }
+
         $this->admin = $this->actingAsAdmin();
         $this->actingAs($this->admin);
     }
