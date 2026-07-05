@@ -8,6 +8,7 @@ use App\Modules\Core\Repositories\PagesRepository;
 use App\Modules\Core\Services\MenuService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
 class ModuleRouteController extends Controller
@@ -56,7 +57,14 @@ class ModuleRouteController extends Controller
 
             if (class_exists($routerClass)) {
                 $moduleSegments = array_slice($segments, 1);
-                $basket = $this->findBasket->handle(Auth::user());
+
+                if (Session::has('basket_count')) {
+                    $basketCount = Session::get('basket_count');
+                } else {
+                    $basket = $this->findBasket->handle(Auth::user());
+                    $basketCount = $basket?->items()->sum('quantity') ?? 0;
+                    Session::put('basket_count', $basketCount);
+                }
 
                 view()->share([
                     'page' => $page,
@@ -65,7 +73,7 @@ class ModuleRouteController extends Controller
                     'meta_description' => $page->meta_description,
                     'headerMenu' => $this->menu->getHeaderMenu(),
                     'footerMenu' => $this->menu->getFooterMenu(),
-                    'basketCount' => $basket?->items()->sum('quantity') ?? 0,
+                    'basketCount' => $basketCount,
                 ]);
                 $controller = app($routerClass);
                 $result = $controller->accessCheck();

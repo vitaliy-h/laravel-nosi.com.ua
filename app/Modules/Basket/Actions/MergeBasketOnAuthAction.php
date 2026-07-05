@@ -48,6 +48,7 @@ class MergeBasketOnAuthAction
         }
 
         $this->recalculate->handle($userBasket);
+        Session::put('basket_count', $userBasket->items()->sum('quantity'));
 
         $sessionBasket->delete();
     }
