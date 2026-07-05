@@ -3,6 +3,7 @@
 namespace App\Modules\Core\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Basket\Services\BasketService;
 use App\Modules\Core\Repositories\PagesRepository;
 use App\Modules\Core\Services\MenuService;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ class ModuleRouteController extends Controller
     public function __construct(
         private PagesRepository $pages,
         private MenuService $menu,
+        private BasketService $basket,
     ) {
     }
 
@@ -60,6 +62,7 @@ class ModuleRouteController extends Controller
                     'meta_description' => $page->meta_description,
                     'headerMenu' => $this->menu->getHeaderMenu(),
                     'footerMenu' => $this->menu->getFooterMenu(),
+                    'basketCount' => $this->basket->getCount(),
                 ]);
                 $controller = app($routerClass);
                 $result = $controller->accessCheck();
