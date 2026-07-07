@@ -17,7 +17,7 @@ class ApiAuthController extends BaseApiController
     public function login(LoginRequest $request, LoginAction $action): \Illuminate\Http\JsonResponse
     {
         $user = $action->handle(
-            LoginData::from($request)
+            LoginData::from($request->validated())
         );
 
         $token = $user->createToken('api')->plainTextToken;
@@ -34,7 +34,7 @@ class ApiAuthController extends BaseApiController
     public function register(RegisterRequest $request, RegisterAction $action): \Illuminate\Http\JsonResponse
     {
         $user = $action->handle(
-            RegisterData::from($request)
+            RegisterData::from($request->validated())
         );
 
         $token = $user->createToken('api')->plainTextToken;

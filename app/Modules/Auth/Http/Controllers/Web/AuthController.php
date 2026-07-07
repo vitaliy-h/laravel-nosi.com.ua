@@ -28,7 +28,7 @@ class AuthController extends Controller
         $remember = (bool)$request->boolean('remember_me');
 
         $user = $action->handle(
-            LoginData::from($request)
+            LoginData::from($request->validated())
         );
 
         Auth::login($user, $remember);
@@ -53,7 +53,7 @@ class AuthController extends Controller
     public function register(RegisterRequest $request, RegisterAction $action, MergeBasketOnAuthAction $mergeBasket): RedirectResponse
     {
         $user = $action->handle(
-            RegisterData::from($request)
+            RegisterData::from($request->validated())
         );
 
         Auth::login($user);
@@ -68,7 +68,7 @@ class AuthController extends Controller
     public function passwordRecovery(PasswordRecoveryRequest $request, SendPasswordResetAction $action): RedirectResponse
     {
         $action->handle(
-            PasswordRecoveryData::from($request)
+            PasswordRecoveryData::from($request->validated())
         );
 
         return back()->with('success', t('auth.password_reset_email_sent'));
@@ -77,7 +77,7 @@ class AuthController extends Controller
     public function passwordReset(PasswordResetRequest $request, ResetPasswordAction $action): RedirectResponse
     {
         $action->handle(
-            PasswordResetData::from($request)
+            PasswordResetData::from($request->validated())
         );
         return redirect()
             ->to(module_url('auth'))
