@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Modules\Core\Repositories;
+namespace App\Modules\Core\Queries;
 
 use App\Modules\Core\Models\User;
 
-class UsersRepository
+class FindUserByEmailQuery
 {
-    public function getByEmail($email)
+    public function handle(string $email): ?User
     {
         return User::query()
             ->where('email', $email)

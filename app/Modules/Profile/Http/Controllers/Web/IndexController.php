@@ -3,28 +3,28 @@
 namespace App\Modules\Profile\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Core\Enums\PageModule;
 use App\Modules\Core\Interfaces\ModuleIndexControllerInterface;
 use App\Modules\Profile\Dtos\OrderFilterData;
-use App\Modules\Profile\Repository\OrderRepository;
+use App\Modules\Profile\Queries\FindUserOrderQuery;
+use App\Modules\Profile\Queries\GetUserOrdersQuery;
 use App\Modules\Shop\Enums\PaymentStatusEnum;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-
 class IndexController extends Controller implements ModuleIndexControllerInterface
 {
-    public function __construct(private readonly OrderRepository $orderRepository)
-    {
-    }
-
+    public function __construct(
+        private readonly GetUserOrdersQuery $getUserOrders,
+        private readonly FindUserOrderQuery $findUserOrder,
+    ) {}
 
     public function accessCheck(): Response|RedirectResponse|null
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return redirect()->to(module_url('auth'));
         }
+
         return null;
     }
 
@@ -48,6 +48,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
     {
         $user = auth()->user()->load('socialProfiles');
         $activeSection = 'edit';
+
         return view('pages.profile.edit', compact('user', 'activeSection'));
     }
 
@@ -57,7 +58,8 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         $activeSection = 'orders';
 
         if ($id !== null) {
-            $order = $this->orderRepository->findForUser((int)$id, $user->id);
+            $order = $this->findUserOrder->handle((int) $id, $user->id);
+
             return view('pages.profile.order', compact('user', 'activeSection', 'order'));
         }
 
@@ -65,7 +67,8 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
             search: $request->query('search') ?: null,
             status: $request->query('status') ? PaymentStatusEnum::tryFrom($request->query('status')) : null,
         );
-        $orders = $this->orderRepository->forUser($user->id, $filter);
+        $orders = $this->getUserOrders->handle($user->id, $filter);
+
         return view('pages.profile.orders', compact('user', 'activeSection', 'orders', 'filter'));
     }
 }

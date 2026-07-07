@@ -2,14 +2,15 @@
 
 namespace App\Providers;
 
-use App\Modules\Core\Models\Page;
-use App\Modules\Core\Observers\PageObserver;
-use App\Modules\Core\Repositories\PagesRepository;
-use App\Modules\Notification\Services\LetterTemplateService;
-use App\Modules\Notification\Services\SmsTemplateService;
-use App\Modules\Core\Services\UrlHelper;
 use App\Modules\Basket\Models\BasketProduct;
 use App\Modules\Basket\Observers\BasketProductObserver;
+use App\Modules\Core\Models\Page;
+use App\Modules\Core\Observers\PageObserver;
+use App\Modules\Core\Queries\FindPageByModuleQuery;
+use App\Modules\Core\Queries\GetAllPagesQuery;
+use App\Modules\Core\Services\UrlHelper;
+use App\Modules\Notification\Services\LetterTemplateService;
+use App\Modules\Notification\Services\SmsTemplateService;
 use App\Modules\Orders\Models\Order;
 use App\Modules\Orders\Models\OrderProduct;
 use App\Modules\Orders\Observers\OrderObserver;
@@ -19,6 +20,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use SocialiteProviders\Manager\SocialiteWasCalled;
+use SocialiteProviders\Telegram\TelegramExtendSocialite;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,21 +29,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(PagesRepository::class);
+        $this->app->singleton(GetAllPagesQuery::class);
         $this->app->singleton('url-helper', function () {
-            return new UrlHelper(app(PagesRepository::class));
+            return new UrlHelper(app(FindPageByModuleQuery::class));
         });
         $this->app->singleton('translation', function () {
             return app(TranslationService::class);
         });
         $this->app->singleton('letter-template-service', function () {
-            return new LetterTemplateService();
+            return new LetterTemplateService;
         });
         $this->app->singleton('sms-template-service', function () {
-            return new SmsTemplateService();
+            return new SmsTemplateService;
         });
     }
-
 
     /**
      * Bootstrap any application services.
@@ -62,7 +63,6 @@ class AppServiceProvider extends ServiceProvider
             config(["services.{$provider}" => config("social.{$provider}")]);
         }
 
-        Event::listen(SocialiteWasCalled::class, \SocialiteProviders\Telegram\TelegramExtendSocialite::class . '@handle');
+        Event::listen(SocialiteWasCalled::class, TelegramExtendSocialite::class.'@handle');
     }
-
 }

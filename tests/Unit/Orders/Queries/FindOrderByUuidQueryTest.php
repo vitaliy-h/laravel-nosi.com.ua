@@ -1,30 +1,30 @@
 <?php
 
-namespace Tests\Unit\Shop;
+namespace Tests\Unit\Orders\Queries;
 
 use App\Modules\Orders\Models\Order;
-use App\Modules\Orders\Repository\OrderRepository;
+use App\Modules\Orders\Queries\FindOrderByUuidQuery;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class OrderRepositoryTest extends TestCase
+class FindOrderByUuidQueryTest extends TestCase
 {
     use RefreshDatabase;
 
-    private OrderRepository $repository;
+    private FindOrderByUuidQuery $query;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repository = new OrderRepository();
+        $this->query = new FindOrderByUuidQuery;
     }
 
     public function test_find_by_uuid_returns_correct_order(): void
     {
         $order = Order::factory()->create();
 
-        $found = $this->repository->findByUuid($order->uuid);
+        $found = $this->query->handle($order->uuid);
 
         $this->assertEquals($order->id, $found->id);
         $this->assertEquals($order->uuid, $found->uuid);
@@ -34,7 +34,7 @@ class OrderRepositoryTest extends TestCase
     {
         $order = Order::factory()->create();
 
-        $found = $this->repository->findByUuid($order->uuid);
+        $found = $this->query->handle($order->uuid);
 
         $this->assertTrue($found->relationLoaded('items'));
     }
@@ -44,7 +44,7 @@ class OrderRepositoryTest extends TestCase
         $target = Order::factory()->create();
         Order::factory()->create();
 
-        $found = $this->repository->findByUuid($target->uuid);
+        $found = $this->query->handle($target->uuid);
 
         $this->assertEquals($target->id, $found->id);
     }
@@ -53,6 +53,6 @@ class OrderRepositoryTest extends TestCase
     {
         $this->expectException(ModelNotFoundException::class);
 
-        $this->repository->findByUuid('00000000-0000-0000-0000-000000000000');
+        $this->query->handle('00000000-0000-0000-0000-000000000000');
     }
 }

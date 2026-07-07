@@ -4,16 +4,18 @@ namespace App\Modules\News\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Core\Interfaces\ModuleIndexControllerInterface;
-use App\Modules\News\Repository\NewsRepository;
+use App\Modules\News\Queries\FindNewsBySlugQuery;
+use App\Modules\News\Queries\GetNewsListQuery;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class IndexController extends Controller implements ModuleIndexControllerInterface
 {
-    public function __construct(private readonly NewsRepository $repository)
-    {
-    }
+    public function __construct(
+        private readonly GetNewsListQuery $getNewsList,
+        private readonly FindNewsBySlugQuery $findNewsBySlug,
+    ) {}
 
     public function accessCheck(): RedirectResponse|Response|null
     {
@@ -22,21 +24,24 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
 
     public function index(Request $request, array $segments = [])
     {
-        if (!empty($segments)) {
+        if (! empty($segments)) {
             $slug = $segments[0];
+
             return $this->show($slug, $request);
         }
-        $news = $this->repository->all();
+        $news = $this->getNewsList->handle();
+
         return view('pages.news.index', compact('news'));
     }
 
     public function show($slug, Request $request)
     {
-        $newsItem = $this->repository->getBySlug($slug);
+        $newsItem = $this->findNewsBySlug->handle($slug);
         view()->share([
             'meta_title' => $newsItem->meta_title,
             'meta_description' => $newsItem->meta_description,
         ]);
+
         return view('pages.news.show', compact('newsItem'));
     }
 }

@@ -3,16 +3,14 @@
 namespace App\Modules\Core\Services;
 
 use App\Modules\Core\Enums\PageModule;
-use App\Modules\Core\Repositories\PagesRepository;
+use App\Modules\Core\Queries\FindPageByModuleQuery;
 use Illuminate\Support\Str;
 
 class UrlHelper
 {
     public function __construct(
-        private PagesRepository $pages
-    )
-    {
-    }
+        private FindPageByModuleQuery $findPageByModule
+    ) {}
 
     /**
      * Normalize raw URL string (trim + clean slashes).
@@ -31,7 +29,7 @@ class UrlHelper
     {
         $url = $this->normalize($url);
 
-        return $url === '' ? '/' : '/' . $url;
+        return $url === '' ? '/' : '/'.$url;
     }
 
     /**
@@ -66,7 +64,7 @@ class UrlHelper
             }
         }
 
-        $page = $this->pages->findByModule($module);
+        $page = $this->findPageByModule->handle($module);
 
         if (!$page) {
             return '#';
@@ -85,7 +83,7 @@ class UrlHelper
         }
 
         foreach ($params as $param) {
-            $url .= '/' . trim($param, '/');
+            $url .= '/'.trim($param, '/');
         }
 
         $url = $this->normalizeForLink($url);
@@ -104,12 +102,12 @@ class UrlHelper
                         return $key;
                     }
 
-                    return $key . '=' . urlencode($value);
+                    return $key.'='.urlencode($value);
 
                 })
                 ->implode('&');
 
-            $url .= '?' . $queryString;
+            $url .= '?'.$queryString;
         }
 
         return url($url);

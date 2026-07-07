@@ -11,13 +11,10 @@ class SortFilterDto extends BaseFilterDto
         public readonly string $key,
         public readonly FilterTypeEnum $type,
         public readonly ?string $value,
-    ) {
-    }
+    ) {}
 
     /**
-     * Sorting is applied separately in ShopRepository::applySorting, not as a query filter.
+     * Sorting is applied separately in GetProductsByCategoryQuery::applySorting, not as a query filter.
      */
-    public function apply(Builder $query): void
-    {
-    }
+    public function apply(Builder $query): void {}
 }

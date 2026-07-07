@@ -7,7 +7,7 @@ use App\Modules\Basket\Models\Basket;
 use App\Modules\Basket\Services\BasketService;
 use App\Modules\Core\Services\MenuService;
 use App\Modules\Orders\Actions\PlaceOrderFromBasketAction;
-use App\Modules\Orders\Repository\OrderRepository;
+use App\Modules\Orders\Queries\FindOrderByUuidQuery;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -15,10 +15,10 @@ use Illuminate\View\View;
 class OrderController extends Controller
 {
     public function __construct(
-        private readonly OrderRepository            $repository,
-        private readonly MenuService                $menu,
+        private readonly FindOrderByUuidQuery $findOrderByUuid,
+        private readonly MenuService $menu,
         private readonly PlaceOrderFromBasketAction $placeOrder,
-        private readonly BasketService              $basket,
+        private readonly BasketService $basket,
     ) {}
 
     public function placeOrder(Request $request): RedirectResponse
@@ -34,7 +34,7 @@ class OrderController extends Controller
 
     public function show(string $uuid): View
     {
-        $order = $this->repository->findByUuid($uuid);
+        $order = $this->findOrderByUuid->handle($uuid);
 
         $this->shareLayoutVars();
 
@@ -43,7 +43,7 @@ class OrderController extends Controller
 
     public function success(string $uuid): View
     {
-        $order = $this->repository->findByUuid($uuid);
+        $order = $this->findOrderByUuid->handle($uuid);
 
         $this->shareLayoutVars();
 
@@ -52,7 +52,7 @@ class OrderController extends Controller
 
     public function error(string $uuid): View
     {
-        $order = $this->repository->findByUuid($uuid);
+        $order = $this->findOrderByUuid->handle($uuid);
 
         $this->shareLayoutVars();
 
@@ -62,10 +62,10 @@ class OrderController extends Controller
     private function shareLayoutVars(): void
     {
         view()->share([
-            'page'        => null,
+            'page' => null,
             'breadcrumbs' => collect(),
-            'headerMenu'  => $this->menu->getHeaderMenu(),
-            'footerMenu'  => $this->menu->getFooterMenu(),
+            'headerMenu' => $this->menu->getHeaderMenu(),
+            'footerMenu' => $this->menu->getFooterMenu(),
             'basketCount' => $this->basket->getCount(),
         ]);
     }

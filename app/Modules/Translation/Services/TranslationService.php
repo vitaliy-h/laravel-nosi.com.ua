@@ -3,7 +3,7 @@
 namespace App\Modules\Translation\Services;
 
 use App\Modules\Translation\Enums\Localization;
-use App\Modules\Translation\Repositories\TranslationRepository;
+use App\Modules\Translation\Queries\GetTranslationsByLocaleQuery;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Lang;
@@ -12,9 +12,7 @@ class TranslationService
 {
     private array $dictionaries = [];
 
-    public function __construct(private readonly TranslationRepository $translationRepository)
-    {
-    }
+    public function __construct(private readonly GetTranslationsByLocaleQuery $getTranslationsByLocale) {}
 
     /**
      * @param string $key
@@ -50,7 +48,7 @@ class TranslationService
         // replacements
         foreach ($replace as $search => $value) {
             $translation = str_replace(
-                ':' . $search,
+                ':'.$search,
                 $value,
                 $translation,
             );
@@ -81,7 +79,7 @@ class TranslationService
             $this->getCacheKey($locale),
             now()->addDay(),
             function () use ($locale) {
-                return $this->translationRepository->getByLocale($locale);
+                return $this->getTranslationsByLocale->handle($locale);
             },
         );
     }

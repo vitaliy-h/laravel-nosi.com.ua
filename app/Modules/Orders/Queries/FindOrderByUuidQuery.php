@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Modules\Orders\Repository;
+namespace App\Modules\Orders\Queries;
 
 use App\Modules\Orders\Models\Order;
 
-class OrderRepository
+class FindOrderByUuidQuery
 {
-    public function findByUuid(string $uuid): Order
+    public function handle(string $uuid): Order
     {
         return Order::where('uuid', $uuid)
             ->with(['items.product.category'])
