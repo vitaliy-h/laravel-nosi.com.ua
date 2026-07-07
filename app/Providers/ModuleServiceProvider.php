@@ -49,8 +49,8 @@ class ModuleServiceProvider extends ServiceProvider
 
         foreach ($modules as $module) {
 
-            $webRoute = $module . '/routes/web.php';
-            $apiRoute = $module . '/routes/api.php';
+            $webRoute = $module . '/Http/Routes/web.php';
+            $apiRoute = $module . '/Http/Routes/api.php';
 
             if (File::exists($webRoute)) {
                 Route::middleware('web')
