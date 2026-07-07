@@ -7,9 +7,10 @@ use App\Modules\Basket\Models\Basket;
 use App\Modules\Basket\Services\BasketService;
 use App\Modules\Core\Services\MenuService;
 use App\Modules\Orders\Actions\PlaceOrderFromBasketAction;
+use App\Modules\Orders\Dtos\CustomerData;
+use App\Modules\Orders\Http\Requests\PlaceOrderRequest;
 use App\Modules\Orders\Queries\FindOrderByUuidQuery;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class OrderController extends Controller
@@ -21,13 +22,11 @@ class OrderController extends Controller
         private readonly BasketService $basket,
     ) {}
 
-    public function placeOrder(Request $request): RedirectResponse
+    public function placeOrder(PlaceOrderRequest $request): RedirectResponse
     {
-        $basket = Basket::where('uuid', $request->input('basket_uuid'))->firstOrFail();
+        $basket = Basket::where('uuid', $request->validated('basket_uuid'))->firstOrFail();
 
-        $order = $this->placeOrder->handle($basket, $request->only([
-            'user_name', 'user_surname', 'user_email', 'user_phone', 'comment',
-        ]));
+        $order = $this->placeOrder->handle($basket, CustomerData::from($request->validated()));
 
         return redirect()->route('order.show', $order->uuid);
     }
