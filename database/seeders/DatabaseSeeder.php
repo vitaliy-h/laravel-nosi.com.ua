@@ -22,20 +22,20 @@ class DatabaseSeeder extends Seeder
         $this->call(SmsTemplateSeeder::class);
 
         if (config('modules.news')) {
-            $this->call(\App\Modules\News\Database\Seeders\NewsSeeder::class);
+            $this->call(\App\Modules\News\database\seeders\NewsSeeder::class);
         }
 
         if (config('modules.shop')) {
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-            $this->call(\App\Modules\Shop\Database\Seeders\ShopCategorySeeder::class);
-            $this->call(\App\Modules\Shop\Database\Seeders\ShopBrandSeeder::class);
-            $this->call(\App\Modules\Shop\Database\Seeders\ShopProductSeeder::class);
+            $this->call(\App\Modules\Shop\database\seeders\ShopCategorySeeder::class);
+            $this->call(\App\Modules\Shop\database\seeders\ShopBrandSeeder::class);
+            $this->call(\App\Modules\Shop\database\seeders\ShopProductSeeder::class);
             DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-            $this->call(\App\Modules\Shop\Database\Seeders\ShopOrderSeeder::class);
+            $this->call(\App\Modules\Shop\database\seeders\ShopOrderSeeder::class);
         }
 
         if (config('modules.geo')) {
-            $this->call(\App\Modules\Geo\Database\Seeders\GeoTablesSeeder::class);
+            $this->call(\App\Modules\Geo\database\seeders\GeoTablesSeeder::class);
         }
     }
 }

@@ -4,11 +4,11 @@ namespace Tests\Unit\Shop;
 
 use App\Modules\Orders\Enums\PaymentStatusEnum;
 use App\Modules\Orders\Models\Order;
-use App\Modules\Orders\Services\OrderActions;
+use App\Modules\Orders\Services\OrderPermissions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class OrderActionsTest extends TestCase
+class OrderPermissionsTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -20,7 +20,7 @@ class OrderActionsTest extends TestCase
             'payment_status' => PaymentStatusEnum::UNPAID,
         ]);
 
-        $this->assertTrue((new OrderActions($order))->canPay());
+        $this->assertTrue((new OrderPermissions($order))->canPay());
     }
 
     public function test_canPay_returns_false_when_processing(): void
@@ -29,7 +29,7 @@ class OrderActionsTest extends TestCase
             'payment_status' => PaymentStatusEnum::PROCESSING,
         ]);
 
-        $this->assertFalse((new OrderActions($order))->canPay());
+        $this->assertFalse((new OrderPermissions($order))->canPay());
     }
 
     public function test_canPay_returns_false_when_paid(): void
@@ -38,15 +38,15 @@ class OrderActionsTest extends TestCase
             'payment_status' => PaymentStatusEnum::PAID,
         ]);
 
-        $this->assertFalse((new OrderActions($order))->canPay());
+        $this->assertFalse((new OrderPermissions($order))->canPay());
     }
 
     // Order model accessor
 
-    public function test_order_actions_accessor_returns_order_actions_instance(): void
+    public function test_order_permissions_accessor_returns_order_permissions_instance(): void
     {
         $order = Order::factory()->create();
 
-        $this->assertInstanceOf(OrderActions::class, $order->actions);
+        $this->assertInstanceOf(OrderPermissions::class, $order->permissions);
     }
 }

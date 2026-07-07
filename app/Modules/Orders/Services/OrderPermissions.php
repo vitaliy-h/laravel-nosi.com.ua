@@ -5,7 +5,7 @@ namespace App\Modules\Orders\Services;
 use App\Modules\Orders\Enums\PaymentStatusEnum;
 use App\Modules\Orders\Models\Order;
 
-readonly class OrderActions
+readonly class OrderPermissions
 {
     public function __construct(private Order $order)
     {

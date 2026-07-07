@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Geo\Database\Seeders;
+namespace App\Modules\Geo\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;

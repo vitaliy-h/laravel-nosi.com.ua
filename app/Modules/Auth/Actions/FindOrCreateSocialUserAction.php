@@ -19,14 +19,7 @@ readonly class FindOrCreateSocialUserAction
             ->first();
 
         if ($existing) {
-            $existing->update([
-                'token'            => $socialUser->token,
-                'refresh_token'    => $socialUser->refreshToken,
-                'token_expires_at' => $socialUser->expiresIn
-                    ? now()->addSeconds($socialUser->expiresIn)
-                    : null,
-                'avatar'           => $socialUser->getAvatar(),
-            ]);
+            $existing->update($this->socialProfileData($socialUser));
 
             return $existing->user;
         }
@@ -46,16 +39,26 @@ readonly class FindOrCreateSocialUserAction
         }
 
         $user->socialProfiles()->create([
-            'provider'         => $provider,
-            'provider_id'      => $socialUser->getId(),
+            'provider'    => $provider,
+            'provider_id' => $socialUser->getId(),
+            ...$this->socialProfileData($socialUser),
+        ]);
+
+        return $user;
+    }
+
+    /**
+     * Token/avatar fields shared between creating and refreshing a social profile.
+     */
+    private function socialProfileData(SocialUser $socialUser): array
+    {
+        return [
             'token'            => $socialUser->token,
             'refresh_token'    => $socialUser->refreshToken,
             'token_expires_at' => $socialUser->expiresIn
                 ? now()->addSeconds($socialUser->expiresIn)
                 : null,
             'avatar'           => $socialUser->getAvatar(),
-        ]);
-
-        return $user;
+        ];
     }
 }

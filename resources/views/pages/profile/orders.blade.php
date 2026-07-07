@@ -88,7 +88,7 @@
                 </div>
 
                 <div class="order-footer">
-                    @if($order->actions->canPay())
+                    @if($order->permissions->canPay())
                         <a href="#"
                            role="button"
                            class="btn btn-track">
