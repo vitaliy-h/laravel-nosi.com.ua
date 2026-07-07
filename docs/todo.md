@@ -1,3 +1,15 @@
+### Architecture notes
+
+* koten4ik: Remove Observers — they're magic that hurts code readability and are an anti-pattern at this point. Replace them with events that get dispatched from actions.
+
+* koten4ik: Rename Actions to Commands.
+
+* koten4ik: Data going from a command to a view should go through a ViewModel — it's fed an Eloquent model and outputs an array of prepared fields ready for rendering.
+
+* koten4ik: Remove DTOs as well — in Laravel they're overkill, this is also usually used in enterprise-leaning projects.
+
+* koten4ik: All models and controllers should extend a base Model and a base Controller.
+
 ### TODO
 
 * Add endpoints for the Telegram bot and the corresponding libraries.
