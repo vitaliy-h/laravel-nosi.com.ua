@@ -4,6 +4,7 @@ namespace App\Modules\Orders\Actions;
 
 use App\Modules\Basket\Models\Basket;
 use App\Modules\Orders\Dtos\CreateOrderData;
+use App\Modules\Orders\Dtos\CustomerData;
 use App\Modules\Orders\Dtos\OrderItemData;
 use App\Modules\Orders\Models\Order;
 
@@ -13,7 +14,7 @@ readonly class PlaceOrderFromBasketAction
         private CreateOrderAction $createOrder,
     ) {}
 
-    public function handle(Basket $basket, array $customer = []): Order
+    public function handle(Basket $basket, CustomerData $customer): Order
     {
         $basket->loadMissing('items');
 
@@ -28,11 +29,11 @@ readonly class PlaceOrderFromBasketAction
         $order = $this->createOrder->handle(new CreateOrderData(
             user_id:      $basket->user_id ?? null,
             items:        $items,
-            user_name:    $customer['user_name'] ?? null,
-            user_surname: $customer['user_surname'] ?? null,
-            user_email:   $customer['user_email'] ?? null,
-            user_phone:   $customer['user_phone'] ?? null,
-            comment:      $customer['comment'] ?? null,
+            user_name:    $customer->user_name,
+            user_surname: $customer->user_surname,
+            user_email:   $customer->user_email,
+            user_phone:   $customer->user_phone,
+            comment:      $customer->comment,
         ));
 
         $basket->delete();

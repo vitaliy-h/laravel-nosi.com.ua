@@ -5,9 +5,13 @@ namespace App\Modules\Shop\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Modules\Basket\Actions\FindBasketAction;
 use App\Modules\Core\Dtos\BreadcrumbData;
-use App\Modules\Core\Enums\PageModule;
 use App\Modules\Core\Interfaces\ModuleIndexControllerInterface;
-use App\Modules\Shop\Repository\ShopRepository;
+use App\Modules\Shop\Queries\FindCategoryBySlugQuery;
+use App\Modules\Shop\Queries\FindProductByIdQuery;
+use App\Modules\Shop\Queries\GetAllCategoriesQuery;
+use App\Modules\Shop\Queries\GetCategoryBreadcrumbsQuery;
+use App\Modules\Shop\Queries\GetProductsByCategoryQuery;
+use App\Modules\Shop\Queries\PrepareShopFilterQuery;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -16,7 +20,12 @@ use Illuminate\Support\Facades\Auth;
 class IndexController extends Controller implements ModuleIndexControllerInterface
 {
     public function __construct(
-        private readonly ShopRepository $repository,
+        private readonly GetAllCategoriesQuery $getAllCategories,
+        private readonly PrepareShopFilterQuery $prepareShopFilter,
+        private readonly GetProductsByCategoryQuery $getProductsByCategory,
+        private readonly FindCategoryBySlugQuery $findCategoryBySlug,
+        private readonly GetCategoryBreadcrumbsQuery $getCategoryBreadcrumbs,
+        private readonly FindProductByIdQuery $findProductById,
         private readonly FindBasketAction $findBasket,
     ) {}
 
@@ -27,7 +36,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
 
     public function index(Request $request, array $segments = [])
     {
-        if (!empty($segments)) {
+        if (! empty($segments)) {
             $categorySlug = $segments[0] ?? null;
             $productSlugId = $segments[1] ?? null;
 
@@ -40,9 +49,9 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
             }
         }
 
-        $categories = $this->repository->allCategories();
-        $filter = $this->repository->prepareFilter(null, $request);
-        $products = $this->repository->productsByCategory(null, $filter);
+        $categories = $this->getAllCategories->handle();
+        $filter = $this->prepareShopFilter->handle(null, $request);
+        $products = $this->getProductsByCategory->handle(null, $filter);
 
         return view('pages.shop.category', compact(
             'categories',
@@ -50,19 +59,20 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
             'filter',
         ));
     }
+
     public function category(string $categorySlug, Request $request)
     {
-        $category = $this->repository->getCategoryBySlug($categorySlug);
+        $category = $this->findCategoryBySlug->handle($categorySlug);
 
         view()->share([
             'meta_title' => $category->meta_title ?: $category->title,
             'meta_description' => $category->meta_description,
         ]);
 
-        $categories = $this->repository->allCategories($category->id);
-        $breadcrumbs = $this->repository->breadcrumbs($category);
-        $filter = $this->repository->prepareFilter($category, $request);
-        $products = $this->repository->productsByCategory($category, $filter);
+        $categories = $this->getAllCategories->handle($category->id);
+        $breadcrumbs = $this->getCategoryBreadcrumbs->handle($category);
+        $filter = $this->prepareShopFilter->handle($category, $request);
+        $products = $this->getProductsByCategory->handle($category, $filter);
 
         return view('pages.shop.category', compact(
             'category',
@@ -72,24 +82,25 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
             'breadcrumbs'
         ));
     }
+
     public function product(string $categorySlug, string $productSlugId, Request $request)
     {
-        $category = $this->repository->getCategoryBySlug($categorySlug);
+        $category = $this->findCategoryBySlug->handle($categorySlug);
 
-        if (!preg_match('/^(.+)-(\d+)$/', $productSlugId, $matches)) {
+        if (! preg_match('/^(.+)-(\d+)$/', $productSlugId, $matches)) {
             abort(404);
         }
 
         $productSlug = $matches[1];
-        $productId = (int)$matches[2];
+        $productId = (int) $matches[2];
 
-        $product = $this->repository->getProductById($productId);
+        $product = $this->findProductById->handle($productId);
 
         if ($categorySlug !== $category->slug || $productSlug !== $product->slug) {
             return redirect()->to(
                 module_url('shop', [
                     $category->slug,
-                    $product->slug . '-' . $product->id,
+                    $product->slug.'-'.$product->id,
                 ]),
                 301
             );
@@ -100,14 +111,14 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
             'meta_description' => $product->meta_description,
         ]);
 
-        $breadcrumbs = $this->repository->breadcrumbs($category);
+        $breadcrumbs = $this->getCategoryBreadcrumbs->handle($category);
         $breadcrumbs->push(
             new BreadcrumbData(
                 title: $product->name ?? $product->title,
                 url: module_url('shop', [$category->slug, $product->slug_with_id])
             )
         );
-        $filter = $this->repository->prepareFilter($category, $request);
+        $filter = $this->prepareShopFilter->handle($category, $request);
 
         $basketQuantity = $this->basketQuantityFor($product->id) ?? 1;
 

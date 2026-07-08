@@ -88,6 +88,12 @@ return [
 
         'empty_basket_title' => 'Your shopping cart is currently empty.',
         'empty_basket_text'  => 'You haven\'t added any products yet. Browse our catalog and choose the items you need. Once you add products to your cart, they will appear here and be ready for checkout.',
+
+        'customer_information'      => 'Customer Information',
+        'placeholder_first_name'    => 'Your First Name',
+        'placeholder_last_name'     => 'Your Last Name',
+        'placeholder_email'         => 'Your Email',
+        'placeholder_phone'         => 'Your Phone Number',
     ],
 
     'impersonation' => [

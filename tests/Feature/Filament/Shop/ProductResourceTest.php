@@ -24,6 +24,11 @@ class ProductResourceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        if (!config('modules.shop')) {
+            $this->markTestSkipped('Shop module is disabled');
+        }
+
         $this->admin = $this->actingAsAdmin();
         $this->actingAs($this->admin);
     }

@@ -22,6 +22,11 @@ class FeedbackResourceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        if (!config('modules.feedback')) {
+            $this->markTestSkipped('Feedback module is disabled');
+        }
+
         $this->admin = $this->actingAsAdmin();
         $this->actingAs($this->admin);
     }

@@ -69,7 +69,7 @@ class AdminAuthenticationTest extends TestCase
                 'password' => 'wrong-password',
             ])
             ->call('authenticate')
-            ->assertHasFormErrors(['email']); // Filament base: failed auth → data.email
+            ->assertHasFormErrors(['login']);
 
         $this->assertGuest();
     }

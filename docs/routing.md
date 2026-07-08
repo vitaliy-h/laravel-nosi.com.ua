@@ -38,7 +38,7 @@ This separation ensures:
 All dynamic routing is handled in:
 
 ```
-app/Modules/Core/routes/web.php
+app/Modules/Core/Http/Routes/web.php
 ```
 
 This route forwards all requests to:
@@ -54,14 +54,14 @@ In addition to dynamic GET routing, each module can define its own **static Lara
 These routes are placed inside the module directory:
 
 ```
-app/Modules/{ModuleName}/routes/web.php
+app/Modules/{ModuleName}/Http/Routes/web.php
 ```
 
 ### Examples:
 
 ```
-app/Modules/Auth/routes/web.php
-app/Modules/Feedback/routes/web.php
+app/Modules/Auth/Http/Routes/web.php
+app/Modules/Feedback/Http/Routes/web.php
 ```
 
 
@@ -79,7 +79,7 @@ These routes are used for:
 All module route files are **automatically loaded by the system** if they exist in the expected path:
 
 ```
-app/Modules/{ModuleName}/routes/web.php
+app/Modules/{ModuleName}/Http/Routes/web.php
 ```
 
 ---

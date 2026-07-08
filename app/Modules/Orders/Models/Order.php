@@ -7,7 +7,7 @@ use App\Modules\Core\Traits\Models\CascadesDeletes;
 use App\Modules\Core\Traits\Models\HasUuid;
 use App\Modules\Orders\Enums\PaymentStatusEnum;
 use App\Modules\Orders\Enums\PaymentTypeEnum;
-use App\Modules\Orders\Services\OrderActions;
+use App\Modules\Orders\Services\OrderPermissions;
 use Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -65,8 +65,8 @@ class Order extends Model
         return t('shop.currency') . number_format($this->total_amount, 2);
     }
 
-    public function getActionsAttribute(): OrderActions
+    public function getPermissionsAttribute(): OrderPermissions
     {
-        return new OrderActions($this);
+        return new OrderPermissions($this);
     }
 }

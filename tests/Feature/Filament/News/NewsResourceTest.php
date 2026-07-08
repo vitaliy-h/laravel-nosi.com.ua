@@ -22,6 +22,11 @@ class NewsResourceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        if (!config('modules.news')) {
+            $this->markTestSkipped('News module is disabled');
+        }
+
         $this->admin = $this->actingAsAdmin();
         $this->actingAs($this->admin);
     }

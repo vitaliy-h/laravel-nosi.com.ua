@@ -3,32 +3,29 @@
 namespace App\Modules\Auth\Actions;
 
 use App\Modules\Auth\Dtos\PasswordRecoveryData;
+use App\Modules\Core\Enums\PageModule;
+use App\Modules\Core\Facades\UrlFacade;
+use App\Modules\Core\Queries\FindUserByEmailQuery;
 use App\Modules\Notification\Dtos\SendLetterTemplateData;
 use App\Modules\Notification\Enums\LetterEnum;
-use App\Modules\Core\Enums\PageModule;
 use App\Modules\Notification\Facades\LetterTemplateFacade;
-use App\Modules\Core\Facades\UrlFacade;
-use App\Modules\Core\Repositories\UsersRepository;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 
 class SendPasswordResetAction
 {
     public function __construct(
-        private readonly UsersRepository $usersRepository,
-    )
-    {
-    }
+        private readonly FindUserByEmailQuery $findUserByEmail,
+    ) {}
 
     public function handle(
         PasswordRecoveryData $data
-    ): void
-    {
+    ): void {
 
-        $user = $this->usersRepository
-            ->getByEmail($data->email);
+        $user = $this->findUserByEmail
+            ->handle($data->email);
 
-        if (!$user) {
+        if (! $user) {
             throw ValidationException::withMessages([
                 'email' => [t('auth.user_not_found')],
             ]);

@@ -42,7 +42,7 @@
                                             <div class="col-lg-6 col-12 mb-3 mb-lg-0">
                                                 <div class="product-info d-flex align-items-center">
                                                     <div class="product-image">
-                                                        <img src="{{$item->product->image}}" alt="Product" class="img-fluid" loading="lazy">
+                                                        <img src="{{$item->product->image}}" alt="{{ $item->product_name }}" class="img-fluid" loading="lazy">
                                                     </div>
                                                     <div class="product-details">
                                                         <h6 class="product-title">{{$item->product_name}}</h6>
@@ -62,7 +62,7 @@
                                             </div>
                                             <div class="col-12 col-lg-2 text-center">
                                                 <div class="price-tag">
-                                                    <span class="current-price">${{$item->selling_price}}</span>
+                                                    <span class="current-price">{{ t('shop.currency') }}{{$item->selling_price}}</span>
                                                 </div>
                                             </div>
                                             <div class="col-12 col-lg-2 text-center">
@@ -84,7 +84,7 @@
                                             </div>
                                             <div class="col-12 col-lg-2 text-center mt-3 mt-lg-0">
                                                 <div class="item-total">
-                                                    <span>$<span class="js_product_checkout_total_{{$item->product->id}}">{{$item->total}}</span></span>
+                                                    <span>{{ t('shop.currency') }}<span class="js_product_checkout_total_{{$item->product->id}}">{{$item->total}}</span></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -130,28 +130,28 @@
                                 <!-- Customer Information -->
                                 <div class="checkout-section" id="customer-info">
                                     <div class="section-header">
-                                        <h3>Customer Information</h3>
+                                        <h3>{{ t('shop.customer_information') }}</h3>
                                     </div>
                                     <div class="section-content">
                                         @php $user = auth()->user(); @endphp
                                         <div class="row">
                                             <div class="col-md-6 form-group">
                                                 <label for="user_name">{{t('profile.user_name')}}</label>
-                                                <input type="text" name="user_name" class="form-control" id="user_name" placeholder="Your First Name" value="{{ $user?->name }}">
+                                                <input type="text" name="user_name" class="form-control" id="user_name" placeholder="{{ t('shop.placeholder_first_name') }}" value="{{ $user?->name }}">
                                             </div>
                                             <div class="col-md-6 form-group">
                                                 <label for="user_surname">{{t('profile.user_surname')}}</label>
-                                                <input type="text" name="user_surname" class="form-control" id="user_surname" placeholder="Your Last Name" value="{{ $user?->surname }}">
+                                                <input type="text" name="user_surname" class="form-control" id="user_surname" placeholder="{{ t('shop.placeholder_last_name') }}" value="{{ $user?->surname }}">
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6 form-group">
                                                 <label for="user_email">{{t('profile.user_email')}}</label>
-                                                <input type="email" class="form-control" name="user_email" id="user_email" placeholder="Your Email" required="" value="{{ $user?->email }}">
+                                                <input type="email" class="form-control" name="user_email" id="user_email" placeholder="{{ t('shop.placeholder_email') }}" required="" value="{{ $user?->email }}">
                                             </div>
                                             <div class="col-md-6 form-group">
                                                 <label for="user_phone">{{t('profile.user_phone')}}</label>
-                                                <input type="tel" class="form-control" name="user_phone" id="user_phone" placeholder="Your Phone Number" value="{{ $user?->phone }}">
+                                                <input type="tel" class="form-control" name="user_phone" id="user_phone" placeholder="{{ t('shop.placeholder_phone') }}" value="{{ $user?->phone }}">
                                             </div>
                                         </div>
 
@@ -219,7 +219,7 @@
 
                                 <div class="summary-total">
                                     <span class="summary-label">{{ t('shop.total') }}</span>
-                                    <span class="summary-value ">$<span class="js_checkout_total">{{$basket->total_amount}}</span></span>
+                                    <span class="summary-value ">{{ t('shop.currency') }}<span class="js_checkout_total">{{$basket->total_amount}}</span></span>
                                 </div>
 
                                 <div class="checkout-button">

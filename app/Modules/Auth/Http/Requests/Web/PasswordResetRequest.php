@@ -24,12 +24,14 @@ class PasswordResetRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'token' => ['required', 'string'],
             'email' => ['required', 'email'],
             'password' => [
                 'required',
                 'confirmed',
                 Password::min(8),
             ],
+            'password_confirmation' => ['required', 'string'],
         ];
     }
 
