@@ -5,11 +5,20 @@ namespace Tests\Feature\Auth;
 use App\Modules\Auth\Actions\GenerateImpersonationTokenAction;
 use App\Modules\Core\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\InteractsWithPages;
 use Tests\TestCase;
 
 class ImpersonationTest extends TestCase
 {
     use RefreshDatabase;
+    use InteractsWithPages;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seedPagesForRouting();
+    }
 
     // ─── impersonate ───────────────────────────────────────────────────────────
 

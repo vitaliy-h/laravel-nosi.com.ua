@@ -11,5 +11,4 @@ enum FilterTypeEnum: string
     case IN = 'in';
     case RANGE = 'range';
     case SEARCH = 'search';
-    case SORT = 'sort';
 }

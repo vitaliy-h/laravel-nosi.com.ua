@@ -4,14 +4,15 @@ namespace App\Modules\Shop\Queries\Product;
 
 use App\Modules\Shop\Dtos\ProductSearchDto;
 use App\Modules\Shop\Enums\PerPageOptionEnum;
+use App\Modules\Shop\Enums\SortOptionEnum;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
-class SearchProductsQuery
+readonly class SearchProductsQuery
 {
     public function __construct(
-        private readonly BuildProductsQuery $buildProductsQuery,
+        private BuildProductsQuery $buildProductsQuery,
     ) {}
 
     /**
@@ -41,18 +42,13 @@ class SearchProductsQuery
 
     /**
      * Apply selected sorting to the products query.
-     * Falls back to default shop sorting when no valid sort option is provided.
+     * Falls back to default shop sorting when no sort option is provided.
      */
-    private function applySorting(Builder $query, ?string $sort): void
+    private function applySorting(Builder $query, ?SortOptionEnum $sort): void
     {
-        match ($sort) {
-            'price_asc' => $query->orderBy('price', 'asc'),
-            'price_desc' => $query->orderBy('price', 'desc'),
-            'newest' => $query->orderBy('id', 'desc'),
-            'title_asc' => $query->orderBy('title', 'asc'),
-            'title_desc' => $query->orderBy('title', 'desc'),
-            default => $query->orderBy('id', 'desc'),
-        };
+        [$column, $direction] = ($sort ?? SortOptionEnum::NEWEST)->orderBy();
+
+        $query->orderBy($column, $direction);
     }
 
     /**

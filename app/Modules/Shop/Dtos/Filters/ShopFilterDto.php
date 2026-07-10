@@ -11,18 +11,17 @@ class ShopFilterDto extends Data
         public readonly InFilterDto $brand,
         public readonly RangeFilterDto $price,
         public readonly SearchFilterDto $search,
-        public readonly SortFilterDto $sort,
     ) {
     }
 
     public function withBrand(InFilterDto $brand): self
     {
-        return new self($brand, $this->price, $this->search, $this->sort);
+        return new self($brand, $this->price, $this->search);
     }
 
     public function withPrice(RangeFilterDto $price): self
     {
-        return new self($this->brand, $price, $this->search, $this->sort);
+        return new self($this->brand, $price, $this->search);
     }
 
     /**
@@ -34,7 +33,6 @@ class ShopFilterDto extends Data
             'brand' => $this->brand,
             'price' => $this->price,
             'search' => $this->search,
-            'sort' => $this->sort,
         ]);
     }
 }

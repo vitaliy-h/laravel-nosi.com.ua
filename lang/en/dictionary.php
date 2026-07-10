@@ -45,6 +45,8 @@ return [
         'sort_option_newest' => 'Newest Arrivals',
         'sort_option_price_asc' => 'Price: Low to High',
         'sort_option_price_desc' => 'Price: High to Low',
+        'sort_option_title_asc' => 'Title: A to Z',
+        'sort_option_title_desc' => 'Title: Z to A',
 
         'per_page_option' => ':count per page',
 

@@ -2,8 +2,10 @@
 
 namespace App\Modules\Shop\Http\Requests;
 
+use App\Modules\Shop\Enums\SortOptionEnum;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ShopProductsRequest extends FormRequest
 {
@@ -24,7 +26,7 @@ class ShopProductsRequest extends FormRequest
     {
         return [
             'category_id' => ['nullable', 'integer', 'exists:shop_categories,id'],
-            'sort' => ['nullable', 'string'],
+            'sort' => ['nullable', Rule::enum(SortOptionEnum::class)],
         ];
     }
 }

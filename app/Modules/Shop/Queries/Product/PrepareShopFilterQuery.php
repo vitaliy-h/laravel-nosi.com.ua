@@ -6,7 +6,6 @@ use App\Modules\Shop\Dtos\Filters\InFilterDto;
 use App\Modules\Shop\Dtos\Filters\RangeFilterDto;
 use App\Modules\Shop\Dtos\Filters\SearchFilterDto;
 use App\Modules\Shop\Dtos\Filters\ShopFilterDto;
-use App\Modules\Shop\Dtos\Filters\SortFilterDto;
 use App\Modules\Shop\Enums\FilterTypeEnum;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
@@ -44,11 +43,6 @@ readonly class PrepareShopFilterQuery
                 key: 'search',
                 type: FilterTypeEnum::SEARCH,
                 value: $request->query('search'),
-            ),
-            sort: new SortFilterDto(
-                key: 'sort',
-                type: FilterTypeEnum::SORT,
-                value: $request->query('sort'),
             ),
         );
 

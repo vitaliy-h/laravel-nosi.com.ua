@@ -6,16 +6,19 @@ use App\Modules\Core\Abstract\BaseApiController;
 use App\Modules\Core\Http\Resources\BasePaginationResource;
 use App\Modules\Shop\Dtos\CategorySearchDto;
 use App\Modules\Shop\Dtos\ProductSearchDto;
+use App\Modules\Shop\Enums\SortOptionEnum;
 use App\Modules\Shop\Http\Requests\ShopCategoriesRequest;
 use App\Modules\Shop\Http\Requests\ShopProductsRequest;
 use App\Modules\Shop\Http\Resources\CategoryResource;
 use App\Modules\Shop\Http\Resources\ProductResource;
+use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Queries\Category\FindCategoryByIdQuery;
 use App\Modules\Shop\Queries\Category\SearchCategoriesQuery;
 use App\Modules\Shop\Queries\Product\FindProductByIdQuery;
 use App\Modules\Shop\Queries\Product\PrepareShopFilterQuery;
 use App\Modules\Shop\Queries\Product\SearchProductsQuery;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 
 class ShopController extends BaseApiController
 {
@@ -37,10 +40,33 @@ class ShopController extends BaseApiController
             limit: $request->integer('limit') ?: null,
         ));
 
+        $this->attachVisibleChildren($categories);
+
         return $this->success(
             ['categories' => CategoryResource::collection($categories)],
             message: t('shop.categories_list')
         );
+    }
+
+    /**
+     * Preload the whole visible category tree in one query and attach each node's
+     * children in memory, instead of letting CategoryResource query children per node.
+     */
+    private function attachVisibleChildren(Collection $categories): void
+    {
+        if ($categories->isEmpty()) {
+            return;
+        }
+
+        $byParent = Category::visible()->defaultOrder()->get()->groupBy('parent_id');
+
+        $assign = function (Category $node) use (&$assign, $byParent) {
+            $children = $byParent->get($node->id, collect());
+            $node->setRelation('children', $children);
+            $children->each($assign);
+        };
+
+        $categories->each($assign);
     }
 
     public function category(int $id): JsonResponse
@@ -59,7 +85,7 @@ class ShopController extends BaseApiController
             ? $this->findCategoryById->handle($request->integer('category_id'))
             : null;
         $filter = $this->prepareShopFilter->handle($category, $request);
-        $products = $this->searchProducts->handle(new ProductSearchDto(category: $category, filter: $filter, sort: $request->query('sort'), paginate: true));
+        $products = $this->searchProducts->handle(new ProductSearchDto(category: $category, filter: $filter, sort: SortOptionEnum::tryFrom((string) $request->query('sort')), paginate: true));
 
         return $this->success([
             'products' => ProductResource::collection($products),

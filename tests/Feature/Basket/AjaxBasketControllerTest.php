@@ -7,11 +7,20 @@ use App\Modules\Basket\Models\BasketProduct;
 use App\Modules\Core\Models\User;
 use App\Modules\Shop\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\InteractsWithPages;
 use Tests\TestCase;
 
 class AjaxBasketControllerTest extends TestCase
 {
     use RefreshDatabase;
+    use InteractsWithPages;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seedPagesForRouting();
+    }
 
     public function test_change_count_creates_item_for_guest(): void
     {

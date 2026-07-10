@@ -16,7 +16,9 @@ class CategoryResource extends JsonResource
             'image'            => $this->image,
             'meta_title'       => $this->meta_title,
             'meta_description' => $this->meta_description,
-            'children'         => self::collection($this->children()->visible()->get()),
+            'children'         => self::collection(
+                $this->relationLoaded('children') ? $this->children : $this->children()->visible()->get()
+            ),
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Modules\Shop\Dtos;
 
 use App\Modules\Shop\Dtos\Filters\ShopFilterDto;
+use App\Modules\Shop\Enums\SortOptionEnum;
 use App\Modules\Shop\Models\Category;
 
 readonly class ProductSearchDto
@@ -10,7 +11,7 @@ readonly class ProductSearchDto
     public function __construct(
         public ?Category $category = null,
         public ?ShopFilterDto $filter = null,
-        public ?string $sort = null,
+        public ?SortOptionEnum $sort = null,
         public bool $random = false,
         public ?int $limit = null,
         public bool $paginate = false,

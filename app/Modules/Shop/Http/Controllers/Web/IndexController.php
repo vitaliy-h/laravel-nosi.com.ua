@@ -6,6 +6,7 @@ use App\Modules\Basket\Actions\FindBasketAction;
 use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Core\Dtos\BreadcrumbData;
 use App\Modules\Shop\Dtos\ProductSearchDto;
+use App\Modules\Shop\Enums\SortOptionEnum;
 use App\Modules\Shop\Queries\Category\FindCategoryBySlugQuery;
 use App\Modules\Shop\Queries\Category\GetAllCategoriesQuery;
 use App\Modules\Shop\Queries\Category\GetCategoryBreadcrumbsQuery;
@@ -31,7 +32,7 @@ class IndexController extends BaseWebController
     {
         $categories = $this->getAllCategories->handle();
         $filter = $this->prepareShopFilter->handle(null, $request);
-        $products = $this->searchProducts->handle(new ProductSearchDto(filter: $filter, sort: $request->query('sort'), paginate: true));
+        $products = $this->searchProducts->handle(new ProductSearchDto(filter: $filter, sort: SortOptionEnum::tryFrom((string) $request->query('sort')), paginate: true));
 
         return view('pages.shop.category', compact(
             'categories',
@@ -52,7 +53,7 @@ class IndexController extends BaseWebController
         $categories = $this->getAllCategories->handle($category->id);
         $breadcrumbs = $this->getCategoryBreadcrumbs->handle($category);
         $filter = $this->prepareShopFilter->handle($category, $request);
-        $products = $this->searchProducts->handle(new ProductSearchDto(category: $category, filter: $filter, sort: $request->query('sort'), paginate: true));
+        $products = $this->searchProducts->handle(new ProductSearchDto(category: $category, filter: $filter, sort: SortOptionEnum::tryFrom((string) $request->query('sort')), paginate: true));
 
         return view('pages.shop.category', compact(
             'category',
@@ -95,14 +96,12 @@ class IndexController extends BaseWebController
                 url: save_route('shop.product', [$category->slug, $product->slug_with_id])
             )
         );
-        $filter = $this->prepareShopFilter->handle($category, $request);
 
         $basketQuantity = $this->basketQuantityFor($product->id) ?? 1;
 
         return view('pages.shop.product', compact(
             'category',
             'product',
-            'filter',
             'breadcrumbs',
             'basketQuantity',
         ));
