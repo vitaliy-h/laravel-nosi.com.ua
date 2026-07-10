@@ -92,7 +92,7 @@ class PagesTableSeeder extends Seeder
             [
                 'title' => 'Basket',
                 'slug' => 'basket',
-                'module' => PageModule::BASKET,
+                'module' => PageModule::SHOP_BASKET,
                 'display' => true,
                 'display_menu' => true,
                 'display_menu_footer' => true,

@@ -3,7 +3,7 @@
 namespace App\Modules\Profile\Http\Controllers\Web;
 
 use App\Modules\Core\Abstract\BaseWebController;
-use App\Modules\Orders\Enums\PaymentStatusEnum;
+use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
 use App\Modules\Profile\Dtos\OrderFilterData;
 use App\Modules\Profile\Queries\FindUserOrderQuery;
 use App\Modules\Profile\Queries\GetUserOrdersQuery;

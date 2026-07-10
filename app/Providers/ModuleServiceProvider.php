@@ -26,6 +26,15 @@ class ModuleServiceProvider extends ServiceProvider
     private const array ROOT_LEVEL_MODULES = ['Core', 'Sitemap'];
 
     /**
+     * Folder-name overrides for the URL prefix of unmapped modules (see
+     * registerUnmappedModuleRoute()), so renaming a module folder doesn't
+     * silently change its public URLs.
+     */
+    private const array MODULE_PREFIX_OVERRIDES = [
+        'ShopOrders' => 'orders',
+    ];
+
+    /**
      * Register services.
      */
     public function register(): void
@@ -80,10 +89,10 @@ class ModuleServiceProvider extends ServiceProvider
     /**
      * Register a module's web routes, prefixed by the module's page slug (from DB)
      * when the module directory maps to a PageModule case. Modules that don't map
-     * to a PageModule (Orders, _debug, Translation, Notification, ...) get a
+     * to a PageModule (ShopOrders, _debug, Translation, Notification, ...) get a
      * prefix derived from their own folder name instead, so their routes can
      * never collide with a PageModule's DB-driven prefix or another module's
-     * routes (e.g. `Orders` → `/orders/...`).
+     * routes (e.g. `ShopOrders` → `/orders/...`, via MODULE_PREFIX_OVERRIDES).
      *
      * When a DB page is found for the module, the CMS page context (page,
      * breadcrumbs, meta, menus, basket count) is auto-shared to the view via the
@@ -136,7 +145,9 @@ class ModuleServiceProvider extends ServiceProvider
             return;
         }
 
-        Route::middleware('web')->prefix(Str::kebab($name))->group($webRoute);
+        $prefix = self::MODULE_PREFIX_OVERRIDES[$name] ?? Str::kebab($name);
+
+        Route::middleware('web')->prefix($prefix)->group($webRoute);
     }
 
     private function resolveModulePage(PageModule $pageModule): ?Page

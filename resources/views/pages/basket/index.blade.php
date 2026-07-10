@@ -52,7 +52,7 @@
                                                             <input type="hidden" name="id" value="{{$item->product->id}}">
                                                             <input type="hidden" name="count" value="0">
                                                             <input type="hidden" name="basket_uuid" value="{{$basket->uuid}}">
-                                                            <input type="hidden" name="action" value="{{ \App\Modules\Basket\Enums\BasketAction::DeleteCheckout->value }}">
+                                                            <input type="hidden" name="action" value="{{ \App\Modules\ShopBasket\Enums\BasketAction::DeleteCheckout->value }}">
                                                             <button type="submit" class="remove-item">
                                                                 <i class="bi bi-trash"></i> {{ t('shop.remove') }}
                                                             </button>
@@ -70,7 +70,7 @@
                                                     @csrf
                                                     <input type="hidden" name="id" value="{{$item->product->id}}">
                                                     <input type="hidden" name="basket_uuid" value="{{$basket->uuid}}">
-                                                    <input type="hidden" name="action" value="{{ \App\Modules\Basket\Enums\BasketAction::ChangeCountCheckout->value }}">
+                                                    <input type="hidden" name="action" value="{{ \App\Modules\ShopBasket\Enums\BasketAction::ChangeCountCheckout->value }}">
                                                     <div class="quantity-selector">
                                                         <button type="button" class="quantity-btn decrease">
                                                             <i class="bi bi-dash"></i>

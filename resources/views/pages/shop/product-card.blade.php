@@ -32,7 +32,7 @@
                 @csrf
                 <input type="hidden" name="id" value="{{ $product->id }}">
                 <input type="hidden" name="count" value="1">
-                <input type="hidden" name="action" value="{{ \App\Modules\Basket\Enums\BasketAction::ChangeCount->value }}">
+                <input type="hidden" name="action" value="{{ \App\Modules\ShopBasket\Enums\BasketAction::ChangeCount->value }}">
                 <button type="submit" class="btn btn-add-to-cart add-to-cart-btn">
                     <i class="bi bi-bag-plus me-2"></i>{{ t('shop.add_to_cart') }}
                 </button>

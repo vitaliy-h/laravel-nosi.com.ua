@@ -4,7 +4,7 @@ namespace App\Modules\Auth\Http\Controllers\Web;
 
 use App\Modules\Auth\Actions\ConnectSocialProfileAction;
 use App\Modules\Auth\Actions\FindOrCreateSocialUserAction;
-use App\Modules\Basket\Actions\MergeBasketOnAuthAction;
+use App\Modules\ShopBasket\Actions\MergeBasketOnAuthAction;
 use App\Modules\Core\Abstract\BaseWebController;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;

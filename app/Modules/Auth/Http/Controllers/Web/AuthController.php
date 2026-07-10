@@ -2,7 +2,7 @@
 
 namespace App\Modules\Auth\Http\Controllers\Web;
 
-use App\Modules\Basket\Actions\MergeBasketOnAuthAction;
+use App\Modules\ShopBasket\Actions\MergeBasketOnAuthAction;
 use App\Modules\Auth\Actions\LoginAction;
 use App\Modules\Auth\Actions\RegisterAction;
 use App\Modules\Auth\Actions\ResetPasswordAction;

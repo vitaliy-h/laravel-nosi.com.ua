@@ -2,7 +2,7 @@
 
 namespace App\Modules\Profile\Queries;
 
-use App\Modules\Orders\Models\Order;
+use App\Modules\ShopOrders\Models\Order;
 use App\Modules\Profile\Dtos\OrderFilterData;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 

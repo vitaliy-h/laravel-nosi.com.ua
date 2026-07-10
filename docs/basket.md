@@ -1,6 +1,6 @@
 # Basket
 
-The `app/Modules/Basket` module implements the shopping cart for the `Shop` module.
+The `app/Modules/ShopBasket` module implements the shopping cart for the `Shop` module.
 The basket is available to guests (no auth) and logged-in users, and supports being
 shared via a direct link.
 
@@ -71,7 +71,7 @@ sends it to someone else:
 ### Cleanup of abandoned baskets
 
 Guest baskets that never get attached to a user pile up over time. A scheduled
-command, `basket:clear-abandoned` (`app/Modules/Basket/Console/Commands/ClearAbandonedBasketsCommand.php`),
+command, `basket:clear-abandoned` (`app/Modules/ShopBasket/Console/Commands/ClearAbandonedBasketsCommand.php`),
 deletes baskets where `user_id IS NULL` and `created_at` is older than a configurable
 number of days (`30` by default, override with `basket:clear-abandoned {days}`).
 Deletion goes through the Eloquent model (not a bulk query) so the `CascadesDeletes`
@@ -178,7 +178,7 @@ always up to date without an explicit call after every item action.
 ### Routes
 
 ```php
-// app/Modules/Basket/Http/Routes/web.php
+// app/Modules/ShopBasket/Http/Routes/web.php
 Route::get('/', [IndexController::class, 'index'])->name('basket.index');
 Route::get('/checkout', [IndexController::class, 'checkout'])->name('basket.checkout');
 Route::get('/{uuid}', [IndexController::class, 'show'])->name('basket.show');

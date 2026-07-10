@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Shop;
 
-use App\Modules\Basket\Models\Basket;
-use App\Modules\Basket\Models\BasketProduct;
-use App\Modules\Orders\Models\Order;
+use App\Modules\ShopBasket\Models\Basket;
+use App\Modules\ShopBasket\Models\BasketProduct;
+use App\Modules\ShopOrders\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

@@ -2,7 +2,7 @@
 
 namespace App\Modules\Core\Services;
 
-use App\Modules\Basket\Services\BasketService;
+use App\Modules\ShopBasket\Services\BasketService;
 use App\Modules\Core\Models\Page;
 use App\Modules\Core\Queries\GetPageBreadcrumbsQuery;
 

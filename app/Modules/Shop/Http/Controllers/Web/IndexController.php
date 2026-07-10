@@ -2,7 +2,7 @@
 
 namespace App\Modules\Shop\Http\Controllers\Web;
 
-use App\Modules\Basket\Actions\FindBasketAction;
+use App\Modules\ShopBasket\Actions\FindBasketAction;
 use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Core\Dtos\BreadcrumbData;
 use App\Modules\Shop\Dtos\ProductSearchDto;

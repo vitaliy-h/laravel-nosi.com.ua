@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Shop;
 
-use App\Modules\Orders\Dtos\CreateOrderData;
-use App\Modules\Orders\Dtos\OrderItemData;
-use App\Modules\Orders\Enums\PaymentStatusEnum;
-use App\Modules\Orders\Enums\PaymentTypeEnum;
+use App\Modules\ShopOrders\Dtos\CreateOrderData;
+use App\Modules\ShopOrders\Dtos\OrderItemData;
+use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
+use App\Modules\ShopOrders\Enums\PaymentTypeEnum;
 use Tests\TestCase;
 
 class OrderDtoTest extends TestCase

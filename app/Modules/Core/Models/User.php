@@ -47,7 +47,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function basket(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(\App\Modules\Basket\Models\Basket::class);
+        return $this->hasOne(\App\Modules\ShopBasket\Models\Basket::class);
     }
 
     public function getFormattedNameAttribute()

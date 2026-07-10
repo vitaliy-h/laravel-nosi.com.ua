@@ -3,7 +3,7 @@
 namespace Tests\Feature\Shop;
 
 use App\Modules\Shop\Models\Category;
-use App\Modules\Orders\Models\Order;
+use App\Modules\ShopOrders\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
