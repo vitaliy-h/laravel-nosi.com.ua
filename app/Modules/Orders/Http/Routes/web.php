@@ -1,12 +1,10 @@
 <?php
-Route::post('/order/place', [\App\Modules\Orders\Http\Controllers\Web\OrderController::class, 'placeOrder'])
-    ->name('order.place');
 
-Route::get('/order/{uuid}', [\App\Modules\Orders\Http\Controllers\Web\OrderController::class, 'show'])
-    ->name('order.show');
+use App\Modules\Orders\Http\Controllers\Web\IndexController;
+use App\Modules\Orders\Http\Controllers\Web\OrderController;
 
-Route::get('/order/{uuid}/success', [\App\Modules\Orders\Http\Controllers\Web\OrderController::class, 'success'])
-    ->name('order.success');
+Route::post('/create', [OrderController::class, 'create'])->name('order.create');
 
-Route::get('/order/{uuid}/error', [\App\Modules\Orders\Http\Controllers\Web\OrderController::class, 'error'])
-    ->name('order.error');
+Route::get('/{uuid}', [IndexController::class, 'show'])->name('order.show');
+Route::get('/{uuid}/success', [IndexController::class, 'success'])->name('order.success');
+Route::get('/{uuid}/error', [IndexController::class, 'error'])->name('order.error');

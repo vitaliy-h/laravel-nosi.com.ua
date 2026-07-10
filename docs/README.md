@@ -7,7 +7,7 @@ Production-ready starter based on Laravel + Filament.
 ## Stack
 
 * PHP 8.4
-* Laravel 13.7
+* Laravel 13.17
 * Filament v5.6 (Admin Panel)
 * MySQL 8.4
 * Redis
@@ -42,6 +42,8 @@ Production-ready starter based on Laravel + Filament.
 
 * [General README](./README.md)
 * [local Setup](./local_setup.md)
+* [Quick Commands](./commands.md)
+* [Claude Code Setup](./claude.md)
 * [Architecture Overview](./architecture.md)
     * [routing](routing.md)
     * [images](images.md)

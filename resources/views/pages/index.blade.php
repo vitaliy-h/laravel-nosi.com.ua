@@ -75,7 +75,7 @@
                 </div>
 
                 <div class="text-center mt-5" data-aos="fade-up">
-                    <a href="{{module_url('shop')}}" class="view-all-btn">View All Products <i
+                    <a href="{{save_route('shop.index')}}" class="view-all-btn">View All Products <i
                             class="bi bi-arrow-right"></i></a>
                 </div>
 

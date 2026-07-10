@@ -2,17 +2,14 @@
 
 namespace App\Modules\Index\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
-use App\Modules\Core\Interfaces\ModuleIndexControllerInterface;
+use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Shop\Queries\GetBestSellersQuery;
 use App\Modules\Shop\Queries\GetFeaturedCategoriesQuery;
 use App\Modules\Shop\Queries\GetFeaturedProductsQuery;
 use App\Modules\Shop\Queries\GetSpecialCategoriesQuery;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
-class IndexController extends Controller implements ModuleIndexControllerInterface
+class IndexController extends BaseWebController
 {
     public function __construct(
         private readonly GetBestSellersQuery $getBestSellers,
@@ -21,12 +18,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         private readonly GetSpecialCategoriesQuery $getSpecialCategories,
     ) {}
 
-    public function accessCheck(): RedirectResponse|Response|null
-    {
-        return null;
-    }
-
-    public function index(Request $request, array $segments = [])
+    public function index(Request $request)
     {
         $bestSellers = $this->getBestSellers->handle(4);
         $featuredCategories = $this->getFeaturedCategories->handle(4);

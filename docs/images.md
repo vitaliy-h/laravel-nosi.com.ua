@@ -327,7 +327,7 @@ Browser GET /storage/thumb/shop_products/1/img/product.jpg
 After admin save, previews are usually already on disk (eager generation). The on-demand
 branch above applies as a fallback when generation did not run or failed.
 
-Route: `GET /storage/{preset}/{path}` (registered in `app/Modules/Core/routes/web.php`).
+Route: `GET /storage/{preset}/{path}` (registered in `app/Modules/Core/Http/Routes/web.php`).
 
 **Breaking change:** URLs under `/img/{preset}/…` are no longer served. Cached preview files on disk are unchanged — no cache rebuild is required.
 

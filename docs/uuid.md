@@ -80,25 +80,20 @@ public function findByUuid(string $uuid): Order
 
 ## Route example
 
-Direct routes (not CMS-managed) go in the module's `routes/web.php`:
+Routes go in the module's `Http/Routes/web.php`:
 
 ```php
-// app/Modules/Shop/routes/web.php
+// app/Modules/Shop/Http/Routes/web.php
 
 Route::get('/order/{uuid}', [OrderController::class, 'show'])
     ->name('order.show');
 ```
 
-Controllers that bypass `ModuleRouteController` must share layout variables manually:
-
-```php
-view()->share([
-    'page'        => null,
-    'breadcrumbs' => collect(),
-    'headerMenu'  => $this->menu->getHeaderMenu(),
-    'footerMenu'  => $this->menu->getFooterMenu(),
-]);
-```
+For modules mapped to a `PageModule`, `ShareModulePageContext` middleware
+shares `page`, `breadcrumbs`, `headerMenu`, `footerMenu`, `basketCount`
+automatically — no manual `view()->share()` needed. Modules without a
+`PageModule` mapping (`Core`, `Orders`, etc.) don't get this and must share
+what the layout needs themselves. See `docs/routing.md`.
 
 ---
 

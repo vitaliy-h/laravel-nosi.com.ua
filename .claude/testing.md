@@ -37,8 +37,6 @@ If containers are not up: `./vendor/bin/sail up -d`.
 docker compose exec laravel.test php artisan test
 ```
 
-See also: [`.cursor/rules/run-tests-in-sail.mdc`](../.cursor/rules/run-tests-in-sail.mdc).
-
 ## Test structure
 
 | Directory | Purpose |
@@ -72,7 +70,7 @@ Use `RefreshDatabase` in any test that reads or writes the database.
 
 ### Frontend routing
 
-Public pages are resolved via the `pages` table (`ModuleRouteController`). For smoke tests and web auth, seed routes in `setUp()` or per test:
+Each module's route prefix is resolved from the `pages` table at boot (see `docs/routing.md`). For smoke tests and web auth, seed pages in `setUp()` or per test so the prefixes resolve correctly:
 
 ```php
 $this->seedPagesForRouting(); // wraps PagesTableSeeder
@@ -139,8 +137,8 @@ Pattern follows existing factories (`NewsFactory`, `UserFactory`): explicit `pro
 | `BrandFactory` | `App\Modules\Shop\Models\Brand` |
 | `CategoryFactory` | `App\Modules\Shop\Models\Category` — `invisible()` |
 | `ProductFactory` | `App\Modules\Shop\Models\Product` — `forCategory()`, `invisible()` |
-| `OrderFactory` | `App\Modules\Shop\Models\Order` |
-| `OrderProductFactory` | `App\Modules\Shop\Models\OrderProduct` |
+| `OrderFactory` | `App\Modules\Orders\Models\Order` |
+| `OrderProductFactory` | `App\Modules\Orders\Models\OrderProduct` |
 | `FeedbackFactory` | `App\Modules\Feedback\Models\Feedback` — states: `processed()` |
 | `LetterTemplateFactory` | `App\Modules\Notification\Models\LetterTemplate` |
 | `SmsTemplateFactory` | `App\Modules\Notification\Models\SmsTemplate` |

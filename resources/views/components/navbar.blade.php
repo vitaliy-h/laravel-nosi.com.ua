@@ -24,7 +24,7 @@
                 </a>
 
                 <!-- Search -->
-                <form class="search-form desktop-search-form" action="{{module_url('shop')}}">
+                <form class="search-form desktop-search-form" action="{{save_route('shop.index')}}">
                     <div class="input-group">
                         <input type="text" class="form-control" name="search" placeholder="Search for products" value="{{ request('search') }}">
                         <button class="btn" type="submit">
@@ -50,8 +50,8 @@
                             @guest
                                 <div class="dropdown-footer">
 
-                                    <a href="{{module_url('auth',[],['login'=>null])}}" class="btn btn-primary w-100 mb-2">{{t('auth.login')}}</a>
-                                    <a href="{{module_url('auth',[],['register'=>null])}}" class="btn btn-outline-primary w-100">{{t('auth.register')}}</a>
+                                    <a href="{{save_route('auth.index')}}?login" class="btn btn-primary w-100 mb-2">{{t('auth.login')}}</a>
+                                    <a href="{{save_route('auth.index')}}?register" class="btn btn-outline-primary w-100">{{t('auth.register')}}</a>
                                 </div>
                             @endguest
                             @auth
@@ -60,11 +60,11 @@
                                     <p class="mb-0">{{t('profile.profile_dropdown_header_subtext')}}</p>
                                 </div>
                                 <div class="dropdown-body">
-                                    <a class="dropdown-item d-flex align-items-center" href="{{module_url('profile', 'edit')}}">
+                                    <a class="dropdown-item d-flex align-items-center" href="{{save_route('profile.edit')}}">
                                         <i class="bi bi-person-circle me-2"></i>
                                         <span>{{t('profile.my_profile')}}</span>
                                     </a>
-                                    <a class="dropdown-item d-flex align-items-center" href="{{module_url('profile', 'orders')}}">
+                                    <a class="dropdown-item d-flex align-items-center" href="{{save_route('profile.orders')}}">
                                         <i class="bi bi-bag me-2"></i>
                                         <span>{{t('profile.orders')}}</span>
                                     </a>
@@ -707,7 +707,7 @@
     <!-- Mobile Search Form -->
     <div class="collapse" id="mobileSearch">
         <div class="container">
-            <form class="search-form" action="{{module_url('shop')}}">
+            <form class="search-form" action="{{save_route('shop.index')}}">
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" placeholder="Search for products" value="{{ request('search') }}">
                     <button class="btn" type="submit">

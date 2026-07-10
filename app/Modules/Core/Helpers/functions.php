@@ -1,7 +1,7 @@
 <?php
 
-use App\Modules\Core\Enums\PageModule;
 use App\Modules\Translation\Facade\Trans;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
 function t(string $key, array $replace = []): string
@@ -9,10 +9,18 @@ function t(string $key, array $replace = []): string
     return Trans::get($key, $replace);
 }
 
-if (!function_exists('module_url')) {
-    function module_url(PageModule|string $module, array|string $params = [], array $query = []): string
+if (!function_exists('save_route')) {
+    /**
+     * Same signature as Laravel's route(), but returns '/' instead of throwing
+     * when the route isn't registered (e.g. module disabled or not migrated yet).
+     */
+    function save_route(string $name, mixed $parameters = [], bool $absolute = true): string
     {
-        return \App\Modules\Core\Facades\UrlFacade::getModuleUrl($module, $params, $query);
+        if (!Route::has($name)) {
+            return '/';
+        }
+
+        return route($name, $parameters, $absolute);
     }
 }
 

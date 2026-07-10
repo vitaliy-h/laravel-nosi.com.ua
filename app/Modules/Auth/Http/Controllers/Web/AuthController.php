@@ -2,7 +2,6 @@
 
 namespace App\Modules\Auth\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
 use App\Modules\Basket\Actions\MergeBasketOnAuthAction;
 use App\Modules\Auth\Actions\LoginAction;
 use App\Modules\Auth\Actions\RegisterAction;
@@ -16,12 +15,12 @@ use App\Modules\Auth\Http\Requests\LoginRequest;
 use App\Modules\Auth\Http\Requests\RegisterRequest;
 use App\Modules\Auth\Http\Requests\Web\PasswordRecoveryRequest;
 use App\Modules\Auth\Http\Requests\Web\PasswordResetRequest;
-use App\Modules\Core\Enums\PageModule;
+use App\Modules\Core\Abstract\BaseWebController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class AuthController extends Controller
+class AuthController extends BaseWebController
 {
     public function login(LoginRequest $request, LoginAction $action, MergeBasketOnAuthAction $mergeBasket): RedirectResponse
     {
@@ -36,7 +35,7 @@ class AuthController extends Controller
 
         $mergeBasket->handle($user);
 
-        return redirect()->to(module_url('profile'));
+        return redirect()->to(save_route('profile.edit'));
     }
 
     public function logout(Request $request): RedirectResponse
@@ -47,7 +46,7 @@ class AuthController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect(module_url('index'));
+        return redirect(save_route('index.index'));
     }
 
     public function register(RegisterRequest $request, RegisterAction $action, MergeBasketOnAuthAction $mergeBasket): RedirectResponse
@@ -62,7 +61,7 @@ class AuthController extends Controller
 
         $mergeBasket->handle($user);
 
-        return redirect(module_url('profile'));
+        return redirect(save_route('profile.edit'));
     }
 
     public function passwordRecovery(PasswordRecoveryRequest $request, SendPasswordResetAction $action): RedirectResponse
@@ -80,7 +79,7 @@ class AuthController extends Controller
             PasswordResetData::from($request->validated())
         );
         return redirect()
-            ->to(module_url('auth'))
+            ->to(save_route('auth.index'))
             ->with('success', t('auth.password_reset_success'));
     }
 }

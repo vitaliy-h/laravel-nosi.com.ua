@@ -3,7 +3,7 @@
 @section('content')
     <div class="container py-5">
 
-        <a href="{{ module_url('news') }}" class="btn btn-light mb-4">
+        <a href="{{ save_route('news.index') }}" class="btn btn-light mb-4">
             ← Back
         </a>
 

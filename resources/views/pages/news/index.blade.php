@@ -28,7 +28,7 @@
                             </p>
 
                             <a
-                                href="{{ module_url('news',[$item->slug])}}"
+                                href="{{ save_route('news.show', $item->slug) }}"
                                 class="btn btn-primary"
                             >
                                 {{t('news.read_more')}}

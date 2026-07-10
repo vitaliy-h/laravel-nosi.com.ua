@@ -16,7 +16,7 @@
         </div>
         <div class="product-info">
             <h3 class="product-title">
-                <a href="{{ module_url('shop', [$product->category->slug, $product->slug_with_id]) }}">
+                <a href="{{ save_route('shop.product', [$product->category->slug, $product->slug_with_id]) }}">
                     {{ $product->title }}
                 </a>
             </h3>

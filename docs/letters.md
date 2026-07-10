@@ -15,7 +15,7 @@ Email system is based on:
 
 * `LetterEnum` → defines email template types
 * translations → default subject + body per language for initial data
-* `letter_templated` → stores all templates in DB
+* `letter_templates` → stores all templates in DB
 * `log_letters` → stores all sent emails (audit log)
 * Facade → used for sending emails
 * Job-based sending (queued)
@@ -76,8 +76,8 @@ enum LetterEnum: string
 ## Step 2: Add translations
 
 ```
-resources/lang/en/letters.php
-resources/lang/uk/letters.php
+lang/en/letter_templates.php
+lang/uk/letter_templates.php
 ```
 
 ```php
@@ -117,8 +117,9 @@ LetterTemplateFacade::send(
         attachments: [
             new LetterAttachmentData(
                 path: '', // full path to file
+            ),
         ],
-        source: LogLetterSourceEnum::CONSOLE
+        source: NotificationSourceEnum::CONSOLE,
     )
 );
 ```

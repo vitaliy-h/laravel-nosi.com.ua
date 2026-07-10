@@ -201,7 +201,7 @@ php artisan make:model {ModelName} -m
 
 This creates:
 - `app/Models/{ModelName}.php` — move to `app/Modules/{ModuleName}/Models/{ModelName}.php`
-- `database/migrations/{timestamp}_create_{table}_table.php`
+- `database/migrations/{timestamp}_create_{table}_table.php` — move to `app/Modules/{ModuleName}/database/migrations/{timestamp}_create_{table}_table.php` (lowercase `database`; `ModuleServiceProvider::loadModuleMigrations()` only loads migrations from this per-module path, not from the root `database/migrations/`)
 
 After moving the model file, update its namespace to `App\Modules\{ModuleName}\Models`.
 

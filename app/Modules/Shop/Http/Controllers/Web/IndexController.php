@@ -2,22 +2,19 @@
 
 namespace App\Modules\Shop\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
 use App\Modules\Basket\Actions\FindBasketAction;
+use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Core\Dtos\BreadcrumbData;
-use App\Modules\Core\Interfaces\ModuleIndexControllerInterface;
 use App\Modules\Shop\Queries\FindCategoryBySlugQuery;
 use App\Modules\Shop\Queries\FindProductByIdQuery;
 use App\Modules\Shop\Queries\GetAllCategoriesQuery;
 use App\Modules\Shop\Queries\GetCategoryBreadcrumbsQuery;
 use App\Modules\Shop\Queries\GetProductsByCategoryQuery;
 use App\Modules\Shop\Queries\PrepareShopFilterQuery;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
-class IndexController extends Controller implements ModuleIndexControllerInterface
+class IndexController extends BaseWebController
 {
     public function __construct(
         private readonly GetAllCategoriesQuery $getAllCategories,
@@ -29,26 +26,8 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         private readonly FindBasketAction $findBasket,
     ) {}
 
-    public function accessCheck(): RedirectResponse|Response|null
+    public function index(Request $request)
     {
-        return null;
-    }
-
-    public function index(Request $request, array $segments = [])
-    {
-        if (! empty($segments)) {
-            $categorySlug = $segments[0] ?? null;
-            $productSlugId = $segments[1] ?? null;
-
-            if ($categorySlug && $productSlugId) {
-                return $this->product($categorySlug, $productSlugId, $request);
-            }
-
-            if ($categorySlug) {
-                return $this->category($categorySlug, $request);
-            }
-        }
-
         $categories = $this->getAllCategories->handle();
         $filter = $this->prepareShopFilter->handle(null, $request);
         $products = $this->getProductsByCategory->handle(null, $filter);
@@ -98,10 +77,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
 
         if ($categorySlug !== $category->slug || $productSlug !== $product->slug) {
             return redirect()->to(
-                module_url('shop', [
-                    $category->slug,
-                    $product->slug.'-'.$product->id,
-                ]),
+                save_route('shop.product', [$category->slug, $product->slug.'-'.$product->id]),
                 301
             );
         }
@@ -115,7 +91,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         $breadcrumbs->push(
             new BreadcrumbData(
                 title: $product->name ?? $product->title,
-                url: module_url('shop', [$category->slug, $product->slug_with_id])
+                url: save_route('shop.product', [$category->slug, $product->slug_with_id])
             )
         );
         $filter = $this->prepareShopFilter->handle($category, $request);

@@ -35,7 +35,7 @@
                                 </p>
                             @endif
 
-                            <a href="{{ module_url('shop',[$category->slug]) }}" class="btn btn-primary">
+                            <a href="{{ save_route('shop.category', $category->slug) }}" class="btn btn-primary">
                                 {{ t('shop.open_category') }}
                             </a>
                         </div>

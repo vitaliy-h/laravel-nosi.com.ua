@@ -13,7 +13,7 @@ description: >
 3. **DTOs** (`spatie/laravel-data`) carry validated data from request to action
 4. **FormRequest** per method — always has `rules()` + `attributes()` (using `t('module.field')`)
 5. **Resource** extends `JsonResource` — always used for output, never raw model/array
-6. **Routes** in `app/Modules/{Module}/routes/api.php` — auto-loaded by AppServiceProvider
+6. **Routes** in `app/Modules/{Module}/Http/Routes/api.php` — auto-loaded by `ModuleServiceProvider` (wrapped in `Route::prefix('api')->middleware('api')->group(...)`)
 7. **Translations** in `lang/en/dictionary.php` under `'shop' => [...]` key (key = module slug)
 
 ---
@@ -65,7 +65,7 @@ Controller:  app/Modules/{Module}/Http/Controllers/Api/{Module}Controller.php
 Action:      app/Modules/{Module}/Actions/{ActionName}Action.php
 Request:     app/Modules/{Module}/Http/Requests/{Module}{MethodName}Request.php
 Resource:    app/Modules/{Module}/Http/Resources/{ResourceName}Resource.php  (if not exists)
-Route:       app/Modules/{Module}/routes/api.php  → {VERB} /{route-path}
+Route:       app/Modules/{Module}/Http/Routes/api.php  → {VERB} /{route-path}
 Translations: lang/en/dictionary.php  → '{module}' key
 ```
 
@@ -76,7 +76,7 @@ Ask: **Proceed?**
 Before writing, check what already exists:
 - Does `Api/{Module}Controller.php` exist? → append method, not overwrite
 - Does `{ResourceName}Resource.php` exist? → reuse, skip creation
-- Does `routes/api.php` exist? → append route, not overwrite
+- Does `Http/Routes/api.php` exist? → append route, not overwrite
 - Does `'shop'` key exist in `dictionary.php`? → append keys, not overwrite
 - Does the Action exist? → if web controller already does the same logic, extract it; if Action exists reuse it
 
@@ -200,7 +200,7 @@ For paginated responses, pass the paginator directly to `::collection()` — Lar
 
 ### Step 11 — Add route
 
-If `app/Modules/{Module}/routes/api.php` does not exist, create it with:
+If `app/Modules/{Module}/Http/Routes/api.php` does not exist, create it with:
 ```php
 <?php
 Route::prefix('/{module-slug}')

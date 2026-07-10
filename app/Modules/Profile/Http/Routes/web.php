@@ -1,5 +1,13 @@
 <?php
-Route::prefix('/profile')->middleware('auth')->group(function () {
+
+use App\Modules\Profile\Http\Controllers\Web\IndexController;
+
+Route::middleware('auth')->group(function () {
+    Route::get('/', [IndexController::class, 'index'])->name('profile.index');
+    Route::get('/edit', [IndexController::class, 'edit'])->name('profile.edit');
+    Route::get('/orders', [IndexController::class, 'orders'])->name('profile.orders');
+    Route::get('/orders/{id}', [IndexController::class, 'order'])->name('profile.orders.show');
+
     Route::post('/update-user-data', [\App\Modules\Profile\Http\Controllers\Web\ProfileController::class, 'updateUserData'])
         ->name('profile.update.user.data');
     Route::post('/update-user-password', [\App\Modules\Profile\Http\Controllers\Web\ProfileController::class, 'updateUserPassword'])

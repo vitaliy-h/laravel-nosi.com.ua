@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Modules\Core\Enums\PageModule;
 use App\Modules\Core\Models\User;
 use App\Modules\Notification\Enums\LetterEnum;
 use App\Modules\Notification\Facades\LetterTemplateFacade;
@@ -32,7 +31,7 @@ class AuthWebTest extends TestCase
             'terms' => true,
         ]);
 
-        $response->assertRedirect(module_url(PageModule::PROFILE));
+        $response->assertRedirect(save_route('profile.edit'));
         $this->assertAuthenticated();
         $this->assertDatabaseHas('users', [
             'email' => 'new@example.com',
@@ -49,7 +48,7 @@ class AuthWebTest extends TestCase
             'password' => 'password',
         ]);
 
-        $response->assertRedirect(module_url(PageModule::PROFILE));
+        $response->assertRedirect(save_route('profile.edit'));
         $this->assertAuthenticated();
     }
 
@@ -57,7 +56,7 @@ class AuthWebTest extends TestCase
     {
         User::factory()->create(['email' => 'user@example.com']);
 
-        $authUrl = module_url(PageModule::AUTH);
+        $authUrl = save_route('auth.index');
 
         $response = $this->from($authUrl)
             ->post('/auth/login', [
@@ -77,7 +76,7 @@ class AuthWebTest extends TestCase
         $response = $this->actingAs($user)
             ->post('/auth/logout');
 
-        $response->assertRedirect(module_url(PageModule::INDEX));
+        $response->assertRedirect(save_route('index.index'));
         $this->assertGuest();
     }
 
@@ -95,7 +94,7 @@ class AuthWebTest extends TestCase
                     && isset($data->replace['reset_url']);
             });
 
-        $authUrl = module_url(PageModule::AUTH);
+        $authUrl = save_route('auth.index');
 
         $response = $this->from($authUrl)
             ->post('/auth/password-recovery', [
@@ -110,7 +109,7 @@ class AuthWebTest extends TestCase
     {
         $this->seedLetterTemplates();
 
-        $authUrl = module_url(PageModule::AUTH);
+        $authUrl = save_route('auth.index');
 
         $response = $this->from($authUrl)
             ->post('/auth/password-recovery', [
@@ -134,7 +133,7 @@ class AuthWebTest extends TestCase
             'token' => $token,
         ]);
 
-        $response->assertRedirect(module_url(PageModule::AUTH));
+        $response->assertRedirect(save_route('auth.index'));
         $response->assertSessionHas('success');
 
         $user->refresh();
@@ -145,7 +144,7 @@ class AuthWebTest extends TestCase
     {
         $user = User::factory()->create(['email' => 'user@example.com']);
 
-        $authUrl = module_url(PageModule::AUTH);
+        $authUrl = save_route('auth.index');
 
         $response = $this->from($authUrl)
             ->post('/auth/password-reset', [

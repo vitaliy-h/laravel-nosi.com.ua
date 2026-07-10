@@ -163,9 +163,10 @@ When the parent model is deleted:
 
 ### Currently configured
 
-| Model   | Cascades               |
-|---------|------------------------|
-| `Order` | `items` (OrderProduct) |
+| Model    | Cascades               |
+|----------|-------------------------|
+| `Order`  | `items` (OrderProduct)  |
+| `Basket` | `items`                 |
 
 ------------------------------------------------------------------------
 

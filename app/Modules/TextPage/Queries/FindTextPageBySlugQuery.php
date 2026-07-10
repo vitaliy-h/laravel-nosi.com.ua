@@ -1,21 +1,16 @@
 <?php
 
-namespace App\Modules\Core\Queries;
+namespace App\Modules\TextPage\Queries;
 
 use App\Modules\Core\Enums\PageModule;
 use App\Modules\Core\Models\Page;
 
-class FindPageBySlugQuery
+class FindTextPageBySlugQuery
 {
     public function handle(string $slug): ?Page
     {
-        if ($slug === '') {
-            return Page::visible()
-                ->where('module', PageModule::INDEX)
-                ->first();
-        }
-
         return Page::visible()
+            ->where('module', PageModule::TEXT)
             ->where('slug', $slug)
             ->first();
     }

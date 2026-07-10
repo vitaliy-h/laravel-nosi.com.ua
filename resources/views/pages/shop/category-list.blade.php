@@ -6,8 +6,8 @@
     @include('blocks.page_title', [
     'title' => $category->title,
     'items' => array_merge([
-        ['name' => t('shop.main_page'), 'url' => module_url('index')],
-        ['name' => $page->title ?? t('shop.categories'), 'url' => module_url('shop')],
+        ['name' => t('shop.main_page'), 'url' => save_route('index.index')],
+        ['name' => $page->title ?? t('shop.categories'), 'url' => save_route('shop.index')],
     ], array_slice($breadcrumbs, 0, -1)),
 ])
 
@@ -42,7 +42,7 @@
                                 </p>
                             @endif
 
-                            <a href="{{ module_url('shop',[$item->slug]) }}" class="btn btn-primary">
+                            <a href="{{ save_route('shop.category', $item->slug) }}" class="btn btn-primary">
                                 {{ t('shop.open_category') }}
                             </a>
                         </div>

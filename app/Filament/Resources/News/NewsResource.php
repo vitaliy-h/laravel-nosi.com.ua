@@ -120,7 +120,7 @@ class NewsResource extends Resource
             ->recordActions([
                 ViewAction::make()
                     ->iconButton()
-                    ->url(fn($record) => module_url('news', [$record->slug]))
+                    ->url(fn($record) => save_route('news.show', $record->slug))
                     ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),

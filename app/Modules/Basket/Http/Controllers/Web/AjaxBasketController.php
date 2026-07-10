@@ -2,7 +2,6 @@
 
 namespace App\Modules\Basket\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
 use App\Modules\Basket\Actions\AddOrUpdateBasketItemAction;
 use App\Modules\Basket\Actions\ForkBasketAction;
 use App\Modules\Basket\Actions\GetOrCreateBasketAction;
@@ -10,11 +9,12 @@ use App\Modules\Basket\Actions\RemoveBasketItemAction;
 use App\Modules\Basket\Enums\BasketAction;
 use App\Modules\Basket\Http\Requests\ChangeBasketRequest;
 use App\Modules\Basket\Models\Basket;
+use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Shop\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
-class AjaxBasketController extends Controller
+class AjaxBasketController extends BaseWebController
 {
     public function change(
         ChangeBasketRequest $request,
@@ -57,7 +57,7 @@ class AjaxBasketController extends Controller
             return response()->json([
                 'success' => true,
                 'actions' => [
-                    ['method' => 'location', 'content' => module_url('basket', [$basket->uuid])],
+                    ['method' => 'location', 'content' => save_route('basket.show', $basket->uuid)],
                 ],
             ]);
         }
@@ -89,7 +89,7 @@ class AjaxBasketController extends Controller
 
         if ($basket->items()->count() === 0) {
             return [
-                ['method' => 'location', 'content' => module_url('basket', [$basket->uuid])],
+                ['method' => 'location', 'content' => save_route('basket.show', $basket->uuid)],
             ];
         }
 

@@ -19,7 +19,7 @@
             @endif
         >
             <a
-                href="{{ module_url('shop', $item->slug) }}"
+                href="{{ save_route('shop.category', $item->slug) }}"
                 class="subcategory-link {{ $isActive ? 'active' : '' }}"
             >
                 {{ $item->title }}
