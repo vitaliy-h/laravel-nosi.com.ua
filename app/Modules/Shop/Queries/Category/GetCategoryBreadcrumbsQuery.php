@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Shop\Queries;
+namespace App\Modules\Shop\Queries\Category;
 
 use App\Modules\Core\Dtos\BreadcrumbData;
 use App\Modules\Shop\Models\Category;

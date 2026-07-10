@@ -3,27 +3,25 @@
 namespace App\Modules\Index\Http\Controllers\Web;
 
 use App\Modules\Core\Abstract\BaseWebController;
-use App\Modules\Shop\Queries\GetBestSellersQuery;
-use App\Modules\Shop\Queries\GetFeaturedCategoriesQuery;
-use App\Modules\Shop\Queries\GetFeaturedProductsQuery;
-use App\Modules\Shop\Queries\GetSpecialCategoriesQuery;
+use App\Modules\Shop\Dtos\CategorySearchDto;
+use App\Modules\Shop\Dtos\ProductSearchDto;
+use App\Modules\Shop\Queries\Category\SearchCategoriesQuery;
+use App\Modules\Shop\Queries\Product\SearchProductsQuery;
 use Illuminate\Http\Request;
 
 class IndexController extends BaseWebController
 {
     public function __construct(
-        private readonly GetBestSellersQuery $getBestSellers,
-        private readonly GetFeaturedCategoriesQuery $getFeaturedCategories,
-        private readonly GetFeaturedProductsQuery $getFeaturedProducts,
-        private readonly GetSpecialCategoriesQuery $getSpecialCategories,
+        private readonly SearchProductsQuery $searchProducts,
+        private readonly SearchCategoriesQuery $searchCategories,
     ) {}
 
     public function index(Request $request)
     {
-        $bestSellers = $this->getBestSellers->handle(4);
-        $featuredCategories = $this->getFeaturedCategories->handle(4);
-        $featuredProducts = $this->getFeaturedProducts->handle(8);
-        $specialCategories = $this->getSpecialCategories->handle(12);
+        $bestSellers = $this->searchProducts->handle(new ProductSearchDto(random: true, limit: 4, with: ['category']));
+        $featuredCategories = $this->searchCategories->handle(new CategorySearchDto(root: true));
+        $featuredProducts = $this->searchProducts->handle(new ProductSearchDto(random: true, limit: 8, with: ['category.ancestors']));
+        $specialCategories = $this->searchCategories->handle(new CategorySearchDto(hasImage: true, onlyWithProducts: true, random: true, limit: 12));
 
         return view('pages.index', compact('bestSellers', 'featuredCategories', 'featuredProducts', 'specialCategories'));
     }

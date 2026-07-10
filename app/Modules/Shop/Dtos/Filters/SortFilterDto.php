@@ -14,7 +14,7 @@ class SortFilterDto extends BaseFilterDto
     ) {}
 
     /**
-     * Sorting is applied separately in GetProductsByCategoryQuery::applySorting, not as a query filter.
+     * Sorting is applied separately in SearchProductsQuery::applySorting, not as a query filter.
      */
     public function apply(Builder $query): void {}
 }
