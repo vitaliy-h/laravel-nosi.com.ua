@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit\Shop\Queries;
+namespace Tests\Unit\Shop\Queries\Category;
 
 use App\Modules\Shop\Models\Category;
-use App\Modules\Shop\Queries\GetShopCategoryTreeQuery;
+use App\Modules\Shop\Queries\Category\GetShopCategoryTreeQuery;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

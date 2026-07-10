@@ -30,7 +30,7 @@
                    value="1">
             <label class="form-check-label" for="login-register-remember-me">{{t('auth.remember_me')}}</label>
         </div>
-        <a href="{{module_url('auth',[],['password_recovery'=>null])}}"
+        <a href="{{save_route('auth.index')}}?password_recovery"
            class="forgot-password">{{t('auth.forgot_password')}}</a>
     </div>
 

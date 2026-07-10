@@ -10,7 +10,7 @@ No custom translation layer is used.
 
 We use Laravel built-in localization system:
 
-* `resources/lang/{locale}/`
+* `lang/{locale}/` (Laravel 11+ default location, not `resources/lang/`)
 * helper: `__()`
 * helper: `@lang()` (Blade)
 
@@ -21,27 +21,34 @@ No Filament-specific translation system is used.
 # 📂 Language File Structure
 
 ```
-resources/lang/en/admin.php
-resources/lang/uk/admin.php
+lang/en/admin.php
 ```
+
+Currently only the `en` locale is populated. The skill/generator conventions reference an
+optional `lang/uk/admin.php` for projects that add a second locale — create it if/when the
+project actually needs Ukrainian translations.
 
 Structure Example:
 
 ```php
-// resources/lang/en/admin.php
+// lang/en/admin.php
 return [
-    'users' => [
-        'fields' => [
-            'email' => 'Email address',
-        ],
+    'tables' => [
+        'users' => 'Users',
+    ],
+    'fields' => [
+        'email' => 'Email',
     ],
 ];
 ```
 
+Field keys are flat (not nested per-table) — the same `admin.fields.email` key is reused
+across every resource that has an `email` field.
+
 Usage:
 
 ```php
-__('admin.users.fields.email')
+__('admin.fields.email')
 ```
 
 ---
@@ -54,13 +61,19 @@ Filament v5 fully supports Laravel translations.
 
 ```php
 TextInput::make('email')
-    ->label(__('admin.users.fields.email'));
+    ->label(__('admin.fields.email'));
 ```
 
 ```php
-TextColumn::make('name')
-    ->label(__('admin.users.fields.name'));
+TextColumn::make('category.title')
+    ->label(__('admin.fields.category_id'));
 ```
+
+In practice, most simple scalar fields (`title`, `display`, `slug`, ...) are left without an
+explicit `->label()` call and rely on Filament's default humanized label. Explicit
+`->label(__('admin.fields.{field}'))` calls are mainly used for relation columns/fields
+(e.g. `category.title` column, `category_id` select) where the field name doesn't match the
+translation key on its own. See `docs/filament/resource-generation.md` for the full convention.
 
 ---
 
@@ -83,11 +96,8 @@ Locale can be changed via:
 App::setLocale('uk');
 ```
 
-Recommended approach: middleware
-
-```
-app/Http/Middleware/SetLocale.php
-```
+There is currently no `SetLocale` middleware in this project (only `en` is populated) — add
+one under `app/Http/Middleware/` if/when multi-locale switching is implemented.
 
 ---
 
@@ -107,9 +117,9 @@ php artisan vendor:publish --tag=filament-support-translations
 Published files will appear in:
 
 ```
-resources/lang/vendor/filament
-resources/lang/vendor/forms
-resources/lang/vendor/tables
+lang/vendor/filament
+lang/vendor/forms
+lang/vendor/tables
 ```
 
 ---

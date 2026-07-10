@@ -131,7 +131,8 @@
 * Structured data markup.
 
 * Add language handling as the first URL slug to support future multilingual websites.
-  `app/Modules/Core/Http/Controllers/ModuleRouteController.php`
+  Touches `App\Providers\ModuleServiceProvider::registerWebRoute()` (prefix
+  resolution) and each module's `Http/Routes/web.php`.
 
 
 

@@ -2,20 +2,12 @@
 
 namespace App\Modules\Feedback\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
-use App\Modules\Core\Interfaces\ModuleIndexControllerInterface;
-use Illuminate\Http\RedirectResponse;
+use App\Modules\Core\Abstract\BaseWebController;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
-class IndexController extends Controller implements ModuleIndexControllerInterface
+class IndexController extends BaseWebController
 {
-    public function accessCheck(): RedirectResponse|Response|null
-    {
-        return null;
-    }
-
-    public function index(Request $request, array $segments = [])
+    public function index(Request $request)
     {
         return view('pages.feedback');
     }

@@ -2,16 +2,29 @@
 
 namespace App\Providers;
 
+use App\Modules\Core\Enums\PageModule;
+use App\Modules\Core\Models\Page;
 use App\Modules\Core\Observers\LogObserver;
+use App\Modules\Core\Queries\FindPageByModuleQuery;
 use App\Modules\Core\Traits\Models\CascadesDeletes;
 use Illuminate\Console\Application as Artisan;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
+use Throwable;
 
 class ModuleServiceProvider extends ServiceProvider
 {
+    /**
+     * Modules that must stay mounted at the app root instead of getting an
+     * auto-derived folder-name prefix: Core owns `/storage/{preset}/{path}`
+     * (image previews) and Sitemap owns the SEO-standard `/sitemap*.xml` paths.
+     * Prefixing either would break those conventions.
+     */
+    private const array ROOT_LEVEL_MODULES = ['Core', 'Sitemap'];
+
     /**
      * Register services.
      */
@@ -53,8 +66,7 @@ class ModuleServiceProvider extends ServiceProvider
             $apiRoute = $module . '/Http/Routes/api.php';
 
             if (File::exists($webRoute)) {
-                Route::middleware('web')
-                    ->group($webRoute);
+                $this->registerWebRoute($module, $webRoute);
             }
 
             if (File::exists($apiRoute)) {
@@ -62,6 +74,77 @@ class ModuleServiceProvider extends ServiceProvider
                     ->middleware('api')
                     ->group($apiRoute);
             }
+        }
+    }
+
+    /**
+     * Register a module's web routes, prefixed by the module's page slug (from DB)
+     * when the module directory maps to a PageModule case. Modules that don't map
+     * to a PageModule (Orders, _debug, Translation, Notification, ...) get a
+     * prefix derived from their own folder name instead, so their routes can
+     * never collide with a PageModule's DB-driven prefix or another module's
+     * routes (e.g. `Orders` → `/orders/...`).
+     *
+     * When a DB page is found for the module, the CMS page context (page,
+     * breadcrumbs, meta, menus, basket count) is auto-shared to the view via the
+     * `share.page` middleware, so module controllers never need to fetch/share it
+     * themselves.
+     */
+    private function registerWebRoute(string $module, string $webRoute): void
+    {
+        $pageModule = PageModule::tryFrom(Str::snake(basename($module)));
+
+        // TextPage has N pages sharing the module (no single DB-driven prefix to
+        // resolve, each page has its own independent slug) so it skips prefix/
+        // share.page resolution and registers its own fallback route instead.
+        if ($pageModule === PageModule::TEXT) {
+            Route::middleware('web')->group($webRoute);
+
+            return;
+        }
+
+        if (!$pageModule) {
+            $this->registerUnmappedModuleRoute($module, $webRoute);
+
+            return;
+        }
+
+        $page = $this->resolveModulePage($pageModule);
+
+        $prefix = $page?->slug;
+
+        if ($prefix === null || $prefix === '') {
+            $prefix = $pageModule === PageModule::INDEX ? '' : Str::lower($pageModule->value);
+        }
+
+        $route = Route::middleware(['web', 'share.page:'.$pageModule->value]);
+
+        if ($prefix !== '') {
+            $route = $route->prefix($prefix);
+        }
+
+        $route->group($webRoute);
+    }
+
+    private function registerUnmappedModuleRoute(string $module, string $webRoute): void
+    {
+        $name = basename($module);
+
+        if (in_array($name, self::ROOT_LEVEL_MODULES, true)) {
+            Route::middleware('web')->group($webRoute);
+
+            return;
+        }
+
+        Route::middleware('web')->prefix(Str::kebab($name))->group($webRoute);
+    }
+
+    private function resolveModulePage(PageModule $pageModule): ?Page
+    {
+        try {
+            return app(FindPageByModuleQuery::class)->handle($pageModule);
+        } catch (Throwable) {
+            return null;
         }
     }
 

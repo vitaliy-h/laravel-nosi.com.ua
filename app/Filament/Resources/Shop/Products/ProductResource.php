@@ -169,7 +169,7 @@ class ProductResource extends Resource
             ->recordActions([
                 ViewAction::make()
                     ->iconButton()
-                    ->url(fn (Product $record) => module_url('shop', [
+                    ->url(fn (Product $record) => save_route('shop.product', [
                         $record->category->slug,
                         $record->slug_with_id,
                     ]))

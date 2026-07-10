@@ -45,11 +45,16 @@ Print a summary before generating:
 
 ```
 Model:     App\Modules\{Module}\Models\{ModelName}
-Resource:  app/Filament/Resources/{Module}/{ModelName}Resource.php
-Pages dir: app/Filament/Resources/{Module}/Pages/
+Resource:  app/Filament/Resources/{Module}/{ModelNamePlural}/{ModelName}Resource.php
+Pages dir: app/Filament/Resources/{Module}/{ModelNamePlural}/Pages/
 Nav:       AdminPanelProvider → NavigationItem for {ModelName}
-Lang keys: lang/en/admin.php + lang/uk/admin.php (missing fields only)
+Lang keys: lang/en/admin.php (+ lang/uk/admin.php only if that locale file already exists)
 ```
+
+`{ModelNamePlural}` is the artisan generator's auto-pluralized form of `{ModelName}` (e.g.
+`Product` → `Products`, `Category` → `Categories`). When a module has only one resource whose
+name already matches the module name (e.g. `News/News`), Filament collapses this into a single
+folder — see real examples below.
 
 Ask: **Proceed?**
 
@@ -79,8 +84,14 @@ php artisan make:filament-resource {Module}/{ModelName} --simple --generate --no
 
 This creates:
 
-- `app/Filament/Resources/{Module}/{ModelName}Resource.php`
-- `app/Filament/Resources/{Module}/Pages/Manage{ModelName}s.php`
+- `app/Filament/Resources/{Module}/{ModelNamePlural}/{ModelName}Resource.php`
+- `app/Filament/Resources/{Module}/{ModelNamePlural}/Pages/Manage{ModelName}s.php`
+
+Real examples: `Shop/Product` → `app/Filament/Resources/Shop/Products/ProductResource.php`;
+`Geo/GeoCountry` → `app/Filament/Resources/Geo/GeoCountries/GeoCountryResource.php`. When
+model and module share the same name (e.g. `News/News`), the generator collapses the plural
+folder into the module folder: `app/Filament/Resources/News/NewsResource.php` (no extra
+`News/` subfolder), same for `Basket`, `Feedback`, `Users`, etc.
 
 The generated file will have placeholder `form()` and `table()` — replace both entirely per rules below.
 
@@ -305,24 +316,29 @@ static::getSeoSection(),
 
 #### Translation labels
 
-Fields that have a key in `lang/{locale}/admin.php['fields']` do NOT need an explicit `->label()` —
-Filament auto-resolves from `__('admin.fields.{field_name}')` if you configure the resource's
-`$translationNamespace`. Instead, add `->label(__('admin.fields.{field_name}'))` only on
-relation columns in the table (e.g. `category.title` needs a label because the key is
-`category_id` not `category.title`).
+No resource in this codebase sets a `$translationNamespace` property or relies on Filament's
+automatic translation-file label resolution. Plain fields (`title`, `display`, `slug`, ...) are
+simply left without an explicit `->label()` call and fall back to Filament's default humanized
+label (e.g. `title` → "Title"). Add `->label(__('admin.fields.{field_name}'))` explicitly only
+where the field/column name doesn't already read as a good label on its own — most commonly
+relation columns in the table (e.g. `category.title` needs a label because the translation key
+is `category_id`, not `category.title`) and relation selects in the form.
 
-**Before adding any field, check `lang/en/admin.php['fields']` for an existing key.**
-If missing, add the key to BOTH `lang/en/admin.php` AND `lang/uk/admin.php` (Step 7).
+**Before adding any field, check `lang/en/admin.php['fields']` for an existing key.** Field
+keys are flat (not nested per-resource) and shared across resources. If missing, add the key
+to `lang/en/admin.php`; also add it to `lang/uk/admin.php` only if that file already exists in
+the project (Step 8) — as of now it does not.
 
 ### Step 6 — Fix resource namespace and model reference
 
 After artisan generates the file, ensure:
 
-1. Namespace matches: `App\Filament\Resources\{Module}`
+1. Namespace matches: `App\Filament\Resources\{Module}\{ModelNamePlural}` (or just
+   `App\Filament\Resources\{Module}` when the generator collapsed the plural folder — see Step 3)
 2. `protected static ?string $model = {ModelName}::class;` with correct import
 3. `getPages()` references the correct Pages class:
    ```php
-   'index' => \App\Filament\Resources\{Module}\Pages\Manage{ModelName}s::route('/'),
+   'index' => \App\Filament\Resources\{Module}\{ModelNamePlural}\Pages\Manage{ModelName}s::route('/'),
    ```
 4. Required imports added at top:
     - `use App\Filament\Actions\BaseEditAction;`
@@ -349,7 +365,7 @@ Template for NavigationItem:
 ```php
 NavigationItem::make(__('admin.tables.{table_key}'))
     ->icon('heroicon-o-{icon}')
-    ->url(\App\Filament\Resources\{Module}\{ModelName}Resource::getUrl())
+    ->url(\App\Filament\Resources\{Module}\{ModelNamePlural}\{ModelName}Resource::getUrl())
     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.{module-slug}.{model-plural-slug}*')),
 ```
 
@@ -364,7 +380,9 @@ Ask the user what icon and navigation group (if unsure).
 
 ### Step 8 — Add missing translation keys
 
-Check both `lang/en/admin.php` and `lang/uk/admin.php`.
+Check `lang/en/admin.php`. Only `en` is populated in this project as of now — `lang/uk/admin.php`
+does not currently exist; only touch it if the project has since added Ukrainian support (check
+for `lang/uk/` before assuming it exists).
 
 **In `['tables']`** — add the navigation label key used in Step 7:
 
@@ -373,7 +391,7 @@ Check both `lang/en/admin.php` and `lang/uk/admin.php`.
 ```
 
 **In `['fields']`** — add keys for any fields not already present.
-Ask the user for Ukrainian translations if adding to `lang/uk/admin.php`.
+If `lang/uk/admin.php` exists, ask the user for Ukrainian translations and add the same keys there.
 
 ### Step 9 — Summary
 
@@ -425,16 +443,18 @@ Print:
 
 | Artifact   | Path                                                           |
 |------------|----------------------------------------------------------------|
-| Resource   | `app/Filament/Resources/{Module}/{ModelName}Resource.php`      |
-| Pages      | `app/Filament/Resources/{Module}/Pages/Manage{ModelName}s.php` |
+| Resource   | `app/Filament/Resources/{Module}/{ModelNamePlural}/{ModelName}Resource.php`      |
+| Pages      | `app/Filament/Resources/{Module}/{ModelNamePlural}/Pages/Manage{ModelName}s.php` |
 | Navigation | `app/Providers/Filament/AdminPanelProvider.php`                |
 | Lang EN    | `lang/en/admin.php`                                            |
-| Lang UK    | `lang/uk/admin.php`                                            |
+| Lang UK    | `lang/uk/admin.php` (only if this file already exists in the project)         |
 
 ### Namespace pattern
 
 ```
-App\Filament\Resources\{Module}
+App\Filament\Resources\{Module}\{ModelNamePlural}
 ```
 
-Example: `App\Filament\Resources\Shop\Products` for `Shop/Products/ProductResource.php`
+Example: `App\Filament\Resources\Shop\Products` for `Shop/Products/ProductResource.php`.
+When model and module names coincide (e.g. `News`), the plural folder collapses and the
+namespace is just `App\Filament\Resources\{Module}` (e.g. `App\Filament\Resources\News`).

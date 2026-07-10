@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Shop\Queries;
+namespace App\Modules\Shop\Queries\Category;
 
 use App\Modules\Core\Dtos\BreadcrumbData;
 use App\Modules\Shop\Models\Category;
@@ -20,7 +20,7 @@ class GetCategoryBreadcrumbsQuery
             ->get()
             ->map(fn (Category $category) => new BreadcrumbData(
                 title: $category->title,
-                url: module_url('shop', [$category->slug]),
+                url: save_route('shop.category', $category->slug),
             ));
 
         return collect(view()->shared('breadcrumbs'))

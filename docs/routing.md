@@ -1,320 +1,132 @@
-# Dynamic Routing Architecture (CMS Modules)
+# Routing Architecture (CMS Modules)
 
 ## Overview
 
-This project uses a **database-driven routing system for all GET requests**, allowing URLs to be fully dynamic and editable from the database.
-
-The routing layer acts as a lightweight CMS engine on top of Laravel, where pages are stored in the `pages` table and mapped to application modules.
+Every module owns explicit, named Laravel routes. Pages are still stored in the
+`pages` table and mapped to modules via the `PageModule` enum, but the DB only
+supplies the **prefix** each module is mounted under (resolved once at boot) —
+it no longer drives per-request dispatch. See `docs/module-routing-migration.md`
+for the migration history and the exact gotchas hit while getting here.
 
 ---
 
 ## 1. Routing Strategy
 
-### GET Requests (Dynamic)
-
-All GET requests are dynamically resolved from the database (`pages` table).
-
-* URLs can be changed directly from the database without modifying code.
-* Each page is linked to a module via `PageModule` enum.
-* The system resolves the correct controller based on the module.
-
-### POST Requests (Static)
-
-All POST (and other non-GET) requests use standard Laravel routing.
-
-* Fully standard Laravel controllers and routes
-* Standard middleware stack
-* Used for forms, API requests, and secure operations
-
-This separation ensures:
-
-* Flexibility for public pages
-* Security and predictability for state-changing operations
-
----
-
-## 2. Core Routing Entry Point
-
-All dynamic routing is handled in:
-
-```
-app/Modules/Core/Http/Routes/web.php
-```
-
-This route forwards all requests to:
-
-```
-App\Modules\Core\Http\Controllers\ModuleRouteController
-```
-
-## 2.1 Module Static Routes (POST / Standard Laravel Routes)
-
-In addition to dynamic GET routing, each module can define its own **static Laravel routes** (POST, PUT, DELETE, etc.).
-
-These routes are placed inside the module directory:
+Every module can define both GET and non-GET routes in one place:
 
 ```
 app/Modules/{ModuleName}/Http/Routes/web.php
 ```
 
-### Examples:
-
-```
-app/Modules/Auth/Http/Routes/web.php
-app/Modules/Feedback/Http/Routes/web.php
-```
-
-
-### Purpose
-
-These routes are used for:
-
-- POST requests
-- Form submissions
-- API-like actions
-- Secure operations requiring standard Laravel middleware
-
-### Loading Behavior
-
-All module route files are **automatically loaded by the system** if they exist in the expected path:
-
-```
-app/Modules/{ModuleName}/Http/Routes/web.php
-```
-
----
-
-## 3. ModuleRouteController Responsibilities
-
-The `ModuleRouteController` is the central router for all dynamic pages.
-
-It is responsible for:
-
-* Resolving the page from the database (`pages` table)
-* Determining the module via `PageModule`
-* Delegating execution to the correct module controller
-* Passing URL segments for nested routing
-
----
-
-## 4. Modules System
-
-Each page in the `pages` table is assigned a module.
-
-Modules are defined in:
-
-```
-app/Modules/Core/Enums/PageModule.php
-```
-
----
-
-## 5. Controller Resolution
-
-The system automatically resolves controllers using the module value:
-
-```
-\App\Modules\{ModuleName}\Http\Controllers\Web\IndexController@index
-```
-
-Example:
-
-* `news` → `App\Modules\News\Http\Controllers\Web\IndexController@index`
-* `index` → `App\Modules\Index\Http\Controllers\Web\IndexController@index`
-* `text_pages` → `App\Modules\TextPage\Http\Controllers\Web\IndexController@index`
-
----
-
-## 6. Request Handling
-
-Each module controller receives:
+Routes inside this file are relative (`/`, `/{slug}`) — never `/module-name/...` —
+because `ModuleServiceProvider` wraps the whole file in a prefix group.
 
 ```php
-Request $request,
-array $moduleSegments = []
+use App\Modules\News\Http\Controllers\Web\IndexController;
+
+Route::get('/', [IndexController::class, 'index'])->name('news.index');
+Route::get('/{slug}', [IndexController::class, 'show'])->name('news.show');
 ```
 
-### Purpose of `$moduleSegments`
-
-This array contains all URL segments after the module slug.
-
-Example:
-
-```
-/news/test-news-9
-```
-
-Becomes:
-
-```php
-$moduleSegments = ['test-news-9'];
-```
-
-This enables nested routing inside modules.
+All module route files are **automatically loaded** if they exist at that path —
+see `ModuleServiceProvider::loadModuleRoutes()`.
 
 ---
 
-## 7. Example: News Module
+## 2. Prefix Resolution (`ModuleServiceProvider::registerWebRoute()`)
 
-### Controller Example
+For every module folder that maps to a `PageModule` case, its `web.php` is
+wrapped in:
 
 ```php
-public function index(Request $request, array $segments = [])
+Route::middleware(['web', 'share.page:'.$pageModule->value])
+    ->prefix($prefix)
+    ->group($webRoute);
+```
+
+- `$prefix` is the module's `Page->slug` from the DB (resolved once at boot),
+  or `''` for `PageModule::INDEX` (mounted at the root).
+- `share.page` is `App\Modules\Core\Http\Middleware\ShareModulePageContext` —
+  at **request time** it resolves the `Page` for that `PageModule` and shares
+  `page`, `breadcrumbs`, `meta_title`, `meta_description`, `headerMenu`,
+  `footerMenu`, `basketCount` to the view via `PageContextSharer::share()`.
+  Migrated controllers never share these themselves.
+- Modules that don't map to a `PageModule` (`Core`, `Orders`, `Sitemap`,
+  `_debug`, `Translation`, `Notification`) register with plain
+  `Route::middleware('web')->group($webRoute)` — no prefix, no page context.
+
+**Two gotchas already hit — don't reintroduce them:**
+- Never bind the shared page by DB id at boot time. The DB may not have that
+  row yet when the ServiceProvider boots (fresh install, tests seeding after
+  boot). Bind by the stable `PageModule::value` string instead, and resolve
+  the `Page` inside the middleware at request time.
+- `Route::middleware('web')->middleware('x')` **overwrites**, it does not merge
+  (`RouteRegistrar::attribute()` replaces the `middleware` attribute on each
+  call). Always pass one array: `Route::middleware(['web', 'x'])`.
+
+---
+
+## 3. TextPage — the one exception
+
+`text_page` has **N pages sharing one module**, each with its own independent
+slug — there's no single prefix to resolve. It skips prefix/`share.page`
+resolution and instead registers a `Route::fallback(...)` (see
+`docs/module-routing-migration.md` for the full writeup, including why only
+one `Route::fallback()` can ever be active app-wide).
+
+---
+
+## 4. Controller Pattern
+
+Module web controllers extend `App\Modules\Core\Abstract\BaseWebController`
+and define one real Laravel action method per route, with typed route
+parameters:
+
+```php
+class IndexController extends BaseWebController
 {
-    if (!empty($segments)) {
-        $slug = $segments[0];
-        return $this->show($slug, $request);
-    }
-
-    $news = $this->repository->all();
-
-    return view('pages.news.index', compact('news'));
-}
-
-public function show($slug, Request $request)
-{
-    $newsItem = $this->repository->getBySlug($slug);
-
-    view()->share([
-        'meta_title' => $newsItem->meta_title,
-        'meta_description' => $newsItem->meta_description,
-    ]);
-
-    return view('pages.news.show', compact('newsItem'));
-}
-```
-
----
-
-## 8. Module Controller Interface
-
-All module controllers must implement:
-
-```
-App\Modules\Core\Interfaces\ModuleIndexControllerInterface
-```
-
-### Responsibilities
-
-* Define `index()` method structure
-* Define `accessCheck()` method
-
----
-
-## 9. Access Control System
-
-Each module supports an `accessCheck()` method.
-
-### Purpose
-
-Acts as a **GET-request middleware layer**.
-
-It is executed before rendering module content and can be used for:
-
-* Authentication checks
-* Role-based access control
-* Subscription validation
-
-### Example Use Case
-
-```php
-public function accessCheck(): \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse|null
+    public function index(Request $request)
     {
-        if (auth()->check()) {
-            return redirect()->to(module_url('index'));
-        }
-        return null;
+        $news = $this->getNewsList->handle();
+
+        return view('pages.news.index', compact('news'));
     }
+
+    public function show(Request $request, string $slug)
+    {
+        $newsItem = $this->findNewsBySlug->handle($slug);
+
+        view()->share([
+            'meta_title' => $newsItem->meta_title,
+            'meta_description' => $newsItem->meta_description,
+        ]);
+
+        return view('pages.news.show', compact('newsItem'));
+    }
+}
 ```
 
-If `accessCheck()` Response or RedirectResponse than response will be returned to user. For `null` response script will continue execution.
+Access control (auth-only pages, guest-only pages) is real Laravel middleware
+on the route/group (`->middleware('auth')`, `->middleware('guest')`), not a
+controller method.
 
 ---
 
-## 10. POST Requests Security Model
+## 5. URL Generation
 
-POST requests are handled using standard Laravel routing.
-
-* Standard `web.php` routes
-* Laravel middleware stack (`auth`, `csrf`, etc.)
-* No dynamic resolution
-
-This ensures:
-
-* Security for state-changing actions
-* Predictable request handling
-
----
-
-## 11. URL Generation
-
-A helper function is used for generating module URLs:
-
-```
-module_url(PageModule|string $module, array|string $params = [], array $query = []): string
-```
-
-### Parameters
-
-* **$module** → Target module — `PageModule` enum instance **or** its string value (e.g. `'shop'`, `'news'`)
-* **$params** → Route parameters (slug segments)
-* **$query** → Query string parameters
-
-### String value behavior
-
-When a string is passed, it is resolved via `PageModule::tryFrom()` inside `UrlHelper::getModuleUrl()`.
-
-* Valid string → converted to `PageModule` enum, URL generated normally
-* Invalid string → returns `'#'` (no exception thrown)
-
----
-
-## 12. URL Generation Examples
-
-### Auth Module
+Use `save_route()` — same signature as Laravel's `route()`, but returns `'/'`
+instead of throwing when the route isn't registered (e.g. module disabled):
 
 ```php
-module_url(PageModule::AUTH, [], ['login' => null]);
-// or
-module_url('auth', [], ['login' => null]);
+save_route(string $name, mixed $parameters = [], bool $absolute = true): string
 ```
 
-Result:
-
-```
-http://localhost/auth-test?login
-```
-
----
-
-### News Module
+Examples:
 
 ```php
-module_url(PageModule::NEWS, [$item->slug]);
-// or
-module_url('news', [$item->slug]);
-```
-
-Result:
-
-```
-http://localhost/news/{slug}
-```
-
----
-
-### Shop Module
-
-```php
-module_url(PageModule::SHOP, [$category->slug, $product->slug]);
-// or
-module_url('shop', [$category->slug, $product->slug]);
-```
-
-Result:
-
-```
-http://localhost/shop/{category}/{product}
+save_route('news.show', $item->slug);
+save_route('shop.product', [$category->slug, $product->slug_with_id]);
+save_route('profile.orders.show', $order->id);
 ```
 
 ---

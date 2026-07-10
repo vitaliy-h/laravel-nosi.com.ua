@@ -92,10 +92,10 @@ routes/web.php
 routes/api.php
 ```
 
-For GET request used a catch-all `fallback` route (`Core/routes/web.php`) dispatches unmatched URLs to
-`ModuleRouteController`, which resolves a `Page` by slug, reads its `module` enum, and invokes
-`App\Modules\{Module}\Http\Controllers\Web\IndexController` (contract: `ModuleIndexControllerInterface` →
-`accessCheck()` then `index()`). This acts as a lightweight CMS layer.
+Every module has its own explicit, named routes in `app/Modules/{Module}/Http/Routes/web.php`,
+mounted under a DB-driven prefix resolved once at boot by `ModuleServiceProvider`.
+The one exception is `TextPage`, which owns the app's single `Route::fallback()`
+(N pages, no fixed prefix). See `docs/routing.md` for the full pattern.
 
 ---
 

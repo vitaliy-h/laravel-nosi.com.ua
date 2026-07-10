@@ -27,7 +27,8 @@ resources/
     ├── errors/        # HTTP error pages
     ├── filament/      # Filament admin overrides
     ├── layouts/       # base layouts
-    └── pages/         # page-level templates per module
+    ├── pages/         # page-level templates per module
+    └── sitemap/       # XML templates for /sitemap*.xml
 ```
 
 ## Blade conventions

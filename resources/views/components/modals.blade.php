@@ -11,7 +11,7 @@
             </div>
 
             <div class="modal-footer">
-                <a href="{{module_url('basket')}}" class="btn btn-primary">
+                <a href="{{save_route('basket.index')}}" class="btn btn-primary">
                     Place an order
                 </a>
 

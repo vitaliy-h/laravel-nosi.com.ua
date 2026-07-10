@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Shop\Queries;
+namespace App\Modules\Shop\Queries\Product;
 
 use App\Modules\Shop\Dtos\Filters\BaseFilterDto;
 use App\Modules\Shop\Dtos\Filters\ShopFilterDto;
@@ -13,10 +13,10 @@ class BuildProductsQuery
      * Build the base product query.
      * Applies category restriction and all selected filters except the excluded one.
      */
-    public function handle(?Category $category = null, ?ShopFilterDto $filter = null, ?string $except = null)
+    public function handle(?Category $category = null, ?ShopFilterDto $filter = null, ?string $except = null, array $with = ['brand', 'category'])
     {
         $query = Product::visible()
-            ->with('brand', 'category');
+            ->with($with);
         /**
          * Restrict products to the current category and all its descendants.
          */

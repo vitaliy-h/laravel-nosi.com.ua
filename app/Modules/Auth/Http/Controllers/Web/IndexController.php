@@ -2,13 +2,10 @@
 
 namespace App\Modules\Auth\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
-use App\Modules\Core\Enums\PageModule;
-use App\Modules\Core\Interfaces\ModuleIndexControllerInterface;
+use App\Modules\Core\Abstract\BaseWebController;
 use Illuminate\Http\Request;
 
-
-class IndexController extends Controller implements ModuleIndexControllerInterface
+class IndexController extends BaseWebController
 {
     private const MODES = [
         'login',
@@ -17,15 +14,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         'password_reset',
     ];
 
-    public function accessCheck(): \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse|null
-    {
-        if (auth()->check()) {
-            return redirect()->to(module_url('profile'));
-        }
-        return null;
-    }
-
-    public function index(Request $request, array $segments = [])
+    public function index(Request $request)
     {
         $mode = 'login';
 

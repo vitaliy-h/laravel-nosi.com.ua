@@ -5,7 +5,7 @@
         <h2>{{ t('profile.orders') }}</h2>
         <div class="header-actions">
             <form method="GET"
-                  action="{{ module_url('profile', 'orders') }}"
+                  action="{{ save_route('profile.orders') }}"
                   class="search-box">
                 @if($filter->status)
                     <input type="hidden" name="status" value="{{ $filter->status->value }}">
@@ -25,14 +25,14 @@
                 <ul class="dropdown-menu">
                     <li>
                         <a class="dropdown-item {{ !$filter->status ? 'active' : '' }}"
-                           href="{{ module_url('profile', 'orders') }}{{ $filter->search ? '?search=' . urlencode($filter->search) : '' }}">
+                           href="{{ save_route('profile.orders') }}{{ $filter->search ? '?search=' . urlencode($filter->search) : '' }}">
                             {{ t('profile.orders_all') }}
                         </a>
                     </li>
-                    @foreach(\App\Modules\Shop\Enums\PaymentStatusEnum::cases() as $case)
+                    @foreach(\App\Modules\Orders\Enums\PaymentStatusEnum::cases() as $case)
                         <li>
                             @php
-                                $statusUrl = module_url('profile', 'orders')
+                                $statusUrl = save_route('profile.orders')
                                     . '?status=' . $case->value
                                     . ($filter->search ? '&search=' . urlencode($filter->search) : '');
                             @endphp
@@ -95,7 +95,7 @@
                             {{ t('profile.order_pay') }}
                         </a>
                     @endif
-                    <a href="{{ module_url('profile', ['orders', $order->id]) }}"
+                    <a href="{{ save_route('profile.orders.show', $order->id) }}"
                        role="button"
                        class="btn btn-details">
                         {{ t('profile.order_view_details') }}

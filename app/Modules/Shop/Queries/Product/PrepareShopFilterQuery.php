@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Shop\Queries;
+namespace App\Modules\Shop\Queries\Product;
 
 use App\Modules\Shop\Dtos\Filters\InFilterDto;
 use App\Modules\Shop\Dtos\Filters\RangeFilterDto;

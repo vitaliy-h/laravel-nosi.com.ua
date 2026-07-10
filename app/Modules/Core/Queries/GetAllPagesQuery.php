@@ -4,6 +4,7 @@ namespace App\Modules\Core\Queries;
 
 use App\Modules\Core\Models\Page;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 
 class GetAllPagesQuery
@@ -29,5 +30,7 @@ class GetAllPagesQuery
     {
         $this->allPages = null;
         Cache::forget(self::CACHE_KEY);
+        Artisan::call('route:clear');
+        Artisan::call('cache:clear');
     }
 }

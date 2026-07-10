@@ -32,7 +32,7 @@
                                     <div class="product-info flex-grow-1 {{ $item->product?->image ? '' : 'ms-0' }}">
                                         <div class="product-details">
                                             @if($item->product && $item->product->category)
-                                                <a href="{{ module_url('shop', [$item->product->category->slug, $item->product->slug_with_id]) }}"
+                                                <a href="{{ save_route('shop.product', [$item->product->category->slug, $item->product->slug_with_id]) }}"
                                                    class="product-title" target="_blank">
                                                     {{ $item->product_name }}
                                                 </a>

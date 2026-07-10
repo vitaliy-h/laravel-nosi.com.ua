@@ -2,8 +2,7 @@
 
 namespace App\Modules\Profile\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
-use App\Modules\Core\Enums\PageModule;
+use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Profile\Actions\DeleteUserAccountAction;
 use App\Modules\Profile\Actions\UpdateUserDataAction;
 use App\Modules\Profile\Actions\UpdateUserPasswordAction;
@@ -15,7 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
-class ProfileController extends Controller
+class ProfileController extends BaseWebController
 {
     public function __construct(
         private readonly UpdateUserDataAction     $updateUserDataAction,
@@ -89,6 +88,6 @@ class ProfileController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->to(module_url('index'));
+        return redirect()->to(save_route('index.index'));
     }
 }

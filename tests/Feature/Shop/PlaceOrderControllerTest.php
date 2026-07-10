@@ -22,7 +22,7 @@ class PlaceOrderControllerTest extends TestCase
             'total' => 20,
         ]);
 
-        $response = $this->post(route('order.place'), [
+        $response = $this->post(route('order.create'), [
             'basket_uuid' => $basket->uuid,
             'user_name' => 'John',
             'user_surname' => 'Doe',
@@ -48,7 +48,7 @@ class PlaceOrderControllerTest extends TestCase
         $basket = Basket::factory()->create();
         BasketProduct::factory()->create(['basket_id' => $basket->id]);
 
-        $this->post(route('order.place'), [
+        $this->post(route('order.create'), [
             'basket_uuid' => $basket->uuid,
             'user_email' => 'john@example.com',
         ]);
@@ -61,7 +61,7 @@ class PlaceOrderControllerTest extends TestCase
         $basket = Basket::factory()->create();
         BasketProduct::factory()->create(['basket_id' => $basket->id]);
 
-        $this->post(route('order.place'), [
+        $this->post(route('order.create'), [
             'basket_uuid' => $basket->uuid,
         ])->assertSessionHasErrors('user_email');
     }
@@ -71,7 +71,7 @@ class PlaceOrderControllerTest extends TestCase
         $basket = Basket::factory()->create();
         BasketProduct::factory()->create(['basket_id' => $basket->id]);
 
-        $this->post(route('order.place'), [
+        $this->post(route('order.create'), [
             'basket_uuid' => $basket->uuid,
             'user_email' => 'not-an-email',
         ])->assertSessionHasErrors('user_email');
@@ -79,14 +79,14 @@ class PlaceOrderControllerTest extends TestCase
 
     public function test_place_order_requires_basket_uuid(): void
     {
-        $this->post(route('order.place'), [
+        $this->post(route('order.create'), [
             'user_email' => 'john@example.com',
         ])->assertSessionHasErrors('basket_uuid');
     }
 
     public function test_place_order_with_unknown_basket_uuid_fails_validation(): void
     {
-        $this->post(route('order.place'), [
+        $this->post(route('order.create'), [
             'basket_uuid' => '00000000-0000-0000-0000-000000000000',
             'user_email' => 'john@example.com',
         ])->assertSessionHasErrors('basket_uuid');

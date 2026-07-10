@@ -3,8 +3,6 @@
 namespace App\Modules\Auth\Actions;
 
 use App\Modules\Auth\Dtos\PasswordRecoveryData;
-use App\Modules\Core\Enums\PageModule;
-use App\Modules\Core\Facades\UrlFacade;
 use App\Modules\Core\Queries\FindUserByEmailQuery;
 use App\Modules\Notification\Dtos\SendLetterTemplateData;
 use App\Modules\Notification\Enums\LetterEnum;
@@ -34,15 +32,11 @@ class SendPasswordResetAction
         $token = Password::broker()
             ->createToken($user);
 
-        $resetUrl = UrlFacade::getModuleUrl(
-            PageModule::AUTH,
-            [],
-            [
-                'password_reset' => null,
-                'token' => $token,
-                'email' => $user->email,
-            ]
-        );
+        $resetUrl = save_route('auth.index', [
+            'token' => $token,
+            'email' => $user->email,
+        ]);
+        $resetUrl = str_replace('?', '?password_reset&', $resetUrl);
 
         LetterTemplateFacade::send(
             new SendLetterTemplateData(

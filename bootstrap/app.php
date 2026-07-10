@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\Core\Http\Middleware\Authenticate;
+use App\Modules\Core\Http\Middleware\ShareModulePageContext;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -23,7 +24,16 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'auth' => Authenticate::class,
+            'share.page' => ShareModulePageContext::class,
         ]);
+
+        // Must run after the session has started (StartSession) so services it
+        // depends on (auth, basket) work correctly, regardless of unrelated
+        // middleware ordering in module route groups.
+        $middleware->appendToPriorityList(
+            after: \Illuminate\Session\Middleware\StartSession::class,
+            append: ShareModulePageContext::class,
+        );
     })
     ->withSchedule(function (Schedule $schedule): void {
         $schedule->command('basket:clear-abandoned')->daily();

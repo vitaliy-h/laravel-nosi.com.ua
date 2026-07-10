@@ -53,7 +53,7 @@
                                 </div>
                                 <h3 class="category-title">{{ $category->title }}</h3>
                                 <p class="category-count">{{ t('shop.products_count', ['count' => $category->products_count]) }}</p>
-                                <a href="{{ module_url('shop', [$category->slug]) }}" class="stretched-link"></a>
+                                <a href="{{ save_route('shop.category', $category->slug) }}" class="stretched-link"></a>
                             </div>
                         </div>
                     @endforeach

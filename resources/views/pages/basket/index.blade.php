@@ -124,7 +124,7 @@
                                             --}}
                             </div>
 
-                            <form id="checkout-form" class="checkout-form checkout-section" action="{{ route('order.place') }}" method="POST">
+                            <form id="checkout-form" class="checkout-form checkout-section" action="{{ route('order.create') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="basket_uuid" value="{{ $basket->uuid }}">
                                 <!-- Customer Information -->
@@ -229,7 +229,7 @@
                                 </div>
 
                                 <div class="continue-shopping">
-                                    <a href="{{module_url('shop')}}" class="btn btn-link w-100">
+                                    <a href="{{save_route('shop.index')}}" class="btn btn-link w-100">
                                         <i class="bi bi-arrow-left"></i> {{ t('shop.continue_shopping') }}
                                     </a>
                                 </div>

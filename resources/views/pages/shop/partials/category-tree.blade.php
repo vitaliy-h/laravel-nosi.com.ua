@@ -20,7 +20,7 @@
                 @endif
             >
                 <a
-                    href="{{ module_url('shop', $item->slug) }}"
+                    href="{{ save_route('shop.category', $item->slug) }}"
                     class="{{ $level === 0 ? 'category-link' : 'subcategory-link' }} {{ $isActive ? 'active' : '' }}"
                 >
                     {{ $item->title }}

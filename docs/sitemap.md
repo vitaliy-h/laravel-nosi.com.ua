@@ -30,7 +30,7 @@ Includes all `pages` table rows where:
 - `display = true`
 - `is_indexable = true`
 
-URL generated via `module_url($page->module)`. Sorted by `rank DESC`.
+URL generated via `url(UrlFacade::normalizeForLink($page->slug))`. Sorted by `rank DESC`.
 
 ### News (`/sitemap-news-{page}.xml`)
 

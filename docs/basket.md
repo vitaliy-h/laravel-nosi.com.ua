@@ -35,7 +35,7 @@ During login or registration (`AuthController::login/register`, `OAuthController
 ### Behavior when sharing a link
 
 Every basket page is reachable via a direct link containing the uuid: `/basket/{uuid}`
-(`module_url('basket', [$basket->uuid])`). If the basket owner copies this link and
+(`save_route('basket.show', $basket->uuid)`). If the basket owner copies this link and
 sends it to someone else:
 
 - **Viewing** the basket page by someone else's uuid — opens without restriction,
@@ -120,14 +120,15 @@ shows the same placeholder.
 
 ### Controllers
 
-- **`IndexController`** (`pages.basket.*`, resolved through the module routing in `ModuleRouteController`)
-  - `index(Request $request, array $segments)`:
-    - `segments[0] === 'checkout'` → checkout page (`pages.basket.checkout`, **currently a static mockup, not wired to real logic**)
-    - `segments[0]` is a valid UUID → shows a specific basket by link
-      (`pages.basket.index`, or `pages.basket.empty_basket` if it has no items)
-    - otherwise → resolves the current user's/guest's basket; if it has items —
-      redirects to `/basket/{uuid}`, otherwise shows the empty-basket placeholder
-  - `checkout()` — a stub, no logic yet
+- **`IndexController`** (`pages.basket.*`, explicit named routes — see Routes below)
+  - `index(Request $request)` — resolves the current user's/guest's basket; if it
+    has items, redirects to `/basket/{uuid}`, otherwise shows the empty-basket
+    placeholder
+  - `checkout(Request $request)` → checkout page (`pages.basket.checkout`,
+    **currently a static mockup, not wired to real order-placement logic**)
+  - `show(Request $request, string $uuid)` — shows a specific basket by link
+    (`pages.basket.index`, or `pages.basket.empty_basket` if it has no items or
+    `$uuid` isn't a valid UUID — falls back to `index()`'s own-basket behavior)
 
 - **`AjaxBasketController::change`** (`POST /basket/change`, route `change_product_count`)
   - Accepts `id` (product), `count`, `action` (the `BasketAction` enum), and
@@ -177,14 +178,16 @@ always up to date without an explicit call after every item action.
 ### Routes
 
 ```php
-// app/Modules/Basket/routes/web.php
-Route::post('/basket/change', AjaxBasketController::class . '@change')->name('change_product_count');
+// app/Modules/Basket/Http/Routes/web.php
+Route::get('/', [IndexController::class, 'index'])->name('basket.index');
+Route::get('/checkout', [IndexController::class, 'checkout'])->name('basket.checkout');
+Route::get('/{uuid}', [IndexController::class, 'show'])->name('basket.show');
+
+Route::post('/change', [AjaxBasketController::class, 'change'])->name('change_product_count');
 ```
 
-Basket pages (`/basket`, `/basket/checkout`, `/basket/{uuid}`) don't have dedicated
-routes — they're handled by the generic module router `ModuleRouteController`, which
-resolves the module from the CMS page slug (`PageModule::Basket`) and calls
-`Basket\IndexController::index()`.
+Mounted under the `/basket` prefix (the module's CMS page slug) by
+`ModuleServiceProvider`.
 
 ### Migrations
 
@@ -202,5 +205,5 @@ resolves the module from the CMS page slug (`PageModule::Basket`) and calls
   Shop currently creates an order directly from a passed DTO and is **not** wired to
   the basket — the `/basket/checkout` page is still a static mockup with no real
   order-placement logic
-- **Core** (`ModuleRouteController`) — shares `basketCount` with all views via
-  `view()->share()`, using `FindBasketAction`
+- **Core** (`ShareModulePageContext` middleware) — shares `basketCount` with all
+  views via `PageContextSharer::share()`, using `FindBasketAction`

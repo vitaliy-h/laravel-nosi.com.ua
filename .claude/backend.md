@@ -1,15 +1,10 @@
 # Backend Developer Guide
 
-## Additional information
-
-- Stack: `@.ai/stack.md`
-
-
 ## Routing conventions
 
-Module web controllers must implement `App\Modules\Core\Interfaces\ModuleIndexControllerInterface` and accept `(Request $request, array $moduleSegments = [])`.
+Module web controllers (`Http/Controllers/Web/`) extend `App\Modules\Core\Abstract\BaseWebController` and define one real Laravel action method per named route (typed route parameters, no manual segment parsing). See `docs/routing.md`.
 
-All Api controllers must extends ` App\Modules\Core\Abstract\BaseApiController`
+All API controllers (`Http/Controllers/Api/`) extend `App\Modules\Core\Abstract\BaseApiController`.
 
 ## API layer conventions
 

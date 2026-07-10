@@ -18,7 +18,7 @@
 
             <div class="empty_basket">
                 <div class="continue-shopping">
-                    <a href="{{module_url('shop')}}" class="btn btn-link w-100">
+                    <a href="{{save_route('shop.index')}}" class="btn btn-link w-100">
                         <i class="bi bi-arrow-left"></i> {{ t('shop.continue_shopping') }}
                     </a>
                 </div>

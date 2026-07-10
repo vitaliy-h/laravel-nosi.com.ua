@@ -2,14 +2,14 @@
 
 namespace App\Modules\Auth\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
 use App\Modules\Auth\Actions\ConnectSocialProfileAction;
 use App\Modules\Auth\Actions\FindOrCreateSocialUserAction;
 use App\Modules\Basket\Actions\MergeBasketOnAuthAction;
+use App\Modules\Core\Abstract\BaseWebController;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
 
-class OAuthController extends Controller
+class OAuthController extends BaseWebController
 {
     public function __construct(
         private readonly FindOrCreateSocialUserAction $findOrCreate,
@@ -31,14 +31,14 @@ class OAuthController extends Controller
         try {
             $socialUser = Socialite::driver($provider)->user();
         } catch (\Throwable) {
-            return redirect()->to(module_url('auth'))
+            return redirect()->to(save_route('auth.index'))
                 ->withErrors(['social' => __('dictionary.social.auth_failed')]);
         }
 
         if (auth()->check()) {
-            app(ConnectSocialProfileAction::class)->handle(auth()->user(), $provider, $socialUser);
+            $this->connect->handle(auth()->user(), $provider, $socialUser);
 
-            return redirect()->to(module_url('profile', 'edit'))
+            return redirect()->to(save_route('profile.edit'))
                 ->with('success', __('dictionary.social.connected'));
         }
 
@@ -48,7 +48,7 @@ class OAuthController extends Controller
 
         $this->mergeBasket->handle($user);
 
-        return redirect()->intended(module_url('profile', 'edit'));
+        return redirect()->intended(save_route('profile.edit'));
     }
 
     private function validateProvider(string $provider): void

@@ -110,11 +110,11 @@ Two virtual form fields drive tree placement:
 
 **`parent_id`** — sets the node's parent. Changing this moves the entire subtree. `NodeTrait` handles the `_lft`/`_rgt` recalculation on `save()`.
 
-**`_position_id`** — sets order within siblings. The dropdown lists all current siblings. On edit, it pre-fills with the record's own id (= "keep current position"). If the user picks a different sibling, `afterNode($sibling)->save()` is called after the main update, placing the record immediately after the selected sibling.
+**`_position_id`** — sets order within siblings. The dropdown lists all current siblings plus an `end_of_list` option. On edit, it pre-fills with the id of the record's next sibling (or `end_of_list` if it's last/new). If the user picks a sibling, `beforeNode($sibling)->save()` is called after the main update, placing the record immediately before the selected sibling. If `end_of_list` (or nothing) is selected, the record is placed via `afterNode($lastSibling)->save()`.
 
 Flow on save:
 1. `$record->update($data)` — nestedset moves node to new parent (last child position by default)
-2. `NestedSetFields::applyPosition($record, $data)` — if `_position_id ≠ record->id`, calls `$record->afterNode($sibling)->save()`
+2. `NestedSetFields::applyPosition($record, $data)` — if `_position_id` is `end_of_list`/empty, moves the record after the current last sibling; otherwise, if it's a different sibling's id, calls `$record->beforeNode($sibling)->save()`
 
 ---
 

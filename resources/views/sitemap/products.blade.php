@@ -2,7 +2,7 @@
     @foreach($items as $item)
     @if($item->category)
     <url>
-        <loc>{{ module_url('shop', [$item->category->slug, $item->slug_with_id]) }}</loc>
+        <loc>{{ save_route('shop.product', [$item->category->slug, $item->slug_with_id]) }}</loc>
         <lastmod>{{ $item->updated_at->toAtomString() }}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.5</priority>

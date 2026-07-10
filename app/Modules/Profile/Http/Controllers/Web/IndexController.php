@@ -2,49 +2,27 @@
 
 namespace App\Modules\Profile\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
-use App\Modules\Core\Interfaces\ModuleIndexControllerInterface;
+use App\Modules\Core\Abstract\BaseWebController;
+use App\Modules\Orders\Enums\PaymentStatusEnum;
 use App\Modules\Profile\Dtos\OrderFilterData;
 use App\Modules\Profile\Queries\FindUserOrderQuery;
 use App\Modules\Profile\Queries\GetUserOrdersQuery;
-use App\Modules\Shop\Enums\PaymentStatusEnum;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
-class IndexController extends Controller implements ModuleIndexControllerInterface
+class IndexController extends BaseWebController
 {
     public function __construct(
         private readonly GetUserOrdersQuery $getUserOrders,
         private readonly FindUserOrderQuery $findUserOrder,
     ) {}
 
-    public function accessCheck(): Response|RedirectResponse|null
+    public function index(Request $request): RedirectResponse
     {
-        if (! auth()->check()) {
-            return redirect()->to(module_url('auth'));
-        }
-
-        return null;
+        return redirect()->to(save_route('profile.edit'));
     }
 
-    public function index(Request $request, array $segments = [])
-    {
-        if (empty($segments)) {
-            return redirect()->to(module_url('profile', 'edit'));
-        }
-
-        $segment = $segments[0];
-        $id = $segments[1] ?? null;
-
-        if (method_exists($this, $segment)) {
-            return $this->$segment($request, $id);
-        }
-
-        abort(404);
-    }
-
-    public function edit(Request $request, ?string $id = null)
+    public function edit(Request $request)
     {
         $user = auth()->user()->load('socialProfiles');
         $activeSection = 'edit';
@@ -52,16 +30,10 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         return view('pages.profile.edit', compact('user', 'activeSection'));
     }
 
-    public function orders(Request $request, ?string $id = null)
+    public function orders(Request $request)
     {
         $user = auth()->user();
         $activeSection = 'orders';
-
-        if ($id !== null) {
-            $order = $this->findUserOrder->handle((int) $id, $user->id);
-
-            return view('pages.profile.order', compact('user', 'activeSection', 'order'));
-        }
 
         $filter = new OrderFilterData(
             search: $request->query('search') ?: null,
@@ -70,5 +42,14 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         $orders = $this->getUserOrders->handle($user->id, $filter);
 
         return view('pages.profile.orders', compact('user', 'activeSection', 'orders', 'filter'));
+    }
+
+    public function order(Request $request, string $id)
+    {
+        $user = auth()->user();
+        $activeSection = 'orders';
+        $order = $this->findUserOrder->handle((int) $id, $user->id);
+
+        return view('pages.profile.order', compact('user', 'activeSection', 'order'));
     }
 }

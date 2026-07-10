@@ -2,11 +2,11 @@
 
 namespace App\Modules\_debug\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
+use App\Modules\Core\Abstract\BaseWebController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class AbcResponseController extends Controller
+class AbcResponseController extends BaseWebController
 {
     public function abc_response_index(Request $request)
     {
