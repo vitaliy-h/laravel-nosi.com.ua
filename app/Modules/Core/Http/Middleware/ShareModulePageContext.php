@@ -7,6 +7,7 @@ use App\Modules\Core\Queries\FindPageByModuleQuery;
 use App\Modules\Core\Services\PageContextSharer;
 use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Attached automatically (per module) by ModuleServiceProvider::registerWebRoute()
@@ -29,9 +30,11 @@ class ShareModulePageContext
         $pageModule = PageModule::tryFrom($moduleValue);
         $page = $pageModule ? $this->findPageByModule->handle($pageModule) : null;
 
-        if ($page) {
-            $this->sharer->share($page);
+        if (!$page) {
+            throw new NotFoundHttpException();
         }
+
+        $this->sharer->share($page);
 
         return $next($request);
     }
