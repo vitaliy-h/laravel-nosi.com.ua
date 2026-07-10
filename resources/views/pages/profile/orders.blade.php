@@ -29,7 +29,7 @@
                             {{ t('profile.orders_all') }}
                         </a>
                     </li>
-                    @foreach(\App\Modules\Orders\Enums\PaymentStatusEnum::cases() as $case)
+                    @foreach(\App\Modules\ShopOrders\Enums\PaymentStatusEnum::cases() as $case)
                         <li>
                             @php
                                 $statusUrl = save_route('profile.orders')

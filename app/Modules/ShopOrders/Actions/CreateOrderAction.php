@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Modules\ShopOrders\Actions;
+
+use App\Modules\ShopOrders\Dtos\CreateOrderData;
+use App\Modules\ShopOrders\Models\Order;
+
+readonly class CreateOrderAction
+{
+    public function __construct(
+        private RecalculateOrderTotalAction $recalculate,
+    ) {}
+
+    public function handle(CreateOrderData $dto): Order
+    {
+        $order = Order::create([
+            'user_id'        => $dto->user_id,
+            'payment_status' => $dto->payment_status,
+            'payment_type'   => $dto->payment_type,
+            'total_amount'   => 0,
+            'user_name'      => $dto->user_name,
+            'user_surname'   => $dto->user_surname,
+            'user_email'     => $dto->user_email,
+            'user_phone'     => $dto->user_phone,
+            'comment'        => $dto->comment,
+        ]);
+
+        foreach ($dto->items as $item) {
+            $order->items()->create([
+                'shop_product_id' => $item->shop_product_id,
+                'product_name'    => $item->product_name,
+                'product_article'     => $item->product_article,
+                'selling_price'      => $item->selling_price,
+                'quantity'        => $item->quantity,
+                'total'           => round($item->selling_price * $item->quantity, 2),
+            ]);
+        }
+
+        $this->recalculate->handle($order);
+
+        return $order->fresh();
+    }
+}

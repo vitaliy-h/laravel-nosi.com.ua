@@ -2,7 +2,7 @@
 
 namespace App\Modules\Profile\Dtos;
 
-use App\Modules\Orders\Enums\PaymentStatusEnum;
+use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
 use Spatie\LaravelData\Data;
 
 class OrderFilterData extends Data

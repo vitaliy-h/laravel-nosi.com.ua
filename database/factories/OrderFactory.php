@@ -3,9 +3,9 @@
 namespace Database\Factories;
 
 use App\Modules\Core\Models\User;
-use App\Modules\Orders\Enums\PaymentStatusEnum;
-use App\Modules\Orders\Enums\PaymentTypeEnum;
-use App\Modules\Orders\Models\Order;
+use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
+use App\Modules\ShopOrders\Enums\PaymentTypeEnum;
+use App\Modules\ShopOrders\Models\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

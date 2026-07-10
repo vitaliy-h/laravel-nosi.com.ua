@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Shop;
 
-use App\Modules\Orders\Enums\PaymentStatusEnum;
-use App\Modules\Orders\Models\Order;
-use App\Modules\Orders\Services\OrderPermissions;
+use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
+use App\Modules\ShopOrders\Models\Order;
+use App\Modules\ShopOrders\Services\OrderPermissions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

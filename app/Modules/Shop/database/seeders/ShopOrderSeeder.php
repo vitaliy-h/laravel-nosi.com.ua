@@ -3,14 +3,14 @@
 namespace App\Modules\Shop\database\seeders;
 
 use App\Modules\Core\Models\User;
-use App\Modules\Orders\Actions\CreateOrderAction;
-use App\Modules\Orders\Actions\GenerateOrderNumberAction;
-use App\Modules\Orders\Dtos\CreateOrderData;
-use App\Modules\Orders\Dtos\OrderItemData;
-use App\Modules\Orders\Enums\PaymentStatusEnum;
-use App\Modules\Orders\Enums\PaymentTypeEnum;
-use App\Modules\Orders\Models\Order;
-use App\Modules\Orders\Models\OrderProduct;
+use App\Modules\ShopOrders\Actions\CreateOrderAction;
+use App\Modules\ShopOrders\Actions\GenerateOrderNumberAction;
+use App\Modules\ShopOrders\Dtos\CreateOrderData;
+use App\Modules\ShopOrders\Dtos\OrderItemData;
+use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
+use App\Modules\ShopOrders\Enums\PaymentTypeEnum;
+use App\Modules\ShopOrders\Models\Order;
+use App\Modules\ShopOrders\Models\OrderProduct;
 use App\Modules\Shop\Models\Product;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;

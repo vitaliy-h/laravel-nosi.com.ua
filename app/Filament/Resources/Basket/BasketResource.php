@@ -4,7 +4,7 @@ namespace App\Filament\Resources\Basket;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Basket\Pages\ManageBaskets;
-use App\Modules\Basket\Models\Basket;
+use App\Modules\ShopBasket\Models\Basket;
 use App\Modules\Shop\Models\Product;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;

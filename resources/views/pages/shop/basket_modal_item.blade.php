@@ -21,7 +21,7 @@
                                 @csrf
                                 <input type="hidden" name="id" value="{{$item->product->id}}">
                                 <input type="hidden" name="count" value="0">
-                                <input type="hidden" name="action" value="{{ \App\Modules\Basket\Enums\BasketAction::DeleteModal->value }}">
+                                <input type="hidden" name="action" value="{{ \App\Modules\ShopBasket\Enums\BasketAction::DeleteModal->value }}">
                                 <button type="submit" class="remove-item">
                                     <i class="bi bi-trash"></i> {{ t('shop.remove') }}
                                 </button>
@@ -38,7 +38,7 @@
                     <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
                         @csrf
                         <input type="hidden" name="id" value="{{$item->product->id}}">
-                        <input type="hidden" name="action" value="{{ \App\Modules\Basket\Enums\BasketAction::ChangeCountModal->value }}">
+                        <input type="hidden" name="action" value="{{ \App\Modules\ShopBasket\Enums\BasketAction::ChangeCountModal->value }}">
                         <div class="quantity-selector">
                             <button type="button" class="quantity-btn decrease">
                                 <i class="bi bi-dash"></i>

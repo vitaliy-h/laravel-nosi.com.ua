@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Shop;
 
-use App\Modules\Orders\Enums\PaymentStatusEnum;
-use App\Modules\Orders\Enums\PaymentTypeEnum;
+use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
+use App\Modules\ShopOrders\Enums\PaymentTypeEnum;
 use App\Modules\Shop\Enums\PerPageOptionEnum;
 use Tests\TestCase;
 

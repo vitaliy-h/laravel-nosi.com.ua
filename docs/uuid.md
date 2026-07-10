@@ -92,7 +92,7 @@ Route::get('/order/{uuid}', [OrderController::class, 'show'])
 For modules mapped to a `PageModule`, `ShareModulePageContext` middleware
 shares `page`, `breadcrumbs`, `headerMenu`, `footerMenu`, `basketCount`
 automatically — no manual `view()->share()` needed. Modules without a
-`PageModule` mapping (`Core`, `Orders`, etc.) don't get this and must share
+`PageModule` mapping (`Core`, `ShopOrders`, etc.) don't get this and must share
 what the layout needs themselves. See `docs/routing.md`.
 
 ---

@@ -11,6 +11,13 @@ class ImpersonationTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seedPagesForRouting();
+    }
+
     // ─── impersonate ───────────────────────────────────────────────────────────
 
     public function test_impersonate_without_signature_returns_403(): void

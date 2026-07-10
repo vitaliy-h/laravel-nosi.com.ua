@@ -3,10 +3,10 @@
 namespace Tests\Unit\Shop;
 
 use App\Modules\Core\Models\User;
-use App\Modules\Orders\Actions\CreateOrderAction;
-use App\Modules\Orders\Dtos\CreateOrderData;
-use App\Modules\Orders\Models\Order;
-use App\Modules\Orders\Models\OrderProduct;
+use App\Modules\ShopOrders\Actions\CreateOrderAction;
+use App\Modules\ShopOrders\Dtos\CreateOrderData;
+use App\Modules\ShopOrders\Models\Order;
+use App\Modules\ShopOrders\Models\OrderProduct;
 use App\Modules\Shop\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

@@ -2,18 +2,18 @@
 
 namespace App\Providers;
 
-use App\Modules\Basket\Models\BasketProduct;
-use App\Modules\Basket\Observers\BasketProductObserver;
+use App\Modules\ShopBasket\Models\BasketProduct;
+use App\Modules\ShopBasket\Observers\BasketProductObserver;
 use App\Modules\Core\Models\Page;
 use App\Modules\Core\Observers\PageObserver;
 use App\Modules\Core\Queries\GetAllPagesQuery;
 use App\Modules\Core\Services\UrlHelper;
 use App\Modules\Notification\Services\LetterTemplateService;
 use App\Modules\Notification\Services\SmsTemplateService;
-use App\Modules\Orders\Models\Order;
-use App\Modules\Orders\Models\OrderProduct;
-use App\Modules\Orders\Observers\OrderObserver;
-use App\Modules\Orders\Observers\OrderProductObserver;
+use App\Modules\ShopOrders\Models\Order;
+use App\Modules\ShopOrders\Models\OrderProduct;
+use App\Modules\ShopOrders\Observers\OrderObserver;
+use App\Modules\ShopOrders\Observers\OrderProductObserver;
 use App\Modules\Translation\Services\TranslationService;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Pagination\Paginator;
