@@ -278,7 +278,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/shop/categories/clothing",
+							"raw": "{{base_url}}/api/shop/categories/1",
 							"host": [
 								"{{base_url}}"
 							],
@@ -286,28 +286,32 @@
 								"api",
 								"shop",
 								"categories",
-								"clothing"
+								"1"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Get Category Products",
+					"name": "Get Products",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/shop/categories/womens-wear/products",
+							"raw": "{{base_url}}/api/shop/products?category_id=1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"api",
 								"shop",
-								"categories",
-								"womens-wear",
 								"products"
+							],
+							"query": [
+								{
+									"key": "category_id",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -319,17 +323,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/shop/categories/womens-wear/products/ea-est-perferendis-asperiores-accusamus-et-qui",
+							"raw": "{{base_url}}/api/shop/products/1",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"api",
 								"shop",
-								"categories",
-								"womens-wear",
 								"products",
-								"ea-est-perferendis-asperiores-accusamus-et-qui"
+								"1"
 							]
 						}
 					},

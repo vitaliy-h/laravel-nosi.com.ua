@@ -4,28 +4,38 @@ namespace App\Modules\Shop\Http\Controllers\Api;
 
 use App\Modules\Core\Abstract\BaseApiController;
 use App\Modules\Core\Http\Resources\BasePaginationResource;
-use App\Modules\Shop\Http\Requests\ShopProductsByCategoryRequest;
+use App\Modules\Shop\Dtos\CategorySearchDto;
 use App\Modules\Shop\Dtos\ProductSearchDto;
+use App\Modules\Shop\Http\Requests\ShopCategoriesRequest;
+use App\Modules\Shop\Http\Requests\ShopProductsRequest;
 use App\Modules\Shop\Http\Resources\CategoryResource;
 use App\Modules\Shop\Http\Resources\ProductResource;
-use App\Modules\Shop\Queries\Category\FindCategoryBySlugQuery;
-use App\Modules\Shop\Queries\Category\GetShopCategoryTreeQuery;
-use App\Modules\Shop\Queries\Product\FindProductBySlugQuery;
+use App\Modules\Shop\Queries\Category\FindCategoryByIdQuery;
+use App\Modules\Shop\Queries\Category\SearchCategoriesQuery;
+use App\Modules\Shop\Queries\Product\FindProductByIdQuery;
+use App\Modules\Shop\Queries\Product\PrepareShopFilterQuery;
 use App\Modules\Shop\Queries\Product\SearchProductsQuery;
 use Illuminate\Http\JsonResponse;
 
 class ShopController extends BaseApiController
 {
     public function __construct(
-        private readonly GetShopCategoryTreeQuery $getShopCategoryTree,
-        private readonly FindCategoryBySlugQuery $findCategoryBySlug,
+        private readonly SearchCategoriesQuery $searchCategories,
+        private readonly FindCategoryByIdQuery $findCategoryById,
+        private readonly PrepareShopFilterQuery $prepareShopFilter,
         private readonly SearchProductsQuery $searchProducts,
-        private readonly FindProductBySlugQuery $findProductBySlug,
+        private readonly FindProductByIdQuery $findProductById,
     ) {}
 
-    public function categories(): JsonResponse
+    public function categories(ShopCategoriesRequest $request): JsonResponse
     {
-        $categories = $this->getShopCategoryTree->handle();
+        $categories = $this->searchCategories->handle(new CategorySearchDto(
+            root: true,
+            hasImage: $request->boolean('has_image'),
+            onlyWithProducts: $request->boolean('only_with_products'),
+            random: $request->boolean('random'),
+            limit: $request->integer('limit') ?: null,
+        ));
 
         return $this->success(
             ['categories' => CategoryResource::collection($categories)],
@@ -33,9 +43,9 @@ class ShopController extends BaseApiController
         );
     }
 
-    public function category(string $slug): JsonResponse
+    public function category(int $id): JsonResponse
     {
-        $category = $this->findCategoryBySlug->handle($slug);
+        $category = $this->findCategoryById->handle($id);
 
         return $this->success(
             ['category' => new CategoryResource($category)],
@@ -43,22 +53,24 @@ class ShopController extends BaseApiController
         );
     }
 
-    public function productsByCategory(string $slug, ShopProductsByCategoryRequest $request): JsonResponse
+    public function products(ShopProductsRequest $request): JsonResponse
     {
-        $category = $this->findCategoryBySlug->handle($slug);
-        $products = $this->searchProducts->handle(new ProductSearchDto(category: $category, sort: $request->query('sort'), paginate: true));
+        $category = $request->integer('category_id')
+            ? $this->findCategoryById->handle($request->integer('category_id'))
+            : null;
+        $filter = $this->prepareShopFilter->handle($category, $request);
+        $products = $this->searchProducts->handle(new ProductSearchDto(category: $category, filter: $filter, sort: $request->query('sort'), paginate: true));
 
         return $this->success([
             'products' => ProductResource::collection($products),
             'pagination' => new BasePaginationResource($products),
         ],
-            message: t('shop.category_products'));
+            message: t('shop.products_list'));
     }
 
-    public function product(string $categorySlug, string $productSlug): JsonResponse
+    public function product(int $id): JsonResponse
     {
-        $category = $this->findCategoryBySlug->handle($categorySlug);
-        $product = $this->findProductBySlug->handle($productSlug, $category);
+        $product = $this->findProductById->handle($id);
 
         return $this->success(
             ['product' => new ProductResource($product)],

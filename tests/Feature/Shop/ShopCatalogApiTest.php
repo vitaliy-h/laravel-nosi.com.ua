@@ -38,7 +38,7 @@ class ShopCatalogApiTest extends TestCase
     {
         $category = Category::factory()->create(['slug' => 'electronics']);
 
-        $response = $this->getJson('/api/shop/categories/electronics');
+        $response = $this->getJson("/api/shop/categories/{$category->id}");
 
         $response->assertStatus(200);
         $response->assertJsonPath('success', true);
@@ -46,9 +46,9 @@ class ShopCatalogApiTest extends TestCase
         $response->assertJsonPath('data.category.id', $category->id);
     }
 
-    public function test_category_show_returns_404_for_nonexistent_slug(): void
+    public function test_category_show_returns_404_for_nonexistent_id(): void
     {
-        $response = $this->getJson('/api/shop/categories/missing-slug');
+        $response = $this->getJson('/api/shop/categories/999999');
 
         $response->assertStatus(404);
         $response->assertJsonPath('success', false);
@@ -56,20 +56,20 @@ class ShopCatalogApiTest extends TestCase
 
     public function test_category_show_returns_404_for_invisible_category(): void
     {
-        Category::factory()->invisible()->create(['slug' => 'hidden']);
+        $category = Category::factory()->invisible()->create(['slug' => 'hidden']);
 
-        $response = $this->getJson('/api/shop/categories/hidden');
+        $response = $this->getJson("/api/shop/categories/{$category->id}");
 
         $response->assertStatus(404);
         $response->assertJsonPath('success', false);
     }
 
-    public function test_category_products_returns_products_and_pagination(): void
+    public function test_products_returns_products_and_pagination(): void
     {
         $category = Category::factory()->create(['slug' => 'gadgets']);
         Product::factory()->count(2)->forCategory($category)->create();
 
-        $response = $this->getJson('/api/shop/categories/gadgets/products');
+        $response = $this->getJson("/api/shop/products?category_id={$category->id}");
 
         $response->assertStatus(200);
         $response->assertJsonPath('success', true);
@@ -92,13 +92,13 @@ class ShopCatalogApiTest extends TestCase
         $response->assertJsonPath('data.pagination.total', 2);
     }
 
-    public function test_category_products_excludes_invisible_products(): void
+    public function test_products_excludes_invisible_products(): void
     {
         $category = Category::factory()->create(['slug' => 'gadgets']);
         Product::factory()->forCategory($category)->create(['slug' => 'visible-gadget']);
         Product::factory()->invisible()->forCategory($category)->create(['slug' => 'hidden-gadget']);
 
-        $response = $this->getJson('/api/shop/categories/gadgets/products');
+        $response = $this->getJson("/api/shop/products?category_id={$category->id}");
 
         $response->assertStatus(200);
         $response->assertJsonPath('success', true);
@@ -107,12 +107,38 @@ class ShopCatalogApiTest extends TestCase
         $response->assertJsonPath('data.products.0.slug', 'visible-gadget');
     }
 
-    public function test_product_show_returns_product_for_matching_category_and_slug(): void
+    public function test_products_rejects_nonexistent_category_id(): void
+    {
+        $response = $this->getJson('/api/shop/products?category_id=999999');
+
+        $response->assertStatus(422);
+        $response->assertJsonPath('success', false);
+    }
+
+    public function test_products_returns_404_for_invisible_category_id(): void
+    {
+        $category = Category::factory()->invisible()->create();
+
+        $response = $this->getJson("/api/shop/products?category_id={$category->id}");
+
+        $response->assertStatus(404);
+        $response->assertJsonPath('success', false);
+    }
+
+    public function test_products_rejects_non_integer_category_id(): void
+    {
+        $response = $this->getJson('/api/shop/products?category_id=not-a-number');
+
+        $response->assertStatus(422);
+        $response->assertJsonPath('success', false);
+    }
+
+    public function test_product_show_returns_visible_product(): void
     {
         $category = Category::factory()->create(['slug' => 'phones']);
         $product = Product::factory()->forCategory($category)->create(['slug' => 'iphone']);
 
-        $response = $this->getJson('/api/shop/categories/phones/products/iphone');
+        $response = $this->getJson("/api/shop/products/{$product->id}");
 
         $response->assertStatus(200);
         $response->assertJsonPath('success', true);
@@ -120,24 +146,20 @@ class ShopCatalogApiTest extends TestCase
         $response->assertJsonPath('data.product.id', $product->id);
     }
 
-    public function test_product_show_returns_404_when_product_belongs_to_another_category(): void
+    public function test_product_show_returns_404_for_invisible_product(): void
     {
         $category = Category::factory()->create(['slug' => 'phones']);
-        $otherCategory = Category::factory()->create(['slug' => 'tablets']);
-        Product::factory()->forCategory($otherCategory)->create(['slug' => 'ipad']);
+        $product = Product::factory()->invisible()->forCategory($category)->create(['slug' => 'hidden-phone']);
 
-        $response = $this->getJson('/api/shop/categories/phones/products/ipad');
+        $response = $this->getJson("/api/shop/products/{$product->id}");
 
         $response->assertStatus(404);
         $response->assertJsonPath('success', false);
     }
 
-    public function test_product_show_returns_404_for_invisible_product(): void
+    public function test_product_show_returns_404_for_nonexistent_id(): void
     {
-        $category = Category::factory()->create(['slug' => 'phones']);
-        Product::factory()->invisible()->forCategory($category)->create(['slug' => 'hidden-phone']);
-
-        $response = $this->getJson('/api/shop/categories/phones/products/hidden-phone');
+        $response = $this->getJson('/api/shop/products/999999');
 
         $response->assertStatus(404);
         $response->assertJsonPath('success', false);

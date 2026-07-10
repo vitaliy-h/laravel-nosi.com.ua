@@ -133,9 +133,9 @@ class ShopCatalogApiTest extends TestCase
         $this->assertNotContains('hidden-cat', $slugs);
     }
 
-    public function test_category_show_returns_404_for_nonexistent_slug(): void
+    public function test_category_show_returns_404_for_nonexistent_id(): void
     {
-        $response = $this->getJson('/api/shop/categories/missing-slug');
+        $response = $this->getJson('/api/shop/categories/999999');
 
         $response->assertStatus(404);
         $response->assertJsonPath('success', false);

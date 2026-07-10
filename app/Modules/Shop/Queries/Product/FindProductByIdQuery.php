@@ -10,6 +10,7 @@ class FindProductByIdQuery
     {
         return Product::visible()
             ->where('id', $id)
+            ->with('brand')
             ->firstOrFail();
     }
 }

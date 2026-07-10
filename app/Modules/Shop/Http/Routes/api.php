@@ -1,13 +1,15 @@
 <?php
 
+use App\Modules\Shop\Http\Controllers\Api\ShopController;
+
 Route::prefix('/shop')
     ->group(function () {
-        Route::get('/categories', [\App\Modules\Shop\Http\Controllers\Api\ShopController::class, 'categories'])
+        Route::get('/categories', [ShopController::class, 'categories'])
             ->name('api.shop.categories');
-        Route::get('/categories/{slug}', [\App\Modules\Shop\Http\Controllers\Api\ShopController::class, 'category'])
+        Route::get('/categories/{id}', [ShopController::class, 'category'])
             ->name('api.shop.category');
-        Route::get('/categories/{slug}/products', [\App\Modules\Shop\Http\Controllers\Api\ShopController::class, 'productsByCategory'])
-            ->name('api.shop.products_by_category');
-        Route::get('/categories/{categorySlug}/products/{productSlug}', [\App\Modules\Shop\Http\Controllers\Api\ShopController::class, 'product'])
+        Route::get('/products', [ShopController::class, 'products'])
+            ->name('api.shop.products');
+        Route::get('/products/{id}', [ShopController::class, 'product'])
             ->name('api.shop.product');
     });

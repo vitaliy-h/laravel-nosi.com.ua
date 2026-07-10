@@ -2,7 +2,7 @@
 
 ## Overview
 
-Provides public access to shop categories.
+Provides public access to shop categories and products.
 
 No authentication required.
 
@@ -17,6 +17,15 @@ No authentication required.
 ```http
 GET /api/shop/categories
 ```
+
+### Query Parameters
+
+| Parameter           | Type    | Required | Description                                  |
+|---------------------|---------|----------|-----------------------------------------------|
+| has_image           | boolean | no       | Only categories with an image                 |
+| only_with_products  | boolean | no       | Only categories that have at least one product|
+| random              | boolean | no       | Random order                                  |
+| limit               | integer | no       | Limit the number of returned root categories  |
 
 ### Success Response
 
@@ -42,19 +51,19 @@ GET /api/shop/categories
 
 ---
 
-## Get Category by Slug
+## Get Category by ID
 
 ### Request
 
 ```http
-GET /api/shop/categories/{slug}
+GET /api/shop/categories/{id}
 ```
 
 ### URL Parameters
 
-| Parameter | Type   | Required | Description       |
-|-----------|--------|----------|-------------------|
-| slug      | string | yes      | Category slug     |
+| Parameter | Type    | Required | Description  |
+|-----------|---------|----------|--------------|
+| id        | integer | yes      | Category ID  |
 
 ### Success Response
 
@@ -96,29 +105,30 @@ GET /api/shop/categories/{slug}
 }
 ```
 
-> Returns 404 when no visible category matches the slug.
+> Returns 404 when no visible category matches the ID.
 
 ---
 
-## List Products by Category
+## List Products
 
 ### Request
 
 ```http
-GET /api/shop/categories/{slug}/products
+GET /api/shop/products
 ```
-
-### URL Parameters
-
-| Parameter | Type   | Required | Description    |
-|-----------|--------|----------|----------------|
-| slug      | string | yes      | Category slug  |
 
 ### Query Parameters
 
-| Parameter | Type    | Required | Description                        |
-|-----------|---------|----------|------------------------------------|
-| page      | integer | no       | Page number (default: 1)           |
+| Parameter   | Type    | Required | Description                                             |
+|-------------|---------|----------|----------------------------------------------------------|
+| category_id | integer | no       | Restrict to a category (and its descendants)              |
+| brand       | string  | no       | Comma-separated brand IDs                                  |
+| price_from  | number  | no       | Minimum price                                               |
+| price_to    | number  | no       | Maximum price                                               |
+| search      | string  | no       | Search term                                                 |
+| sort        | string  | no       | `price_asc`, `price_desc`, `newest`, `title_asc`, `title_desc` |
+| page        | integer | no       | Page number (default: 1)                                    |
+
 ### Success Response
 
 ```json
@@ -166,24 +176,23 @@ GET /api/shop/categories/{slug}/products
 }
 ```
 
-> Returns 404 when no visible category matches the slug.
+> Returns 404 when `category_id` does not match a visible category.
 
 ---
 
-## Get Product by Slug
+## Get Product by ID
 
 ### Request
 
 ```http
-GET /api/shop/categories/{categorySlug}/products/{productSlug}
+GET /api/shop/products/{id}
 ```
 
 ### URL Parameters
 
-| Parameter    | Type   | Required | Description    |
-|--------------|--------|----------|----------------|
-| categorySlug | string | yes      | Category slug  |
-| productSlug  | string | yes      | Product slug   |
+| Parameter | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| id        | integer | yes      | Product ID  |
 
 ### Success Response
 
@@ -222,7 +231,7 @@ GET /api/shop/categories/{categorySlug}/products/{productSlug}
 }
 ```
 
-> Returns 404 when category or product slug does not match a visible record.
+> Returns 404 when no visible product matches the ID.
 
 ---
 
