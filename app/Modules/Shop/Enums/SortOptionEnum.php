@@ -17,11 +17,11 @@ enum SortOptionEnum: string
     public function label(): string
     {
         return match ($this) {
-            self::NEWEST => t('dictionary.shop.sort_option_newest'),
-            self::PRICE_ASC => t('dictionary.shop.sort_option_price_asc'),
-            self::PRICE_DESC => t('dictionary.shop.sort_option_price_desc'),
-            self::TITLE_ASC => t('dictionary.shop.sort_option_title_asc'),
-            self::TITLE_DESC => t('dictionary.shop.sort_option_title_desc'),
+            self::NEWEST => t('shop.sort_option_newest'),
+            self::PRICE_ASC => t('shop.sort_option_price_asc'),
+            self::PRICE_DESC => t('shop.sort_option_price_desc'),
+            self::TITLE_ASC => t('shop.sort_option_title_asc'),
+            self::TITLE_DESC => t('shop.sort_option_title_desc'),
         };
     }
 
