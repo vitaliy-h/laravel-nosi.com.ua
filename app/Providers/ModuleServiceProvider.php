@@ -201,7 +201,7 @@ class ModuleServiceProvider extends ServiceProvider
         }
 
         foreach (File::directories($modulesPath) as $module) {
-            $moduleName = strtolower(basename($module));
+            $moduleName = Str::snake(basename($module));
 
             if (isset(config('modules')[$moduleName]) && !config("modules.{$moduleName}")) {
                 continue;

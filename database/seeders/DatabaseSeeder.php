@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
             $this->call(\App\Modules\Shop\database\seeders\ShopBrandSeeder::class);
             $this->call(\App\Modules\Shop\database\seeders\ShopProductSeeder::class);
             DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-            $this->call(\App\Modules\Shop\database\seeders\ShopOrderSeeder::class);
+            $this->call(\App\Modules\ShopOrders\database\seeders\ShopOrderSeeder::class);
         }
 
         if (config('modules.geo')) {
