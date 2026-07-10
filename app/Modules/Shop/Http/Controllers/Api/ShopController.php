@@ -5,12 +5,13 @@ namespace App\Modules\Shop\Http\Controllers\Api;
 use App\Modules\Core\Abstract\BaseApiController;
 use App\Modules\Core\Http\Resources\BasePaginationResource;
 use App\Modules\Shop\Http\Requests\ShopProductsByCategoryRequest;
+use App\Modules\Shop\Dtos\ProductSearchDto;
 use App\Modules\Shop\Http\Resources\CategoryResource;
 use App\Modules\Shop\Http\Resources\ProductResource;
-use App\Modules\Shop\Queries\FindCategoryBySlugQuery;
-use App\Modules\Shop\Queries\FindProductBySlugQuery;
-use App\Modules\Shop\Queries\GetProductsByCategoryQuery;
-use App\Modules\Shop\Queries\GetShopCategoryTreeQuery;
+use App\Modules\Shop\Queries\Category\FindCategoryBySlugQuery;
+use App\Modules\Shop\Queries\Category\GetShopCategoryTreeQuery;
+use App\Modules\Shop\Queries\Product\FindProductBySlugQuery;
+use App\Modules\Shop\Queries\Product\SearchProductsQuery;
 use Illuminate\Http\JsonResponse;
 
 class ShopController extends BaseApiController
@@ -18,7 +19,7 @@ class ShopController extends BaseApiController
     public function __construct(
         private readonly GetShopCategoryTreeQuery $getShopCategoryTree,
         private readonly FindCategoryBySlugQuery $findCategoryBySlug,
-        private readonly GetProductsByCategoryQuery $getProductsByCategory,
+        private readonly SearchProductsQuery $searchProducts,
         private readonly FindProductBySlugQuery $findProductBySlug,
     ) {}
 
@@ -45,7 +46,7 @@ class ShopController extends BaseApiController
     public function productsByCategory(string $slug, ShopProductsByCategoryRequest $request): JsonResponse
     {
         $category = $this->findCategoryBySlug->handle($slug);
-        $products = $this->getProductsByCategory->handle($category);
+        $products = $this->searchProducts->handle(new ProductSearchDto(category: $category, sort: $request->query('sort'), paginate: true));
 
         return $this->success([
             'products' => ProductResource::collection($products),

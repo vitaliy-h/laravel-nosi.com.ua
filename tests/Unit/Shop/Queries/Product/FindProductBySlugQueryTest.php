@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Unit\Shop\Queries;
+namespace Tests\Unit\Shop\Queries\Product;
 
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
-use App\Modules\Shop\Queries\FindProductBySlugQuery;
+use App\Modules\Shop\Queries\Product\FindProductBySlugQuery;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

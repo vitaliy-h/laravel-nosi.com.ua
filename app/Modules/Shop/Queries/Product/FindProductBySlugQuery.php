@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Shop\Queries;
+namespace App\Modules\Shop\Queries\Product;
 
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;

@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit\Shop\Queries;
+namespace Tests\Unit\Shop\Queries\Category;
 
 use App\Modules\Shop\Models\Category;
-use App\Modules\Shop\Queries\FindCategoryBySlugQuery;
+use App\Modules\Shop\Queries\Category\FindCategoryBySlugQuery;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

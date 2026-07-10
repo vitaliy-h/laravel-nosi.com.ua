@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Modules\Basket\Actions\FindBasketAction;
 use App\Modules\Core\Dtos\BreadcrumbData;
 use App\Modules\Core\Interfaces\ModuleIndexControllerInterface;
-use App\Modules\Shop\Queries\FindCategoryBySlugQuery;
-use App\Modules\Shop\Queries\FindProductByIdQuery;
-use App\Modules\Shop\Queries\GetAllCategoriesQuery;
-use App\Modules\Shop\Queries\GetCategoryBreadcrumbsQuery;
-use App\Modules\Shop\Queries\GetProductsByCategoryQuery;
-use App\Modules\Shop\Queries\PrepareShopFilterQuery;
+use App\Modules\Shop\Dtos\ProductSearchDto;
+use App\Modules\Shop\Queries\Category\FindCategoryBySlugQuery;
+use App\Modules\Shop\Queries\Category\GetAllCategoriesQuery;
+use App\Modules\Shop\Queries\Category\GetCategoryBreadcrumbsQuery;
+use App\Modules\Shop\Queries\Product\FindProductByIdQuery;
+use App\Modules\Shop\Queries\Product\PrepareShopFilterQuery;
+use App\Modules\Shop\Queries\Product\SearchProductsQuery;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -22,7 +23,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
     public function __construct(
         private readonly GetAllCategoriesQuery $getAllCategories,
         private readonly PrepareShopFilterQuery $prepareShopFilter,
-        private readonly GetProductsByCategoryQuery $getProductsByCategory,
+        private readonly SearchProductsQuery $searchProducts,
         private readonly FindCategoryBySlugQuery $findCategoryBySlug,
         private readonly GetCategoryBreadcrumbsQuery $getCategoryBreadcrumbs,
         private readonly FindProductByIdQuery $findProductById,
@@ -51,7 +52,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
 
         $categories = $this->getAllCategories->handle();
         $filter = $this->prepareShopFilter->handle(null, $request);
-        $products = $this->getProductsByCategory->handle(null, $filter);
+        $products = $this->searchProducts->handle(new ProductSearchDto(filter: $filter, sort: $request->query('sort'), paginate: true));
 
         return view('pages.shop.category', compact(
             'categories',
@@ -72,7 +73,7 @@ class IndexController extends Controller implements ModuleIndexControllerInterfa
         $categories = $this->getAllCategories->handle($category->id);
         $breadcrumbs = $this->getCategoryBreadcrumbs->handle($category);
         $filter = $this->prepareShopFilter->handle($category, $request);
-        $products = $this->getProductsByCategory->handle($category, $filter);
+        $products = $this->searchProducts->handle(new ProductSearchDto(category: $category, filter: $filter, sort: $request->query('sort'), paginate: true));
 
         return view('pages.shop.category', compact(
             'category',
