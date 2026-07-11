@@ -45,6 +45,7 @@ Production-ready starter based on Laravel + Filament.
 * [Quick Commands](./commands.md)
 * [Claude Code Setup](./claude.md)
 * [Architecture Overview](./architecture.md)
+    * [Disabling Modules](modules.md)
     * [routing](routing.md)
     * [images](images.md)
     * [translations](translations.md)

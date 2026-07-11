@@ -53,7 +53,7 @@ class PageResource extends Resource
 
                 Select::make('module')
                     ->columnSpan(6)
-                    ->options(PageModule::options())
+                    ->options(PageModule::activeOptions())
                     ->required()
                     ->default(PageModule::TEXT->value)
                     ->disabled()

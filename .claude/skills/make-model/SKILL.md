@@ -220,11 +220,32 @@ Set in the model file:
 - If fields contain any of `slug`, `meta_title`, `meta_description`: add `use HasSeoFields;` inside the class body and `use App\Modules\Core\Traits\Models\HasSeoFields;` to the top-level imports
 - If `$cascadeRelations` is not empty: add `use CascadesDeletes;` inside the class body and `use App\Modules\Core\Traits\Models\CascadesDeletes;` to the top-level imports; add `protected array $cascadeDeletes = ['relation1', 'relation2'];` with the provided relation names
 
-### Step 8 — Summary
+### Step 8 — Seeder (optional)
+
+Ask: **Add a demo data seeder for this model?**
+
+If yes:
+- Check whether `app/Modules/{ModuleName}/database/seeders/{ModuleName}Seeder.php`
+  already exists (it's the module's single entry-point seeder, called
+  automatically by `database/seeders/DatabaseSeeder.php` — see `docs/modules.md` §6).
+- Create a dedicated sub-seeder `app/Modules/{ModuleName}/database/seeders/{ModelName}Seeder.php`
+  (namespace `App\Modules\{ModuleName}\database\seeders`, lowercase
+  `database\seeders`) with sample rows for this model.
+- If `{ModuleName}Seeder` already exists, add `$this->call({ModelName}Seeder::class);`
+  to its `run()`, in FK-safe order relative to existing calls.
+- If `{ModuleName}Seeder` doesn't exist yet, create it and have it call
+  `{ModelName}Seeder`. Nothing else needs wiring — `DatabaseSeeder` picks up
+  any `{ModuleName}Seeder` class automatically, and it's skipped when the
+  module is disabled via `config/modules.php`.
+
+If no: skip this step entirely, don't create empty seeder files.
+
+### Step 9 — Summary
 
 Print a short summary:
 - Model path
 - Migration file name
 - Enum classes created (if any), with their paths
 - Fields added
+- Seeder created (if any), with its path
 - Next suggested step: `php artisan migrate` (or `./vendor/bin/sail artisan migrate` if Sail is used)

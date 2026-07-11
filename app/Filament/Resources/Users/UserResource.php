@@ -6,6 +6,7 @@ use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Users\Pages\ManageUsers;
 use App\Modules\Auth\Actions\GenerateImpersonationTokenAction;
 use App\Modules\Core\Models\User;
+use App\Modules\Core\Support\ModuleGate;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -98,6 +99,9 @@ class UserResource extends Resource
                     ->tooltip(__('admin.actions.impersonate'))
                     ->url(fn(User $record): string => app(GenerateImpersonationTokenAction::class)->handle($record))
                     ->openUrlInNewTab()
+                    // Impersonation is served by the Auth module's routes, so it's
+                    // unavailable when that module is disabled.
+                    ->visible(fn(): bool => ModuleGate::isEnabled('auth'))
                     ->hidden(fn(User $record): bool => $record->id === auth()->id()),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),

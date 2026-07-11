@@ -83,6 +83,14 @@ Structure can grow depending on module complexity.
 
 ---
 
+# Disabling Modules
+
+Some modules can be turned off entirely via `config/modules.php`, gated by
+`App\Modules\Core\Support\ModuleGate`. See `docs/modules.md` for how it
+works and when to use it.
+
+---
+
 # Routing
 
 Routes remain in standard Laravel folders for POST and API methods:

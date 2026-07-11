@@ -163,6 +163,8 @@ class PagesTableSeeder extends Seeder
                 ],
             ],
         ];
+        $pages = array_filter($pages, static fn (array $page) => $page['module']->isEnabled());
+
         $rank = 100;
         foreach ($pages as $page) {
             $page['rank'] = $rank--;

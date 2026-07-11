@@ -28,8 +28,11 @@ class PageFactoryTest extends TestCase
             'slug' => '',
             'module' => PageModule::INDEX->value,
         ]);
-        $this->assertDatabaseHas('pages', ['slug' => 'news', 'module' => PageModule::NEWS->value]);
-        $this->assertDatabaseHas('pages', ['slug' => 'shop', 'module' => PageModule::SHOP->value]);
-        $this->assertDatabaseHas('pages', ['slug' => 'auth', 'module' => PageModule::AUTH->value]);
+
+        foreach ([PageModule::NEWS, PageModule::SHOP, PageModule::AUTH] as $module) {
+            $condition = $module->isEnabled() ? 'assertDatabaseHas' : 'assertDatabaseMissing';
+
+            $this->{$condition}('pages', ['slug' => $module->value, 'module' => $module->value]);
+        }
     }
 }

@@ -6,6 +6,7 @@ use App\Modules\Core\Enums\PageModule;
 use App\Modules\Core\Models\Page;
 use App\Modules\Core\Observers\LogObserver;
 use App\Modules\Core\Queries\FindPageByModuleQuery;
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Core\Traits\Models\CascadesDeletes;
 use Illuminate\Console\Application as Artisan;
 use Illuminate\Database\Eloquent\Model;
@@ -70,6 +71,10 @@ class ModuleServiceProvider extends ServiceProvider
         $modules = File::directories($modulesPath);
 
         foreach ($modules as $module) {
+
+            if (!ModuleGate::isEnabled(Str::snake(basename($module)))) {
+                continue;
+            }
 
             $webRoute = $module . '/Http/Routes/web.php';
             $apiRoute = $module . '/Http/Routes/api.php';
@@ -171,6 +176,10 @@ class ModuleServiceProvider extends ServiceProvider
 
         foreach ($modules as $module) {
 
+            if (!ModuleGate::isEnabled(Str::snake(basename($module)))) {
+                continue;
+            }
+
             $commandsPath = $module . '/Console/Commands';
 
             if (!File::exists($commandsPath)) {
@@ -201,9 +210,7 @@ class ModuleServiceProvider extends ServiceProvider
         }
 
         foreach (File::directories($modulesPath) as $module) {
-            $moduleName = Str::snake(basename($module));
-
-            if (isset(config('modules')[$moduleName]) && !config("modules.{$moduleName}")) {
+            if (!ModuleGate::isEnabled(Str::snake(basename($module)))) {
                 continue;
             }
 

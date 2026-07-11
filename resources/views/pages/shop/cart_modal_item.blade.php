@@ -17,7 +17,7 @@
                         </div>
                         <div class="product-details">
                             <h6 class="product-title">{{$item->product->title}}</h6>
-                            <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
+                            <form data-abcr="{{ save_route('change_product_count') }}" action="{{ save_route('change_product_count') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="id" value="{{$item->product->id}}">
                                 <input type="hidden" name="count" value="0">
@@ -35,7 +35,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-lg-2 text-center">
-                    <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
+                    <form data-abcr="{{ save_route('change_product_count') }}" action="{{ save_route('change_product_count') }}" method="POST">
                         @csrf
                         <input type="hidden" name="id" value="{{$item->product->id}}">
                         <input type="hidden" name="action" value="{{ \App\Modules\ShopCart\Enums\CartAction::ChangeCountModal->value }}">

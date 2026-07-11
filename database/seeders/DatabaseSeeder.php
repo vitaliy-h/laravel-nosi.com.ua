@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Modules\Core\Support\ModuleGate;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,21 +23,36 @@ class DatabaseSeeder extends Seeder
         $this->call(LetterTemplateSeeder::class);
         $this->call(SmsTemplateSeeder::class);
 
-        if (config('modules.news')) {
-            $this->call(\App\Modules\News\database\seeders\NewsSeeder::class);
+        $this->callModuleSeeders();
+    }
+
+    /**
+     * Each module owning demo data exposes a {Module}Seeder that calls its
+     * own sub-seeders in the required order. Disabled modules (and modules
+     * whose dependency is disabled, e.g. ShopOrders/ShopCart without Shop)
+     * are skipped via ModuleGate so a fully disabled module's seeder never
+     * touches its (possibly deleted) tables.
+     */
+    private function callModuleSeeders(): void
+    {
+        $modulesPath = app_path('Modules');
+
+        if (!File::exists($modulesPath)) {
+            return;
         }
 
-        if (config('modules.shop')) {
-            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-            $this->call(\App\Modules\Shop\database\seeders\ShopCategorySeeder::class);
-            $this->call(\App\Modules\Shop\database\seeders\ShopBrandSeeder::class);
-            $this->call(\App\Modules\Shop\database\seeders\ShopProductSeeder::class);
-            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-            $this->call(\App\Modules\ShopOrders\database\seeders\ShopOrderSeeder::class);
-        }
+        foreach (File::directories($modulesPath) as $module) {
+            $moduleName = basename($module);
 
-        if (config('modules.geo')) {
-            $this->call(\App\Modules\Geo\database\seeders\GeoTablesSeeder::class);
+            if (!ModuleGate::isEnabled(Str::snake($moduleName))) {
+                continue;
+            }
+
+            $seederClass = "App\\Modules\\{$moduleName}\\database\\seeders\\{$moduleName}Seeder";
+
+            if (class_exists($seederClass)) {
+                $this->call($seederClass);
+            }
         }
     }
 }

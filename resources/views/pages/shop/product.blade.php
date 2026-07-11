@@ -90,7 +90,7 @@
                             <span>{{ t('shop.in_stock') }}</span>
                         </div>
 
-                        <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
+                        <form data-abcr="{{ save_route('change_product_count') }}" action="{{ save_route('change_product_count') }}" method="POST">
                             @csrf
                             <input type="hidden" name="id" value="{{ $product->id }}">
                             <input type="hidden" name="action" value="{{ \App\Modules\ShopCart\Enums\CartAction::ChangeCount->value }}">

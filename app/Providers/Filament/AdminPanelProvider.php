@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Modules\Core\Support\ModuleGate;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -58,11 +59,11 @@ class AdminPanelProvider extends PanelProvider
                             ->icon('heroicon-o-language')
                             ->url(\App\Filament\Resources\Languages\LanguageResource::getUrl())
                             ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.languages.*')),
-                        config('modules.news') ? NavigationItem::make(__('admin.tables.news'))
+                        ModuleGate::isEnabled('news') ? NavigationItem::make(__('admin.tables.news'))
                             ->icon('heroicon-o-newspaper')
                             ->url(\App\Filament\Resources\News\NewsResource::getUrl())
                             ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.news.*')) : null,
-                        config('modules.feedback') ? NavigationItem::make(__('admin.tables.feedback'))
+                        ModuleGate::isEnabled('feedback') ? NavigationItem::make(__('admin.tables.feedback'))
                             ->icon('heroicon-o-chat-bubble-left-right')
                             ->url(\App\Filament\Resources\Feedback\FeedbackResource::getUrl())
                             ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.feedback.*')) : null,
@@ -70,15 +71,15 @@ class AdminPanelProvider extends PanelProvider
                             ->icon('heroicon-o-envelope')
                             ->url(\App\Filament\Resources\LetterTemplates\LetterTemplateResource::getUrl())
                             ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.letter-templates.*')),
-                        config('modules.sms') ? NavigationItem::make(__('admin.tables.sms_templates'))
+                        ModuleGate::isEnabled('sms') ? NavigationItem::make(__('admin.tables.sms_templates'))
                             ->icon('heroicon-o-chat-bubble-left-right')
                             ->url(\App\Filament\Resources\SmsTemplates\SmsTemplateResource::getUrl())
                             ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.sms-templates.*')) : null,
                     ]))
                     ->groups(array_filter([
                         // shop
-                        config('modules.shop') ? NavigationGroup::make(__('admin.tables.shop'))
-                            ->items([
+                        ModuleGate::isEnabled('shop') ? NavigationGroup::make(__('admin.tables.shop'))
+                            ->items(array_filter([
                                 NavigationItem::make(__('admin.tables.shop_products'))
                                     ->icon('heroicon-o-cube')
                                     ->url(\App\Filament\Resources\Shop\Products\ProductResource::getUrl())
@@ -95,11 +96,11 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-shopping-cart')
                                     ->url(\App\Filament\Resources\Shop\Orders\OrderResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.shop.orders.*')),
-                                NavigationItem::make(__('admin.tables.shop_carts'))
+                                ModuleGate::isEnabled('shop_cart') ? NavigationItem::make(__('admin.tables.shop_carts'))
                                     ->icon('heroicon-o-shopping-bag')
                                     ->url(\App\Filament\Resources\Cart\CartResource::getUrl())
-                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.cart.carts.*')),
-                            ]) : null,
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.cart.carts.*')) : null,
+                            ])) : null,
                         // users
                         NavigationGroup::make(__('admin.tables.users'))
                             ->items(array_filter([
@@ -107,13 +108,13 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-users')
                                     ->url(\App\Filament\Resources\Users\UserResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::is('admin/users') || Request::is('admin/users/create') || Request::is('admin/users/*/edit')),
-                                config('modules.auth') ? NavigationItem::make(__('admin.tables.social_profiles'))
+                                ModuleGate::isEnabled('auth') ? NavigationItem::make(__('admin.tables.social_profiles'))
                                     ->icon('heroicon-o-link')
                                     ->url(\App\Filament\Resources\SocialProfiles\SocialProfileResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::is('admin/social-profiles*')) : null,
                             ])),
 
-                        config('modules.geo') ? NavigationGroup::make(__('admin.tables.geo'))
+                        ModuleGate::isEnabled('geo') ? NavigationGroup::make(__('admin.tables.geo'))
                             ->items([
                                 NavigationItem::make(__('admin.tables.geo_countries'))
                                     ->icon('heroicon-o-globe-alt')
@@ -139,7 +140,7 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-inbox')
                                     ->url(\App\Filament\Resources\LogLetters\LogLetterResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.log-letters.*')),
-                                config('modules.sms') ? NavigationItem::make(__('admin.tables.log_sms'))
+                                ModuleGate::isEnabled('sms') ? NavigationItem::make(__('admin.tables.log_sms'))
                                     ->icon('heroicon-o-chat-bubble-bottom-center-text')
                                     ->url(\App\Filament\Resources\LogSms\LogSmsResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.log-sms.*')) : null,
@@ -150,7 +151,27 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Sky,
             ])
             ->favicon(asset('favicon.svg'))
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
+            ->resources(array_filter([
+                \App\Filament\Resources\Pages\PageResource::class,
+                \App\Filament\Resources\Languages\LanguageResource::class,
+                \App\Filament\Resources\LetterTemplates\LetterTemplateResource::class,
+                \App\Filament\Resources\LogLetters\LogLetterResource::class,
+                \App\Filament\Resources\Logs\LogResource::class,
+                \App\Filament\Resources\Users\UserResource::class,
+                ModuleGate::isEnabled('news') ? \App\Filament\Resources\News\NewsResource::class : null,
+                ModuleGate::isEnabled('feedback') ? \App\Filament\Resources\Feedback\FeedbackResource::class : null,
+                ModuleGate::isEnabled('sms') ? \App\Filament\Resources\SmsTemplates\SmsTemplateResource::class : null,
+                ModuleGate::isEnabled('sms') ? \App\Filament\Resources\LogSms\LogSmsResource::class : null,
+                ModuleGate::isEnabled('auth') ? \App\Filament\Resources\SocialProfiles\SocialProfileResource::class : null,
+                ModuleGate::isEnabled('geo') ? \App\Filament\Resources\Geo\GeoCountries\GeoCountryResource::class : null,
+                ModuleGate::isEnabled('geo') ? \App\Filament\Resources\Geo\GeoRegions\GeoRegionResource::class : null,
+                ModuleGate::isEnabled('geo') ? \App\Filament\Resources\Geo\GeoCities\GeoCityResource::class : null,
+                ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Products\ProductResource::class : null,
+                ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Categories\CategoryResource::class : null,
+                ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Brands\BrandResource::class : null,
+                ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Orders\OrderResource::class : null,
+                ModuleGate::isEnabled('shop_cart') ? \App\Filament\Resources\Cart\CartResource::class : null,
+            ]))
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,

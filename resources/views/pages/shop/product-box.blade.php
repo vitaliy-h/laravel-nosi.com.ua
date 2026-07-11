@@ -34,7 +34,7 @@
                 </div>
 
                 <div class="add-to-cart-container">
-                    <form data-abcr="{{ route('change_product_count') }}" action="{{ route('change_product_count') }}" method="POST">
+                    <form data-abcr="{{ save_route('change_product_count') }}" action="{{ save_route('change_product_count') }}" method="POST">
                         @csrf
                         <input type="hidden" name="id" value="{{ $product->id }}">
                         <input type="hidden" name="count" value="1">

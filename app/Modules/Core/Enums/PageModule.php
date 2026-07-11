@@ -2,6 +2,7 @@
 
 namespace App\Modules\Core\Enums;
 
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Core\Traits\Enums\HasEnumHelpers;
 
 enum PageModule: string
@@ -20,21 +21,19 @@ enum PageModule: string
 
     public function isEnabled(): bool
     {
-        return match ($this) {
-            self::GEO       => config('modules.geo', true),
-            self::SHOP      => config('modules.shop', true),
-            self::SHOP_CART => config('modules.shop', true),
-            self::NEWS      => config('modules.news', true),
-            self::FEEDBACK  => config('modules.feedback', true),
-            self::AUTH      => config('modules.auth', true),
-            self::PROFILE   => config('modules.auth', true),
-            default         => true,
-        };
+        return ModuleGate::isEnabled($this->value);
     }
 
     public static function active(): array
     {
         return array_values(array_filter(self::cases(), fn($case) => $case->isEnabled()));
+    }
+
+    public static function activeOptions(): array
+    {
+        return collect(self::active())
+            ->mapWithKeys(fn (self $case) => [$case->value => $case->label()])
+            ->toArray();
     }
 
     public function label(): string

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Smoke;
 
+use App\Modules\Core\Support\ModuleGate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -10,6 +11,19 @@ use Tests\TestCase;
 class FrontendPagesSmokeTest extends TestCase
 {
     use RefreshDatabase;
+
+    /**
+     * Route => module key, for routes provided by a toggleable module.
+     * When the module is disabled its route never gets registered, so the
+     * page 404s regardless of the status the data provider expects.
+     */
+    private const array ROUTE_MODULES = [
+        '/news' => 'news',
+        '/shop' => 'shop',
+        '/feedback' => 'feedback',
+        '/auth' => 'auth',
+        '/profile' => 'profile',
+    ];
 
     protected function setUp(): void
     {
@@ -21,6 +35,12 @@ class FrontendPagesSmokeTest extends TestCase
     #[DataProvider('frontendPagesProvider')]
     public function test_frontend_page_returns_expected_status(string $url, int $expectedStatus): void
     {
+        $module = self::ROUTE_MODULES[$url] ?? null;
+
+        if ($module && !ModuleGate::isEnabled($module)) {
+            $expectedStatus = 404;
+        }
+
         $response = $this->get($url);
 
         $this->assertSmokeResponse($response, $expectedStatus);

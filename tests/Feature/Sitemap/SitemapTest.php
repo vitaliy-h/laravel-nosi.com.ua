@@ -4,6 +4,7 @@ namespace Tests\Feature\Sitemap;
 
 use App\Modules\Core\Enums\PageModule;
 use App\Modules\Core\Models\Page;
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\News\Models\News;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
@@ -21,6 +22,20 @@ class SitemapTest extends TestCase
             'display'      => $display,
             'is_indexable' => $indexable,
         ]);
+    }
+
+    private function skipIfNewsDisabled(): void
+    {
+        if (!ModuleGate::isEnabled('news')) {
+            $this->markTestSkipped('news module is disabled.');
+        }
+    }
+
+    private function skipIfShopDisabled(): void
+    {
+        if (!ModuleGate::isEnabled('shop')) {
+            $this->markTestSkipped('shop module is disabled.');
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -44,6 +59,8 @@ class SitemapTest extends TestCase
 
     public function test_sitemap_index_includes_news_links_when_news_module_is_indexable(): void
     {
+        $this->skipIfNewsDisabled();
+
         $this->makeModulePage(PageModule::NEWS);
         News::factory()->create(['slug' => 'article-one']);
 
@@ -54,6 +71,8 @@ class SitemapTest extends TestCase
 
     public function test_sitemap_index_omits_news_links_when_news_module_display_is_false(): void
     {
+        $this->skipIfNewsDisabled();
+
         $this->makeModulePage(PageModule::NEWS, display: false, indexable: true);
         News::factory()->create(['slug' => 'article-one']);
 
@@ -64,6 +83,8 @@ class SitemapTest extends TestCase
 
     public function test_sitemap_index_omits_news_links_when_news_module_not_indexable(): void
     {
+        $this->skipIfNewsDisabled();
+
         $this->makeModulePage(PageModule::NEWS, display: true, indexable: false);
         News::factory()->create(['slug' => 'article-one']);
 
@@ -74,6 +95,8 @@ class SitemapTest extends TestCase
 
     public function test_sitemap_index_includes_shop_links_when_shop_module_is_indexable(): void
     {
+        $this->skipIfShopDisabled();
+
         $this->makeModulePage(PageModule::SHOP);
         $category = Category::factory()->create();
         Product::factory()->forCategory($category)->create();
@@ -86,6 +109,8 @@ class SitemapTest extends TestCase
 
     public function test_sitemap_index_omits_shop_links_when_shop_module_not_indexable(): void
     {
+        $this->skipIfShopDisabled();
+
         $this->makeModulePage(PageModule::SHOP, display: true, indexable: false);
         $category = Category::factory()->create();
         Product::factory()->forCategory($category)->create();
@@ -98,6 +123,8 @@ class SitemapTest extends TestCase
 
     public function test_sitemap_index_omits_shop_links_when_shop_module_display_is_false(): void
     {
+        $this->skipIfShopDisabled();
+
         $this->makeModulePage(PageModule::SHOP, display: false, indexable: true);
 
         $response = $this->get('/sitemap.xml');
@@ -170,6 +197,8 @@ class SitemapTest extends TestCase
 
     public function test_sitemap_news_includes_visible_items_when_module_is_indexable(): void
     {
+        $this->skipIfNewsDisabled();
+
         $this->makeModulePage(PageModule::NEWS);
         News::factory()->create(['slug' => 'breaking-news']);
 
@@ -180,6 +209,8 @@ class SitemapTest extends TestCase
 
     public function test_sitemap_news_is_empty_when_module_not_indexable(): void
     {
+        $this->skipIfNewsDisabled();
+
         $this->makeModulePage(PageModule::NEWS, display: true, indexable: false);
         News::factory()->create(['slug' => 'breaking-news']);
 
@@ -190,6 +221,8 @@ class SitemapTest extends TestCase
 
     public function test_sitemap_news_excludes_invisible_news(): void
     {
+        $this->skipIfNewsDisabled();
+
         $this->makeModulePage(PageModule::NEWS);
         News::factory()->invisible()->create(['slug' => 'hidden-article']);
 
@@ -219,6 +252,8 @@ class SitemapTest extends TestCase
 
     public function test_sitemap_categories_includes_visible_categories_when_shop_is_indexable(): void
     {
+        $this->skipIfShopDisabled();
+
         $this->makeModulePage(PageModule::SHOP);
         Category::factory()->create(['slug' => 'smartphones']);
 
@@ -229,6 +264,8 @@ class SitemapTest extends TestCase
 
     public function test_sitemap_categories_is_empty_when_shop_not_indexable(): void
     {
+        $this->skipIfShopDisabled();
+
         $this->makeModulePage(PageModule::SHOP, display: true, indexable: false);
         Category::factory()->create(['slug' => 'smartphones']);
 
@@ -239,6 +276,8 @@ class SitemapTest extends TestCase
 
     public function test_sitemap_categories_excludes_invisible_categories(): void
     {
+        $this->skipIfShopDisabled();
+
         $this->makeModulePage(PageModule::SHOP);
         Category::factory()->invisible()->create(['slug' => 'hidden-cat']);
 
@@ -268,6 +307,8 @@ class SitemapTest extends TestCase
 
     public function test_sitemap_products_includes_visible_products_when_shop_is_indexable(): void
     {
+        $this->skipIfShopDisabled();
+
         $this->makeModulePage(PageModule::SHOP);
         $category = Category::factory()->create(['slug' => 'phones']);
         $product = Product::factory()->forCategory($category)->create(['slug' => 'iphone']);
@@ -280,6 +321,8 @@ class SitemapTest extends TestCase
 
     public function test_sitemap_products_is_empty_when_shop_not_indexable(): void
     {
+        $this->skipIfShopDisabled();
+
         $this->makeModulePage(PageModule::SHOP, display: true, indexable: false);
         $category = Category::factory()->create(['slug' => 'phones']);
         Product::factory()->forCategory($category)->create(['slug' => 'iphone']);
@@ -291,6 +334,8 @@ class SitemapTest extends TestCase
 
     public function test_sitemap_products_excludes_invisible_products(): void
     {
+        $this->skipIfShopDisabled();
+
         $this->makeModulePage(PageModule::SHOP);
         $category = Category::factory()->create();
         Product::factory()->forCategory($category)->invisible()->create(['slug' => 'ghost-product']);
