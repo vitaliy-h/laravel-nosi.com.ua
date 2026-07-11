@@ -3,6 +3,7 @@
 namespace App\Modules\ShopOrders\Actions;
 
 use App\Modules\ShopCart\Models\Cart;
+use App\Modules\ShopCart\Services\CartService;
 use App\Modules\ShopOrders\Dtos\CreateOrderData;
 use App\Modules\ShopOrders\Dtos\CustomerData;
 use App\Modules\ShopOrders\Dtos\OrderItemData;
@@ -12,6 +13,7 @@ readonly class PlaceOrderFromCartAction
 {
     public function __construct(
         private CreateOrderAction $createOrder,
+        private CartService $cartService,
     ) {}
 
     public function handle(Cart $cart, CustomerData $customer): Order
@@ -37,6 +39,8 @@ readonly class PlaceOrderFromCartAction
         ));
 
         $cart->delete();
+
+        $this->cartService->refreshCount(null);
 
         return $order;
     }
