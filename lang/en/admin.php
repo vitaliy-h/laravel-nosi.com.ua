@@ -10,7 +10,7 @@ return [
 
     // table names in the database
     'tables' => [
-        'shop_baskets' => 'Baskets',
+        'shop_carts' => 'Carts',
         'dashboard' => 'Dashboard',
         'feedback' => 'Feedback',
         'general' => 'General',

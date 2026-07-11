@@ -5,13 +5,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="modal-body js_basket_modal_content">
+            <div class="modal-body js_cart_modal_content">
 
 
             </div>
 
             <div class="modal-footer">
-                <a href="{{save_route('basket.index')}}" class="btn btn-primary">
+                <a href="{{save_route('cart.index')}}" class="btn btn-primary">
                     Place an order
                 </a>
 

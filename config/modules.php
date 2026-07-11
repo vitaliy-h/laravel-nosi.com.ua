@@ -3,7 +3,7 @@
 return [
     'geo' => true,
     'shop'=> true,
-    'shop_basket'=> true,
+    'shop_cart'=> true,
     'news'=>true,
     'auth'=>true,
     'feedback'=>true,

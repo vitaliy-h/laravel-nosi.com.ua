@@ -2,9 +2,9 @@
 
 namespace App\Modules\ShopOrders\Http\Controllers\Web;
 
-use App\Modules\ShopBasket\Models\Basket;
+use App\Modules\ShopCart\Models\Cart;
 use App\Modules\Core\Abstract\BaseWebController;
-use App\Modules\ShopOrders\Actions\PlaceOrderFromBasketAction;
+use App\Modules\ShopOrders\Actions\PlaceOrderFromCartAction;
 use App\Modules\ShopOrders\Dtos\CustomerData;
 use App\Modules\ShopOrders\Http\Requests\PlaceOrderRequest;
 use Illuminate\Http\RedirectResponse;
@@ -12,14 +12,14 @@ use Illuminate\Http\RedirectResponse;
 class OrderController extends BaseWebController
 {
     public function __construct(
-        private readonly PlaceOrderFromBasketAction $placeOrder,
+        private readonly PlaceOrderFromCartAction $placeOrder,
     ) {}
 
     public function create(PlaceOrderRequest $request): RedirectResponse
     {
-        $basket = Basket::where('uuid', $request->validated('basket_uuid'))->firstOrFail();
+        $cart = Cart::where('uuid', $request->validated('cart_uuid'))->firstOrFail();
 
-        $order = $this->placeOrder->handle($basket, CustomerData::from($request->validated()));
+        $order = $this->placeOrder->handle($cart, CustomerData::from($request->validated()));
 
         return redirect()->route('order.show', $order->uuid);
     }

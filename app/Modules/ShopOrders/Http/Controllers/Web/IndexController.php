@@ -2,7 +2,7 @@
 
 namespace App\Modules\ShopOrders\Http\Controllers\Web;
 
-use App\Modules\ShopBasket\Services\BasketService;
+use App\Modules\ShopCart\Services\CartService;
 use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Core\Services\MenuService;
 use App\Modules\ShopOrders\Queries\FindOrderByUuidQuery;
@@ -13,7 +13,7 @@ class IndexController extends BaseWebController
     public function __construct(
         private readonly FindOrderByUuidQuery $findOrderByUuid,
         private readonly MenuService $menu,
-        private readonly BasketService $basket,
+        private readonly CartService $cart,
     ) {}
 
     public function show(string $uuid): View
@@ -50,7 +50,7 @@ class IndexController extends BaseWebController
             'breadcrumbs' => collect(),
             'headerMenu' => $this->menu->getHeaderMenu(),
             'footerMenu' => $this->menu->getFooterMenu(),
-            'basketCount' => $this->basket->getCount(),
+            'cartCount' => $this->cart->getCount(),
         ]);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Modules\Auth\Http\Controllers\Web;
 
-use App\Modules\ShopBasket\Actions\MergeBasketOnAuthAction;
+use App\Modules\ShopCart\Actions\MergeCartOnAuthAction;
 use App\Modules\Auth\Actions\LoginAction;
 use App\Modules\Auth\Actions\RegisterAction;
 use App\Modules\Auth\Actions\ResetPasswordAction;
@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends BaseWebController
 {
-    public function login(LoginRequest $request, LoginAction $action, MergeBasketOnAuthAction $mergeBasket): RedirectResponse
+    public function login(LoginRequest $request, LoginAction $action, MergeCartOnAuthAction $mergeCart): RedirectResponse
     {
         $remember = (bool)$request->boolean('remember_me');
 
@@ -33,7 +33,7 @@ class AuthController extends BaseWebController
         Auth::login($user, $remember);
         $request->session()->regenerate();
 
-        $mergeBasket->handle($user);
+        $mergeCart->handle($user);
 
         return redirect()->to(save_route('profile.edit'));
     }
@@ -49,7 +49,7 @@ class AuthController extends BaseWebController
         return redirect(save_route('index.index'));
     }
 
-    public function register(RegisterRequest $request, RegisterAction $action, MergeBasketOnAuthAction $mergeBasket): RedirectResponse
+    public function register(RegisterRequest $request, RegisterAction $action, MergeCartOnAuthAction $mergeCart): RedirectResponse
     {
         $user = $action->handle(
             RegisterData::from($request->validated())
@@ -59,7 +59,7 @@ class AuthController extends BaseWebController
 
         $request->session()->regenerate();
 
-        $mergeBasket->handle($user);
+        $mergeCart->handle($user);
 
         return redirect(save_route('profile.edit'));
     }

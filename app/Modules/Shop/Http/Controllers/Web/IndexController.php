@@ -2,7 +2,7 @@
 
 namespace App\Modules\Shop\Http\Controllers\Web;
 
-use App\Modules\ShopBasket\Actions\FindBasketAction;
+use App\Modules\ShopCart\Actions\FindCartAction;
 use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Core\Dtos\BreadcrumbData;
 use App\Modules\Shop\Dtos\ProductSearchDto;
@@ -25,7 +25,7 @@ class IndexController extends BaseWebController
         private readonly FindCategoryBySlugQuery $findCategoryBySlug,
         private readonly GetCategoryBreadcrumbsQuery $getCategoryBreadcrumbs,
         private readonly FindProductByIdQuery $findProductById,
-        private readonly FindBasketAction $findBasket,
+        private readonly FindCartAction $findCart,
     ) {}
 
     public function index(Request $request)
@@ -97,20 +97,20 @@ class IndexController extends BaseWebController
             )
         );
 
-        $basketQuantity = $this->basketQuantityFor($product->id) ?? 1;
+        $cartQuantity = $this->cartQuantityFor($product->id) ?? 1;
 
         return view('pages.shop.product', compact(
             'category',
             'product',
             'breadcrumbs',
-            'basketQuantity',
+            'cartQuantity',
         ));
     }
 
-    private function basketQuantityFor(int $productId): ?int
+    private function cartQuantityFor(int $productId): ?int
     {
-        $basket = $this->findBasket->handle(Auth::user());
+        $cart = $this->findCart->handle(Auth::user());
 
-        return $basket?->items()->where('shop_product_id', $productId)->value('quantity');
+        return $cart?->items()->where('shop_product_id', $productId)->value('quantity');
     }
 }

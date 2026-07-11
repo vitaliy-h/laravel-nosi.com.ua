@@ -4,7 +4,7 @@ namespace App\Modules\Auth\Http\Controllers\Web;
 
 use App\Modules\Auth\Actions\ConnectSocialProfileAction;
 use App\Modules\Auth\Actions\FindOrCreateSocialUserAction;
-use App\Modules\ShopBasket\Actions\MergeBasketOnAuthAction;
+use App\Modules\ShopCart\Actions\MergeCartOnAuthAction;
 use App\Modules\Core\Abstract\BaseWebController;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
@@ -14,7 +14,7 @@ class OAuthController extends BaseWebController
     public function __construct(
         private readonly FindOrCreateSocialUserAction $findOrCreate,
         private readonly ConnectSocialProfileAction   $connect,
-        private readonly MergeBasketOnAuthAction      $mergeBasket,
+        private readonly MergeCartOnAuthAction      $mergeCart,
     ) {}
 
     public function redirect(string $provider): RedirectResponse
@@ -46,7 +46,7 @@ class OAuthController extends BaseWebController
 
         auth()->login($user, true);
 
-        $this->mergeBasket->handle($user);
+        $this->mergeCart->handle($user);
 
         return redirect()->intended(save_route('profile.edit'));
     }

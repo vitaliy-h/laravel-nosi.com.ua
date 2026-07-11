@@ -166,7 +166,7 @@ When the parent model is deleted:
 | Model    | Cascades               |
 |----------|-------------------------|
 | `Order`  | `items` (OrderProduct)  |
-| `Basket` | `items`                 |
+| `Cart` | `items`                 |
 
 ------------------------------------------------------------------------
 

@@ -45,9 +45,9 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(SocialProfile::class);
     }
 
-    public function basket(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function cart(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(\App\Modules\ShopBasket\Models\Basket::class);
+        return $this->hasOne(\App\Modules\ShopCart\Models\Cart::class);
     }
 
     public function getFormattedNameAttribute()

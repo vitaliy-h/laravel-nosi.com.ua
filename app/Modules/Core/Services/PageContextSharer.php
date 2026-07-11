@@ -2,7 +2,7 @@
 
 namespace App\Modules\Core\Services;
 
-use App\Modules\ShopBasket\Services\BasketService;
+use App\Modules\ShopCart\Services\CartService;
 use App\Modules\Core\Models\Page;
 use App\Modules\Core\Queries\GetPageBreadcrumbsQuery;
 
@@ -11,11 +11,11 @@ readonly class PageContextSharer
     public function __construct(
         private GetPageBreadcrumbsQuery $breadcrumbs,
         private MenuService $menu,
-        private BasketService $basket,
+        private CartService $cart,
     ) {}
 
     /**
-     * Share the standard CMS page variables (page, breadcrumbs, meta, menus, basket count)
+     * Share the standard CMS page variables (page, breadcrumbs, meta, menus, cart count)
      * with the view layer.
      */
     public function share(Page $page): void
@@ -27,7 +27,7 @@ readonly class PageContextSharer
             'meta_description' => $page->meta_description,
             'headerMenu' => $this->menu->getHeaderMenu(),
             'footerMenu' => $this->menu->getFooterMenu(),
-            'basketCount' => $this->basket->getCount(),
+            'cartCount' => $this->cart->getCount(),
         ]);
     }
 }

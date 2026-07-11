@@ -95,7 +95,7 @@ class ModuleServiceProvider extends ServiceProvider
      * routes (e.g. `ShopOrders` → `/orders/...`, via MODULE_PREFIX_OVERRIDES).
      *
      * When a DB page is found for the module, the CMS page context (page,
-     * breadcrumbs, meta, menus, basket count) is auto-shared to the view via the
+     * breadcrumbs, meta, menus, cart count) is auto-shared to the view via the
      * `share.page` middleware, so module controllers never need to fetch/share it
      * themselves.
      */

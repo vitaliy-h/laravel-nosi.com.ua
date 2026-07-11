@@ -49,7 +49,7 @@ Route::middleware(['web', 'share.page:'.$pageModule->value])
 - `share.page` is `App\Modules\Core\Http\Middleware\ShareModulePageContext` —
   at **request time** it resolves the `Page` for that `PageModule` and shares
   `page`, `breadcrumbs`, `meta_title`, `meta_description`, `headerMenu`,
-  `footerMenu`, `basketCount` to the view via `PageContextSharer::share()`.
+  `footerMenu`, `cartCount` to the view via `PageContextSharer::share()`.
   Migrated controllers never share these themselves.
 - Modules that don't map to a `PageModule` (`Core`, `ShopOrders`, `Sitemap`,
   `_debug`, `Translation`, `Notification`) register with plain

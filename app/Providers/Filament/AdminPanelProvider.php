@@ -95,10 +95,10 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-shopping-cart')
                                     ->url(\App\Filament\Resources\Shop\Orders\OrderResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.shop.orders.*')),
-                                NavigationItem::make(__('admin.tables.shop_baskets'))
+                                NavigationItem::make(__('admin.tables.shop_carts'))
                                     ->icon('heroicon-o-shopping-bag')
-                                    ->url(\App\Filament\Resources\Basket\BasketResource::getUrl())
-                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.basket.baskets.*')),
+                                    ->url(\App\Filament\Resources\Cart\CartResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.cart.carts.*')),
                             ]) : null,
                         // users
                         NavigationGroup::make(__('admin.tables.users'))

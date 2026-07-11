@@ -88,7 +88,7 @@
                     </a>
 
                     <!-- Cart -->
-                    @include('pages.basket.basket-count')
+                    @include('pages.cart.cart-count')
 
                     <!-- Mobile Navigation Toggle -->
                     <i class="mobile-nav-toggle d-xl-none bi bi-list me-0"></i>

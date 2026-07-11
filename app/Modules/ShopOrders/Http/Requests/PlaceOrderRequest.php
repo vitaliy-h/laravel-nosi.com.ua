@@ -23,7 +23,7 @@ class PlaceOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'basket_uuid' => ['required', 'uuid', 'exists:shop_baskets,uuid'],
+            'cart_uuid' => ['required', 'uuid', 'exists:shop_carts,uuid'],
             'user_name' => ['nullable', 'string', 'max:255'],
             'user_surname' => ['nullable', 'string', 'max:255'],
             'user_email' => ['required', 'email', 'max:255'],

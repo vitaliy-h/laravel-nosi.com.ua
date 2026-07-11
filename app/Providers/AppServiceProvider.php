@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Modules\ShopBasket\Models\BasketProduct;
-use App\Modules\ShopBasket\Observers\BasketProductObserver;
+use App\Modules\ShopCart\Models\CartProduct;
+use App\Modules\ShopCart\Observers\CartProductObserver;
 use App\Modules\Core\Models\Page;
 use App\Modules\Core\Observers\PageObserver;
 use App\Modules\Core\Queries\GetAllPagesQuery;
@@ -51,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
         Page::observe(PageObserver::class);
         Order::observe(OrderObserver::class);
         OrderProduct::observe(OrderProductObserver::class);
-        BasketProduct::observe(BasketProductObserver::class);
+        CartProduct::observe(CartProductObserver::class);
         $this->mergeSocialConfig();
     }
 

@@ -13,7 +13,7 @@ enum PageModule: string
     case NEWS = 'news';
     case FEEDBACK = 'feedback';
     case SHOP = 'shop';
-    case SHOP_BASKET = 'shop_basket';
+    case SHOP_CART = 'shop_cart';
     case AUTH = 'auth';
     case PROFILE = 'profile';
     case GEO = 'geo';
@@ -21,14 +21,14 @@ enum PageModule: string
     public function isEnabled(): bool
     {
         return match ($this) {
-            self::GEO         => config('modules.geo', true),
-            self::SHOP        => config('modules.shop', true),
-            self::SHOP_BASKET => config('modules.shop', true),
-            self::NEWS        => config('modules.news', true),
-            self::FEEDBACK    => config('modules.feedback', true),
-            self::AUTH        => config('modules.auth', true),
-            self::PROFILE     => config('modules.auth', true),
-            default           => true,
+            self::GEO       => config('modules.geo', true),
+            self::SHOP      => config('modules.shop', true),
+            self::SHOP_CART => config('modules.shop', true),
+            self::NEWS      => config('modules.news', true),
+            self::FEEDBACK  => config('modules.feedback', true),
+            self::AUTH      => config('modules.auth', true),
+            self::PROFILE   => config('modules.auth', true),
+            default         => true,
         };
     }
 
@@ -45,7 +45,7 @@ enum PageModule: string
             self::NEWS => 'News',
             self::FEEDBACK => 'Feedback',
             self::SHOP => 'Shop',
-            self::SHOP_BASKET => 'Shop basket',
+            self::SHOP_CART => 'Shop cart',
             self::AUTH => 'Auth',
             self::PROFILE => 'Profile',
             self::GEO => 'Geo',

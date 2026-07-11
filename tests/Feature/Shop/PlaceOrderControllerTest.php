@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Shop;
 
-use App\Modules\ShopBasket\Models\Basket;
-use App\Modules\ShopBasket\Models\BasketProduct;
+use App\Modules\ShopCart\Models\Cart;
+use App\Modules\ShopCart\Models\CartProduct;
 use App\Modules\ShopOrders\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -14,16 +14,16 @@ class PlaceOrderControllerTest extends TestCase
 
     public function test_place_order_creates_order_and_redirects_to_show(): void
     {
-        $basket = Basket::factory()->create();
-        BasketProduct::factory()->create([
-            'basket_id' => $basket->id,
+        $cart = Cart::factory()->create();
+        CartProduct::factory()->create([
+            'cart_id' => $cart->id,
             'quantity' => 2,
             'selling_price' => 10,
             'total' => 20,
         ]);
 
         $response = $this->post(route('order.create'), [
-            'basket_uuid' => $basket->uuid,
+            'cart_uuid' => $cart->uuid,
             'user_name' => 'John',
             'user_surname' => 'Doe',
             'user_email' => 'john@example.com',
@@ -43,52 +43,52 @@ class PlaceOrderControllerTest extends TestCase
         $this->assertSame(1, $order->items()->count());
     }
 
-    public function test_place_order_deletes_the_basket(): void
+    public function test_place_order_deletes_the_cart(): void
     {
-        $basket = Basket::factory()->create();
-        BasketProduct::factory()->create(['basket_id' => $basket->id]);
+        $cart = Cart::factory()->create();
+        CartProduct::factory()->create(['cart_id' => $cart->id]);
 
         $this->post(route('order.create'), [
-            'basket_uuid' => $basket->uuid,
+            'cart_uuid' => $cart->uuid,
             'user_email' => 'john@example.com',
         ]);
 
-        $this->assertDatabaseMissing('shop_baskets', ['id' => $basket->id]);
+        $this->assertDatabaseMissing('shop_carts', ['id' => $cart->id]);
     }
 
     public function test_place_order_requires_email(): void
     {
-        $basket = Basket::factory()->create();
-        BasketProduct::factory()->create(['basket_id' => $basket->id]);
+        $cart = Cart::factory()->create();
+        CartProduct::factory()->create(['cart_id' => $cart->id]);
 
         $this->post(route('order.create'), [
-            'basket_uuid' => $basket->uuid,
+            'cart_uuid' => $cart->uuid,
         ])->assertSessionHasErrors('user_email');
     }
 
     public function test_place_order_requires_valid_email(): void
     {
-        $basket = Basket::factory()->create();
-        BasketProduct::factory()->create(['basket_id' => $basket->id]);
+        $cart = Cart::factory()->create();
+        CartProduct::factory()->create(['cart_id' => $cart->id]);
 
         $this->post(route('order.create'), [
-            'basket_uuid' => $basket->uuid,
+            'cart_uuid' => $cart->uuid,
             'user_email' => 'not-an-email',
         ])->assertSessionHasErrors('user_email');
     }
 
-    public function test_place_order_requires_basket_uuid(): void
+    public function test_place_order_requires_cart_uuid(): void
     {
         $this->post(route('order.create'), [
             'user_email' => 'john@example.com',
-        ])->assertSessionHasErrors('basket_uuid');
+        ])->assertSessionHasErrors('cart_uuid');
     }
 
-    public function test_place_order_with_unknown_basket_uuid_fails_validation(): void
+    public function test_place_order_with_unknown_cart_uuid_fails_validation(): void
     {
         $this->post(route('order.create'), [
-            'basket_uuid' => '00000000-0000-0000-0000-000000000000',
+            'cart_uuid' => '00000000-0000-0000-0000-000000000000',
             'user_email' => 'john@example.com',
-        ])->assertSessionHasErrors('basket_uuid');
+        ])->assertSessionHasErrors('cart_uuid');
     }
 }
