@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\ShopCart;
 
-use App\Modules\ShopCart\Actions\ForkCartAction;
+use App\Modules\ShopCart\Actions\DuplicateCartAction;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
 use App\Modules\Core\Models\User;
@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
 
-class ForkCartActionTest extends TestCase
+class DuplicateCartActionTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -19,7 +19,7 @@ class ForkCartActionTest extends TestCase
         $source = Cart::factory()->create();
         CartProduct::factory()->count(2)->create(['cart_id' => $source->id]);
 
-        $result = app(ForkCartAction::class)->handle($source, null);
+        $result = app(DuplicateCartAction::class)->handle($source, null);
 
         $this->assertNotSame($source->id, $result->id);
         $this->assertNull($result->user_id);
@@ -34,7 +34,7 @@ class ForkCartActionTest extends TestCase
         $source = Cart::factory()->create();
         CartProduct::factory()->create(['cart_id' => $source->id, 'total' => 15]);
 
-        $result = app(ForkCartAction::class)->handle($source, $user);
+        $result = app(DuplicateCartAction::class)->handle($source, $user);
 
         $this->assertSame($user->id, $result->user_id);
         $this->assertSame('15.00', (string) $result->total_amount);
@@ -47,7 +47,7 @@ class ForkCartActionTest extends TestCase
         $source = Cart::factory()->create();
         CartProduct::factory()->create(['cart_id' => $source->id]);
 
-        app(ForkCartAction::class)->handle($source, $user);
+        app(DuplicateCartAction::class)->handle($source, $user);
 
         $this->assertModelMissing($existing);
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Shop;
+namespace Tests\Unit\ShopOrders;
 
 use App\Modules\Core\Models\User;
 use App\Modules\ShopOrders\Actions\CreateOrderAction;

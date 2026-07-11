@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Shop;
+namespace Tests\Unit\ShopOrders;
 
 use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrders\Enums\PaymentTypeEnum;

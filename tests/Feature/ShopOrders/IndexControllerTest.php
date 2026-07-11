@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Feature\Shop;
+namespace Tests\Feature\ShopOrders;
 
 use App\Modules\ShopOrders\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class OrderControllerTest extends TestCase
+class IndexControllerTest extends TestCase
 {
     use RefreshDatabase;
 

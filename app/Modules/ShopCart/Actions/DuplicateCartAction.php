@@ -6,7 +6,7 @@ use App\Modules\ShopCart\Models\Cart;
 use App\Modules\Core\Models\User;
 use Illuminate\Support\Facades\Session;
 
-class ForkCartAction
+class DuplicateCartAction
 {
     public function __construct(
         private RecalculateCartTotalAction $recalculate,

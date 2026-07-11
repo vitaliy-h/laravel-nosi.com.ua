@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Shop;
+namespace Tests\Feature\ShopOrders;
 
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
@@ -8,7 +8,7 @@ use App\Modules\ShopOrders\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class PlaceOrderControllerTest extends TestCase
+class OrderControllerTest extends TestCase
 {
     use RefreshDatabase;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Shop;
+namespace Tests\Unit\ShopOrders;
 
 use App\Modules\ShopOrders\Dtos\CreateOrderData;
 use App\Modules\ShopOrders\Dtos\OrderItemData;

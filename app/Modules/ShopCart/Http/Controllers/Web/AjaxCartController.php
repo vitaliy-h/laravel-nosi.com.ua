@@ -3,7 +3,7 @@
 namespace App\Modules\ShopCart\Http\Controllers\Web;
 
 use App\Modules\ShopCart\Actions\AddOrUpdateCartItemAction;
-use App\Modules\ShopCart\Actions\ForkCartAction;
+use App\Modules\ShopCart\Actions\DuplicateCartAction;
 use App\Modules\ShopCart\Actions\GetOrCreateCartAction;
 use App\Modules\ShopCart\Actions\RemoveCartItemAction;
 use App\Modules\ShopCart\Enums\CartAction;
@@ -21,7 +21,7 @@ class AjaxCartController extends BaseWebController
         GetOrCreateCartAction $getOrCreateCart,
         AddOrUpdateCartItemAction $addOrUpdate,
         RemoveCartItemAction $remove,
-        ForkCartAction $fork,
+        DuplicateCartAction $fork,
     ) {
         $productId = (int) $request->input('id');
         $count = max(1, (int) $request->input('count'));
