@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Shop;
 
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Models\Category;
 use App\Modules\ShopOrders\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,6 +24,10 @@ class ShopFactoryTest extends TestCase
 
     public function test_order_factory_creates_order_and_observer_fills_order_number(): void
     {
+        if (!ModuleGate::isEnabled('shop_orders')) {
+            $this->markTestSkipped('Shop orders module is disabled');
+        }
+
         $order = Order::factory()->create();
 
         $this->assertModelExists($order);

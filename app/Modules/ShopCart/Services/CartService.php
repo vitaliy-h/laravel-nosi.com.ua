@@ -2,6 +2,7 @@
 
 namespace App\Modules\ShopCart\Services;
 
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\ShopCart\Actions\FindCartAction;
 use App\Modules\ShopCart\Models\Cart;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +16,10 @@ class CartService
 
     public function getCount(): int
     {
+        if(!ModuleGate::isEnabled('shop_cart')){
+            return 0;
+        }
+
         if (!Session::has('cart_count')) {
             $this->refreshCount($this->findCart->handle(Auth::user()));
         }

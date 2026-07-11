@@ -2,6 +2,7 @@
 
 namespace App\Modules\ShopCart\Actions;
 
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\Core\Models\User;
 use Illuminate\Support\Facades\Session;
@@ -14,6 +15,10 @@ class MergeCartOnAuthAction
 
     public function handle(User $user): void
     {
+        if(!ModuleGate::isEnabled('shop_cart')){
+            return;
+        }
+
         $uuid = Session::get('cart_uuid');
 
         if (!$uuid) {

@@ -31,7 +31,6 @@ return [
     'news'      => true,
     'shop'      => true,
     'shop_cart' => true,
-    'sms'       => true,
 
     /*
     |----------------------------------------------------------------------
@@ -47,7 +46,7 @@ return [
     */
     'dependencies' => [
         'shop_cart' => 'shop',
-        'shop_orders' => 'shop',
+        'shop_orders' => 'shop_cart',
         'profile' => 'auth',
     ],
 ];

@@ -4,6 +4,7 @@ namespace Tests\Feature\Filament\Shop;
 
 use App\Filament\Resources\Shop\Orders\Pages\ManageOrders;
 use App\Modules\Core\Models\User;
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrders\Enums\PaymentTypeEnum;
 use App\Modules\ShopOrders\Models\Order;
@@ -25,8 +26,8 @@ class OrderResourceTest extends TestCase
     {
         parent::setUp();
 
-        if (!config('modules.shop')) {
-            $this->markTestSkipped('Shop module is disabled');
+        if (!ModuleGate::isEnabled('shop_orders')) {
+            $this->markTestSkipped('Shop orders module is disabled');
         }
 
         $this->admin = $this->actingAsAdmin();
