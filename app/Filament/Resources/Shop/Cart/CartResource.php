@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Filament\Resources\Cart;
+namespace App\Filament\Resources\Shop\Cart;
 
 use App\Filament\Actions\BaseEditAction;
-use App\Filament\Resources\Cart\Pages\ManageCarts;
-use App\Modules\ShopCart\Models\Cart;
+use App\Filament\Resources\Shop\Cart\Pages\ManageCarts;
 use App\Modules\Shop\Models\Product;
+use App\Modules\ShopCart\Models\Cart;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;

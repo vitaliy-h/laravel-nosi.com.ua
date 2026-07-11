@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\Cart\Pages;
+namespace App\Filament\Resources\Shop\Cart\Pages;
 
-use App\Filament\Resources\Cart\CartResource;
+use App\Filament\Resources\Shop\Cart\CartResource;
 use Filament\Resources\Pages\ManageRecords;
 
 class ManageCarts extends ManageRecords
