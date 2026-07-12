@@ -38,6 +38,20 @@ TELEGRAM_REDIRECT_URI="${APP_URL}/auth/social/telegram/callback"
 
 ---
 
+## Callback URLs (for provider dashboards)
+
+When registering app with provider, set this as **Authorized redirect URI / Callback URL**:
+
+| Provider | Callback URL |
+|---|---|
+| Google | `${APP_URL}/auth/social/google/callback` |
+| Facebook | `${APP_URL}/auth/social/facebook/callback` |
+| Telegram | `${APP_URL}/auth/social/telegram/callback` |
+
+`${APP_URL}` — value from `.env` (e.g. `https://example.com`). Must exactly match `GOOGLE_REDIRECT_URI` / `FACEBOOK_REDIRECT_URI` / `TELEGRAM_REDIRECT_URI`.
+
+---
+
 ## Database
 
 Table `social_profiles` links a user to a social account:
