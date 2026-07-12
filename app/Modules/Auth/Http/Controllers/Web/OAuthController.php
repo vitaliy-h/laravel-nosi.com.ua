@@ -32,14 +32,14 @@ class OAuthController extends BaseWebController
             $socialUser = Socialite::driver($provider)->user();
         } catch (\Throwable) {
             return redirect()->to(save_route('auth.index'))
-                ->withErrors(['social' => __('dictionary.social.auth_failed')]);
+                ->withErrors(['social' => t('social.auth_failed')]);
         }
 
         if (auth()->check()) {
             $this->connect->handle(auth()->user(), $provider, $socialUser);
 
             return redirect()->to(save_route('profile.edit'))
-                ->with('success', __('dictionary.social.connected'));
+                ->with('success', t('social.connected'));
         }
 
         $user = $this->findOrCreate->handle($provider, $socialUser);

@@ -199,6 +199,32 @@ class OAuthTest extends TestCase
         $this->assertDatabaseCount('users', 1);
     }
 
+    public function test_callback_rejects_connecting_social_profile_already_linked_to_another_user(): void
+    {
+        $owner = User::factory()->create();
+        SocialProfile::factory()->forUser($owner)->forProvider('facebook')->create(['provider_id' => '300']);
+
+        $intruder = User::factory()->create();
+        $this->actingAs($intruder);
+
+        $fakeUser = $this->fakeSocialiteUser(id: '300');
+        $this->mockSocialiteCallback('facebook', $fakeUser);
+
+        $response = $this->get(route('social.callback', 'facebook'));
+
+        $response->assertSessionHasErrors('provider');
+        $this->assertDatabaseHas('social_profiles', [
+            'user_id'     => $owner->id,
+            'provider'    => 'facebook',
+            'provider_id' => '300',
+        ]);
+        $this->assertDatabaseMissing('social_profiles', [
+            'user_id'     => $intruder->id,
+            'provider'    => 'facebook',
+            'provider_id' => '300',
+        ]);
+    }
+
     // -----------------------------------------------------------------------
     // Disconnect
     // -----------------------------------------------------------------------

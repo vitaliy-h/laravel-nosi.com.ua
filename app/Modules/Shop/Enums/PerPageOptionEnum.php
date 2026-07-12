@@ -15,7 +15,7 @@ enum PerPageOptionEnum: int
 
     public function label(): string
     {
-        return __('dictionary.shop.per_page_option', ['count' => $this->value]);
+        return t('shop.per_page_option', ['count' => $this->value]);
     }
 
     public static function default(): self

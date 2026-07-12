@@ -211,6 +211,7 @@ return [
         'disconnected' => 'Social account disconnected.',
         'auth_failed' => 'Social authentication failed. Please try again.',
         'cannot_disconnect_last' => 'Cannot disconnect the only login method. Add a password or email first.',
+        'already_connected_to_another_account' => 'This social account is already connected to another account.',
         'sign_in_with' => 'Sign in with :provider',
         'google' => 'Google',
         'facebook' => 'Facebook',

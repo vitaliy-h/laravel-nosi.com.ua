@@ -19,7 +19,7 @@ class SocialProfileController extends BaseWebController
             $this->disconnect->handle(auth()->user(), $provider);
 
             return redirect()->to(save_route('profile.edit'))
-                ->with('success', __('dictionary.social.disconnected'));
+                ->with('success', t('social.disconnected'));
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->to(save_route('profile.edit'))
                 ->withErrors($e->errors());

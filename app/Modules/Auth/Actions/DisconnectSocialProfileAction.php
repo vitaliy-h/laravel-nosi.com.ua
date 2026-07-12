@@ -19,7 +19,7 @@ class DisconnectSocialProfileAction
 
         if (!$hasPassword && !$hasEmail && !$otherProviders) {
             throw ValidationException::withMessages([
-                'provider' => [__('dictionary.social.cannot_disconnect_last')],
+                'provider' => [t('social.cannot_disconnect_last')],
             ]);
         }
 
