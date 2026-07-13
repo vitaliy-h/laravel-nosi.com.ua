@@ -34,6 +34,7 @@ return [
         'shop_products' => 'Products',
         'users' => 'Users',
         'social_profiles' => 'Social Profiles',
+        'debug_tools' => 'Debug Tools',
     ],
 
     // fields & filters
@@ -138,5 +139,32 @@ return [
         'saveClose' => 'Save & Close',
         'view_logs' => 'View Logs',
         'impersonate' => 'Login as this user',
-    ]
+        'run' => 'Run',
+        'close' => 'Close',
+    ],
+
+    // Debug Tools page (Super Admin only)
+    'debug_tools' => [
+        'navigation_label' => 'Debug Tools',
+        'artisan_tab' => 'Artisan',
+        'output' => 'Output',
+        'output_modal_heading' => 'Output: :command',
+        'executed_notification' => 'Command `:command` executed',
+        'confirm_heading' => 'Run `:command`?',
+        'confirm_description' => 'This is a destructive, irreversible operation. Are you sure you want to run it?',
+        'commands' => [
+            'migrate' => 'Run all pending database migrations.',
+            'migrate:rollback' => 'Rollback the last database migration batch.',
+            'migrate:status' => 'Show the status of each migration (run vs pending).',
+            'migrate:fresh' => 'Drop all tables and re-run every migration. Erases all data.',
+            'migrate:fresh --seed' => 'Drop all tables, re-run every migration, then seed the database. Erases all data.',
+            'db:seed' => 'Run database seeders on top of the current schema/data.',
+            'cache:clear' => 'Flush the application cache.',
+            'config:clear' => 'Remove the cached configuration file.',
+            'route:clear' => 'Remove the cached routes file.',
+            'view:clear' => 'Clear all compiled Blade view files.',
+            'queue:restart' => 'Restart queue worker daemons after their current job finishes.',
+            'optimize:clear' => 'Remove all cached bootstrap files (config, routes, views, events).',
+        ],
+    ],
 ];

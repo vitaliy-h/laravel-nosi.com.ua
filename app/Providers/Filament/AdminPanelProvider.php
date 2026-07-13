@@ -75,6 +75,10 @@ class AdminPanelProvider extends PanelProvider
                             ->icon('heroicon-o-chat-bubble-left-right')
                             ->url(\App\Filament\Resources\SmsTemplates\SmsTemplateResource::getUrl())
                             ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.sms-templates.*')),
+                        auth()->user()?->isSuperAdmin() ? NavigationItem::make(__('admin.debug_tools.navigation_label'))
+                            ->icon('heroicon-o-command-line')
+                            ->url(\App\Filament\Pages\DebugTools\DebugTools::getUrl())
+                            ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.pages.debug-tools')) : null,
                     ]))
                     ->groups(array_filter([
                         // shop

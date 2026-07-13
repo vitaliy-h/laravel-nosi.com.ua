@@ -56,7 +56,7 @@ class PageResource extends Resource
                     ->options(PageModule::activeOptions())
                     ->required()
                     ->default(PageModule::TEXT->value)
-                    ->disabled()
+                    ->disabled(fn (): bool => !auth()->user()?->isSuperAdmin())
                     ->dehydrated(),
                 Toggle::make('display_menu')
                     ->columnSpan(3)
@@ -134,8 +134,8 @@ class PageResource extends Resource
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()
                     ->iconButton()
-                    ->disabled(fn($record) => $record->module !== PageModule::TEXT)
-                    ->tooltip(fn($record) => $record->module !== PageModule::TEXT
+                    ->disabled(fn($record) => $record->module !== PageModule::TEXT && !auth()->user()?->isSuperAdmin())
+                    ->tooltip(fn($record) => $record->module !== PageModule::TEXT && !auth()->user()?->isSuperAdmin()
                         ? __('admin.messages.page_delete_forbidden')
                         : null
                     ),
@@ -145,8 +145,10 @@ class PageResource extends Resource
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->action(function ($records) {
+                            $isSuperAdmin = auth()->user()?->isSuperAdmin();
+
                             $records
-                                ->filter(fn($record) => $record->module === PageModule::TEXT)
+                                ->filter(fn($record) => $isSuperAdmin || $record->module === PageModule::TEXT)
                                 ->each
                                 ->delete();
                         })

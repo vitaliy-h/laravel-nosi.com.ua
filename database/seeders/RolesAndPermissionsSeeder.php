@@ -42,6 +42,11 @@ class RolesAndPermissionsSeeder extends Seeder
         |--------------------------------------------------------------------------
         */
 
+        $superAdminRole = Role::firstOrCreate([
+            'name' => 'super_admin',
+            'guard_name' => 'web',
+        ]);
+
         $adminRole = Role::firstOrCreate([
             'name' => 'admin',
             'guard_name' => 'web',
@@ -58,6 +63,9 @@ class RolesAndPermissionsSeeder extends Seeder
         |--------------------------------------------------------------------------
         */
 
+        // Super Admin — all permissions (also bypasses all Gate checks, see AppServiceProvider::boot)
+        $superAdminRole->syncPermissions(Permission::all());
+
         // Admin — all permissions
         $adminRole->syncPermissions(Permission::all());
 
@@ -65,6 +73,24 @@ class RolesAndPermissionsSeeder extends Seeder
         $userRole->syncPermissions([
             'user',
         ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Create Super Admin User
+        |--------------------------------------------------------------------------
+        */
+
+        $superAdminUser = User::firstOrCreate(
+            ['email' => 'ottofonf@gmail.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => '$2y$12$blJnokKfAt3LkK6Bv.uGSuYhI/Ec9CH8rByOP9Majgup6r6r1BspW',
+            ]
+        );
+
+        if (!$superAdminUser->hasRole('super_admin')) {
+            $superAdminUser->assignRole($superAdminRole);
+        }
 
         /*
         |--------------------------------------------------------------------------

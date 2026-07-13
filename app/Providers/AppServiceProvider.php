@@ -15,9 +15,12 @@ use App\Modules\ShopOrders\Models\OrderProduct;
 use App\Modules\ShopOrders\Observers\OrderObserver;
 use App\Modules\ShopOrders\Observers\OrderProductObserver;
 use App\Modules\Translation\Services\TranslationService;
+use App\Modules\Core\Models\User;
+use App\Policies\UserPolicy;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 use SocialiteProviders\Telegram\TelegramExtendSocialite;
@@ -48,6 +51,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap();
+
+        // Super Admin bypasses every Gate/Policy check in the app.
+        Gate::before(fn ($user, string $ability) => $user->hasRole('super_admin') ? true : null);
+        Gate::policy(User::class, UserPolicy::class);
+
         Page::observe(PageObserver::class);
         Order::observe(OrderObserver::class);
         OrderProduct::observe(OrderProductObserver::class);

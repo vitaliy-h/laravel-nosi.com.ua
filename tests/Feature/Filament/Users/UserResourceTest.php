@@ -154,4 +154,100 @@ public function test_create_user_requires_unique_email(): void
 
         $this->assertModelMissing($user);
     }
+
+    public function test_regular_admin_cannot_see_super_admin_in_list(): void
+    {
+        $superAdminRole = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        $superAdmin = User::factory()->create();
+        $superAdmin->assignRole($superAdminRole);
+
+        $visibleUser = User::factory()->create();
+
+        Livewire::test(ManageUsers::class)
+            ->assertCanNotSeeTableRecords([$superAdmin])
+            ->assertCanSeeTableRecords([$visibleUser]);
+    }
+
+    public function test_regular_admin_cannot_find_super_admin_via_search(): void
+    {
+        $superAdminRole = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        $superAdmin = User::factory()->create(['email' => 'hidden-super-admin@example.com']);
+        $superAdmin->assignRole($superAdminRole);
+
+        Livewire::test(ManageUsers::class)
+            ->searchTable('hidden-super-admin@example.com')
+            ->assertCanNotSeeTableRecords([$superAdmin]);
+    }
+
+    public function test_regular_admin_cannot_update_super_admin(): void
+    {
+        $superAdminRole = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        $superAdmin = User::factory()->create();
+        $superAdmin->assignRole($superAdminRole);
+
+        $this->assertFalse($this->admin->can('update', $superAdmin));
+        $this->assertFalse($this->admin->can('delete', $superAdmin));
+    }
+
+    public function test_super_admin_can_see_super_admin_in_list(): void
+    {
+        $superAdminRole = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        $superAdmin = User::factory()->create();
+        $superAdmin->assignRole($superAdminRole);
+
+        $this->actingAs($superAdmin);
+
+        Livewire::test(ManageUsers::class)
+            ->assertCanSeeTableRecords([$superAdmin]);
+    }
+
+    public function test_super_admin_can_update_super_admin(): void
+    {
+        $superAdminRole = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        $superAdmin = User::factory()->create();
+        $superAdmin->assignRole($superAdminRole);
+
+        $this->assertTrue($superAdmin->can('update', $superAdmin));
+        $this->assertTrue($superAdmin->can('delete', $superAdmin));
+    }
+
+    public function test_regular_admin_cannot_smuggle_super_admin_role_via_crafted_edit_request(): void
+    {
+        $superAdminRole = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        $target = User::factory()->create();
+
+        // Simulate a crafted request that includes the super_admin role id even
+        // though the UI never exposes it to a regular admin. Filament validates
+        // the submitted ids against the (role-scoped) relationship query, so this
+        // is rejected as a form error before it ever reaches the database.
+        Livewire::test(ManageUsers::class)
+            ->callAction(TestAction::make(EditAction::getDefaultName())->table($target), data: [
+                'name' => $target->name,
+                'email' => $target->email,
+                'roles' => [$superAdminRole->id],
+            ])
+            ->assertHasFormErrors(['roles.0']);
+
+        $this->assertFalse($target->fresh()->hasRole('super_admin'));
+    }
+
+    public function test_super_admin_can_assign_super_admin_role(): void
+    {
+        $superAdminRole = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        $actingSuperAdmin = User::factory()->create();
+        $actingSuperAdmin->assignRole($superAdminRole);
+        $this->actingAs($actingSuperAdmin);
+
+        $target = User::factory()->create();
+
+        Livewire::test(ManageUsers::class)
+            ->callAction(TestAction::make(EditAction::getDefaultName())->table($target), data: [
+                'name' => $target->name,
+                'email' => $target->email,
+                'roles' => [$superAdminRole->id],
+            ])
+            ->assertHasNoFormErrors();
+
+        $this->assertTrue($target->fresh()->hasRole('super_admin'));
+    }
 }

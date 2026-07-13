@@ -4,6 +4,7 @@ namespace Tests\Concerns;
 
 use App\Modules\Core\Models\User;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
 trait InteractsWithRolesAndPermissions
@@ -43,6 +44,27 @@ trait InteractsWithRolesAndPermissions
         $user = User::factory()->create();
 
         $user->givePermissionTo('admin');
+
+        return $user;
+    }
+
+    /**
+     * Create a user that holds the "super_admin" role.
+     *
+     * Does not call actingAs(); the caller decides how to authenticate.
+     */
+    protected function actingAsSuperAdmin(): User
+    {
+        $this->seedRolesAndPermissions();
+
+        $role = Role::firstOrCreate([
+            'name' => 'super_admin',
+            'guard_name' => 'web',
+        ]);
+
+        $user = User::factory()->create();
+
+        $user->assignRole($role);
 
         return $user;
     }

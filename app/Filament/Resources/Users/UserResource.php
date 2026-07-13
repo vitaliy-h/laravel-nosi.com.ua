@@ -19,11 +19,34 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
+
+    /**
+     * Super Admin accounts must be completely hidden from every other admin user
+     * (list, search, filters, relation managers all reuse this query).
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        if (!auth()->user()?->isSuperAdmin()) {
+            $query->whereDoesntHave('roles', fn ($q) => $q->where('name', 'super_admin'));
+        }
+
+        return $query->addSelect([
+            'role_priority' => DB::table('model_has_roles')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->whereColumn('model_has_roles.model_id', 'users.id')
+                ->where('model_has_roles.model_type', User::class)
+                ->selectRaw("MIN(CASE roles.name WHEN 'super_admin' THEN 0 WHEN 'admin' THEN 1 ELSE 2 END)"),
+        ]);
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -42,7 +65,13 @@ class UserResource extends Resource
                     ->unique(ignoreRecord: true),
                 Select::make('roles')
                     ->multiple()
-                    ->relationship('roles', 'name')
+                    ->relationship(
+                        'roles',
+                        'name',
+                        modifyQueryUsing: fn ($query) => auth()->user()?->isSuperAdmin()
+                            ? $query
+                            : $query->where('name', '!=', 'super_admin'),
+                    )
                     ->preload(),
                 DateTimePicker::make('email_verified_at'),
                 TextInput::make('password')
@@ -88,6 +117,7 @@ class UserResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('role_priority')
             ->filters([
                 SelectFilter::make('roles')
                     ->relationship('roles', 'name'),
