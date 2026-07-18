@@ -116,7 +116,7 @@ class ProductResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('rank', 'DESC')
+            ->defaultSort('price', 'DESC')
             ->columns([
                 ImageColumn::make('img'),
                 TextColumn::make('title')
