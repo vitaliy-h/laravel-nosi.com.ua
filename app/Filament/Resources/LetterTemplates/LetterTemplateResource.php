@@ -63,6 +63,7 @@ class LetterTemplateResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('key')
             ->columns([
                 TextColumn::make('key')
                     ->badge()

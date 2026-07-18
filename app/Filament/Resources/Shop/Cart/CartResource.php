@@ -103,7 +103,7 @@ class CartResource extends Resource
     {
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query->with(['user', 'items']))
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('created_at', 'DESC')
             ->columns([
                 TextColumn::make('uuid')
                     ->searchable(),

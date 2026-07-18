@@ -91,7 +91,7 @@ class NewsResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('published_at', 'desc')
+            ->defaultSort('published_at', 'DESC')
             ->columns([
                 ImageColumn::make('img'),
                 TextColumn::make('title')

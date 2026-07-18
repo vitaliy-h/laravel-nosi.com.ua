@@ -41,7 +41,7 @@ class LogResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('created_at', 'DESC')
             ->columns([
                 TextColumn::make('created_at')
                     ->dateTime()

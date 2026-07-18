@@ -26,6 +26,7 @@ class SocialProfileResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'DESC')
             ->columns([
                 TextColumn::make('user.name')
                     ->label(__('admin.fields.name'))

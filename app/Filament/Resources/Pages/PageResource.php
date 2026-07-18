@@ -93,6 +93,7 @@ class PageResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('rank', 'DESC')
             ->columns([
                 TextColumn::make('title')
                     ->searchable(),

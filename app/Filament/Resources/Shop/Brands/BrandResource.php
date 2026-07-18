@@ -67,7 +67,7 @@ class BrandResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('rank', 'desc')
+            ->defaultSort('rank', 'DESC')
             ->columns([
                 ImageColumn::make('img'),
                 TextColumn::make('title')
