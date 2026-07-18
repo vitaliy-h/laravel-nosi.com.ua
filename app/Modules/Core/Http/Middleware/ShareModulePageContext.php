@@ -3,6 +3,7 @@
 namespace App\Modules\Core\Http\Middleware;
 
 use App\Modules\Core\Enums\PageModule;
+use App\Modules\Core\Models\Page;
 use App\Modules\Core\Queries\FindPageByModuleQuery;
 use App\Modules\Core\Services\PageContextSharer;
 use Closure;
@@ -33,6 +34,11 @@ class ShareModulePageContext
         if (!$page) {
             throw new NotFoundHttpException();
         }
+
+        // FindPageByModuleQuery reads the cached routing list, which only selects
+        // id/title/slug/module. Views need the full row (content, text, SEO fields),
+        // otherwise they silently render empty and is_indexable reads as null.
+        $page = Page::findOrFail($page->id);
 
         $this->sharer->share($page);
 
