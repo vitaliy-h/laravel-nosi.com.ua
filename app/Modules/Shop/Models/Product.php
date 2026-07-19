@@ -23,6 +23,7 @@ protected $table = 'shop_products';
 
     protected $fillable = [
         'display',
+        'rank',
         'category_id',
         'brand_id',
         'price',

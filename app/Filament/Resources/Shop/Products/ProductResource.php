@@ -116,12 +116,10 @@ class ProductResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('price', 'DESC')
+            ->defaultSort('rank', 'DESC')
             ->columns([
                 ImageColumn::make('img'),
                 TextColumn::make('title')
-                    ->searchable(),
-                TextColumn::make('slug')
                     ->searchable(),
                 TextColumn::make('article')
                     ->searchable(),
@@ -135,6 +133,9 @@ class ProductResource extends Resource
                 TextColumn::make('price2')
                     ->money()
                     ->sortable(),
+                TextColumn::make('rank')
+                    ->sortable()
+                    ->alignEnd(),
                 ToggleColumn::make('display'),
                 TextColumn::make('created_at')
                     ->dateTime()
