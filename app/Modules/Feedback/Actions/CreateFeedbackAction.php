@@ -15,6 +15,7 @@ class CreateFeedbackAction
         $feedback = Feedback::create([
             'name' => $data->name,
             'email' => $data->email,
+            'phone' => $data->phone,
             'ip' => $data->ip,
             'message' => $data->message,
         ]);
@@ -25,6 +26,7 @@ class CreateFeedbackAction
                 replace: [
                     'user_name' => $data->name,
                     'user_email' => $data->email,
+                    'user_phone' => $data->phone ?? '',
                     'message' => $data->message,
                 ],
             )

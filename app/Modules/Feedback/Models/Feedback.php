@@ -18,6 +18,7 @@ class Feedback extends Model
         'ip',
         'name',
         'email',
+        'phone',
         'message',
     ];
 }

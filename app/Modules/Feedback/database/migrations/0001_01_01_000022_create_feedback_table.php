@@ -18,6 +18,7 @@ return new class extends Migration
             $table->ipAddress('ip')->nullable();
             $table->string('name')->nullable();
             $table->string('email')->nullable();
+            $table->string('phone')->nullable();
             $table->text('message')->nullable();
         });
     }

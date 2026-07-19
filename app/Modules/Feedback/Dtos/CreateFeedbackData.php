@@ -11,5 +11,6 @@ class CreateFeedbackData extends Data
         public readonly string $email,
         public readonly string $message,
         public readonly string $ip,
+        public readonly ?string $phone = null,
     ) {}
 }

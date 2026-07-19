@@ -22,6 +22,7 @@ return [
     'feedback' => [
         'name' => 'Name',
         'email' => 'Email',
+        'phone' => 'Phone',
         'message:textarea' => 'Message',
         'saved' => 'Feedback has been saved.',
     ],

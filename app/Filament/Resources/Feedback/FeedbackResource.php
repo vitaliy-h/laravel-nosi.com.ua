@@ -37,12 +37,16 @@ class FeedbackResource extends Resource
                     ->columnSpan(3)
                     ->email()
                     ->required(),
+                TextInput::make('phone')
+                    ->columnSpan(3)
+                    ->tel(),
+                Toggle::make('processed')
+                    ->inline(false)
+                    ->columnSpan(3)
+                    ->default(true),
                 TextInput::make('ip')
                     ->columnSpan(3)
                     ->required(),
-                Toggle::make('processed')
-                    ->inline(false)
-                    ->default(true),
                 Textarea::make('message')
                     ->required()
                     ->columnSpanFull(),
@@ -57,6 +61,8 @@ class FeedbackResource extends Resource
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('email')
+                    ->searchable(),
+                TextColumn::make('phone')
                     ->searchable(),
                 TextColumn::make('ip')
                     ->searchable(),

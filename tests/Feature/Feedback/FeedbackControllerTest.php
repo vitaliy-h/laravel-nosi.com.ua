@@ -32,6 +32,7 @@ class FeedbackControllerTest extends TestCase
         $response = $this->from('/feedback')->post('/feedback', [
             'name' => 'John Doe',
             'email' => 'john@example.com',
+            'phone' => '+380671234567',
             'message' => 'Hello there',
         ]);
 
@@ -40,6 +41,7 @@ class FeedbackControllerTest extends TestCase
         $this->assertDatabaseHas('feedback', [
             'name' => 'John Doe',
             'email' => 'john@example.com',
+            'phone' => '+380671234567',
             'message' => 'Hello there',
         ]);
     }

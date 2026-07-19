@@ -72,7 +72,7 @@ class PagesTableSeeder extends Seeder
                 'slug' => 'feedback',
                 'module' => PageModule::FEEDBACK,
                 'display' => true,
-                'display_menu' => false,
+                'display_menu' => true,
                 'display_menu_footer' => true,
                 'is_indexable' => true,
                 'meta_title' => 'Feedback',
@@ -163,6 +163,7 @@ class PagesTableSeeder extends Seeder
                 ],
             ],
         ];
+        // Skip pages whose module is switched off in config/modules.php.
         $pages = array_filter($pages, static fn (array $page) => $page['module']->isEnabled());
 
         $rank = 100;

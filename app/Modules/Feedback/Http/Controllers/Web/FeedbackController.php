@@ -17,6 +17,7 @@ class FeedbackController extends BaseWebController
             email: $request->validated('email'),
             message: $request->validated('message'),
             ip: $request->ip(),
+            phone: $request->validated('phone'),
         ));
 
         return redirect()->back()->with('success', t('feedback.saved'));
