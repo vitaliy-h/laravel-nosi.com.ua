@@ -35,7 +35,7 @@ readonly class FindOrCreateSocialUserAction
             $user = $this->register->handle(new RegisterData(
                 name: $socialUser->getName() ?? $socialUser->getNickname() ?? 'User',
                 email: $email,
-                password: $email ? Str::password() : null,
+                password: $email ? Str::password(8, symbols: false, spaces: false) : null,
                 emailVerifiedAt: $email ? now() : null,
             ));
         }
