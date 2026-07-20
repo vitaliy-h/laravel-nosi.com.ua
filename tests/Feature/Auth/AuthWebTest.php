@@ -19,6 +19,7 @@ class AuthWebTest extends TestCase
         parent::setUp();
 
         $this->seedPagesForRouting();
+        $this->seedLetterTemplates();
     }
 
     public function test_register_with_valid_fields_redirects_to_profile_and_authenticates_user(): void
@@ -36,6 +37,46 @@ class AuthWebTest extends TestCase
         $this->assertDatabaseHas('users', [
             'email' => 'new@example.com',
             'name' => 'Test User',
+        ]);
+    }
+
+    public function test_register_saves_surname_and_phone(): void
+    {
+        $this->post('/auth/register', [
+            'name' => 'Test User',
+            'surname' => 'Doe',
+            'phone' => '+123456789',
+            'email' => 'new@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+            'terms' => true,
+        ]);
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'new@example.com',
+            'surname' => 'Doe',
+            'phone' => '+123456789',
+        ]);
+    }
+
+    public function test_register_sends_registration_letter_with_credentials(): void
+    {
+        LetterTemplateFacade::shouldReceive('send')
+            ->once()
+            ->withArgs(function ($data) {
+                return $data->key === LetterEnum::REGISTRATION
+                    && $data->to === 'new@example.com'
+                    && $data->replace['user_email'] === 'new@example.com'
+                    && $data->replace['user_password'] === 'password123'
+                    && isset($data->replace['login_url']);
+            });
+
+        $this->post('/auth/register', [
+            'name' => 'Test User',
+            'email' => 'new@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+            'terms' => true,
         ]);
     }
 

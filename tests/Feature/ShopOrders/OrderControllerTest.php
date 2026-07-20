@@ -12,6 +12,13 @@ class OrderControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seedLetterTemplates();
+    }
+
     public function test_place_order_creates_order_and_redirects_to_show(): void
     {
         $cart = Cart::factory()->create();

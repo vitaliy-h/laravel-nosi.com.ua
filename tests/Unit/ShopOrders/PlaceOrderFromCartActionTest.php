@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\ShopOrders;
 
+use App\Modules\Core\Models\User;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
-use App\Modules\Core\Models\User;
 use App\Modules\ShopOrders\Actions\PlaceOrderFromCartAction;
 use App\Modules\ShopOrders\Dtos\CustomerData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -13,6 +13,13 @@ use Tests\TestCase;
 class PlaceOrderFromCartActionTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seedLetterTemplates();
+    }
 
     public function test_creates_order_with_items_copied_from_cart(): void
     {
@@ -47,7 +54,7 @@ class PlaceOrderFromCartActionTest extends TestCase
         $cart = Cart::factory()->create(['user_id' => $user->id]);
         CartProduct::factory()->create(['cart_id' => $cart->id]);
 
-        $order = app(PlaceOrderFromCartAction::class)->handle($cart, new CustomerData());
+        $order = app(PlaceOrderFromCartAction::class)->handle($cart, new CustomerData);
 
         $this->assertSame($user->id, $order->user_id);
     }
@@ -57,7 +64,7 @@ class PlaceOrderFromCartActionTest extends TestCase
         $cart = Cart::factory()->create();
         CartProduct::factory()->create(['cart_id' => $cart->id]);
 
-        app(PlaceOrderFromCartAction::class)->handle($cart, new CustomerData());
+        app(PlaceOrderFromCartAction::class)->handle($cart, new CustomerData);
 
         $this->assertDatabaseMissing('shop_carts', ['id' => $cart->id]);
     }

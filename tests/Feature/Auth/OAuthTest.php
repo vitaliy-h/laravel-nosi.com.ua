@@ -6,6 +6,7 @@ use App\Modules\Core\Models\SocialProfile;
 use App\Modules\Core\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\User as SocialiteUser;
 use Tests\TestCase;
 
@@ -17,6 +18,7 @@ class OAuthTest extends TestCase
     {
         parent::setUp();
         $this->seedPagesForRouting();
+        $this->seedLetterTemplates();
     }
 
     // -----------------------------------------------------------------------
@@ -31,20 +33,20 @@ class OAuthTest extends TestCase
     ): SocialiteUser {
         $user = new SocialiteUser;
         $user->map([
-            'id'    => $id,
-            'name'  => $name,
+            'id' => $id,
+            'name' => $name,
             'email' => $email,
         ]);
-        $user->token        = $token;
+        $user->token = $token;
         $user->refreshToken = null;
-        $user->expiresIn    = null;
+        $user->expiresIn = null;
 
         return $user;
     }
 
     private function mockSocialiteCallback(string $provider, SocialiteUser $socialiteUser): void
     {
-        $driver = \Mockery::mock(\Laravel\Socialite\Two\AbstractProvider::class);
+        $driver = \Mockery::mock(AbstractProvider::class);
         $driver->shouldReceive('user')->andReturn($socialiteUser);
 
         Socialite::shouldReceive('driver')
@@ -58,7 +60,7 @@ class OAuthTest extends TestCase
 
     public function test_redirect_returns_redirect_for_valid_provider(): void
     {
-        $driver = \Mockery::mock(\Laravel\Socialite\Two\AbstractProvider::class);
+        $driver = \Mockery::mock(AbstractProvider::class);
         $driver->shouldReceive('redirect')->andReturn(redirect('https://accounts.google.com/o/oauth2/auth'));
 
         Socialite::shouldReceive('driver')->with('google')->andReturn($driver);
@@ -88,9 +90,12 @@ class OAuthTest extends TestCase
         $this->assertAuthenticated();
         $this->assertDatabaseHas('users', ['email' => 'new-oauth@example.com']);
         $this->assertDatabaseHas('social_profiles', [
-            'provider'    => 'google',
+            'provider' => 'google',
             'provider_id' => '999',
         ]);
+
+        $user = User::where('email', 'new-oauth@example.com')->firstOrFail();
+        $this->assertNotNull($user->password);
     }
 
     public function test_callback_creates_user_without_email_when_provider_returns_none(): void
@@ -103,9 +108,12 @@ class OAuthTest extends TestCase
         $response->assertRedirect();
         $this->assertAuthenticated();
         $this->assertDatabaseHas('social_profiles', [
-            'provider'    => 'telegram',
+            'provider' => 'telegram',
             'provider_id' => '777',
         ]);
+
+        $user = auth()->user();
+        $this->assertNull($user->password);
     }
 
     public function test_callback_logs_in_existing_user_by_social_profile(): void
@@ -133,8 +141,8 @@ class OAuthTest extends TestCase
 
         $this->assertAuthenticatedAs($existing);
         $this->assertDatabaseHas('social_profiles', [
-            'user_id'     => $existing->id,
-            'provider'    => 'google',
+            'user_id' => $existing->id,
+            'provider' => 'google',
             'provider_id' => '321',
         ]);
         $this->assertDatabaseCount('users', 1);
@@ -145,7 +153,7 @@ class OAuthTest extends TestCase
         $user = User::factory()->create();
         SocialProfile::factory()->forUser($user)->forProvider('google')->create([
             'provider_id' => '100',
-            'token'       => 'old-token',
+            'token' => 'old-token',
         ]);
 
         $fakeUser = $this->fakeSocialiteUser(id: '100', token: 'new-token');
@@ -155,7 +163,7 @@ class OAuthTest extends TestCase
 
         $this->assertDatabaseHas('social_profiles', [
             'provider_id' => '100',
-            'token'       => 'new-token',
+            'token' => 'new-token',
         ]);
     }
 
@@ -180,8 +188,8 @@ class OAuthTest extends TestCase
 
         $response->assertRedirect();
         $this->assertDatabaseHas('social_profiles', [
-            'user_id'     => $user->id,
-            'provider'    => 'facebook',
+            'user_id' => $user->id,
+            'provider' => 'facebook',
             'provider_id' => '200',
         ]);
     }
@@ -214,13 +222,13 @@ class OAuthTest extends TestCase
 
         $response->assertSessionHasErrors('provider');
         $this->assertDatabaseHas('social_profiles', [
-            'user_id'     => $owner->id,
-            'provider'    => 'facebook',
+            'user_id' => $owner->id,
+            'provider' => 'facebook',
             'provider_id' => '300',
         ]);
         $this->assertDatabaseMissing('social_profiles', [
-            'user_id'     => $intruder->id,
-            'provider'    => 'facebook',
+            'user_id' => $intruder->id,
+            'provider' => 'facebook',
             'provider_id' => '300',
         ]);
     }
@@ -239,7 +247,7 @@ class OAuthTest extends TestCase
             ->assertRedirect();
 
         $this->assertDatabaseMissing('social_profiles', [
-            'user_id'  => $user->id,
+            'user_id' => $user->id,
             'provider' => 'google',
         ]);
     }
@@ -254,7 +262,7 @@ class OAuthTest extends TestCase
 
         $response->assertSessionHasErrors('provider');
         $this->assertDatabaseHas('social_profiles', [
-            'user_id'  => $user->id,
+            'user_id' => $user->id,
             'provider' => 'google',
         ]);
     }
@@ -269,7 +277,7 @@ class OAuthTest extends TestCase
             ->assertRedirect();
 
         $this->assertDatabaseMissing('social_profiles', [
-            'user_id'  => $user->id,
+            'user_id' => $user->id,
             'provider' => 'google',
         ]);
     }
@@ -285,11 +293,11 @@ class OAuthTest extends TestCase
             ->assertRedirect();
 
         $this->assertDatabaseMissing('social_profiles', [
-            'user_id'  => $user->id,
+            'user_id' => $user->id,
             'provider' => 'google',
         ]);
         $this->assertDatabaseHas('social_profiles', [
-            'user_id'  => $user->id,
+            'user_id' => $user->id,
             'provider' => 'facebook',
         ]);
     }

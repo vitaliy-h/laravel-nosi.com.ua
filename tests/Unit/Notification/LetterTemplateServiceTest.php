@@ -3,11 +3,10 @@
 namespace Tests\Unit\Notification;
 
 use App\Modules\Notification\Dtos\SendLetterTemplateData;
-use App\Modules\Notification\Enums\LogLetterStatusEnum;
 use App\Modules\Notification\Enums\LetterEnum;
+use App\Modules\Notification\Enums\LogLetterStatusEnum;
 use App\Modules\Notification\Enums\NotificationSourceEnum;
 use App\Modules\Notification\Models\LetterTemplate;
-use App\Modules\Notification\Models\LogLetter;
 use App\Modules\Notification\Services\LetterTemplateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -25,7 +24,7 @@ class LetterTemplateServiceTest extends TestCase
 
         Queue::fake();
 
-        $this->service = new LetterTemplateService();
+        $this->service = new LetterTemplateService;
 
         $this->seedLetterTemplates();
     }
@@ -66,6 +65,28 @@ class LetterTemplateServiceTest extends TestCase
             'receiver' => 'john@example.com',
             'subject' => 'Reset for John',
             'body' => 'Click https://example.com/reset/abc to reset.',
+        ]);
+    }
+
+    public function test_send_replaces_values_containing_dollar_sign_literally(): void
+    {
+        LetterTemplate::query()->where('key', LetterEnum::PASSWORD_RESET)->update([
+            'subject' => 'Total {{ $total_amount }}',
+            'body' => 'Total: {{ $total_amount }}, ref {{ $ref }}.',
+        ]);
+
+        $dto = new SendLetterTemplateData(
+            key: LetterEnum::PASSWORD_RESET,
+            replace: ['total_amount' => '$170.00', 'ref' => '$1 not a backreference'],
+            to: 'user@example.com',
+        );
+
+        $this->service->send($dto);
+
+        $this->assertDatabaseHas('log_letters', [
+            'receiver' => 'user@example.com',
+            'subject' => 'Total $170.00',
+            'body' => 'Total: $170.00, ref $1 not a backreference.',
         ]);
     }
 
@@ -138,5 +159,4 @@ class LetterTemplateServiceTest extends TestCase
             'sender_name' => 'MyApp',
         ]);
     }
-
 }

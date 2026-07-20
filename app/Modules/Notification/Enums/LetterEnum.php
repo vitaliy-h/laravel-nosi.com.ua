@@ -10,4 +10,6 @@ enum LetterEnum: string
 
     case FEEDBACK = 'feedback';
     case PASSWORD_RESET = 'password_reset';
+    case REGISTRATION = 'registration';
+    case ORDER_CREATED = 'order_created';
 }

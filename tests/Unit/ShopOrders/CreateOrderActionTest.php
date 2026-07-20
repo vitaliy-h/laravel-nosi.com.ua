@@ -3,17 +3,69 @@
 namespace Tests\Unit\ShopOrders;
 
 use App\Modules\Core\Models\User;
+use App\Modules\Notification\Enums\LetterEnum;
+use App\Modules\Notification\Facades\LetterTemplateFacade;
+use App\Modules\Shop\Models\Product;
 use App\Modules\ShopOrders\Actions\CreateOrderAction;
 use App\Modules\ShopOrders\Dtos\CreateOrderData;
 use App\Modules\ShopOrders\Models\Order;
 use App\Modules\ShopOrders\Models\OrderProduct;
-use App\Modules\Shop\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class CreateOrderActionTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function test_sends_order_created_letter_when_user_email_present(): void
+    {
+        $product = Product::factory()->create();
+
+        $dto = CreateOrderData::from([
+            'user_email' => 'buyer@example.com',
+            'items' => [
+                [
+                    'shop_product_id' => $product->id,
+                    'product_name' => 'Product',
+                    'product_article' => 'SKU-1',
+                    'selling_price' => 10.00,
+                    'quantity' => 1,
+                ],
+            ],
+        ]);
+
+        LetterTemplateFacade::shouldReceive('send')
+            ->once()
+            ->withArgs(function ($data) {
+                return $data->key === LetterEnum::ORDER_CREATED
+                    && $data->to === 'buyer@example.com'
+                    && isset($data->replace['order_number'])
+                    && isset($data->replace['order_url']);
+            });
+
+        app(CreateOrderAction::class)->handle($dto);
+    }
+
+    public function test_does_not_send_letter_when_user_email_missing(): void
+    {
+        $product = Product::factory()->create();
+
+        $dto = CreateOrderData::from([
+            'items' => [
+                [
+                    'shop_product_id' => $product->id,
+                    'product_name' => 'Product',
+                    'product_article' => 'SKU-1',
+                    'selling_price' => 10.00,
+                    'quantity' => 1,
+                ],
+            ],
+        ]);
+
+        LetterTemplateFacade::shouldReceive('send')->never();
+
+        app(CreateOrderAction::class)->handle($dto);
+    }
 
     public function test_creates_order_with_items_and_correct_total(): void
     {
@@ -23,20 +75,20 @@ class CreateOrderActionTest extends TestCase
 
         $dto = CreateOrderData::from([
             'user_id' => $user->id,
-            'items'   => [
+            'items' => [
                 [
                     'shop_product_id' => $productA->id,
-                    'product_name'    => 'Product A',
-                    'product_article'     => 'SKU-A',
-                    'selling_price'      => 10.00,
-                    'quantity'        => 2,
+                    'product_name' => 'Product A',
+                    'product_article' => 'SKU-A',
+                    'selling_price' => 10.00,
+                    'quantity' => 2,
                 ],
                 [
                     'shop_product_id' => $productB->id,
-                    'product_name'    => 'Product B',
-                    'product_article'     => 'SKU-B',
-                    'selling_price'      => 5.50,
-                    'quantity'        => 3,
+                    'product_name' => 'Product B',
+                    'product_article' => 'SKU-B',
+                    'selling_price' => 5.50,
+                    'quantity' => 3,
                 ],
             ],
         ]);
@@ -55,13 +107,13 @@ class CreateOrderActionTest extends TestCase
 
         $dto = CreateOrderData::from([
             'user_id' => $user->id,
-            'items'   => [
+            'items' => [
                 [
                     'shop_product_id' => $product->id,
-                    'product_name'    => 'Product',
-                    'product_article'     => 'SKU-1',
-                    'selling_price'      => 10.00,
-                    'quantity'        => 1,
+                    'product_name' => 'Product',
+                    'product_article' => 'SKU-1',
+                    'selling_price' => 10.00,
+                    'quantity' => 1,
                 ],
             ],
         ]);
@@ -80,13 +132,13 @@ class CreateOrderActionTest extends TestCase
 
         $dto = CreateOrderData::from([
             'user_id' => $user->id,
-            'items'   => [
+            'items' => [
                 [
                     'shop_product_id' => $product->id,
-                    'product_name'    => 'Rounded Product',
-                    'product_article'     => 'SKU-ROUND',
-                    'selling_price'      => 10.005,
-                    'quantity'        => 3,
+                    'product_name' => 'Rounded Product',
+                    'product_article' => 'SKU-ROUND',
+                    'selling_price' => 10.005,
+                    'quantity' => 3,
                 ],
             ],
         ]);
@@ -94,9 +146,9 @@ class CreateOrderActionTest extends TestCase
         $order = app(CreateOrderAction::class)->handle($dto);
 
         $this->assertDatabaseHas('shop_order_products', [
-            'shop_order_id'   => $order->id,
+            'shop_order_id' => $order->id,
             'shop_product_id' => $product->id,
-            'total'           => '30.02',
+            'total' => '30.02',
         ]);
         $this->assertSame('30.02', (string) $order->total_amount);
     }
@@ -109,7 +161,7 @@ class CreateOrderActionTest extends TestCase
 
         OrderProduct::factory()->create([
             'shop_order_id' => $order->id,
-            'total'         => 12.34,
+            'total' => 12.34,
         ]);
 
         $order->refresh();

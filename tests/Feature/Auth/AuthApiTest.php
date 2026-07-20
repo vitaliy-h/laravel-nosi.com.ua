@@ -10,6 +10,13 @@ class AuthApiTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seedLetterTemplates();
+    }
+
     public function test_login_with_valid_credentials_succeeds(): void
     {
         User::factory()->create(['email' => 'a@b.com']);

@@ -34,4 +34,44 @@ return [
         ',
     ],
 
+    LetterEnum::REGISTRATION->value => [
+        'subject' => 'Welcome! Your account details',
+        'body' => '
+        <h2>Welcome, {{ $user_name }}</h2>
+
+        <p>
+        Your account has been created.
+        </p>
+
+        <p>
+        Email: {{ $user_email }}<br>
+        Password: {{ $user_password }}
+        </p>
+
+        <p>
+        <a href="{{ $login_url }}">
+        Log in
+        </a>
+        </p>
+        ',
+    ],
+
+    LetterEnum::ORDER_CREATED->value => [
+        'subject' => 'Order #{{ $order_number }} created',
+        'body' => '
+        <h2>Thank you for your order</h2>
+
+        <p>
+        Order number: {{ $order_number }}<br>
+        Total amount: {{ $total_amount }}
+        </p>
+
+        <p>
+        <a href="{{ $order_url }}">
+        View your order
+        </a>
+        </p>
+        ',
+    ],
+
 ];

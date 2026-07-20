@@ -52,8 +52,8 @@ class LetterTemplateService
     private function replace(string $content, array $replace): string
     {
         foreach ($replace as $key => $value) {
-            $pattern = '/{{\s*\$?' . preg_quote($key, '/') . '\s*}}/';
-            $content = preg_replace($pattern, $value, $content);
+            $pattern = '/{{\s*\$?'.preg_quote($key, '/').'\s*}}/';
+            $content = preg_replace_callback($pattern, fn () => (string) $value, $content);
         }
 
         return $content;
@@ -64,11 +64,11 @@ class LetterTemplateService
         $paths = [];
 
         foreach ($attachments as $k => $attachment) {
-            if (!$attachment instanceof LetterAttachmentData) {
+            if (! $attachment instanceof LetterAttachmentData) {
                 continue;
             }
 
-            if (!file_exists($attachment->path)) {
+            if (! file_exists($attachment->path)) {
                 continue;
             }
 
