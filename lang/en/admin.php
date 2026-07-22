@@ -40,6 +40,8 @@ return [
     // fields & filters
     'fields' => [
         'article' => 'Article',
+        'avatar' => 'Avatar',
+        'identifier' => 'Email / login',
         'brand_id' => 'Brand',
         'category_id' => 'Category',
         'created_at' => 'Created at',

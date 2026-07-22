@@ -61,6 +61,7 @@ readonly class FindOrCreateSocialUserAction
                 ? now()->addSeconds($socialUser->expiresIn)
                 : null,
             'avatar' => $socialUser->getAvatar(),
+            'identifier' => $socialUser->getEmail() ?? $socialUser->getNickname(),
         ];
     }
 }

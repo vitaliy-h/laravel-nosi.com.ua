@@ -36,10 +36,10 @@ class OAuthController extends BaseWebController
         }
 
         if (auth()->check()) {
-            $this->connect->handle(auth()->user(), $provider, $socialUser);
+            $socialProfile = $this->connect->handle(auth()->user(), $provider, $socialUser);
 
             return redirect()->to(save_route('profile.edit'))
-                ->with('success', t('social.connected'));
+                ->with('success', t('social.connected', ['identifier' => $socialProfile->identifier]));
         }
 
         $user = $this->findOrCreate->handle($provider, $socialUser);

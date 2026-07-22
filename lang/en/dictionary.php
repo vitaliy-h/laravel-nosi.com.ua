@@ -208,7 +208,7 @@ return [
         'section_subtitle' => 'Connect your social accounts to sign in faster.',
         'connect' => 'Connect',
         'disconnect' => 'Disconnect',
-        'connected' => 'Social account connected successfully.',
+        'connected' => 'Connected (:identifier)',
         'disconnected' => 'Social account disconnected.',
         'auth_failed' => 'Social authentication failed. Please try again.',
         'cannot_disconnect_last' => 'Cannot disconnect the only login method. Add a password or email first.',

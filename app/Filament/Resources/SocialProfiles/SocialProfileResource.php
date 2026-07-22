@@ -9,6 +9,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Enums\RecordActionsPosition;
@@ -28,16 +29,18 @@ class SocialProfileResource extends Resource
         return $table
             ->defaultSort('created_at', 'DESC')
             ->columns([
+                ImageColumn::make('avatar')
+                    ->circular(),
                 TextColumn::make('user.name')
-                    ->label(__('admin.fields.name'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('user.email')
-                    ->label(__('admin.fields.email'))
                     ->searchable(),
                 TextColumn::make('provider')
                     ->badge()
                     ->sortable(),
+                TextColumn::make('identifier')
+                    ->searchable(),
                 TextColumn::make('provider_id')
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('token_expires_at')

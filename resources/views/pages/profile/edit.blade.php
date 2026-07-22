@@ -42,7 +42,11 @@
                     <div class="preference-item">
                         <div class="preference-info">
                             <h4>{{ t('social.' . $provider) }}</h4>
-                            <p>{{ $connected ? t('social.connected') : '' }}</p>
+                            <p>
+                                @if ($connected)
+                                    {{ t('social.connected', ['identifier' => $connected->identifier]) }}
+                                @endif
+                            </p>
                         </div>
                         @if ($connected)
                             <form action="{{ route('profile.social.disconnect', $provider) }}" method="POST">

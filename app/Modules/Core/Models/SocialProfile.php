@@ -20,6 +20,7 @@ class SocialProfile extends Model
         'refresh_token',
         'token_expires_at',
         'avatar',
+        'identifier',
     ];
 
     protected function casts(): array

@@ -23,6 +23,7 @@ class SocialProfileFactory extends Factory
             'refresh_token'    => null,
             'token_expires_at' => null,
             'avatar'           => null,
+            'identifier'       => fake()->safeEmail(),
         ];
     }
 

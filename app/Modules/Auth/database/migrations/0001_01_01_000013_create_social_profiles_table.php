@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('refresh_token')->nullable();
             $table->timestamp('token_expires_at')->nullable();
             $table->string('avatar')->nullable();
+            $table->string('identifier')->nullable();
             $table->timestamps();
 
             $table->unique(['provider', 'provider_id']);
