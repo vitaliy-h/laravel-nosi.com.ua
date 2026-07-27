@@ -51,19 +51,17 @@ class UserResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema
+            ->columns(12)
             ->components([
                 TextInput::make('name')
+                    ->columnSpan(4)
                     ->required()
                     ->maxLength(255),
                 TextInput::make('surname')
+                    ->columnSpan(4)
                     ->maxLength(255),
-                TextInput::make('email')
-                    ->email()
-                    ->unique(ignoreRecord: true),
-                TextInput::make('phone')
-                    ->numeric()
-                    ->unique(ignoreRecord: true),
                 Select::make('roles')
+                    ->columnSpan(4)
                     ->multiple()
                     ->relationship(
                         'roles',
@@ -73,13 +71,26 @@ class UserResource extends Resource
                             : $query->where('name', '!=', 'super_admin'),
                     )
                     ->preload(),
-                DateTimePicker::make('email_verified_at'),
+
+                TextInput::make('phone')
+                    ->columnSpan(4)
+                    ->numeric()
+                    ->unique(ignoreRecord: true),
+                TextInput::make('email')
+                    ->columnSpan(4)
+                    ->email()
+                    ->unique(ignoreRecord: true),
+                DateTimePicker::make('email_verified_at')
+                    ->columnSpan(4),
+
                 TextInput::make('password')
+                    ->columnSpan(4)
                     ->password()
                     ->dehydrated(fn($state) => filled($state))
                     ->dehydrateStateUsing(fn($state) => filled($state) ? Hash::make($state) : null)
                     ->required(fn(string $context) => $context === 'create'),
                 TextInput::make('ip')
+                    ->columnSpan(4)
                     ->disabled()
                     ->dehydrated(false),
             ]);

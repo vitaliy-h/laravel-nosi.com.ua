@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Shop\Orders;
 
 use App\Filament\Actions\BaseEditAction;
+use App\Filament\Filters\UserSelectFilter;
+use App\Filament\Forms\UserSelect;
 use App\Filament\Resources\Shop\Orders\Pages\ManageOrders;
 use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrders\Enums\PaymentTypeEnum;
@@ -36,15 +38,7 @@ class OrderResource extends Resource
         return $schema
             ->columns(12)
             ->components([
-                Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->searchable(
-                        [
-                            'name',
-                            'email',
-                        ]
-                    )
-                    ->preload()
+                UserSelect::make()
                     ->columnSpan(4),
                 TextInput::make('order_number')
                     ->disabled()
@@ -138,9 +132,9 @@ class OrderResource extends Resource
             ->columns([
                 TextColumn::make('order_number')
                     ->searchable(),
-                TextColumn::make('user.name')
+                TextColumn::make('user.select_label')
                     ->label(__('admin.fields.user_id'))
-                    ->searchable(),
+                    ->searchable(['name', 'surname']),
                 TextColumn::make('payment_status')
                     ->badge()
                     ->formatStateUsing(fn($state) => $state?->label()),
@@ -167,10 +161,7 @@ class OrderResource extends Resource
                     ->options(PaymentStatusEnum::options()),
                 SelectFilter::make('payment_type')
                     ->options(PaymentTypeEnum::options()),
-                SelectFilter::make('user_id')
-                    ->relationship('user', 'name')
-                    ->searchable()
-                    ->preload(),
+                UserSelectFilter::make(),
             ])
             ->recordActions([
                Action::make('view_public')

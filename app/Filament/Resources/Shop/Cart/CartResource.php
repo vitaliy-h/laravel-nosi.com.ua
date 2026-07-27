@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Shop\Cart;
 
 use App\Filament\Actions\BaseEditAction;
+use App\Filament\Filters\UserSelectFilter;
+use App\Filament\Forms\UserSelect;
 use App\Filament\Resources\Shop\Cart\Pages\ManageCarts;
 use App\Modules\Shop\Models\Product;
 use App\Modules\ShopCart\Models\Cart;
@@ -17,7 +19,6 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -32,15 +33,7 @@ class CartResource extends Resource
         return $schema
             ->columns(12)
             ->components([
-                Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->searchable(
-                        [
-                            'name',
-                            'email',
-                        ]
-                    )
-                    ->preload()
+                UserSelect::make()
                     ->columnSpan(6),
                 TextInput::make('total_amount')
                     ->numeric()
@@ -107,9 +100,9 @@ class CartResource extends Resource
             ->columns([
                 TextColumn::make('uuid')
                     ->searchable(),
-                TextColumn::make('user.name')
+                TextColumn::make('user.select_label')
                     ->label(__('admin.fields.user_id'))
-                    ->searchable(),
+                    ->searchable(['name', 'surname']),
                 TextColumn::make('total_amount')
                     ->sortable()
                     ->money(),
@@ -122,10 +115,7 @@ class CartResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('user_id')
-                    ->relationship('user', 'name')
-                    ->searchable()
-                    ->preload(),
+                UserSelectFilter::make(),
             ])
             ->recordActions([
                 BaseEditAction::make()->iconButton(),

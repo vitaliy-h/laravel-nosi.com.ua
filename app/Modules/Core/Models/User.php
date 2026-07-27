@@ -59,4 +59,14 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->name;
     }
+
+    /**
+     * User label for dropdowns/lists: "Surname Name", or email / id when they
+     * are missing. Shared by Filament selects and filters.
+     */
+    public function getSelectLabelAttribute(): string
+    {
+        return trim(($this->surname ?? '').' '.($this->name ?? ''))
+            ?: ($this->email ?? (string) $this->getKey());
+    }
 }
