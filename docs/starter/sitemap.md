@@ -4,7 +4,7 @@
 
 XML sitemap split into multiple files for performance and SEO tooling compatibility.
 
-All sitemap routes are defined in `app/Modules/Core/routes/web.php` and handled by `App\Modules\Core\Http\Controllers\SitemapController`.
+All sitemap routes are defined in `app/Modules/Core/Http/Routes/web.php` and handled by `App\Modules\Core\Http\Controllers\SitemapController`.
 
 ---
 
@@ -87,7 +87,7 @@ If the check fails, the sitemap index (`/sitemap.xml`) omits those sub-sitemaps 
 | Type | Path |
 |------|------|
 | Controller | `app/Modules/Core/Http/Controllers/SitemapController.php` |
-| Routes | `app/Modules/Core/routes/web.php` |
+| Routes | `app/Modules/Core/Http/Routes/web.php` |
 | Views | `resources/views/sitemap/` |
 
 Views: `index.blade.php`, `base.blade.php`, `news.blade.php`, `categories.blade.php`, `products.blade.php`

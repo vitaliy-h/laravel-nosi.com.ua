@@ -27,4 +27,4 @@ Detailed documentation is split into separate files:
 
 ---
 
-[Back to main radme](../../README.md)
+[Back to main readme](../../README.md)

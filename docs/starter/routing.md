@@ -5,8 +5,7 @@
 Every module owns explicit, named Laravel routes. Pages are still stored in the
 `pages` table and mapped to modules via the `PageModule` enum, but the DB only
 supplies the **prefix** each module is mounted under (resolved once at boot) —
-it no longer drives per-request dispatch. See `docs/starter/module-routing-migration.md`
-for the migration history and the exact gotchas hit while getting here.
+it no longer drives per-request dispatch.
 
 ---
 
@@ -70,9 +69,8 @@ Route::middleware(['web', 'share.page:'.$pageModule->value])
 
 `text_page` has **N pages sharing one module**, each with its own independent
 slug — there's no single prefix to resolve. It skips prefix/`share.page`
-resolution and instead registers a `Route::fallback(...)` (see
-`docs/starter/module-routing-migration.md` for the full writeup, including why only
-one `Route::fallback()` can ever be active app-wide).
+resolution and instead registers a `Route::fallback(...)`. Only one
+`Route::fallback()` can ever be active app-wide, which is why `TextPage` owns it.
 
 ---
 

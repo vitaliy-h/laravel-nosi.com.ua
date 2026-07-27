@@ -2,6 +2,10 @@
 
 This project supports multiple local environments depending on your OS and preferences.
 
+> **Artisan command convention:** examples across the docs default to `php artisan …`
+> (OpenServer / local host). If you run the project through **Sail** (Docker), prefix
+> every command with `./vendor/bin/sail`, e.g. `./vendor/bin/sail artisan migrate`.
+
 ---
 
 ## Server Requirements

@@ -76,4 +76,4 @@ for the full generation flow (including navigation wiring and translations).
 
 ---
 
-[Back to main readme](../README.md)
+[Back to main readme](../../README.md)

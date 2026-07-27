@@ -59,25 +59,32 @@ Core is used by all other modules.
 
 Each module contains only logic related to that module.
 
-Example:
+Example (illustrative — real modules use Laravel-style nesting; see `docs/starter/routing.md`):
 
 ```text
 app/Modules/News/
-├── Controllers/
+├── Http/
+│   ├── Controllers/
+│   └── Routes/
 ├── Models/
-├── Services/
-└── DTO/
+├── Actions/
+├── Dtos/
+└── database/
+    ├── migrations/
+    └── seeders/
 ```
 
 Typical contents:
 
-* Controllers
+* `Http/Controllers`, `Http/Routes`
 * Models
-* Services
-* DTO
+* Actions
+* Dtos
 * Repositories
 * Enums
 * Policies
+* `Console/Commands`
+* `database/migrations`, `database/seeders`
 
 Structure can grow depending on module complexity.
 

@@ -66,4 +66,4 @@ You will find in the directory `docs/api` postman collection file with all the r
 
 ---
 
-[Back to main readme](../README.md)
+[Back to main readme](../../README.md)

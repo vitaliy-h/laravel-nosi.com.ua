@@ -1,8 +1,10 @@
 # Translations (Laravel Standard Approach)
 
-This project uses **Laravel native localization system** for both the application and Filament admin panel.
+This project uses the **Laravel native localization system** for the Filament admin panel.
 
-No custom translation layer is used.
+No custom translation layer is used **in the admin panel**. The public-facing site is a
+separate concern: it uses a database-backed translation layer with the `t()` helper —
+see [Starter Translations](../starter/translations.md).
 
 ---
 
@@ -134,4 +136,4 @@ We follow these rules:
 
 ---
 
-[Back to main readme](../README.md)
+[Back to main readme](../../README.md)

@@ -7,6 +7,10 @@ This project uses a hybrid localization system based on:
 - Filament admin panel (for management)
 - Custom translation service (`t()` helper)
 
+> **Scope:** this database-backed layer powers the **public-facing site** via the `t()`
+> helper. The Filament **admin panel** UI labels use Laravel's native `__()` translations
+> instead — see [Filament Translations](../filament/translations.md).
+
 ---
 
 # 📦 Overview
