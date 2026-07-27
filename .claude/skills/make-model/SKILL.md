@@ -227,7 +227,7 @@ Ask: **Add a demo data seeder for this model?**
 If yes:
 - Check whether `app/Modules/{ModuleName}/database/seeders/{ModuleName}Seeder.php`
   already exists (it's the module's single entry-point seeder, called
-  automatically by `database/seeders/DatabaseSeeder.php` — see `docs/modules.md` §6).
+  automatically by `database/seeders/DatabaseSeeder.php` — see `docs/starter/modules.md` §6).
 - Create a dedicated sub-seeder `app/Modules/{ModuleName}/database/seeders/{ModelName}Seeder.php`
   (namespace `App\Modules\{ModuleName}\database\seeders`, lowercase
   `database\seeders`) with sample rows for this model.

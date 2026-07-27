@@ -93,7 +93,7 @@ For modules mapped to a `PageModule`, `ShareModulePageContext` middleware
 shares `page`, `breadcrumbs`, `headerMenu`, `footerMenu`, `cartCount`
 automatically — no manual `view()->share()` needed. Modules without a
 `PageModule` mapping (`Core`, `ShopOrders`, etc.) don't get this and must share
-what the layout needs themselves. See `docs/routing.md`.
+what the layout needs themselves. See `docs/starter/routing.md`.
 
 ---
 

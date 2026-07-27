@@ -21,10 +21,10 @@ The admin panel is built with a **minimal, consistent, table-first approach** an
 
 Detailed documentation is split into separate files:
 
-* [Resource Generation Guide](./filament/resource-generation.md)
-* [Translations Guide](filament/translations.md)
-* [Nested Sets (Tree Structures)](filament/nested-sets.md)
+* [Resource Generation Guide](resource-generation.md)
+* [Translations Guide](translations.md)
+* [Nested Sets (Tree Structures)](nested-sets.md)
 
 ---
 
-[Back to main readme](./README.md)
+[Back to main radme](../../README.md)

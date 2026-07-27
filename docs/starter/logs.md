@@ -188,4 +188,4 @@ admin, api, console, client
 
 ---
 
-[Back to main readme](./README.md)
+[Back to main readme](../../README.md)

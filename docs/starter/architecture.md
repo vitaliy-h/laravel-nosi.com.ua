@@ -86,7 +86,7 @@ Structure can grow depending on module complexity.
 # Disabling Modules
 
 Some modules can be turned off entirely via `config/modules.php`, gated by
-`App\Modules\Core\Support\ModuleGate`. See `docs/modules.md` for how it
+`App\Modules\Core\Support\ModuleGate`. See `docs/starter/modules.md` for how it
 works and when to use it.
 
 ---
@@ -103,7 +103,7 @@ routes/api.php
 Every module has its own explicit, named routes in `app/Modules/{Module}/Http/Routes/web.php`,
 mounted under a DB-driven prefix resolved once at boot by `ModuleServiceProvider`.
 The one exception is `TextPage`, which owns the app's single `Route::fallback()`
-(N pages, no fixed prefix). See `docs/routing.md` for the full pattern.
+(N pages, no fixed prefix). See `docs/starter/routing.md` for the full pattern.
 
 ---
 
@@ -135,4 +135,4 @@ resources/views/feedback
 
 ---
 
-[Back to main readme](./README.md)
+[Back to main readme](../../README.md)

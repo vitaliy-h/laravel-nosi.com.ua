@@ -1,68 +1,54 @@
 # Laravel Filament Starter
 
-Base starter project for building admin panels using **Laravel 13 + Filament v5**.
-
-This repository is designed to be **cloned and used as a foundation** for new projects with a ready-to-use:
-
-* Admin panel (Filament)
-* Role & permission system (Spatie)
-* Docker-based local environment (Laravel Sail)
-* Localization setup
-* Consistent admin UI/UX conventions
+A starter package built on Laravel + Filament: Filament admin panel, ready-made site modules, and API methods.
 
 ---
 
+# 📎 Documentation
 
-# 📚 Documentation
+Start here:
 
-All documentation is located in the `/docs` directory.
+* [Server Requirements & Local Setup](docs/README.md)
 
-## Core Docs
+The documentation is split into four blocks:
 
-* [Project Overview](./docs/README.md)
-* [Local Setup](./docs/local_setup.md)
-* [Translations Guide](docs/filament/translations.md)
-* [Filament Admin Panel](./docs/filament.md)
+## Filament
 
----
+Admin panel: resource generation, translations, tree structures.
 
-# 🧩 What’s Included
+* [Filament Admin Panel](docs/filament/README.md)
+    * [Resource Generation](docs/filament/resource-generation.md)
+    * [Translations Guide](docs/filament/translations.md)
+    * [Nested Sets (Tree Structures)](docs/filament/nested-sets.md)
 
-* Laravel 13
-* Filament v5 Admin Panel
-* Spatie Roles & Permissions
-* MySQL + Redis (via Sail)
-* phpMyAdmin
-* Standardized admin UI patterns
+## Starter
 
----
+Base project modules.
 
-# 📌 Philosophy
+* [Quick Commands](docs/starter/commands.md)
+* [Claude Code Setup](docs/starter/claude.md)
+* [Architecture Overview](docs/starter/architecture.md)
+    * [Disabling Modules](docs/starter/modules.md)
+    * [Routing](docs/starter/routing.md)
+    * [Images](docs/starter/images.md)
+    * [Translations](docs/starter/translations.md)
+    * [Logs](docs/starter/logs.md)
+    * [Letters](docs/starter/letters.md)
+    * [SMS](docs/starter/sms.md)
+    * [Testing](docs/starter/testing.md)
+    * [Sitemap](docs/starter/sitemap.md)
+    * [OAuth](docs/starter/oauth.md)
+    * [UUID](docs/starter/uuid.md)
+    * [Cart](docs/starter/cart.md)
 
-* Laravel-first approach
-* Minimal and consistent admin UI
-* No over-engineering
-* Fast project bootstrap
+## API
 
----
+API methods.
 
-# 🛠 Recommended Workflow
+* [API](docs/api/README.md)
 
-1. Clone project
-2. Configure environment
-3. Run Sail
-4. Create first Filament resource
-5. Extend modules using defined conventions
+## Project
 
----
+Description of the current project.
 
-# 📎 Notes
-
-* Sail is the **recommended environment** for all development
-* OpenServer support is available for Windows (see docs)
-
----
-
-# 🚀 Summary
-
-This starter helps you **skip boilerplate** and focus on business logic by providing a clean, consistent, and production-ready base.
+* [Project](docs/project/README.md)

@@ -1,5 +1,10 @@
 ### TODO
 
+* shop_product_items
+* shop_products.rank
+* shop_order_product.title
+* user filter
+
 * Add endpoints for the Telegram bot and the corresponding libraries.
 
 * Upload/update the price list from an Excel file.

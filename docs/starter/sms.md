@@ -232,4 +232,4 @@ Statuses (`LogSmsStatusEnum`):
 
 ---
 
-[Back to main readme](./README.md)
+[Back to main readme](../../README.md)

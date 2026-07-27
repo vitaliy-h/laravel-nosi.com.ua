@@ -536,4 +536,4 @@ in `.env` to `\Intervention\Image\Drivers\Imagick\Driver::class` (requires `ext-
 
 ---
 
-[Back to main readme](./README.md)
+[Back to main readme](../../README.md)

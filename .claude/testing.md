@@ -70,7 +70,7 @@ Use `RefreshDatabase` in any test that reads or writes the database.
 
 ### Frontend routing
 
-Each module's route prefix is resolved from the `pages` table at boot (see `docs/routing.md`). For smoke tests and web auth, seed pages in `setUp()` or per test so the prefixes resolve correctly:
+Each module's route prefix is resolved from the `pages` table at boot (see `docs/starter/routing.md`). For smoke tests and web auth, seed pages in `setUp()` or per test so the prefixes resolve correctly:
 
 ```php
 $this->seedPagesForRouting(); // wraps PagesTableSeeder
