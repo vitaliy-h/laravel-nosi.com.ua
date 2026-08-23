@@ -34,6 +34,7 @@ return [
         'shop_products' => 'Products',
         'users' => 'Users',
         'social_profiles' => 'Social Profiles',
+        'subscribers' => 'Subscribers',
         'debug_tools' => 'Debug Tools',
     ],
 
@@ -51,8 +52,10 @@ return [
         'display_menu_footer' => 'Footer',
         'email' => 'Email',
         'email_verified_at' => 'Email verified at',
+        'error' => 'Error',
         'img' => 'Image',
         'imgs' => 'Images',
+        'integrated_at' => 'Integrated at',
         'ip' => 'IP',
         'code' => 'Code',
         'geo_country_id' => 'Country',

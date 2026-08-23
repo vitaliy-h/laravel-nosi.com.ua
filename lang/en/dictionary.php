@@ -31,6 +31,16 @@ return [
         'read_more' => 'Read more',
     ],
 
+    'subscribe' => [
+        'title' => 'Join Our Newsletter',
+        'text:textarea' => 'Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals.',
+        'email' => 'Email',
+        'placeholder' => 'Your email address',
+        'button' => 'Subscribe',
+        'saved' => 'Thank you for subscribing!',
+        'already' => 'This email is already subscribed.',
+    ],
+
     'shop' => [
         'currency' => '$',
         'categories_list' => 'Categories List',

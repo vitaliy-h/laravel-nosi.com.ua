@@ -32,17 +32,30 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8 text-center">
-                    <h2>Join Our Newsletter</h2>
-                    <p>Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals.</p>
-                    <form action="forms/newsletter.php" method="post" class="php-email-form">
-                        <div class="newsletter-form d-flex">
-                            <input type="email" name="email" placeholder="Your email address" required="">
-                            <button type="submit">Subscribe</button>
-                        </div>
-                        <div class="loading">Loading</div>
-                        <div class="error-message"></div>
-                        <div class="sent-message">Your subscription request has been sent. Thank you!</div>
-                    </form>
+                    <h2>{{ t('subscribe.title') }}</h2>
+                    <p>{{ t('subscribe.text') }}</p>
+                    @if(\App\Modules\Core\Support\ModuleGate::isEnabled('subscribers'))
+                        {{-- No `php-email-form` class here: the demo template's validate.js would
+                             hijack the submit and fire a second request alongside abc-response.js. --}}
+                        <form id="newsletter-form"
+                              data-abcr="{{ route('subscribers.store') }}"
+                              action="{{ route('subscribers.store') }}"
+                              method="POST">
+                            @csrf
+                            <div class="newsletter-form d-flex">
+                                <input type="email" name="email" placeholder="{{ t('subscribe.placeholder') }}" required>
+                                <button type="submit">{{ t('subscribe.button') }}</button>
+                            </div>
+                            <div id="newsletter-message" class="mt-2">
+                                @if(session('success'))
+                                    <div class="alert alert-success mb-0">{{ session('success') }}</div>
+                                @endif
+                                @error('email')
+                                    <div class="alert alert-danger mb-0">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>

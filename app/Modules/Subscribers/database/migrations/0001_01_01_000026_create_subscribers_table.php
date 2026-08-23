@@ -1,0 +1,33 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('subscribers', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+            $table->string('email')->unique();
+            $table->ipAddress('ip')->nullable();
+            // Date the subscriber was pushed to the CRM; null = not integrated yet.
+            $table->timestamp('integrated_at')->nullable();
+            // Last CRM failure response, kept for manual review in the admin panel.
+            $table->text('error')->nullable();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('subscribers');
+    }
+};

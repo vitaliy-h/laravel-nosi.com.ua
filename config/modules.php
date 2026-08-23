@@ -25,12 +25,13 @@
 */
 
 return [
-    'auth'      => true,
-    'feedback'  => true,
-    'geo'       => true,
-    'news'      => true,
-    'shop'      => true,
-    'shop_cart' => true,
+    'auth'        => true,
+    'feedback'    => true,
+    'geo'         => true,
+    'news'        => true,
+    'shop'        => true,
+    'shop_cart'   => true,
+    'subscribers' => true,
 
     /*
     |----------------------------------------------------------------------
