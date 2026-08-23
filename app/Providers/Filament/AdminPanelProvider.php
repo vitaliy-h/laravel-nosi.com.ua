@@ -81,9 +81,9 @@ class AdminPanelProvider extends PanelProvider
                             ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.pages.debug-tools')) : null,
                     ]))
                     ->groups(array_filter([
-                        // shop
-                        ModuleGate::isEnabled('shop') ? NavigationGroup::make(__('admin.tables.shop'))
-                            ->items(array_filter([
+                        // catalog
+                        ModuleGate::isEnabled('shop') ? NavigationGroup::make(__('admin.tables.catalog'))
+                            ->items([
                                 NavigationItem::make(__('admin.tables.shop_products'))
                                     ->icon('heroicon-o-cube')
                                     ->url(\App\Filament\Resources\Shop\Products\ProductResource::getUrl())
@@ -96,15 +96,19 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-tag')
                                     ->url(\App\Filament\Resources\Shop\Brands\BrandResource::getUrl())
                                     ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.shop.brands*')),
-                                ModuleGate::isEnabled('shop_cart') ? NavigationItem::make(__('admin.tables.shop_orders'))
+                            ]) : null,
+                        // shop
+                        ModuleGate::isEnabled('shop_cart') ? NavigationGroup::make(__('admin.tables.shop'))
+                            ->items([
+                                NavigationItem::make(__('admin.tables.shop_orders'))
                                     ->icon('heroicon-o-shopping-cart')
                                     ->url(\App\Filament\Resources\Shop\Orders\OrderResource::getUrl())
-                                    ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.shop.orders.*')) : null,
-                                ModuleGate::isEnabled('shop_cart') ? NavigationItem::make(__('admin.tables.shop_carts'))
+                                    ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.shop.orders.*')),
+                                NavigationItem::make(__('admin.tables.shop_carts'))
                                     ->icon('heroicon-o-shopping-bag')
                                     ->url(\App\Filament\Resources\Shop\Cart\CartResource::getUrl())
-                                    ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.cart.carts.*')) : null,
-                            ])) : null,
+                                    ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.cart.carts.*')),
+                            ]) : null,
                         // users
                         NavigationGroup::make(__('admin.tables.users'))
                             ->items(array_filter([

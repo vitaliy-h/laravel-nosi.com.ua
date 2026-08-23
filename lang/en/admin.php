@@ -10,8 +10,9 @@ return [
 
     // table names in the database
     'tables' => [
-        'shop_carts' => 'Carts',
+        'catalog' => 'Catalog',
         'dashboard' => 'Dashboard',
+        'debug_tools' => 'Debug Tools',
         'feedback' => 'Feedback',
         'general' => 'General',
         'geo' => 'Geo',
@@ -29,13 +30,13 @@ return [
         'pages' => 'Pages',
         'shop' => 'Shop',
         'shop_brands' => 'Brands',
+        'shop_carts' => 'Carts',
         'shop_categories' => 'Categories',
         'shop_orders' => 'Orders',
         'shop_products' => 'Products',
         'users' => 'Users',
         'social_profiles' => 'Social Profiles',
         'subscribers' => 'Subscribers',
-        'debug_tools' => 'Debug Tools',
     ],
 
     // fields & filters
