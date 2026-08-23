@@ -66,6 +66,16 @@
                                 <div class="detail-section">
                                     <h5>{{ t('profile.order_price_details') }}</h5>
                                     <div class="price-breakdown">
+                                        @if($order->discount_amount > 0)
+                                            <div class="price-row">
+                                                <span>{{ t('shop.subtotal') }}</span>
+                                                <span>{{ $order->subtotal_amount_formatted }}</span>
+                                            </div>
+                                            <div class="price-row discount">
+                                                <span>{{ t('shop.discount') }} ({{ $order->promocode_code }})</span>
+                                                <span>-{{ $order->discount_amount_formatted }}</span>
+                                            </div>
+                                        @endif
                                         <div class="price-row total">
                                             <span>{{ t('profile.order_total') }}</span>
                                             <span>{{ $order->total_amount_formatted }}</span>

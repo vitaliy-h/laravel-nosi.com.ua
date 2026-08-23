@@ -8,12 +8,15 @@ use App\Modules\Core\Traits\Models\HasUuid;
 use Database\Factories\CartFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Cart extends Model
 {
+    use CascadesDeletes;
+
     /** @use HasFactory<CartFactory> */
     use HasFactory;
-    use CascadesDeletes;
     use HasUuid;
 
     protected array $uuidFields = ['uuid'];
@@ -26,25 +29,46 @@ class Cart extends Model
         'uuid',
         'user_id',
         'total_amount',
+        'subtotal_amount',
+        'promocode_id',
+        'promocode_code',
+        'discount_amount',
     ];
 
     protected $casts = [
         'total_amount' => 'decimal:2',
+        'subtotal_amount' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
     ];
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function items(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function items(): HasMany
     {
         return $this->hasMany(CartProduct::class, 'cart_id');
     }
 
+    public function promocode(): BelongsTo
+    {
+        return $this->belongsTo(Promocode::class);
+    }
+
     public function getTotalAmountFormattedAttribute(): string
     {
-        return t('shop.currency') . number_format($this->total_amount, 2);
+        return t('shop.currency').number_format($this->total_amount, 2);
+    }
+
+    public function getSubtotalAmountFormattedAttribute(): string
+    {
+        return t('shop.currency').number_format($this->subtotal_amount, 2);
+    }
+
+    public function getDiscountAmountFormattedAttribute(): string
+    {
+        return t('shop.currency').number_format($this->discount_amount, 2);
     }
 
     protected static function newFactory(): CartFactory

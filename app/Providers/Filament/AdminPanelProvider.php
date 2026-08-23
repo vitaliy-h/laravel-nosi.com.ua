@@ -112,6 +112,10 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-shopping-bag')
                                     ->url(\App\Filament\Resources\Shop\Cart\CartResource::getUrl())
                                     ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.cart.carts.*')),
+                                NavigationItem::make(__('admin.tables.shop_promocodes'))
+                                    ->icon('heroicon-o-ticket')
+                                    ->url(\App\Filament\Resources\Shop\Promocodes\PromocodeResource::getUrl())
+                                    ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.shop.promocodes.*')),
                             ]) : null,
                         // users
                         NavigationGroup::make(__('admin.tables.users'))
@@ -189,6 +193,7 @@ class AdminPanelProvider extends PanelProvider
                 ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Reviews\ReviewResource::class : null,
                 ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Orders\OrderResource::class : null,
                 ModuleGate::isEnabled('shop_cart') ? \App\Filament\Resources\Shop\Cart\CartResource::class : null,
+                ModuleGate::isEnabled('shop_cart') ? \App\Filament\Resources\Shop\Promocodes\PromocodeResource::class : null,
             ]))
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

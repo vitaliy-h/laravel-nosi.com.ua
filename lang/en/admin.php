@@ -1,6 +1,6 @@
 <?php
 
-//Admin panel translations
+// Admin panel translations
 
 return [
 
@@ -35,6 +35,7 @@ return [
         'shop_categories' => 'Categories',
         'shop_orders' => 'Orders',
         'shop_products' => 'Products',
+        'shop_promocodes' => 'Promocodes',
         'users' => 'Users',
         'social_profiles' => 'Social Profiles',
         'subscribers' => 'Subscribers',
@@ -99,6 +100,20 @@ return [
         'text' => 'Content',
         'title' => 'Title',
         'total_amount' => 'Total amount',
+        'subtotal_amount' => 'Subtotal',
+        'discount_amount' => 'Discount',
+        'discount_label' => 'Discount',
+        'promocode_id' => 'Promo code',
+        'promocode_active' => 'Active now',
+        'min_order_amount' => 'Min order amount',
+        'max_discount' => 'Max discount',
+        'usage_limit' => 'Usage limit',
+        'used_count' => 'Used',
+        'starts_at' => 'Starts at',
+        'expires_at' => 'Expires at',
+        'value' => 'Value',
+        'type' => 'Type',
+        'comment' => 'Comment',
         'updated_at' => 'Updated at',
         'uuid' => 'UUID',
         'url' => 'Url',
@@ -137,11 +152,11 @@ return [
         'date_until' => 'Until',
     ],
     // messages
-    'messages'=> [
-        'delete_child_items_forbidden'=>'Delete child items first',
-        'delete_forbidden_has_children'=>'Remove child categories first',
-        'delete_forbidden_has_products'=>'Move or remove products from this category first',
-        'page_delete_forbidden'=>'System modules cannot be deleted',
+    'messages' => [
+        'delete_child_items_forbidden' => 'Delete child items first',
+        'delete_forbidden_has_children' => 'Remove child categories first',
+        'delete_forbidden_has_products' => 'Move or remove products from this category first',
+        'page_delete_forbidden' => 'System modules cannot be deleted',
     ],
     // buttons & actions
     'actions' => [

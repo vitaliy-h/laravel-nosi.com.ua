@@ -2,24 +2,25 @@
 
 namespace App\Providers;
 
-use App\Modules\Shop\Models\Review;
-use App\Modules\Shop\Observers\ReviewObserver;
-use App\Modules\ShopCart\Models\CartProduct;
-use App\Modules\ShopCart\Observers\CartProductObserver;
 use App\Modules\Core\Models\Page;
+use App\Modules\Core\Models\User;
 use App\Modules\Core\Observers\PageObserver;
 use App\Modules\Core\Queries\GetAllPagesQuery;
 use App\Modules\Core\Services\UrlHelper;
 use App\Modules\Notification\Services\LetterTemplateService;
 use App\Modules\Notification\Services\SmsTemplateService;
+use App\Modules\Shop\Models\Review;
+use App\Modules\Shop\Observers\ReviewObserver;
+use App\Modules\ShopCart\Models\Cart;
+use App\Modules\ShopCart\Models\CartProduct;
+use App\Modules\ShopCart\Observers\CartObserver;
+use App\Modules\ShopCart\Observers\CartProductObserver;
 use App\Modules\ShopOrders\Models\Order;
 use App\Modules\ShopOrders\Models\OrderProduct;
 use App\Modules\ShopOrders\Observers\OrderObserver;
 use App\Modules\ShopOrders\Observers\OrderProductObserver;
 use App\Modules\Translation\Services\TranslationService;
-use App\Modules\Core\Models\User;
 use App\Policies\UserPolicy;
-use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
@@ -61,6 +62,7 @@ class AppServiceProvider extends ServiceProvider
         Page::observe(PageObserver::class);
         Order::observe(OrderObserver::class);
         OrderProduct::observe(OrderProductObserver::class);
+        Cart::observe(CartObserver::class);
         CartProduct::observe(CartProductObserver::class);
         Review::observe(ReviewObserver::class);
         $this->mergeSocialConfig();

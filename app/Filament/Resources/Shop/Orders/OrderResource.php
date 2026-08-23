@@ -6,23 +6,26 @@ use App\Filament\Actions\BaseEditAction;
 use App\Filament\Filters\UserSelectFilter;
 use App\Filament\Forms\UserSelect;
 use App\Filament\Resources\Shop\Orders\Pages\ManageOrders;
+use App\Modules\Shop\Models\Product;
 use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrders\Enums\PaymentTypeEnum;
 use App\Modules\ShopOrders\Models\Order;
-use App\Modules\Shop\Models\Product;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -48,9 +51,25 @@ class OrderResource extends Resource
                     ->disabled()
                     ->columnSpan(4),
 
-                DateTimePicker::make('payment_date')
+                Select::make('promocode_id')
+                    ->label(__('admin.fields.promocode_id'))
+                    ->relationship('promocode', 'code')
+                    ->searchable()
+                    ->preload()
+                    ->columnSpan(4),
+                // Editable: an order's discount is frozen, so the admin owns it.
+                // OrderObserver recalculates total_amount from it.
+                TextInput::make('discount_amount')
+                    ->numeric()
+                    ->minValue(0)
+                    ->columnSpan(4),
+                TextInput::make('subtotal_amount')
+                    ->numeric()
+                    ->disabled()
                     ->columnSpan(4),
 
+                DateTimePicker::make('payment_date')
+                    ->columnSpan(4),
 
                 Select::make('payment_status')
                     ->options(PaymentStatusEnum::options())
@@ -69,7 +88,7 @@ class OrderResource extends Resource
                 TextInput::make('user_phone')
                     ->tel()
                     ->columnSpan(3),
-                \Filament\Forms\Components\Textarea::make('comment')
+                Textarea::make('comment')
                     ->columnSpanFull(),
 
                 Repeater::make('items')
@@ -106,14 +125,14 @@ class OrderResource extends Resource
                             ->numeric()
                             ->required()
                             ->live()
-                            ->afterStateUpdated(fn($state, callable $get, callable $set) => $set('total', round((float)$state * (float)$get('quantity'), 2)))
+                            ->afterStateUpdated(fn ($state, callable $get, callable $set) => $set('total', round((float) $state * (float) $get('quantity'), 2)))
                             ->columnSpan(2),
                         TextInput::make('quantity')
                             ->integer()
                             ->default(1)
                             ->required()
                             ->live()
-                            ->afterStateUpdated(fn($state, callable $get, callable $set) => $set('total', round((float)$get('selling_price') * (float)$state, 2)))
+                            ->afterStateUpdated(fn ($state, callable $get, callable $set) => $set('total', round((float) $get('selling_price') * (float) $state, 2)))
                             ->columnSpan(2),
                         TextInput::make('total')
                             ->numeric()
@@ -137,11 +156,14 @@ class OrderResource extends Resource
                     ->searchable(['name', 'surname']),
                 TextColumn::make('payment_status')
                     ->badge()
-                    ->formatStateUsing(fn($state) => $state?->label()),
+                    ->formatStateUsing(fn ($state) => $state?->label()),
                 TextColumn::make('payment_type')
                     ->badge()
-                    ->formatStateUsing(fn($state) => $state?->label()),
+                    ->formatStateUsing(fn ($state) => $state?->label()),
 
+                TextColumn::make('discount_amount')
+                    ->money()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('total_amount')
                     ->sortable()
                     ->money(),
@@ -164,16 +186,16 @@ class OrderResource extends Resource
                 UserSelectFilter::make(),
             ])
             ->recordActions([
-               Action::make('view_public')
+                Action::make('view_public')
                     ->icon(Heroicon::OutlinedGlobeAlt)
                     ->iconButton()
                     ->url(fn (Order $record) => route('order.show', $record->uuid))
                     ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),
-            ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+            ], position: RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
-                \Filament\Actions\CreateAction::make(),
+                CreateAction::make(),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

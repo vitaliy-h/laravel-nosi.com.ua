@@ -5,6 +5,8 @@ namespace App\Modules\ShopOrders\Actions;
 use App\Modules\Notification\Dtos\SendLetterTemplateData;
 use App\Modules\Notification\Enums\LetterEnum;
 use App\Modules\Notification\Facades\LetterTemplateFacade;
+use App\Modules\ShopCart\Actions\IncrementPromocodeUsageAction;
+use App\Modules\ShopCart\Models\Promocode;
 use App\Modules\ShopOrders\Dtos\CreateOrderData;
 use App\Modules\ShopOrders\Models\Order;
 
@@ -12,6 +14,7 @@ readonly class CreateOrderAction
 {
     public function __construct(
         private RecalculateOrderTotalAction $recalculate,
+        private IncrementPromocodeUsageAction $incrementPromocodeUsage,
     ) {}
 
     public function handle(CreateOrderData $dto): Order
@@ -21,6 +24,9 @@ readonly class CreateOrderAction
             'payment_status' => $dto->payment_status,
             'payment_type' => $dto->payment_type,
             'total_amount' => 0,
+            'promocode_id' => $dto->promocode_id,
+            'promocode_code' => $dto->promocode_code,
+            'discount_amount' => $dto->discount_amount,
             'user_name' => $dto->user_name,
             'user_surname' => $dto->user_surname,
             'user_email' => $dto->user_email,
@@ -40,6 +46,12 @@ readonly class CreateOrderAction
         }
 
         $this->recalculate->handle($order);
+
+        // A promocode counts as used once the order exists, not when it was
+        // applied to a cart that may never be checked out.
+        if ($dto->promocode_id !== null && $promocode = Promocode::find($dto->promocode_id)) {
+            $this->incrementPromocodeUsage->handle($promocode);
+        }
 
         $order = $order->fresh();
 

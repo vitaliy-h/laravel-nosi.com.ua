@@ -19,5 +19,8 @@ class CreateOrderData extends Data
         public readonly ?string $user_email = null,
         public readonly ?string $user_phone = null,
         public readonly ?string $comment = null,
+        public readonly ?int $promocode_id = null,
+        public readonly ?string $promocode_code = null,
+        public readonly float $discount_amount = 0.0,
     ) {}
 }

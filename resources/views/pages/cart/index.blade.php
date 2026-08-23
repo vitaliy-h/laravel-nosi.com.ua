@@ -94,34 +94,6 @@
                                 @endforeach
 
 
-                                            {{--
-                                <div class="cart-actions">
-                                    <div class="row g-3">
-                                        <div class="col-lg-6 col-md-6">
-
-                                            <div class="coupon-form">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control" placeholder="Coupon code">
-                                                    <button class="btn btn-accent" type="button">Apply</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6 col-md-6 text-md-end">
-                                            <button class="btn btn-outline-accent me-2">
-                                                <i class="bi bi-arrow-clockwise"></i> Update
-                                            </button>
-
-                                            <button class="btn btn-outline-danger">
-                                                <i class="bi bi-trash"></i> Clear
-                                            </button>
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                                            --}}
-                                            {{--
-                                            --}}
                             </div>
 
                             <form id="checkout-form" class="checkout-form checkout-section" action="{{ route('order.create') }}" method="POST">
@@ -176,6 +148,9 @@
                         <div class="col-lg-4 aos-init aos-animate" data-aos="fade-up" data-aos-delay="300">
                             <div class="cart-summary">
                                 <h4 class="summary-title">{{ t('shop.order_summary') }}</h4>
+
+                                @include('pages.cart.partials.promocode', ['cart' => $cart, 'result' => null])
+                                @include('pages.cart.partials.summary-discount', ['cart' => $cart])
                                 {{--
                                 <div class="summary-item">
                                     <span class="summary-label">Subtotal</span>

@@ -10,6 +10,7 @@ use App\Modules\Shop\Models\Product;
 use App\Modules\ShopCart\Models\Cart;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\Repeater;
@@ -19,6 +20,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -39,6 +41,23 @@ class CartResource extends Resource
                     ->numeric()
                     ->disabled()
                     ->columnSpan(6),
+
+                Select::make('promocode_id')
+                    ->label(__('admin.fields.promocode_id'))
+                    ->relationship('promocode', 'code')
+                    ->searchable()
+                    ->preload()
+                    ->columnSpan(4),
+                // A cart's discount is always derived from the promocode —
+                // CartObserver recalculates it after any change here.
+                TextInput::make('discount_amount')
+                    ->numeric()
+                    ->minValue(0)
+                    ->columnSpan(4),
+                TextInput::make('subtotal_amount')
+                    ->numeric()
+                    ->disabled()
+                    ->columnSpan(4),
 
                 Repeater::make('items')
                     ->relationship()
@@ -74,14 +93,14 @@ class CartResource extends Resource
                             ->numeric()
                             ->required()
                             ->live()
-                            ->afterStateUpdated(fn($state, callable $get, callable $set) => $set('total', round((float)$state * (float)$get('quantity'), 2)))
+                            ->afterStateUpdated(fn ($state, callable $get, callable $set) => $set('total', round((float) $state * (float) $get('quantity'), 2)))
                             ->columnSpan(2),
                         TextInput::make('quantity')
                             ->integer()
                             ->default(1)
                             ->required()
                             ->live()
-                            ->afterStateUpdated(fn($state, callable $get, callable $set) => $set('total', round((float)$get('selling_price') * (float)$state, 2)))
+                            ->afterStateUpdated(fn ($state, callable $get, callable $set) => $set('total', round((float) $get('selling_price') * (float) $state, 2)))
                             ->columnSpan(2),
                         TextInput::make('total')
                             ->numeric()
@@ -120,9 +139,9 @@ class CartResource extends Resource
             ->recordActions([
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),
-            ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+            ], position: RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
-                \Filament\Actions\CreateAction::make(),
+                CreateAction::make(),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

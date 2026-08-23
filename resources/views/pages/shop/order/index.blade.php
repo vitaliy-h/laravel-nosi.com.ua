@@ -101,6 +101,17 @@
                             </div>
                         @endif
 
+                        @if($order->discount_amount > 0)
+                            <div class="summary-item">
+                                <span class="summary-label">{{ t('shop.subtotal') }}</span>
+                                <span class="summary-value">{{ $order->subtotal_amount_formatted }}</span>
+                            </div>
+                            <div class="summary-item discount">
+                                <span class="summary-label">{{ t('shop.discount') }} ({{ $order->promocode_code }})</span>
+                                <span class="summary-value">-{{ $order->discount_amount_formatted }}</span>
+                            </div>
+                        @endif
+
                         <div class="summary-total">
                             <span class="summary-label">{{ t('profile.order_total') }}</span>
                             <span class="summary-value">{{ $order->total_amount_formatted }}</span>

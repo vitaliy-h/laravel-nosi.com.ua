@@ -2,6 +2,8 @@
 
 namespace App\Modules\ShopCart\Http\Controllers\Web;
 
+use App\Modules\Core\Abstract\BaseWebController;
+use App\Modules\Shop\Models\Product;
 use App\Modules\ShopCart\Actions\AddOrUpdateCartItemAction;
 use App\Modules\ShopCart\Actions\DuplicateCartAction;
 use App\Modules\ShopCart\Actions\GetOrCreateCartAction;
@@ -9,8 +11,6 @@ use App\Modules\ShopCart\Actions\RemoveCartItemAction;
 use App\Modules\ShopCart\Enums\CartAction;
 use App\Modules\ShopCart\Http\Requests\ChangeCartRequest;
 use App\Modules\ShopCart\Models\Cart;
-use App\Modules\Core\Abstract\BaseWebController;
-use App\Modules\Shop\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
@@ -99,6 +99,7 @@ class AjaxCartController extends BaseWebController
                 'selector' => '.checkout_item[data-product="'.$product->id.'"]',
                 'method' => 'remove',
             ],
+            $this->summaryDiscountAction($cart),
             [
                 'selector' => '.js_checkout_total',
                 'method' => 'text',
@@ -152,11 +153,25 @@ class AjaxCartController extends BaseWebController
                 'method' => 'text',
                 'content' => $item->total,
             ],
+            $this->summaryDiscountAction($cart),
             [
                 'selector' => '.js_checkout_total',
                 'method' => 'text',
                 'content' => $cart->total_amount,
             ],
+        ];
+    }
+
+    /**
+     * The promocode discount depends on the cart contents, so any line change
+     * re-renders the discount rows alongside the total.
+     */
+    private function summaryDiscountAction(Cart $cart): array
+    {
+        return [
+            'selector' => '.js_summary_discount',
+            'method' => 'replaceWith',
+            'content' => view('pages.cart.partials.summary-discount', compact('cart'))->render(),
         ];
     }
 
