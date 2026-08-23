@@ -47,12 +47,11 @@
                             </span>
 
                             <div class="product-rating">
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star"></i>
-                                <span class="rating-count">(0)</span>
+                                <x-rating-stars :value="$product->rating" />
+
+                                <span class="rating-count">
+                                    ({{ $product->reviews_count }})
+                                </span>
                             </div>
 
                         </div>
@@ -199,6 +198,18 @@
                                 </button>
                             </li>
 
+                            <li class="nav-item" role="presentation">
+                                <button
+                                    class="nav-link"
+                                    id="reviews-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#reviews"
+                                    type="button"
+                                >
+                                    {{ t('shop.reviews_tab', ['count' => $rating->total]) }}
+                                </button>
+                            </li>
+
                         </ul>
 
                         <div class="tab-content" id="productTabsContent">
@@ -274,6 +285,16 @@
                                     </div>
 
                                 </div>
+
+                            </div>
+
+                            <div
+                                class="tab-pane fade"
+                                id="reviews"
+                                role="tabpanel"
+                            >
+
+                                @include('pages.shop.partials.reviews')
 
                             </div>
 

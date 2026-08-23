@@ -96,6 +96,10 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-tag')
                                     ->url(\App\Filament\Resources\Shop\Brands\BrandResource::getUrl())
                                     ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.shop.brands*')),
+                                NavigationItem::make(__('admin.tables.shop_reviews'))
+                                    ->icon('heroicon-o-star')
+                                    ->url(\App\Filament\Resources\Shop\Reviews\ReviewResource::getUrl())
+                                    ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.shop.reviews*')),
                             ]) : null,
                         // shop
                         ModuleGate::isEnabled('shop_cart') ? NavigationGroup::make(__('admin.tables.shop'))
@@ -182,6 +186,7 @@ class AdminPanelProvider extends PanelProvider
                 ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Products\ProductResource::class : null,
                 ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Categories\CategoryResource::class : null,
                 ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Brands\BrandResource::class : null,
+                ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Reviews\ReviewResource::class : null,
                 ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Orders\OrderResource::class : null,
                 ModuleGate::isEnabled('shop_cart') ? \App\Filament\Resources\Shop\Cart\CartResource::class : null,
             ]))

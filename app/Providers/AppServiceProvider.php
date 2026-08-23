@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Modules\Shop\Models\Review;
+use App\Modules\Shop\Observers\ReviewObserver;
 use App\Modules\ShopCart\Models\CartProduct;
 use App\Modules\ShopCart\Observers\CartProductObserver;
 use App\Modules\Core\Models\Page;
@@ -60,6 +62,7 @@ class AppServiceProvider extends ServiceProvider
         Order::observe(OrderObserver::class);
         OrderProduct::observe(OrderProductObserver::class);
         CartProduct::observe(CartProductObserver::class);
+        Review::observe(ReviewObserver::class);
         $this->mergeSocialConfig();
     }
 

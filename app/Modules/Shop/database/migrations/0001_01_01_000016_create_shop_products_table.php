@@ -20,6 +20,9 @@ return new class extends Migration
             $table->foreignId('brand_id')->nullable()->constrained('shop_brands')->nullable();
             $table->decimal('price', 10, 2)->nullable();
             $table->decimal('price2', 10, 2)->nullable();
+            // Denormalized review aggregates, maintained by ReviewObserver.
+            $table->decimal('rating', 3, 2)->default(0);
+            $table->unsignedInteger('reviews_count')->default(0);
             $table->string('article')->nullable();
             $table->string('title')->nullable();
             $table->string('slug')->nullable();
@@ -28,6 +31,7 @@ return new class extends Migration
             $table->text('meta_description')->nullable();
             $table->json('imgs')->nullable();
             $table->longText('text')->nullable();
+            $table->index('rating');
         });
     }
 

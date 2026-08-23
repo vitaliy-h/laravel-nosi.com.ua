@@ -5,6 +5,7 @@ namespace App\Modules\Shop\Http\Controllers\Web;
 use App\Modules\ShopCart\Actions\FindCartAction;
 use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Core\Dtos\BreadcrumbData;
+use App\Modules\Shop\Dtos\ProductRatingData;
 use App\Modules\Shop\Dtos\ProductSearchDto;
 use App\Modules\Shop\Enums\SortOptionEnum;
 use App\Modules\Shop\Queries\Category\FindCategoryBySlugQuery;
@@ -13,6 +14,8 @@ use App\Modules\Shop\Queries\Category\GetCategoryBreadcrumbsQuery;
 use App\Modules\Shop\Queries\Product\FindProductByIdQuery;
 use App\Modules\Shop\Queries\Product\PrepareShopFilterQuery;
 use App\Modules\Shop\Queries\Product\SearchProductsQuery;
+use App\Modules\Shop\Queries\Review\GetProductRatingBreakdownQuery;
+use App\Modules\Shop\Queries\Review\GetReviewsByProductQuery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,6 +29,8 @@ class IndexController extends BaseWebController
         private readonly GetCategoryBreadcrumbsQuery $getCategoryBreadcrumbs,
         private readonly FindProductByIdQuery $findProductById,
         private readonly FindCartAction $findCart,
+        private readonly GetReviewsByProductQuery $getReviewsByProduct,
+        private readonly GetProductRatingBreakdownQuery $getProductRatingBreakdown,
     ) {}
 
     public function index(Request $request)
@@ -99,11 +104,19 @@ class IndexController extends BaseWebController
 
         $cartQuantity = $this->cartQuantityFor($product->id) ?? 1;
 
+        $reviews = $this->getReviewsByProduct->handle($product);
+        $rating = ProductRatingData::forProduct(
+            $product,
+            $this->getProductRatingBreakdown->handle($product),
+        );
+
         return view('pages.shop.product', compact(
             'category',
             'product',
             'breadcrumbs',
             'cartQuantity',
+            'reviews',
+            'rating',
         ));
     }
 

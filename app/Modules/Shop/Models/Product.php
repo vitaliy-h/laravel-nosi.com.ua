@@ -42,7 +42,9 @@ protected $table = 'shop_products';
         'display' => 'boolean',
         'price' => 'float',
         'price2' => 'float',
-        'imgs' => 'array'
+        'imgs' => 'array',
+        'rating' => 'float',
+        'reviews_count' => 'integer',
     ];
 
     public function category()
@@ -55,8 +57,23 @@ protected $table = 'shop_products';
         return $this->belongsTo(Brand::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function visibleReviews()
+    {
+        return $this->hasMany(Review::class)->visible();
+    }
+
     public function getSlugWithIdAttribute()
     {
        return $this->slug.'-'.$this->id;
+    }
+
+    protected static function newFactory(): ProductFactory
+    {
+        return ProductFactory::new();
     }
 }

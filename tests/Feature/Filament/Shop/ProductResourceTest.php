@@ -3,14 +3,17 @@
 namespace Tests\Feature\Filament\Shop;
 
 use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
+use App\Filament\Resources\Shop\Reviews\ReviewResource;
 use App\Modules\Core\Models\User;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
+use App\Modules\Shop\Models\Review;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\Testing\TestAction;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -139,6 +142,26 @@ class ProductResourceTest extends TestCase
             ->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('shop_products', ['id' => $product->id, 'title' => 'Updated Product']);
+    }
+
+    public function test_rating_column_shows_aggregates_and_links_to_filtered_reviews(): void
+    {
+        $product = Product::factory()->create();
+
+        Review::factory()->count(2)->forProduct($product)->withRating(4)->create();
+
+        $product->refresh();
+
+        Livewire::test(ManageProducts::class)
+            ->assertTableColumnStateSet('rating', 4.0, $product)
+            ->assertTableColumnFormattedStateSet('rating', '4.00 (2)', $product)
+            ->assertTableColumnExists(
+                'rating',
+                fn (TextColumn $column): bool => $column->getUrl() === ReviewResource::getUrl(parameters: [
+                    'filters' => ['product_id' => ['value' => $product->id]],
+                ]),
+                $product,
+            );
     }
 
     public function test_delete_product(): void

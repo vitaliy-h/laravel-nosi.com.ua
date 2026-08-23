@@ -107,6 +107,23 @@ return [
         'placeholder_last_name' => 'Your Last Name',
         'placeholder_email' => 'Your Email',
         'placeholder_phone' => 'Your Phone Number',
+
+        'reviews' => 'Reviews',
+        'reviews_tab' => 'Reviews (:count)',
+        'customer_reviews' => 'Customer Reviews',
+        'based_on_reviews' => 'Based on :count reviews',
+        'star' => 'star',
+        'stars' => 'stars',
+        'no_reviews' => 'No reviews yet',
+        'load_more_reviews' => 'Load More Reviews',
+        'write_review' => 'Write a Review',
+        'review_form_hint' => 'Tell others what you think about this product. Your review appears on the site once it has been checked.',
+        'your_rating' => 'Your Rating',
+        'your_name' => 'Your Name',
+        'your_email' => 'Your Email',
+        'your_review' => 'Your Review',
+        'submit_review' => 'Submit Review',
+        'review_saved' => 'Thank you! Your review will appear on the site once it has been checked.',
     ],
 
     'impersonation' => [
