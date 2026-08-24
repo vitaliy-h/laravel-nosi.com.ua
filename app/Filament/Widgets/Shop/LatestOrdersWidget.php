@@ -6,7 +6,7 @@ use App\Filament\Resources\Shop\Orders\OrderResource;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrders\Models\Order;
-use App\Modules\ShopOrders\Queries\Order\GetLatestOrdersQuery;
+use App\Filament\Dashboard\Queries\Shop\GetLatestOrdersQuery;
 use Filament\Actions\Action;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;

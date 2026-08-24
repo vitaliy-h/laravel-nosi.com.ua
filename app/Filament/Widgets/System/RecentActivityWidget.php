@@ -6,7 +6,7 @@ use App\Filament\Resources\Logs\LogResource;
 use App\Modules\Core\Enums\LogEventEnum;
 use App\Modules\Core\Enums\LogSourceEnum;
 use App\Modules\Core\Models\Log;
-use App\Modules\Core\Queries\Log\GetRecentActivityQuery;
+use App\Filament\Dashboard\Queries\System\GetRecentActivityQuery;
 use Filament\Actions\Action;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;

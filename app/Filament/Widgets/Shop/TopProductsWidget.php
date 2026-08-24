@@ -3,10 +3,10 @@
 namespace App\Filament\Widgets\Shop;
 
 use App\Filament\Resources\Shop\Products\ProductResource;
-use App\Filament\Widgets\Concerns\InteractsWithDashboardPeriod;
+use App\Filament\Dashboard\Concerns\InteractsWithDashboardPeriod;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Models\Product;
-use App\Modules\Shop\Queries\Product\GetTopProductsQuery;
+use App\Filament\Dashboard\Queries\Shop\GetTopProductsQuery;
 use Filament\Actions\Action;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;

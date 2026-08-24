@@ -4,8 +4,8 @@ namespace App\Filament\Widgets\System;
 
 use App\Filament\Resources\LogLetters\LogLetterResource;
 use App\Filament\Resources\LogSms\LogSmsResource;
-use App\Filament\Widgets\Concerns\FormatsDashboardStats;
-use App\Modules\Core\Queries\Dashboard\GetSystemStatsQuery;
+use App\Filament\Dashboard\Concerns\FormatsDashboardStats;
+use App\Filament\Dashboard\Queries\System\GetSystemStatsQuery;
 use App\Modules\Notification\Enums\LogLetterStatusEnum;
 use App\Modules\Notification\Enums\LogSmsStatusEnum;
 use Filament\Widgets\StatsOverviewWidget;

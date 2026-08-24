@@ -9,7 +9,7 @@ use App\Filament\Traits\HasSeoFields;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
-use App\Modules\Shop\Queries\Product\GetCatalogStatsQuery;
+use App\Filament\Dashboard\Queries\Shop\GetCatalogStatsQuery;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;

@@ -4,9 +4,9 @@ namespace App\Filament\Widgets\Users;
 
 use App\Filament\Resources\Subscribers\SubscriberResource;
 use App\Filament\Resources\Users\UserResource;
-use App\Filament\Widgets\Concerns\FormatsDashboardStats;
-use App\Filament\Widgets\Concerns\InteractsWithDashboardPeriod;
-use App\Modules\Core\Queries\User\GetUserStatsQuery;
+use App\Filament\Dashboard\Concerns\FormatsDashboardStats;
+use App\Filament\Dashboard\Concerns\InteractsWithDashboardPeriod;
+use App\Filament\Dashboard\Queries\Users\GetUserStatsQuery;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 

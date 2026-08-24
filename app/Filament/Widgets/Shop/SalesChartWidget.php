@@ -2,9 +2,9 @@
 
 namespace App\Filament\Widgets\Shop;
 
-use App\Filament\Widgets\Concerns\InteractsWithDashboardPeriod;
+use App\Filament\Dashboard\Concerns\InteractsWithDashboardPeriod;
 use App\Modules\Core\Support\ModuleGate;
-use App\Modules\ShopOrders\Queries\Order\GetSalesChartQuery;
+use App\Filament\Dashboard\Queries\Shop\GetSalesChartQuery;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Contracts\Support\Htmlable;
 

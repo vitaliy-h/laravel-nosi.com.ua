@@ -22,6 +22,7 @@ The admin panel is built with a **minimal, consistent, table-first approach** an
 Detailed documentation is split into separate files:
 
 * [Resource Generation Guide](resource-generation.md)
+* [Admin Dashboard](dashboard.md)
 * [Translations Guide](translations.md)
 * [Nested Sets (Tree Structures)](nested-sets.md)
 

@@ -3,10 +3,10 @@
 namespace App\Filament\Widgets\Shop;
 
 use App\Filament\Resources\Shop\Promocodes\PromocodeResource;
-use App\Filament\Widgets\Concerns\FormatsDashboardStats;
-use App\Filament\Widgets\Concerns\InteractsWithDashboardPeriod;
+use App\Filament\Dashboard\Concerns\FormatsDashboardStats;
+use App\Filament\Dashboard\Concerns\InteractsWithDashboardPeriod;
 use App\Modules\Core\Support\ModuleGate;
-use App\Modules\ShopCart\Queries\Promocode\GetPromocodeStatsQuery;
+use App\Filament\Dashboard\Queries\Shop\GetPromocodeStatsQuery;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 

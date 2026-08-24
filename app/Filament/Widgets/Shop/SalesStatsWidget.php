@@ -4,11 +4,11 @@ namespace App\Filament\Widgets\Shop;
 
 use App\Filament\Resources\Shop\Cart\CartResource;
 use App\Filament\Resources\Shop\Orders\OrderResource;
-use App\Filament\Widgets\Concerns\FormatsDashboardStats;
-use App\Filament\Widgets\Concerns\InteractsWithDashboardPeriod;
+use App\Filament\Dashboard\Concerns\FormatsDashboardStats;
+use App\Filament\Dashboard\Concerns\InteractsWithDashboardPeriod;
 use App\Modules\Core\Support\ModuleGate;
-use App\Modules\ShopCart\Queries\Cart\GetCartStatsQuery;
-use App\Modules\ShopOrders\Queries\Order\GetOrderStatsQuery;
+use App\Filament\Dashboard\Queries\Shop\GetCartStatsQuery;
+use App\Filament\Dashboard\Queries\Shop\GetOrderStatsQuery;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
