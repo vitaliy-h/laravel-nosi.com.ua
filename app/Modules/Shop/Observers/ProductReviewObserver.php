@@ -4,15 +4,15 @@ namespace App\Modules\Shop\Observers;
 
 use App\Modules\Shop\Actions\RecalculateProductRatingAction;
 use App\Modules\Shop\Models\Product;
-use App\Modules\Shop\Models\Review;
+use App\Modules\Shop\Models\ProductReview;
 
-readonly class ReviewObserver
+readonly class ProductReviewObserver
 {
     public function __construct(
         private RecalculateProductRatingAction $recalculateRating,
     ) {}
 
-    public function created(Review $review): void
+    public function created(ProductReview $review): void
     {
         $this->refreshProductOf($review);
     }
@@ -21,7 +21,7 @@ readonly class ReviewObserver
      * Covers moderation: toggling `display` in the admin panel publishes the
      * review and the product aggregates follow.
      */
-    public function updated(Review $review): void
+    public function updated(ProductReview $review): void
     {
         $this->refreshProductOf($review);
 
@@ -37,12 +37,12 @@ readonly class ReviewObserver
         }
     }
 
-    public function deleted(Review $review): void
+    public function deleted(ProductReview $review): void
     {
         $this->refreshProductOf($review);
     }
 
-    private function refreshProductOf(Review $review): void
+    private function refreshProductOf(ProductReview $review): void
     {
         $product = $review->product;
 

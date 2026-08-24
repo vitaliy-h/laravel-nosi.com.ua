@@ -4,7 +4,7 @@ namespace Tests\Unit\Shop;
 
 use App\Modules\Shop\Actions\RecalculateProductRatingAction;
 use App\Modules\Shop\Models\Product;
-use App\Modules\Shop\Models\Review;
+use App\Modules\Shop\Models\ProductReview;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -21,9 +21,9 @@ class RecalculateProductRatingActionTest extends TestCase
     {
         $product = Product::factory()->create();
 
-        Review::factory()->forProduct($product)->withRating(5)->create();
-        Review::factory()->forProduct($product)->withRating(3)->create();
-        Review::factory()->forProduct($product)->withRating(1)->invisible()->create();
+        ProductReview::factory()->forProduct($product)->withRating(5)->create();
+        ProductReview::factory()->forProduct($product)->withRating(3)->create();
+        ProductReview::factory()->forProduct($product)->withRating(1)->invisible()->create();
 
         $this->recalculate($product);
 
@@ -37,10 +37,10 @@ class RecalculateProductRatingActionTest extends TestCase
     {
         $product = Product::factory()->create();
 
-        Review::factory()->forProduct($product)->withRating(4)->create();
+        ProductReview::factory()->forProduct($product)->withRating(4)->create();
         $product->refresh();
 
-        Review::factory()->forProduct($product)->withRating(1)->invisible()->create();
+        ProductReview::factory()->forProduct($product)->withRating(1)->invisible()->create();
 
         $product->refresh();
 
@@ -52,7 +52,7 @@ class RecalculateProductRatingActionTest extends TestCase
     {
         $product = Product::factory()->create();
 
-        $review = Review::factory()->forProduct($product)->withRating(5)->invisible()->create();
+        $review = ProductReview::factory()->forProduct($product)->withRating(5)->invisible()->create();
 
         $this->assertSame(0.0, $product->fresh()->rating);
 
@@ -68,8 +68,8 @@ class RecalculateProductRatingActionTest extends TestCase
     {
         $product = Product::factory()->create();
 
-        Review::factory()->forProduct($product)->withRating(2)->create();
-        $review = Review::factory()->forProduct($product)->withRating(4)->create();
+        ProductReview::factory()->forProduct($product)->withRating(2)->create();
+        $review = ProductReview::factory()->forProduct($product)->withRating(4)->create();
 
         $review->delete();
 
@@ -83,7 +83,7 @@ class RecalculateProductRatingActionTest extends TestCase
     {
         $product = Product::factory()->create();
 
-        Review::factory()->forProduct($product)->withRating(5)->invisible()->create();
+        ProductReview::factory()->forProduct($product)->withRating(5)->invisible()->create();
 
         $this->recalculate($product);
 
@@ -99,7 +99,7 @@ class RecalculateProductRatingActionTest extends TestCase
 
         $updatedAt = $product->fresh()->updated_at;
 
-        Review::factory()->forProduct($product)->withRating(5)->create();
+        ProductReview::factory()->forProduct($product)->withRating(5)->create();
 
         $this->assertEquals($updatedAt, $product->fresh()->updated_at);
         $this->assertSame(5.0, $product->fresh()->rating);

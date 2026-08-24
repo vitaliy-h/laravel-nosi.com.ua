@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Modules\Shop\Queries\Review;
+namespace App\Modules\Shop\Queries\ProductReview;
 
 use App\Modules\Shop\Models\Product;
-use App\Modules\Shop\Models\Review;
+use App\Modules\Shop\Models\ProductReview;
 
 class GetProductRatingBreakdownQuery
 {
@@ -15,7 +15,7 @@ class GetProductRatingBreakdownQuery
      */
     public function handle(Product $product): array
     {
-        $counts = Review::query()
+        $counts = ProductReview::query()
             ->visible()
             ->where('product_id', $product->id)
             ->selectRaw('rating, COUNT(*) AS total')

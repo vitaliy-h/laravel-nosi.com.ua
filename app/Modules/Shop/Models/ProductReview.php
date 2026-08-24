@@ -4,19 +4,19 @@ namespace App\Modules\Shop\Models;
 
 use App\Modules\Core\Models\User;
 use App\Modules\Core\Traits\Models\HasVisibility;
-use Database\Factories\ReviewFactory;
+use Database\Factories\ProductReviewFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Review extends Model
+class ProductReview extends Model
 {
-    /** @use HasFactory<ReviewFactory> */
+    /** @use HasFactory<ProductReviewFactory> */
     use HasFactory;
 
     use HasVisibility;
 
-    protected $table = 'shop_reviews';
+    protected $table = 'shop_product_reviews';
 
     protected $fillable = [
         'display',
@@ -55,8 +55,8 @@ class Review extends Model
         return $this->user?->name ?: $this->name;
     }
 
-    protected static function newFactory(): ReviewFactory
+    protected static function newFactory(): ProductReviewFactory
     {
-        return ReviewFactory::new();
+        return ProductReviewFactory::new();
     }
 }

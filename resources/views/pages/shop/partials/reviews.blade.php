@@ -13,7 +13,7 @@
             </div>
 
             <div class="rating-count">
-                {{ t('shop.based_on_reviews', ['count' => $rating->total]) }}
+                {{ t('shop.based_on_product_reviews', ['count' => $rating->total]) }}
             </div>
 
         </div>
@@ -54,7 +54,7 @@
     <div class="reviews-list mt-5">
 
         <h4>
-            {{ t('shop.customer_reviews') }}
+            {{ t('shop.customer_product_reviews') }}
         </h4>
 
         <div id="reviews-list">
@@ -62,7 +62,7 @@
                 @include('pages.shop.partials.review-item')
             @empty
                 <p class="text-muted">
-                    {{ t('shop.no_reviews') }}
+                    {{ t('shop.no_product_reviews') }}
                 </p>
             @endforelse
         </div>

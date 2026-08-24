@@ -14,8 +14,8 @@ use App\Modules\Shop\Queries\Category\GetCategoryBreadcrumbsQuery;
 use App\Modules\Shop\Queries\Product\FindProductByIdQuery;
 use App\Modules\Shop\Queries\Product\PrepareShopFilterQuery;
 use App\Modules\Shop\Queries\Product\SearchProductsQuery;
-use App\Modules\Shop\Queries\Review\GetProductRatingBreakdownQuery;
-use App\Modules\Shop\Queries\Review\GetReviewsByProductQuery;
+use App\Modules\Shop\Queries\ProductReview\GetProductRatingBreakdownQuery;
+use App\Modules\Shop\Queries\ProductReview\GetReviewsByProductQuery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

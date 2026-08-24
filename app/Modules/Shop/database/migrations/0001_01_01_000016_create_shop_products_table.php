@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('brand_id')->nullable()->constrained('shop_brands')->nullable();
             $table->decimal('price', 10, 2)->nullable();
             $table->decimal('price2', 10, 2)->nullable();
-            // Denormalized review aggregates, maintained by ReviewObserver.
+            // Denormalized review aggregates, maintained by ProductReviewObserver.
             $table->decimal('rating', 3, 2)->default(0);
             $table->unsignedInteger('reviews_count')->default(0);
             $table->string('article')->nullable();

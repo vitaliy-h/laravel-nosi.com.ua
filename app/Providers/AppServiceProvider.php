@@ -9,8 +9,8 @@ use App\Modules\Core\Queries\GetAllPagesQuery;
 use App\Modules\Core\Services\UrlHelper;
 use App\Modules\Notification\Services\LetterTemplateService;
 use App\Modules\Notification\Services\SmsTemplateService;
-use App\Modules\Shop\Models\Review;
-use App\Modules\Shop\Observers\ReviewObserver;
+use App\Modules\Shop\Models\ProductReview;
+use App\Modules\Shop\Observers\ProductReviewObserver;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
 use App\Modules\ShopCart\Observers\CartObserver;
@@ -64,7 +64,7 @@ class AppServiceProvider extends ServiceProvider
         OrderProduct::observe(OrderProductObserver::class);
         Cart::observe(CartObserver::class);
         CartProduct::observe(CartProductObserver::class);
-        Review::observe(ReviewObserver::class);
+        ProductReview::observe(ProductReviewObserver::class);
         $this->mergeSocialConfig();
     }
 

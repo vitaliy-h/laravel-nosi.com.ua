@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Modules\Shop\Queries\Review;
+namespace App\Modules\Shop\Queries\ProductReview;
 
 use App\Modules\Shop\Models\Product;
-use App\Modules\Shop\Models\Review;
+use App\Modules\Shop\Models\ProductReview;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class GetReviewsByProductQuery
@@ -16,7 +16,7 @@ class GetReviewsByProductQuery
      */
     public function handle(Product $product, int $page = 1, int $perPage = 10): LengthAwarePaginator
     {
-        return Review::query()
+        return ProductReview::query()
             ->visible()
             ->where('product_id', $product->id)
             ->with('user')

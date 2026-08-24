@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filament\Resources\Shop\Reviews;
+namespace App\Filament\Resources\Shop\ProductReviews;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Filters\UserSelectFilter;
 use App\Filament\Forms\UserSelect;
-use App\Filament\Resources\Shop\Reviews\Pages\ManageReviews;
-use App\Modules\Shop\Models\Review;
+use App\Filament\Resources\Shop\ProductReviews\Pages\ManageProductReviews;
+use App\Modules\Shop\Models\ProductReview;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -28,9 +28,9 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class ReviewResource extends Resource
+class ProductReviewResource extends Resource
 {
-    protected static ?string $model = Review::class;
+    protected static ?string $model = ProductReview::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedStar;
 
@@ -127,7 +127,7 @@ class ReviewResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ManageReviews::route('/'),
+            'index' => ManageProductReviews::route('/'),
         ];
     }
 

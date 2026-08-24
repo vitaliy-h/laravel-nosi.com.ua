@@ -1,25 +1,25 @@
 <?php
 
-namespace App\Modules\Shop\Queries\Review;
+namespace App\Modules\Shop\Queries\ProductReview;
 
 use App\Modules\Core\Dtos\DashboardPeriodData;
-use App\Modules\Shop\Dtos\ReviewStatsData;
-use App\Modules\Shop\Models\Review;
+use App\Modules\Shop\Dtos\ProductReviewStatsData;
+use App\Modules\Shop\Models\ProductReview;
 
-class GetReviewStatsQuery
+class GetProductReviewStatsQuery
 {
     /**
      * Shop-wide review figures. Only "new reviews" follows the period filter;
      * the rating and the moderation queue are a snapshot of right now.
      */
-    public function handle(DashboardPeriodData $period): ReviewStatsData
+    public function handle(DashboardPeriodData $period): ProductReviewStatsData
     {
-        return new ReviewStatsData(
-            averageRating: round((float) Review::query()->visible()->avg('rating'), 2),
-            newReviews: Review::query()
+        return new ProductReviewStatsData(
+            averageRating: round((float) ProductReview::query()->visible()->avg('rating'), 2),
+            newReviews: ProductReview::query()
                 ->whereBetween('created_at', [$period->from, $period->to])
                 ->count(),
-            pendingModeration: Review::query()->where('display', false)->count(),
+            pendingModeration: ProductReview::query()->where('display', false)->count(),
             breakdown: $this->breakdown(),
         );
     }
@@ -33,7 +33,7 @@ class GetReviewStatsQuery
      */
     private function breakdown(): array
     {
-        $counts = Review::query()
+        $counts = ProductReview::query()
             ->visible()
             ->selectRaw('rating, COUNT(*) AS total')
             ->groupBy('rating')

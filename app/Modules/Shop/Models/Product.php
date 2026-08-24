@@ -59,12 +59,12 @@ protected $table = 'shop_products';
 
     public function reviews()
     {
-        return $this->hasMany(Review::class);
+        return $this->hasMany(ProductReview::class);
     }
 
     public function visibleReviews()
     {
-        return $this->hasMany(Review::class)->visible();
+        return $this->hasMany(ProductReview::class)->visible();
     }
 
     public function getSlugWithIdAttribute()

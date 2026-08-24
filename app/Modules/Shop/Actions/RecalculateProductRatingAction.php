@@ -3,7 +3,7 @@
 namespace App\Modules\Shop\Actions;
 
 use App\Modules\Shop\Models\Product;
-use App\Modules\Shop\Models\Review;
+use App\Modules\Shop\Models\ProductReview;
 
 class RecalculateProductRatingAction
 {
@@ -17,7 +17,7 @@ class RecalculateProductRatingAction
      */
     public function handle(Product $product): void
     {
-        $aggregate = Review::query()
+        $aggregate = ProductReview::query()
             ->visible()
             ->where('product_id', $product->id)
             ->selectRaw('AVG(rating) AS average, COUNT(*) AS total')

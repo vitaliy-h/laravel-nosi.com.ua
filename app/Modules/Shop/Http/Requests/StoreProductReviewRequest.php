@@ -5,7 +5,7 @@ namespace App\Modules\Shop\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreReviewRequest extends FormRequest
+class StoreProductReviewRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -42,7 +42,7 @@ class StoreReviewRequest extends FormRequest
             'rating' => t('shop.your_rating'),
             'name' => t('shop.your_name'),
             'email' => t('shop.your_email'),
-            'text' => t('shop.your_review'),
+            'text' => t('shop.your_product_review'),
         ];
     }
 }

@@ -3,18 +3,18 @@
 <div class="review-form-container">
 
     <h4>
-        {{ t('shop.write_review') }}
+        {{ t('shop.write_product_review') }}
     </h4>
 
     <p class="form-text mb-3">
-        {{ t('shop.review_form_hint') }}
+        {{ t('shop.product_review_form_hint') }}
     </p>
 
     <form
         class="review-form"
         id="review-form"
-        data-abcr="{{ save_route('shop.review.store') }}"
-        action="{{ save_route('shop.review.store') }}"
+        data-abcr="{{ save_route('shop.product.review.store') }}"
+        action="{{ save_route('shop.product.review.store') }}"
         method="POST"
     >
         @csrf
@@ -82,7 +82,7 @@
 
         <div class="mb-4">
             <label for="review-content" class="form-label">
-                {{ t('shop.your_review') }}
+                {{ t('shop.your_product_review') }}
             </label>
 
             <textarea
@@ -96,7 +96,7 @@
 
         <div class="d-grid">
             <button type="submit" class="btn btn-primary">
-                {{ t('shop.submit_review') }}
+                {{ t('shop.submit_product_review') }}
             </button>
         </div>
 

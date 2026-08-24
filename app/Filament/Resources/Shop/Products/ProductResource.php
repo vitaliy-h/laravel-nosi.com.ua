@@ -4,7 +4,7 @@ namespace App\Filament\Resources\Shop\Products;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
-use App\Filament\Resources\Shop\Reviews\ReviewResource;
+use App\Filament\Resources\Shop\ProductReviews\ProductReviewResource;
 use App\Filament\Traits\HasSeoFields;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
@@ -145,7 +145,7 @@ class ProductResource extends Resource
                     ->alignEnd()
                     ->color('primary')
                     ->formatStateUsing(fn (Product $record): string => number_format($record->rating, 2).' ('.$record->reviews_count.')')
-                    ->url(fn (Product $record): string => ReviewResource::getUrl(parameters: [
+                    ->url(fn (Product $record): string => ProductReviewResource::getUrl(parameters: [
                         'filters' => ['product_id' => ['value' => $record->id]],
                     ])),
                 TextColumn::make('rank')

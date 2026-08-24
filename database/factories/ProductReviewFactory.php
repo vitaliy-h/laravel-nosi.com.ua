@@ -4,18 +4,18 @@ namespace Database\Factories;
 
 use App\Modules\Core\Models\User;
 use App\Modules\Shop\Models\Product;
-use App\Modules\Shop\Models\Review;
+use App\Modules\Shop\Models\ProductReview;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Review>
+ * @extends Factory<ProductReview>
  */
-class ReviewFactory extends Factory
+class ProductReviewFactory extends Factory
 {
     /**
-     * @var class-string<Review>
+     * @var class-string<ProductReview>
      */
-    protected $model = Review::class;
+    protected $model = ProductReview::class;
 
     /**
      * Visible by default so rating assertions stay short; use invisible() for

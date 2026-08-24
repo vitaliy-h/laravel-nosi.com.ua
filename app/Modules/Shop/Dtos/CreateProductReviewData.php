@@ -4,7 +4,7 @@ namespace App\Modules\Shop\Dtos;
 
 use Spatie\LaravelData\Data;
 
-class CreateReviewData extends Data
+class CreateProductReviewData extends Data
 {
     public function __construct(
         public readonly int $productId,

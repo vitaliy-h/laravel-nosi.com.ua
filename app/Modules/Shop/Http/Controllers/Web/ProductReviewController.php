@@ -3,30 +3,30 @@
 namespace App\Modules\Shop\Http\Controllers\Web;
 
 use App\Modules\Core\Abstract\BaseWebController;
-use App\Modules\Shop\Actions\CreateReviewAction;
-use App\Modules\Shop\Dtos\CreateReviewData;
-use App\Modules\Shop\Http\Requests\StoreReviewRequest;
-use App\Modules\Shop\Models\Review;
+use App\Modules\Shop\Actions\CreateProductReviewAction;
+use App\Modules\Shop\Dtos\CreateProductReviewData;
+use App\Modules\Shop\Http\Requests\StoreProductReviewRequest;
+use App\Modules\Shop\Models\ProductReview;
 use App\Modules\Shop\Queries\Product\FindProductByIdQuery;
-use App\Modules\Shop\Queries\Review\GetReviewsByProductQuery;
+use App\Modules\Shop\Queries\ProductReview\GetReviewsByProductQuery;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class ReviewController extends BaseWebController
+class ProductReviewController extends BaseWebController
 {
     public function __construct(
-        private readonly CreateReviewAction $createReview,
+        private readonly CreateProductReviewAction $createReview,
         private readonly FindProductByIdQuery $findProductById,
         private readonly GetReviewsByProductQuery $getReviewsByProduct,
     ) {}
 
-    public function store(StoreReviewRequest $request): JsonResponse|RedirectResponse
+    public function store(StoreProductReviewRequest $request): JsonResponse|RedirectResponse
     {
         $user = Auth::user();
 
-        $this->createReview->handle(new CreateReviewData(
+        $this->createReview->handle(new CreateProductReviewData(
             productId: (int) $request->validated('product_id'),
             rating: (int) $request->validated('rating'),
             // A logged-in user always reviews under their own account identity,
@@ -38,7 +38,7 @@ class ReviewController extends BaseWebController
             userId: $user?->getKey(),
         ));
 
-        $message = t('shop.review_saved');
+        $message = t('shop.product_review_saved');
 
         // AJAX (data-abcr form): clear the form and render the message inline.
         if ($request->ajax()) {
@@ -81,7 +81,7 @@ class ReviewController extends BaseWebController
         $reviews = $this->getReviewsByProduct->handle($product, $page);
 
         $items = $reviews
-            ->map(fn (Review $review) => view('pages.shop.partials.review-item', compact('review'))->render())
+            ->map(fn (ProductReview $review) => view('pages.shop.partials.review-item', compact('review'))->render())
             ->implode('');
 
         return response()->json([

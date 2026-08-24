@@ -5,7 +5,7 @@ namespace Tests\Feature\Shop;
 use App\Modules\Core\Models\User;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
-use App\Modules\Shop\Models\Review;
+use App\Modules\Shop\Models\ProductReview;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -30,8 +30,8 @@ class ProductReviewsTest extends TestCase
         $category = Category::factory()->create();
         $product = Product::factory()->forCategory($category)->create();
 
-        $visible = Review::factory()->forProduct($product)->create(['text' => 'Visible review text']);
-        $hidden = Review::factory()->forProduct($product)->invisible()->create(['text' => 'Hidden review text']);
+        $visible = ProductReview::factory()->forProduct($product)->create(['text' => 'Visible review text']);
+        $hidden = ProductReview::factory()->forProduct($product)->invisible()->create(['text' => 'Hidden review text']);
 
         $response = $this->get($this->productUrl($product, $category));
 
@@ -46,7 +46,7 @@ class ProductReviewsTest extends TestCase
         $category = Category::factory()->create();
         $product = Product::factory()->forCategory($category)->create();
 
-        Review::factory()->forProduct($product)->create([
+        ProductReview::factory()->forProduct($product)->create([
             'text' => "First line\nSecond line <b>bold</b>",
         ]);
 
@@ -77,7 +77,7 @@ class ProductReviewsTest extends TestCase
     {
         $product = Product::factory()->create();
 
-        $response = $this->from('/')->post('/shop/reviews', [
+        $response = $this->from('/')->post('/shop/product-reviews', [
             'product_id' => $product->id,
             'rating' => 5,
             'name' => 'Guest Reviewer',
@@ -88,7 +88,7 @@ class ProductReviewsTest extends TestCase
         $response->assertRedirect('/');
         $response->assertSessionHas('success');
 
-        $this->assertDatabaseHas('shop_reviews', [
+        $this->assertDatabaseHas('shop_product_reviews', [
             'product_id' => $product->id,
             'name' => 'Guest Reviewer',
             'display' => false,
@@ -104,14 +104,14 @@ class ProductReviewsTest extends TestCase
     {
         $product = Product::factory()->create();
 
-        $response = $this->from('/')->post('/shop/reviews', [
+        $response = $this->from('/')->post('/shop/product-reviews', [
             'product_id' => $product->id,
             'name' => 'Guest Reviewer',
             'email' => 'guest@example.com',
         ]);
 
         $response->assertSessionHasErrors(['rating', 'text']);
-        $this->assertSame(0, Review::count());
+        $this->assertSame(0, ProductReview::count());
     }
 
     public function test_store_via_ajax_returns_actions_json(): void
@@ -120,7 +120,7 @@ class ProductReviewsTest extends TestCase
 
         $response = $this
             ->withHeader('X-Requested-With', 'XMLHttpRequest')
-            ->post('/shop/reviews', [
+            ->post('/shop/product-reviews', [
                 'product_id' => $product->id,
                 'rating' => 4,
                 'name' => 'Ajax Reviewer',
@@ -133,7 +133,7 @@ class ProductReviewsTest extends TestCase
         $response->assertJsonPath('actions.0.selector', '#review-form');
         $response->assertJsonPath('actions.1.method', 'html');
         $response->assertJsonPath('actions.1.selector', '#review-message');
-        $this->assertDatabaseHas('shop_reviews', ['name' => 'Ajax Reviewer']);
+        $this->assertDatabaseHas('shop_product_reviews', ['name' => 'Ajax Reviewer']);
     }
 
     public function test_logged_in_user_review_is_stored_under_the_account_identity(): void
@@ -144,7 +144,7 @@ class ProductReviewsTest extends TestCase
         ]);
         $product = Product::factory()->create();
 
-        $this->actingAs($user)->from('/')->post('/shop/reviews', [
+        $this->actingAs($user)->from('/')->post('/shop/product-reviews', [
             'product_id' => $product->id,
             'rating' => 5,
             // Someone else's identity must not survive.
@@ -153,7 +153,7 @@ class ProductReviewsTest extends TestCase
             'text' => 'Posted while logged in.',
         ]);
 
-        $this->assertDatabaseHas('shop_reviews', [
+        $this->assertDatabaseHas('shop_product_reviews', [
             'product_id' => $product->id,
             'user_id' => $user->id,
             'name' => 'Account Name',
@@ -183,7 +183,7 @@ class ProductReviewsTest extends TestCase
         $category = Category::factory()->create();
         $product = Product::factory()->forCategory($category)->create();
 
-        Review::factory()->count(11)->forProduct($product)->create();
+        ProductReview::factory()->count(11)->forProduct($product)->create();
 
         $response = $this->get($this->productUrl($product, $category));
 
@@ -196,11 +196,11 @@ class ProductReviewsTest extends TestCase
     {
         $product = Product::factory()->create();
 
-        Review::factory()->count(11)->forProduct($product)->create();
+        ProductReview::factory()->count(11)->forProduct($product)->create();
 
         $response = $this
             ->withHeader('X-Requested-With', 'XMLHttpRequest')
-            ->get('/shop/reviews?product='.$product->id.'&page=2');
+            ->get('/shop/product-reviews?product='.$product->id.'&page=2');
 
         $response->assertStatus(200);
         $response->assertJsonPath('actions.0.method', 'append');

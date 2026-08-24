@@ -6,7 +6,7 @@ use App\Filament\Widgets\NeedsAttentionWidget;
 use App\Filament\Widgets\Shop\CatalogStatsWidget;
 use App\Filament\Widgets\Shop\LatestOrdersWidget;
 use App\Filament\Widgets\Shop\PromocodeStatsWidget;
-use App\Filament\Widgets\Shop\ReviewStatsWidget;
+use App\Filament\Widgets\Shop\ProductReviewStatsWidget;
 use App\Filament\Widgets\Shop\SalesChartWidget;
 use App\Filament\Widgets\Shop\SalesStatsWidget;
 use App\Filament\Widgets\Shop\TopProductsWidget;
@@ -65,7 +65,7 @@ class DashboardModuleGateTest extends TestCase
             CatalogStatsWidget::class,
             TopProductsWidget::class,
             PromocodeStatsWidget::class,
-            ReviewStatsWidget::class,
+            ProductReviewStatsWidget::class,
         ] as $widget) {
             $this->assertNotContains($widget, $widgets, "{$widget} should not be registered when shop is disabled.");
         }
@@ -91,7 +91,7 @@ class DashboardModuleGateTest extends TestCase
 
         // Catalog and reviews only depend on `shop`, which is still enabled.
         $this->assertContains(CatalogStatsWidget::class, $widgets);
-        $this->assertContains(ReviewStatsWidget::class, $widgets);
+        $this->assertContains(ProductReviewStatsWidget::class, $widgets);
     }
 
     public function test_every_module_enabled_registers_every_widget(): void
@@ -106,7 +106,7 @@ class DashboardModuleGateTest extends TestCase
             CatalogStatsWidget::class,
             TopProductsWidget::class,
             PromocodeStatsWidget::class,
-            ReviewStatsWidget::class,
+            ProductReviewStatsWidget::class,
             UserStatsWidget::class,
         ] as $widget) {
             $this->assertContains($widget, $widgets);

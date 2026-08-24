@@ -1,4 +1,4 @@
-{{-- One review. Also rendered standalone by ReviewController::list() (load more). --}}
+{{-- One review. Also rendered standalone by ProductReviewController::list() (load more). --}}
 <div class="review-item">
 
     <div class="review-header">

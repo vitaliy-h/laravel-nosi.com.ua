@@ -4,7 +4,7 @@ namespace App\Modules\Shop\Dtos;
 
 use Spatie\LaravelData\Data;
 
-class ReviewStatsData extends Data
+class ProductReviewStatsData extends Data
 {
     /**
      * @param  array<int, int>  $breakdown  visible reviews per star, keyed 5 → 1

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('shop_reviews', function (Blueprint $table) {
+        Schema::create('shop_product_reviews', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             // Moderation: reviews stay hidden until an admin publishes them.
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('shop_reviews');
+        Schema::dropIfExists('shop_product_reviews');
     }
 };

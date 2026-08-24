@@ -5,7 +5,7 @@ namespace Tests\Unit\Dashboard;
 use App\Modules\Core\Queries\Dashboard\GetNeedsAttentionQuery;
 use App\Modules\Feedback\Models\Feedback;
 use App\Modules\Notification\Models\LogLetter;
-use App\Modules\Shop\Models\Review;
+use App\Modules\Shop\Models\ProductReview;
 use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrders\Models\Order;
 use App\Modules\Subscribers\Models\Subscriber;
@@ -37,8 +37,8 @@ class GetNeedsAttentionQueryTest extends TestCase
 
     public function test_counts_everything_waiting_for_an_admin(): void
     {
-        Review::factory()->invisible()->count(2)->create();
-        Review::factory()->create();
+        ProductReview::factory()->invisible()->count(2)->create();
+        ProductReview::factory()->create();
 
         Feedback::factory()->count(3)->create();
         Feedback::factory()->processed()->create();

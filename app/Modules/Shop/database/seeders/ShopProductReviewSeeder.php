@@ -4,22 +4,22 @@ namespace App\Modules\Shop\database\seeders;
 
 use App\Modules\Shop\Actions\RecalculateProductRatingAction;
 use App\Modules\Shop\Models\Product;
-use App\Modules\Shop\Models\Review;
+use App\Modules\Shop\Models\ProductReview;
 use Illuminate\Database\Seeder;
 
-class ShopReviewSeeder extends Seeder
+class ShopProductReviewSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Review::truncate();
+        ProductReview::truncate();
 
         $products = Product::all();
 
         foreach ($products as $product) {
-            Review::factory()
+            ProductReview::factory()
                 ->count(fake()->numberBetween(2, 5))
                 ->forProduct($product)
                 ->create();

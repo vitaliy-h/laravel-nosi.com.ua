@@ -94,10 +94,10 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-tag')
                                     ->url(\App\Filament\Resources\Shop\Brands\BrandResource::getUrl())
                                     ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.shop.brands*')),
-                                NavigationItem::make(__('admin.tables.shop_reviews'))
+                                NavigationItem::make(__('admin.tables.shop_product_reviews'))
                                     ->icon('heroicon-o-star')
-                                    ->url(\App\Filament\Resources\Shop\Reviews\ReviewResource::getUrl())
-                                    ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.shop.reviews*')),
+                                    ->url(\App\Filament\Resources\Shop\ProductReviews\ProductReviewResource::getUrl())
+                                    ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.shop.product-reviews*')),
                             ]) : null,
                         // shop
                         ModuleGate::isEnabled('shop_cart') ? NavigationGroup::make(__('admin.tables.shop'))
@@ -188,7 +188,7 @@ class AdminPanelProvider extends PanelProvider
                 ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Products\ProductResource::class : null,
                 ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Categories\CategoryResource::class : null,
                 ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Brands\BrandResource::class : null,
-                ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Reviews\ReviewResource::class : null,
+                ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\ProductReviews\ProductReviewResource::class : null,
                 ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Orders\OrderResource::class : null,
                 ModuleGate::isEnabled('shop_cart') ? \App\Filament\Resources\Shop\Cart\CartResource::class : null,
                 ModuleGate::isEnabled('shop_cart') ? \App\Filament\Resources\Shop\Promocodes\PromocodeResource::class : null,
@@ -207,7 +207,7 @@ class AdminPanelProvider extends PanelProvider
                 ModuleGate::isEnabled('shop') ? \App\Filament\Widgets\Shop\CatalogStatsWidget::class : null,
                 ModuleGate::isEnabled('shop_orders') ? \App\Filament\Widgets\Shop\TopProductsWidget::class : null,
                 ModuleGate::isEnabled('shop_cart') ? \App\Filament\Widgets\Shop\PromocodeStatsWidget::class : null,
-                ModuleGate::isEnabled('shop') ? \App\Filament\Widgets\Shop\ReviewStatsWidget::class : null,
+                ModuleGate::isEnabled('shop') ? \App\Filament\Widgets\Shop\ProductReviewStatsWidget::class : null,
                 \App\Filament\Widgets\Users\UserStatsWidget::class,
                 \App\Filament\Widgets\System\SystemStatsWidget::class,
                 \App\Filament\Widgets\System\RecentActivityWidget::class,

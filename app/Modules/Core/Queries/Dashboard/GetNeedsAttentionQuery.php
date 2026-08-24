@@ -6,7 +6,7 @@ use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Feedback\Models\Feedback;
 use App\Modules\Notification\Enums\LogLetterStatusEnum;
 use App\Modules\Notification\Models\LogLetter;
-use App\Modules\Shop\Models\Review;
+use App\Modules\Shop\Models\ProductReview;
 use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrders\Models\Order;
 use App\Modules\Subscribers\Models\Subscriber;
@@ -34,7 +34,7 @@ class GetNeedsAttentionQuery
     {
         return [
             'pendingReviews' => ModuleGate::isEnabled('shop')
-                ? Review::query()->where('display', false)->count()
+                ? ProductReview::query()->where('display', false)->count()
                 : null,
 
             'unprocessedFeedback' => ModuleGate::isEnabled('feedback')

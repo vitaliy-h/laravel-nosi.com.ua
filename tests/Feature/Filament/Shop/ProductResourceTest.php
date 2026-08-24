@@ -3,12 +3,12 @@
 namespace Tests\Feature\Filament\Shop;
 
 use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
-use App\Filament\Resources\Shop\Reviews\ReviewResource;
+use App\Filament\Resources\Shop\ProductReviews\ProductReviewResource;
 use App\Modules\Core\Models\User;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
-use App\Modules\Shop\Models\Review;
+use App\Modules\Shop\Models\ProductReview;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -148,7 +148,7 @@ class ProductResourceTest extends TestCase
     {
         $product = Product::factory()->create();
 
-        Review::factory()->count(2)->forProduct($product)->withRating(4)->create();
+        ProductReview::factory()->count(2)->forProduct($product)->withRating(4)->create();
 
         $product->refresh();
 
@@ -157,7 +157,7 @@ class ProductResourceTest extends TestCase
             ->assertTableColumnFormattedStateSet('rating', '4.00 (2)', $product)
             ->assertTableColumnExists(
                 'rating',
-                fn (TextColumn $column): bool => $column->getUrl() === ReviewResource::getUrl(parameters: [
+                fn (TextColumn $column): bool => $column->getUrl() === ProductReviewResource::getUrl(parameters: [
                     'filters' => ['product_id' => ['value' => $product->id]],
                 ]),
                 $product,

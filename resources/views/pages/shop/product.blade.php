@@ -206,7 +206,7 @@
                                     data-bs-target="#reviews"
                                     type="button"
                                 >
-                                    {{ t('shop.reviews_tab', ['count' => $rating->total]) }}
+                                    {{ t('shop.product_reviews_tab', ['count' => $rating->total]) }}
                                 </button>
                             </li>
 
