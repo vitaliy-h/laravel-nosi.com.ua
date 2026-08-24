@@ -151,6 +151,111 @@ return [
         'date_from' => 'From',
         'date_until' => 'Until',
     ],
+    // Dashboard page (/admin): widgets, stat cards and the period filter
+    'dashboard' => [
+        'filters' => [
+            'period' => 'Period',
+            'from' => 'From',
+            'to' => 'To',
+        ],
+        'periods' => [
+            'today' => 'Today',
+            'last_7_days' => 'Last 7 days',
+            'last_30_days' => 'Last 30 days',
+            'last_90_days' => 'Last 90 days',
+            'custom' => 'Custom range',
+        ],
+        'widgets' => [
+            'sales' => 'Sales',
+            'sales_chart' => 'Sales dynamics',
+            'latest_orders' => 'Latest orders',
+            'needs_attention' => 'Needs attention',
+            'top_products' => 'Top products',
+            'promocodes' => 'Promocodes',
+            'reviews' => 'Reviews',
+            'users' => 'Users',
+            'system' => 'System',
+            'recent_activity' => 'Recent activity',
+        ],
+        'stats' => [
+            // Sales
+            'orders' => 'Orders',
+            'revenue' => 'Revenue',
+            'average_check' => 'Average check',
+            'payment_status' => 'Paid orders',
+            // Needs attention
+            'pending_reviews' => 'Reviews to moderate',
+            'unprocessed_feedback' => 'Unprocessed feedback',
+            'stale_unpaid_orders' => 'Stale unpaid orders',
+            'failed_subscribers' => 'Subscriber errors',
+            'failed_letters' => 'Failed letters',
+            // Catalog
+            'products' => 'Products',
+            'categories' => 'Categories',
+            'brands' => 'Brands',
+            'incomplete_products' => 'Incomplete products',
+            // Carts
+            'active_carts' => 'Active carts',
+            'abandoned_carts' => 'Abandoned carts',
+            'carts_value' => 'Value in carts',
+            'cart_conversion' => 'Cart to order',
+            // Promocodes
+            'active_promocodes' => 'Active promocodes',
+            'promocode_uses' => 'Uses in period',
+            'discount_given' => 'Discount given',
+            'top_promocode' => 'Top promocode',
+            // Reviews
+            'average_rating' => 'Average rating',
+            'new_reviews' => 'New reviews',
+            'pending_moderation' => 'Pending moderation',
+            'rating_breakdown' => 'Rating breakdown',
+            // Users & subscribers
+            'users_total' => 'Users total',
+            'new_users' => 'New users',
+            'subscribers' => 'Subscribers',
+            'failed_integrations' => 'Failed integrations',
+            // System
+            'environment' => 'Environment',
+            'versions' => 'Versions',
+            'mail_24h' => 'Mail (24h)',
+            'sms_24h' => 'SMS (24h)',
+        ],
+        'descriptions' => [
+            'no_change' => 'No data for the previous period',
+            'paid_orders_only' => 'Paid orders only',
+            'payment_breakdown' => ':unpaid unpaid, :processing processing',
+            'discount_total' => 'Discount given: :amount',
+            'older_than_days' => 'Older than :days days',
+            'last_24_hours' => 'Last 24 hours',
+            'hidden' => ':count hidden',
+            'no_image_or_price' => 'No image or no price',
+            'not_updated_today' => 'Not updated in the last 24 hours',
+            'updated_today' => 'Updated in the last 24 hours',
+            'carts_in_period' => ':carts carts in period',
+            'expired' => ':count expired',
+            'percent_of_revenue' => ':percent% of revenue',
+            'uses' => ':count uses',
+            'visible_reviews' => 'Visible reviews only',
+            'in_period' => '+:count in period',
+            'debug_enabled' => 'APP_DEBUG is enabled',
+            'failed' => ':count failed',
+        ],
+        'columns' => [
+            'customer' => 'Customer',
+            'sold' => 'Sold',
+            'revenue' => 'Revenue',
+        ],
+        'values' => [
+            'none' => '—',
+            'system' => 'System',
+        ],
+        'empty' => [
+            'no_sales' => 'No sales in the selected period',
+            'no_activity' => 'No activity yet',
+            'no_orders' => 'No orders yet',
+        ],
+    ],
+
     // messages
     'messages' => [
         'delete_child_items_forbidden' => 'Delete child items first',

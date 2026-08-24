@@ -7,6 +7,7 @@ use App\Filament\Resources\Feedback\Pages\ManageFeedback;
 use App\Modules\Feedback\Models\Feedback;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\Textarea;
@@ -17,6 +18,8 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class FeedbackResource extends Resource
@@ -79,14 +82,15 @@ class FeedbackResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                // Processing queue: linked to from the dashboard "Needs attention" widget.
+                TernaryFilter::make('processed'),
             ])
             ->recordActions([
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),
-            ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+            ], position: RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
-            \Filament\Actions\CreateAction::make(),
+                CreateAction::make(),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

@@ -9,15 +9,16 @@ use App\Filament\Traits\HasSeoFields;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
+use App\Modules\Shop\Queries\Product\GetCatalogStatsQuery;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
@@ -26,12 +27,16 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductResource extends Resource
 {
     use HasSeoFields;
+
     protected static ?string $model = Product::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
@@ -62,7 +67,7 @@ class ProductResource extends Resource
                             ->get()
                             ->toFlatTree()
                             ->mapWithKeys(fn ($category) => [
-                                $category->id => str_repeat('— ', $category->depth) . $category->title
+                                $category->id => str_repeat('— ', $category->depth).$category->title,
                             ])
                     )
                     ->searchable()
@@ -80,7 +85,7 @@ class ProductResource extends Resource
                     ->columnSpan(6)
                     ->visibility('public')
                     ->getUploadedFileNameForStorageUsing(function ($file, $record) {
-                        return ($record ?? new Product())->getFilePath(
+                        return ($record ?? new Product)->getFilePath(
                             $file->getClientOriginalName(),
                             'img',
                         );
@@ -102,7 +107,7 @@ class ProductResource extends Resource
                     ->imagePreviewHeight('150')
                     ->visibility('public')
                     ->getUploadedFileNameForStorageUsing(function ($file, $record) {
-                        return ($record ?? new Product())->getFilePath(
+                        return ($record ?? new Product)->getFilePath(
                             $file->getClientOriginalName(),
                             'gallery',
                         );
@@ -167,7 +172,7 @@ class ProductResource extends Resource
                             ->get()
                             ->toFlatTree()
                             ->mapWithKeys(fn ($category) => [
-                                $category->id => str_repeat('— ', $category->depth) . $category->title
+                                $category->id => str_repeat('— ', $category->depth).$category->title,
                             ])
                     )
                     ->searchable()
@@ -177,6 +182,12 @@ class ProductResource extends Resource
                     ->relationship('brand', 'title')
                     ->searchable()
                     ->preload(),
+
+                // Products that cannot be sold as they are: linked to from the
+                // dashboard Catalog widget.
+                Filter::make('incomplete')
+                    ->label(__('admin.dashboard.stats.incomplete_products'))
+                    ->query(fn (Builder $query): Builder => GetCatalogStatsQuery::incomplete($query)),
             ])
             ->recordActions([
                 ViewAction::make()
@@ -188,9 +199,9 @@ class ProductResource extends Resource
                     ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),
-            ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+            ], position: RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
-            \Filament\Actions\CreateAction::make(),
+                CreateAction::make(),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Dashboard;
 use App\Modules\Core\Support\ModuleGate;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -10,13 +11,10 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Table;
-use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -199,11 +197,21 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
-            ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
-            ])
+            // No ->discoverWidgets(): order and module gating below have to
+            // stay explicit, same as ->resources() above.
+            ->widgets(array_filter([
+                ModuleGate::isEnabled('shop_orders') ? \App\Filament\Widgets\Shop\SalesStatsWidget::class : null,
+                ModuleGate::isEnabled('shop_orders') ? \App\Filament\Widgets\Shop\SalesChartWidget::class : null,
+                ModuleGate::isEnabled('shop_orders') ? \App\Filament\Widgets\Shop\LatestOrdersWidget::class : null,
+                \App\Filament\Widgets\NeedsAttentionWidget::class,
+                ModuleGate::isEnabled('shop') ? \App\Filament\Widgets\Shop\CatalogStatsWidget::class : null,
+                ModuleGate::isEnabled('shop_orders') ? \App\Filament\Widgets\Shop\TopProductsWidget::class : null,
+                ModuleGate::isEnabled('shop_cart') ? \App\Filament\Widgets\Shop\PromocodeStatsWidget::class : null,
+                ModuleGate::isEnabled('shop') ? \App\Filament\Widgets\Shop\ReviewStatsWidget::class : null,
+                \App\Filament\Widgets\Users\UserStatsWidget::class,
+                \App\Filament\Widgets\System\SystemStatsWidget::class,
+                \App\Filament\Widgets\System\RecentActivityWidget::class,
+            ]))
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

@@ -83,6 +83,14 @@ class SubscriberResource extends Resource
                         false: fn (Builder $query) => $query->whereNull('integrated_at'),
                         blank: fn (Builder $query) => $query,
                     ),
+                // Integration failures: linked to from the dashboard "Needs attention" widget.
+                TernaryFilter::make('error')
+                    ->label(__('admin.fields.error'))
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereNotNull('error'),
+                        false: fn (Builder $query) => $query->whereNull('error'),
+                        blank: fn (Builder $query) => $query,
+                    ),
             ])
             ->recordActions([
                 BaseEditAction::make()->iconButton(),
