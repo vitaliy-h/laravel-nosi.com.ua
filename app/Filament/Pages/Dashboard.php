@@ -25,12 +25,6 @@ class Dashboard extends BaseDashboard
 {
     use HasFiltersForm;
 
-    /**
-     * NeedsAttentionWidget renders above the period filter (it's a "right
-     * now" snapshot, not a period-filtered stat — see 2.4 in dashboard.md),
-     * so the stock filters-then-widgets order from the base Dashboard page
-     * doesn't fit here.
-     */
     public function content(Schema $schema): Schema
     {
         return $schema->components([
