@@ -2,7 +2,8 @@
 name: plan-task
 description: >
   Research a task against the codebase, brainstorm the approach, ask the developer what is unclear,
-  then write tasks/{issue|slug}/research.md + plan.md (in Russian) with a step-by-step plan.
+  then write tasks/{issue|slug}/research.md + plan.md (in Russian) with a step-by-step plan;
+  after the work is done, write the client-facing report.md in the task's own language.
   Use when the user says "plan task", "research task", "brainstorm task", "task plan", "new task #33",
   "нова задача", "зроби план по задачі", "розбери задачу", "новая задача", "сделай план по задаче",
   "разбери задачу", or invokes /plan-task.
@@ -52,7 +53,8 @@ Do not ask what the code or docs already answer.
 
 ## Step 4 — Files
 
-Create `tasks/{issue|slug}/` with two files, **written in Russian**, short and to the point.
+Create `tasks/{issue|slug}/` with `research.md` and `plan.md`, **written in Russian**, short and to the point.
+A third file, `report.md`, is written later — after the work is done (see Step 6).
 
 ### `research.md`
 
@@ -91,8 +93,9 @@ Create `tasks/{issue|slug}/` with two files, **written in Russian**, short and t
 
 - [ ] 1. {Шаг} — файлы: `...`
 - [ ] 2. ...
-- [ ] N-2. Тесты на новый/изменённый функционал
-- [ ] N-1. Проверить docs: нужно ли добавить/обновить (только по делу)
+- [ ] N-3. Тесты на новый/изменённый функционал
+- [ ] N-2. Проверить docs: нужно ли добавить/обновить (только по делу)
+- [ ] N-1. Написать ответ по задаче в `tasks/{issue|slug}/report.md` (см. Step 6)
 - [ ] N. (на выбор программиста) Прогнать тесты и сделать коммит
 
 ## Изменения плана
@@ -101,7 +104,12 @@ Create `tasks/{issue|slug}/` with two files, **written in Russian**, short and t
 
 ## Step 5 — Plan rules
 
-- **Atomic steps**: the plan must be executable one step at a time or all at once. Each step names concrete files.
+- **Steps are self-contained blocks, not individual actions.** One step = one meaningful chunk of work that can be done, reviewed and left in a working state on its own (a layer, a feature slice, a subsystem). Inside a step, list the concrete files and what changes in them — as sub-bullets, not as separate steps.
+  - Bad: "rename the model", "rename the factory", "update the imports in Product" — three steps for one idea.
+  - Good: "Model layer: table + model + factory" with those files listed inside.
+  - A typical plan is **5-12 steps**. More than ~15 means actions are being written as steps — merge them. One step per file is a smell.
+  - Do not split a step just because it touches many files; split when the *purpose* changes.
+- **Executable one step at a time or all at once.** Each step names concrete files.
 - **Track progress**: a finished step becomes `[x]`. If the approach changes mid-work, append to "Изменения плана" instead of silently rewriting history.
 - **Project architecture**: Actions hold business logic (shared by Web and API), controllers stay thin, DTOs (`spatie/laravel-data`) for input, Resources for output, tests are PHPUnit 12 (not Pest). Unsure where something belongs → ask.
 - **Design patterns** only where the task justifies them, never for their own sake. State the reason in "Подход".
@@ -124,7 +132,38 @@ Create `tasks/{issue|slug}/` with two files, **written in Russian**, short and t
 - Деструктивные команды и сидеры на реальных данных — только после подтверждения.
 ```
 
-## Step 6 — Commit (last plan step)
+## Step 6 — Task reply (`report.md`)
+
+Written **after the plan is executed**, not during planning. Goes to `tasks/{issue|slug}/report.md`.
+
+**Language: the language of the original task description** (not necessarily Russian). Task written in English → reply in English; in Ukrainian → Ukrainian.
+
+This text is for the client, not for a developer. Keep it plain:
+
+- what was done, in the client's terms — features and behaviour, not class names, file paths or diffs
+- what changed for the user visibly (new page, new button, URL change, admin section)
+- how to check it, only if there is something to click: short numbered steps
+- anything the client must know or decide (broken old links, needed re-import, actions on production)
+
+Do not: list files, paste code, describe refactoring that changes nothing for the user, or explain internal architecture.
+
+Length: 5-15 lines. If the task was purely internal (rename, refactor, tests) — say plainly that behaviour has not changed and name the one or two things worth a glance.
+
+```markdown
+# {Номер} — {Название}
+
+{1-3 предложения: что сделано}
+
+## Что изменилось
+- ...
+
+## Как проверить
+1. ...
+```
+
+(the headings follow the task's language too)
+
+## Step 7 — Commit (last plan step)
 
 Message format:
 
@@ -133,6 +172,6 @@ Message format:
 
 English, lowercase, short. Commit only when the developer asks.
 
-## Step 7 — Reply
+## Step 8 — Reply to the developer
 
 Report: folder path, the approach in 2-3 lines, the list of steps, any open questions. Do not restate the files in full.
