@@ -2,6 +2,7 @@
 
 namespace App\Modules\Shop\Queries\Product;
 
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Dtos\Filters\InFilterDto;
 use App\Modules\Shop\Dtos\Filters\RangeFilterDto;
 use App\Modules\Shop\Dtos\Filters\SearchFilterDto;
@@ -57,9 +58,16 @@ readonly class PrepareShopFilterQuery
     /**
      * Prepare brand filter options.
      * Counts products for each brand while excluding the brand filter itself.
+     *
+     * Empty with shop_brands off, which drops the whole widget from the
+     * sidebar — brands are not a thing on the storefront either then.
      */
     private function prepareBrandFilter(?Category $category, ShopFilterDto $filter): Collection
     {
+        if (!ModuleGate::isEnabled('shop_brands')) {
+            return collect();
+        }
+
         $query = $this->buildProductsQuery->handle($category, $filter, 'brand');
 
         $brandCounts = $query

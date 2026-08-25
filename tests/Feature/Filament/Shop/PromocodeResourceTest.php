@@ -24,6 +24,8 @@ class PromocodeResourceTest extends TestCase
     {
         parent::setUp();
 
+        $this->skipUnlessModules('shop_promocodes');
+
         $this->admin = $this->actingAsAdmin();
         $this->actingAs($this->admin);
     }

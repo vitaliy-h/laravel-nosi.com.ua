@@ -24,9 +24,7 @@ class ShopFactoryTest extends TestCase
 
     public function test_order_factory_creates_order_and_observer_fills_order_number(): void
     {
-        if (!ModuleGate::isEnabled('shop_orders')) {
-            $this->markTestSkipped('Shop orders module is disabled');
-        }
+        $this->skipUnlessModules('shop_cart');
 
         $order = Order::factory()->create();
 

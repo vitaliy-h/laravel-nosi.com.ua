@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\Group;
 
 use App\Filament\Resources\Geo\GeoCities\Pages\ManageGeoCities;
 use App\Modules\Core\Models\User;
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Geo\Models\GeoCity;
 use App\Modules\Geo\Models\GeoCountry;
 use Filament\Actions\CreateAction;
@@ -27,9 +28,7 @@ class GeoCityResourceTest extends TestCase
     {
         parent::setUp();
 
-        if (!config('modules.geo')) {
-            $this->markTestSkipped('Geo module is disabled');
-        }
+        $this->skipUnlessModules('geo');
 
         $this->admin = $this->actingAsAdmin();
         $this->actingAs($this->admin);

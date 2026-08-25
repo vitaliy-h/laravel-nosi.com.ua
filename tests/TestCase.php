@@ -25,6 +25,14 @@ abstract class TestCase extends BaseTestCase
         $this->skipIfModuleDisabled();
     }
 
+    /**
+     * A module's own tests cannot pass while the module is off — its routes,
+     * migrations and commands never load — so they get skipped instead.
+     *
+     * Segments that name no module at all (Errors, Smoke, Filament, ...) need
+     * no special case: nothing switches them off, so they always read as
+     * enabled and their tests always run.
+     */
     private function skipIfModuleDisabled(): void
     {
         $segments = explode('\\', static::class);
@@ -36,14 +44,21 @@ abstract class TestCase extends BaseTestCase
             return;
         }
 
-        $module = Str::snake($segment);
+        $this->skipUnlessModules(Str::snake($segment));
+    }
 
-        if (!ModuleGate::isToggleable($module)) {
-            return;
-        }
-
-        if (!ModuleGate::isEnabled($module)) {
-            $this->markTestSkipped("Module [{$module}] is disabled.");
+    /**
+     * Skip unless every named module is on. A test that touches a module's
+     * tables or routes cannot pass while that module is off, and a test class
+     * outside the module's own namespace has no other way to say so — call
+     * this from setUp() for the whole class, or from a single test method.
+     */
+    protected function skipUnlessModules(string ...$modules): void
+    {
+        foreach ($modules as $module) {
+            if (!ModuleGate::isEnabled($module)) {
+                $this->markTestSkipped("Module [{$module}] is disabled.");
+            }
         }
     }
 }

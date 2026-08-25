@@ -90,8 +90,12 @@
                             </div>
                         </div>
 
+                        {{-- The apply/clear buttons live inside this widget, so only the
+                             brand heading and list go away when there are no brands. --}}
                         <div class="brand-filter-widget widget-item">
-                            <h3 class="widget-title">{{ t('shop.filter_by_brand') }}</h3>
+                            @if($filter->brand->items->isNotEmpty())
+                                <h3 class="widget-title">{{ t('shop.filter_by_brand') }}</h3>
+                            @endif
 
                             <div class="brand-filter-content">
                                 {{--
@@ -100,6 +104,7 @@
                                     <i class="bi bi-search"></i>
                                 </div>
                                 --}}
+                                @if($filter->brand->items->isNotEmpty())
                                 <div class="brand-list">
                                     @foreach($filter->brand->items as $brand)
                                         <div class="brand-item">
@@ -121,6 +126,7 @@
                                         </div>
                                     @endforeach
                                 </div>
+                                @endif
                                 {{--
                                 --}}
                                 <div class="brand-actions">

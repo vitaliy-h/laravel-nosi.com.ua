@@ -27,9 +27,9 @@ class SalesStatsWidget extends StatsOverviewWidget
 
     public static function canView(): bool
     {
-        // shop_orders depends on shop_cart in config/modules.php, so this
-        // already covers the cart stats appended below.
-        return ModuleGate::isEnabled('shop_orders');
+        // Orders ship as part of the cart module, so one key covers both the
+        // order stats and the cart stats appended below.
+        return ModuleGate::isEnabled('shop_cart');
     }
 
     protected function getHeading(): ?string

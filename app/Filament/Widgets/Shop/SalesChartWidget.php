@@ -20,7 +20,7 @@ class SalesChartWidget extends ChartWidget
 
     public static function canView(): bool
     {
-        return ModuleGate::isEnabled('shop_orders');
+        return ModuleGate::isEnabled('shop_cart');
     }
 
     public function getHeading(): string|Htmlable|null

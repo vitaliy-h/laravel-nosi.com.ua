@@ -26,16 +26,12 @@ class SitemapTest extends TestCase
 
     private function skipIfNewsDisabled(): void
     {
-        if (!ModuleGate::isEnabled('news')) {
-            $this->markTestSkipped('news module is disabled.');
-        }
+        $this->skipUnlessModules('news');
     }
 
     private function skipIfShopDisabled(): void
     {
-        if (!ModuleGate::isEnabled('shop')) {
-            $this->markTestSkipped('shop module is disabled.');
-        }
+        $this->skipUnlessModules('shop');
     }
 
     // -------------------------------------------------------------------------

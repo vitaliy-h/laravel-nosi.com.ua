@@ -60,6 +60,10 @@ class DashboardModuleGateTest extends TestCase
         return $panel->getWidgets();
     }
 
+    /**
+     * Every other shop widget rides on a dependency of `shop` in
+     * config/modules.php, so one key takes the whole dashboard block down.
+     */
     public function test_shop_disabled_drops_every_shop_dependent_widget(): void
     {
         $widgets = $this->widgetsWith(['shop' => false]);
@@ -112,9 +116,9 @@ class DashboardModuleGateTest extends TestCase
         $this->assertContains(CatalogStatsWidget::class, $widgets);
     }
 
-    public function test_shop_reviews_disabled_drops_only_the_review_widget(): void
+    public function test_shop_product_reviews_disabled_drops_only_the_review_widget(): void
     {
-        $widgets = $this->widgetsWith(['shop_reviews' => false]);
+        $widgets = $this->widgetsWith(['shop_product_reviews' => false]);
 
         $this->assertNotContains(ProductReviewStatsWidget::class, $widgets);
 
@@ -127,6 +131,10 @@ class DashboardModuleGateTest extends TestCase
 
     public function test_shop_brands_disabled_drops_the_brands_card_but_keeps_the_catalog_widget(): void
     {
+        // This one reaches the catalog tables, and withModules() cannot bring
+        // them back: migrations were loaded at boot from the shipped config.
+        $this->skipUnlessModules('shop');
+
         // The widget itself only depends on `shop`, so it stays registered;
         // it is the brands card inside it that disappears (null, not 0).
         $this->assertContains(CatalogStatsWidget::class, $this->widgetsWith(['shop_brands' => false]));
@@ -146,8 +154,21 @@ class DashboardModuleGateTest extends TestCase
         $this->assertNull($stats->smsSent);
         $this->assertNull($stats->smsFailed);
 
-        // Mail is part of the always-on Notification module.
+        // Mail has its own toggle, which is still on.
         $this->assertNotNull($stats->mailSent);
+    }
+
+    public function test_letter_templates_disabled_drops_the_mail_card_from_the_system_widget(): void
+    {
+        $this->withModules(['letter_templates' => false]);
+
+        $stats = app(GetSystemStatsQuery::class)->handle();
+
+        $this->assertNull($stats->mailSent);
+        $this->assertNull($stats->mailFailed);
+
+        // Sms has its own toggle, which is still on.
+        $this->assertNotNull($stats->smsSent);
     }
 
     public function test_every_module_enabled_registers_every_widget(): void

@@ -37,6 +37,9 @@ class GetNeedsAttentionQueryTest extends TestCase
 
     public function test_counts_everything_waiting_for_an_admin(): void
     {
+        // Every counter here belongs to a module that can be switched off.
+        $this->skipUnlessModules('shop_product_reviews', 'shop_cart', 'feedback', 'subscribers', 'letter_templates');
+
         ProductReview::factory()->invisible()->count(2)->create();
         ProductReview::factory()->create();
 
@@ -80,6 +83,9 @@ class GetNeedsAttentionQueryTest extends TestCase
 
     public function test_empty_database_returns_zeros_not_nulls(): void
     {
+        // Every counter here belongs to a module that can be switched off.
+        $this->skipUnlessModules('shop_product_reviews', 'shop_cart', 'feedback', 'subscribers', 'letter_templates');
+
         $counters = $this->query->handle();
 
         foreach ($counters as $key => $value) {
@@ -88,12 +94,12 @@ class GetNeedsAttentionQueryTest extends TestCase
     }
 
     /**
-     * `shop_reviews` gates the reviews counter on its own, without taking the
+     * `shop_product_reviews` gates the reviews counter on its own, without taking the
      * whole shop down with it.
      */
-    public function test_disabling_only_shop_reviews_nulls_the_reviews_counter(): void
+    public function test_disabling_only_shop_product_reviews_nulls_the_reviews_counter(): void
     {
-        config(['modules.shop_reviews' => false]);
+        config(['modules.shop_product_reviews' => false]);
 
         $this->assertNull($this->query->handle()['pendingReviews']);
     }
@@ -101,19 +107,20 @@ class GetNeedsAttentionQueryTest extends TestCase
     public function test_disabled_module_yields_null_instead_of_zero(): void
     {
         config([
-            'modules.shop' => false,
+            'modules.shop_product_reviews' => false,
+            'modules.shop_cart' => false,
             'modules.feedback' => false,
             'modules.subscribers' => false,
+            'modules.letter_templates' => false,
         ]);
 
         $counters = $this->query->handle();
 
         $this->assertNull($counters['pendingReviews']);
         $this->assertNull($counters['unprocessedFeedback']);
-        // shop_orders depends on shop_cart, which depends on shop.
+        // Orders ship as part of the cart module.
         $this->assertNull($counters['staleUnpaidOrders']);
         $this->assertNull($counters['failedSubscribers']);
-        // Letters are part of an always-on module.
-        $this->assertSame(0, $counters['failedLetters']);
+        $this->assertNull($counters['failedLetters']);
     }
 }

@@ -4,6 +4,7 @@ namespace Tests\Feature\Filament\Subscribers;
 
 use App\Filament\Resources\Subscribers\Pages\ManageSubscribers;
 use App\Modules\Core\Models\User;
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Subscribers\Models\Subscriber;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -23,9 +24,7 @@ class SubscriberResourceTest extends TestCase
     {
         parent::setUp();
 
-        if (! config('modules.subscribers')) {
-            $this->markTestSkipped('Subscribers module is disabled');
-        }
+        $this->skipUnlessModules('subscribers');
 
         $this->admin = $this->actingAsAdmin();
         $this->actingAs($this->admin);

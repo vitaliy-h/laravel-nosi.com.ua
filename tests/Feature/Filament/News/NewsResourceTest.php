@@ -4,6 +4,7 @@ namespace Tests\Feature\Filament\News;
 
 use App\Filament\Resources\News\Pages\ManageNews;
 use App\Modules\Core\Models\User;
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\News\Models\News;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -23,9 +24,7 @@ class NewsResourceTest extends TestCase
     {
         parent::setUp();
 
-        if (!config('modules.news')) {
-            $this->markTestSkipped('News module is disabled');
-        }
+        $this->skipUnlessModules('news');
 
         $this->admin = $this->actingAsAdmin();
         $this->actingAs($this->admin);

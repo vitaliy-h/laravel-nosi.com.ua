@@ -65,10 +65,10 @@ class AdminPanelProvider extends PanelProvider
                             ->icon('heroicon-o-chat-bubble-left-right')
                             ->url(\App\Filament\Resources\Feedback\FeedbackResource::getUrl())
                             ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.feedback.*')) : null,
-                        NavigationItem::make(__('admin.tables.letter_templates'))
+                        ModuleGate::isEnabled('letter_templates') ? NavigationItem::make(__('admin.tables.letter_templates'))
                             ->icon('heroicon-o-envelope')
                             ->url(\App\Filament\Resources\LetterTemplates\LetterTemplateResource::getUrl())
-                            ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.letter-templates.*')),
+                            ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.letter-templates.*')) : null,
                         ModuleGate::isEnabled('sms') ? NavigationItem::make(__('admin.tables.sms_templates'))
                             ->icon('heroicon-o-chat-bubble-left-right')
                             ->url(\App\Filament\Resources\SmsTemplates\SmsTemplateResource::getUrl())
@@ -94,7 +94,7 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-tag')
                                     ->url(\App\Filament\Resources\Shop\Brands\BrandResource::getUrl())
                                     ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.shop.brands*')) : null,
-                                ModuleGate::isEnabled('shop_reviews') ? NavigationItem::make(__('admin.tables.shop_product_reviews'))
+                                ModuleGate::isEnabled('shop_product_reviews') ? NavigationItem::make(__('admin.tables.shop_product_reviews'))
                                     ->icon('heroicon-o-star')
                                     ->url(\App\Filament\Resources\Shop\ProductReviews\ProductReviewResource::getUrl())
                                     ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.shop.product-reviews*')) : null,
@@ -154,10 +154,10 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-archive-box')
                                     ->url(\App\Filament\Resources\Logs\LogResource::getUrl())
                                     ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.logs.*')),
-                                NavigationItem::make(__('admin.tables.log_letters'))
+                                ModuleGate::isEnabled('letter_templates') ? NavigationItem::make(__('admin.tables.log_letters'))
                                     ->icon('heroicon-o-inbox')
                                     ->url(\App\Filament\Resources\LogLetters\LogLetterResource::getUrl())
-                                    ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.log-letters.*')),
+                                    ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.log-letters.*')) : null,
                                 ModuleGate::isEnabled('sms') ? NavigationItem::make(__('admin.tables.log_sms'))
                                     ->icon('heroicon-o-chat-bubble-bottom-center-text')
                                     ->url(\App\Filament\Resources\LogSms\LogSmsResource::getUrl())
@@ -172,8 +172,8 @@ class AdminPanelProvider extends PanelProvider
             ->resources(array_filter([
                 \App\Filament\Resources\Pages\PageResource::class,
                 \App\Filament\Resources\Languages\LanguageResource::class,
-                \App\Filament\Resources\LetterTemplates\LetterTemplateResource::class,
-                \App\Filament\Resources\LogLetters\LogLetterResource::class,
+                ModuleGate::isEnabled('letter_templates') ? \App\Filament\Resources\LetterTemplates\LetterTemplateResource::class : null,
+                ModuleGate::isEnabled('letter_templates') ? \App\Filament\Resources\LogLetters\LogLetterResource::class : null,
                 \App\Filament\Resources\Logs\LogResource::class,
                 \App\Filament\Resources\Users\UserResource::class,
                 ModuleGate::isEnabled('sms') ? \App\Filament\Resources\SmsTemplates\SmsTemplateResource::class : null,
@@ -188,7 +188,7 @@ class AdminPanelProvider extends PanelProvider
                 ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Products\ProductResource::class : null,
                 ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Categories\CategoryResource::class : null,
                 ModuleGate::isEnabled('shop_brands') ? \App\Filament\Resources\Shop\Brands\BrandResource::class : null,
-                ModuleGate::isEnabled('shop_reviews') ? \App\Filament\Resources\Shop\ProductReviews\ProductReviewResource::class : null,
+                ModuleGate::isEnabled('shop_product_reviews') ? \App\Filament\Resources\Shop\ProductReviews\ProductReviewResource::class : null,
                 ModuleGate::isEnabled('shop') ? \App\Filament\Resources\Shop\Orders\OrderResource::class : null,
                 ModuleGate::isEnabled('shop_cart') ? \App\Filament\Resources\Shop\Cart\CartResource::class : null,
                 ModuleGate::isEnabled('shop_promocodes') ? \App\Filament\Resources\Shop\Promocodes\PromocodeResource::class : null,
@@ -200,14 +200,14 @@ class AdminPanelProvider extends PanelProvider
             // No ->discoverWidgets(): order and module gating below have to
             // stay explicit, same as ->resources() above.
             ->widgets(array_filter([
-                ModuleGate::isEnabled('shop_orders') ? \App\Filament\Widgets\Shop\SalesStatsWidget::class : null,
-                ModuleGate::isEnabled('shop_orders') ? \App\Filament\Widgets\Shop\SalesChartWidget::class : null,
-                ModuleGate::isEnabled('shop_orders') ? \App\Filament\Widgets\Shop\LatestOrdersWidget::class : null,
+                ModuleGate::isEnabled('shop_cart') ? \App\Filament\Widgets\Shop\SalesStatsWidget::class : null,
+                ModuleGate::isEnabled('shop_cart') ? \App\Filament\Widgets\Shop\SalesChartWidget::class : null,
+                ModuleGate::isEnabled('shop_cart') ? \App\Filament\Widgets\Shop\LatestOrdersWidget::class : null,
                 \App\Filament\Widgets\NeedsAttentionWidget::class,
                 ModuleGate::isEnabled('shop') ? \App\Filament\Widgets\Shop\CatalogStatsWidget::class : null,
-                ModuleGate::isEnabled('shop_orders') ? \App\Filament\Widgets\Shop\TopProductsWidget::class : null,
+                ModuleGate::isEnabled('shop_cart') ? \App\Filament\Widgets\Shop\TopProductsWidget::class : null,
                 ModuleGate::isEnabled('shop_promocodes') ? \App\Filament\Widgets\Shop\PromocodeStatsWidget::class : null,
-                ModuleGate::isEnabled('shop_reviews') ? \App\Filament\Widgets\Shop\ProductReviewStatsWidget::class : null,
+                ModuleGate::isEnabled('shop_product_reviews') ? \App\Filament\Widgets\Shop\ProductReviewStatsWidget::class : null,
                 \App\Filament\Widgets\Users\UserStatsWidget::class,
                 \App\Filament\Widgets\System\SystemStatsWidget::class,
                 \App\Filament\Widgets\System\RecentActivityWidget::class,

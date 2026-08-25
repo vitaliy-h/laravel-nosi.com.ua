@@ -20,6 +20,8 @@ class GetSalesChartQueryTest extends TestCase
     {
         parent::setUp();
 
+        $this->skipUnlessModules('shop_cart');
+
         Carbon::setTestNow('2026-08-23 12:00:00');
         // The query caches per period key: without this a neighbouring test
         // would hand this one its numbers.

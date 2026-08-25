@@ -25,6 +25,16 @@ class FrontendPagesSmokeTest extends TestCase
         '/profile' => 'profile',
     ];
 
+    /**
+     * Route => module key, for pages that keep their own route but render
+     * another module's content. The homepage is built around product and
+     * category teasers, so with the shop off it errors rather than 404s —
+     * the caveat config/modules.php warns about. Nothing to smoke-test there.
+     */
+    private const array CONTENT_MODULES = [
+        '/' => 'shop',
+    ];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -35,6 +45,10 @@ class FrontendPagesSmokeTest extends TestCase
     #[DataProvider('frontendPagesProvider')]
     public function test_frontend_page_returns_expected_status(string $url, int $expectedStatus): void
     {
+        if ($content = self::CONTENT_MODULES[$url] ?? null) {
+            $this->skipUnlessModules($content);
+        }
+
         $module = self::ROUTE_MODULES[$url] ?? null;
 
         if ($module && !ModuleGate::isEnabled($module)) {

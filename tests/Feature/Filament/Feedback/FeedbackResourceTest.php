@@ -4,6 +4,7 @@ namespace Tests\Feature\Filament\Feedback;
 
 use App\Filament\Resources\Feedback\Pages\ManageFeedback;
 use App\Modules\Core\Models\User;
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Feedback\Models\Feedback;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -23,9 +24,7 @@ class FeedbackResourceTest extends TestCase
     {
         parent::setUp();
 
-        if (!config('modules.feedback')) {
-            $this->markTestSkipped('Feedback module is disabled');
-        }
+        $this->skipUnlessModules('feedback');
 
         $this->admin = $this->actingAsAdmin();
         $this->actingAs($this->admin);

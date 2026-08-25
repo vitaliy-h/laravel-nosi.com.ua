@@ -143,13 +143,13 @@ class ProductResource extends Resource
                     ->money()
                     ->sortable(),
                 // Links through to the reviews of this product, filter already
-                // applied — so the column goes away with the shop_reviews
+                // applied — so the column goes away with the shop_product_reviews
                 // module, whose resource has no route left to link to.
                 TextColumn::make('rating')
                     ->sortable()
                     ->alignEnd()
                     ->color('primary')
-                    ->visible(ModuleGate::isEnabled('shop_reviews'))
+                    ->visible(ModuleGate::isEnabled('shop_product_reviews'))
                     ->formatStateUsing(fn (Product $record): string => number_format($record->rating, 2).' ('.$record->reviews_count.')')
                     ->url(fn (Product $record): string => ProductReviewResource::getUrl(parameters: [
                         'filters' => ['product_id' => ['value' => $record->id]],

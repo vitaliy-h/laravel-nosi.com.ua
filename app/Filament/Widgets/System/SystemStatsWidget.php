@@ -31,8 +31,9 @@ class SystemStatsWidget extends StatsOverviewWidget
     {
         $stats = app(GetSystemStatsQuery::class)->handle();
 
-        // Null sms counters mean the sms module is off: LogSmsResource is not
-        // registered then, so the card cannot even build its link.
+        // Null mail/sms counters mean the channel's module is off: its log
+        // resource is not registered then, so the card cannot even build its
+        // link.
         return array_values(array_filter([
             Stat::make(__('admin.dashboard.stats.environment'), $stats->environment)
                 ->description($stats->isDebugRisky() ? __('admin.dashboard.descriptions.debug_enabled') : null)
@@ -43,9 +44,9 @@ class SystemStatsWidget extends StatsOverviewWidget
                 ->description('Laravel '.$stats->laravelVersion.' · Filament '.$stats->filamentVersion)
                 ->icon('heroicon-o-cube-transparent'),
 
-            Stat::make(__('admin.dashboard.stats.mail_24h'), $stats->mailSent)
+            $stats->mailSent === null ? null : Stat::make(__('admin.dashboard.stats.mail_24h'), $stats->mailSent)
                 ->description(__('admin.dashboard.descriptions.failed', ['count' => $stats->mailFailed]))
-                ->descriptionColor($this->alertColor($stats->mailFailed))
+                ->descriptionColor($this->alertColor((int) $stats->mailFailed))
                 ->icon('heroicon-o-envelope')
                 ->url(LogLetterResource::getUrl(parameters: [
                     'tableFilters' => ['status' => ['value' => LogLetterStatusEnum::FAILED->value]],

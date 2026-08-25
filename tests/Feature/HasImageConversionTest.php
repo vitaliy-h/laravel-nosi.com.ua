@@ -16,6 +16,8 @@ class HasImageConversionTest extends TestCase
     {
         parent::setUp();
 
+        $this->skipUnlessModules('shop', 'news');
+
         Storage::fake();
     }
 

@@ -19,36 +19,55 @@ All of this is driven by one class: `App\Modules\Core\Support\ModuleGate`.
 
 ---
 
-## 1. Two kinds of modules
+## 1. Everything is enabled by default
 
-**Toggleable** — has a key in `config/modules.php`, or is listed under
-`modules.dependencies` as depending on one:
+A module is enabled unless `config/modules.php` explicitly says otherwise:
+no key in the config means "on". The shipped config therefore lists only the
+modules that may be switched off, every line commented out:
 
 ```php
 // config/modules.php
 return [
-    'geo' => true,
-    'shop' => true,
-    'news' => true,
-    'auth' => true,
-    'feedback' => true,
-    'sms' => true,
+    // 'auth'                 => false,
+    // 'feedback'             => false,
+    // 'geo'                  => false,
+    // 'news'                 => false,
+    // 'shop'                 => false,
+    // 'shop_cart'            => false,
+    // 'shop_brands'          => false,
+    // 'shop_promocodes'      => false,
+    // 'shop_product_reviews' => false,
+    // 'subscribers'          => false,
+    // 'sms'                  => false,
+    // 'letter_templates'     => false,
 
     'dependencies' => [
-        'shop_cart' => 'shop',      // no cart without the shop
-        'shop_orders' => 'shop',    // no orders without the shop
-        'profile' => 'auth',        // no profile without auth
+        'shop_cart'            => 'shop',      // no cart without the shop
+        'shop_brands'          => 'shop',
+        'shop_product_reviews' => 'shop',
+        'shop_orders'          => 'shop_cart', // no orders without the cart
+        'shop_promocodes'      => 'shop_cart',
+        'profile'              => 'auth',      // no profile without auth
     ],
 ];
 ```
 
-A dependent module (`shop_cart`, `shop_orders`, `profile`) has no key of its
-own — it's enabled only when its parent module is enabled. `shop => false`
-also disables `shop_cart` and `shop_orders` automatically.
+A module listed under `dependencies` goes off together with its parent,
+whatever its own line says: `'shop' => false` also disables `shop_cart` and
+`shop_brands`, and through the cart the orders and promocodes. `shop_orders`
+and `profile` have no line of their own at all — they exist only as
+dependants, so the only way to switch them off is to switch off the cart or
+auth.
 
-**Core** — every other folder under `app/Modules` (`Core`, `Index`, `TextPage`,
-`Sitemap`, `Translation`, `Notification`, `_debug`, ...). No key here, no
-dependency — always enabled, cannot be turned off.
+Not every key matches an `app/Modules` folder: `shop_brands`,
+`shop_product_reviews`, `shop_promocodes`, `sms` and `letter_templates` are
+feature toggles for code living inside Shop / ShopCart / Notification —
+switching one off hides its admin surfaces (navigation item, resource,
+dashboard card), the tables stay.
+
+Core CMS modules (`Core`, `Index`, `TextPage`, `Sitemap`, `Translation`,
+`Notification`, `_debug`, ...) have no line here and cannot be disabled —
+`ModuleGate::isEnabled()` simply always reports them as enabled.
 
 The key/folder name is the `Str::snake()`'d module folder name and matches
 the `PageModule` enum's string value (`shop_cart`, `geo`, `news`, ...).
@@ -57,7 +76,7 @@ the `PageModule` enum's string value (`shop_cart`, `geo`, `news`, ...).
 
 ## 2. Turning a module off
 
-Flip its key in `config/modules.php`:
+Uncomment its line in `config/modules.php`:
 
 ```php
 'news' => false,
@@ -67,9 +86,10 @@ That's it — `ModuleGate::isEnabled('news')` now returns `false` everywhere,
 and everything listed under Overview reacts to it automatically. No other
 file needs editing to take a module offline.
 
-Check `App\Modules\Core\Support\ModuleGate::isEnabled(string $module): bool`
-and `ModuleGate::isToggleable(string $module): bool` if you need the same
-check in new code (a custom command, a view, a test).
+Use `App\Modules\Core\Support\ModuleGate::isEnabled(string $module): bool`
+if you need the same check in new code (a custom command, a view, a test);
+in a test class, `TestCase::skipUnlessModules()` skips when a module the
+test depends on is off.
 
 ---
 

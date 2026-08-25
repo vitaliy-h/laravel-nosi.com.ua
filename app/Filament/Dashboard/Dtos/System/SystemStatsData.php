@@ -12,10 +12,11 @@ class SystemStatsData extends Data
         public readonly string $phpVersion,
         public readonly string $laravelVersion,
         public readonly string $filamentVersion,
-        public readonly int $mailSent,
-        public readonly int $mailFailed,
-        // null when the sms module is off — the card is dropped instead of
-        // reporting delivery health for a channel that is not in use.
+        // null when the channel's module (letter_templates / sms) is off —
+        // the card is dropped instead of reporting delivery health for a
+        // channel that is not in use.
+        public readonly ?int $mailSent,
+        public readonly ?int $mailFailed,
         public readonly ?int $smsSent,
         public readonly ?int $smsFailed,
     ) {}

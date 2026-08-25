@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\Group;
 
 use App\Filament\Resources\Geo\GeoCountries\Pages\ManageGeoCountries;
 use App\Modules\Core\Models\User;
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Geo\Models\GeoCountry;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -26,9 +27,7 @@ class GeoCountryResourceTest extends TestCase
     {
         parent::setUp();
 
-        if (!config('modules.geo')) {
-            $this->markTestSkipped('Geo module is disabled');
-        }
+        $this->skipUnlessModules('geo');
 
         $this->admin = $this->actingAsAdmin();
         $this->actingAs($this->admin);

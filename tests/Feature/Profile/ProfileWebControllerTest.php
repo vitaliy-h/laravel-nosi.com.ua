@@ -39,9 +39,7 @@ class ProfileWebControllerTest extends TestCase
 
     public function test_orders_returns_200_for_authenticated_user(): void
     {
-        if (!ModuleGate::isEnabled('shop_orders')) {
-            $this->markTestSkipped('Shop orders module is disabled');
-        }
+        $this->skipUnlessModules('shop_cart');
 
         $user = User::factory()->create();
 

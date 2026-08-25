@@ -21,7 +21,7 @@ class ProductReviewStatsWidget extends StatsOverviewWidget
 
     public static function canView(): bool
     {
-        return ModuleGate::isEnabled('shop_reviews');
+        return ModuleGate::isEnabled('shop_product_reviews');
     }
 
     protected function getHeading(): ?string

@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Filament\Admin;
 
+use App\Filament\Resources\LetterTemplates\LetterTemplateResource;
+use App\Filament\Resources\LogLetters\LogLetterResource;
 use App\Filament\Resources\LogSms\LogSmsResource;
 use App\Filament\Resources\Shop\Brands\BrandResource;
 use App\Filament\Resources\Shop\ProductReviews\ProductReviewResource;
@@ -9,7 +11,6 @@ use App\Filament\Resources\Shop\Promocodes\PromocodeResource;
 use App\Filament\Resources\SmsTemplates\SmsTemplateResource;
 use App\Filament\Widgets\Shop\ProductReviewStatsWidget;
 use App\Modules\Core\Models\User;
-use App\Modules\Core\Support\ModuleGate;
 use App\Providers\Filament\AdminPanelProvider;
 use Filament\Panel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -43,7 +44,7 @@ class AdminNavigationModuleGateTest extends TestCase
      * registered at boot from the shipped config, and every navigation item
      * resolves its URL through Resource::getUrl() — turning a module on that
      * the booted app never registered would just throw RouteNotFound. Tests
-     * that need a module to be on say so with requireModules() instead.
+     * that need a module to be on say so with skipUnlessModules() instead.
      *
      * @param  array<string, false>  $modules
      */
@@ -54,19 +55,6 @@ class AdminNavigationModuleGateTest extends TestCase
         }
 
         return (new AdminPanelProvider($this->app))->panel(Panel::make());
-    }
-
-    /**
-     * Skip unless the given modules are on in the shipped config/modules.php —
-     * their navigation items only exist to be asserted on when they are.
-     */
-    private function requireModules(string ...$modules): void
-    {
-        foreach ($modules as $module) {
-            if (! ModuleGate::isEnabled($module)) {
-                $this->markTestSkipped("Module [{$module}] is disabled in config/modules.php.");
-            }
-        }
     }
 
     /**
@@ -89,7 +77,7 @@ class AdminNavigationModuleGateTest extends TestCase
 
     public function test_shop_brands_disabled_hides_brands_from_navigation_and_resources(): void
     {
-        $this->requireModules('shop', 'shop_brands');
+        $this->skipUnlessModules('shop', 'shop_brands');
 
         $panel = $this->panelWith(['shop_brands' => false]);
 
@@ -101,11 +89,11 @@ class AdminNavigationModuleGateTest extends TestCase
         $this->assertContains(__('admin.tables.shop_categories'), $this->navigationLabels($panel));
     }
 
-    public function test_shop_reviews_disabled_hides_reviews_from_navigation_and_resources(): void
+    public function test_shop_product_reviews_disabled_hides_reviews_from_navigation_and_resources(): void
     {
-        $this->requireModules('shop', 'shop_reviews');
+        $this->skipUnlessModules('shop', 'shop_product_reviews');
 
-        $panel = $this->panelWith(['shop_reviews' => false]);
+        $panel = $this->panelWith(['shop_product_reviews' => false]);
 
         $this->assertNotContains(__('admin.tables.shop_product_reviews'), $this->navigationLabels($panel));
         $this->assertNotContains(ProductReviewResource::class, $panel->getResources());
@@ -117,7 +105,7 @@ class AdminNavigationModuleGateTest extends TestCase
 
     public function test_shop_promocodes_disabled_hides_promocodes_from_navigation_and_resources(): void
     {
-        $this->requireModules('shop_cart', 'shop_promocodes');
+        $this->skipUnlessModules('shop_cart', 'shop_promocodes');
 
         $panel = $this->panelWith(['shop_promocodes' => false]);
 
@@ -131,7 +119,7 @@ class AdminNavigationModuleGateTest extends TestCase
 
     public function test_sms_disabled_hides_templates_and_log_from_navigation_and_resources(): void
     {
-        $this->requireModules('sms');
+        $this->skipUnlessModules('sms', 'letter_templates');
 
         $panel = $this->panelWith(['sms' => false]);
 
@@ -142,14 +130,32 @@ class AdminNavigationModuleGateTest extends TestCase
         $this->assertNotContains(SmsTemplateResource::class, $panel->getResources());
         $this->assertNotContains(LogSmsResource::class, $panel->getResources());
 
-        // Mail is part of the always-on Notification module.
+        // Mail has its own toggle, which is still on.
         $this->assertContains(__('admin.tables.letter_templates'), $labels);
         $this->assertContains(__('admin.tables.log_letters'), $labels);
     }
 
-    public function test_shop_disabled_also_hides_its_dependent_brands_and_promocodes(): void
+    public function test_letter_templates_disabled_hides_templates_and_log_from_navigation_and_resources(): void
     {
-        $this->requireModules('shop');
+        $this->skipUnlessModules('letter_templates', 'sms');
+
+        $panel = $this->panelWith(['letter_templates' => false]);
+
+        $labels = $this->navigationLabels($panel);
+
+        $this->assertNotContains(__('admin.tables.letter_templates'), $labels);
+        $this->assertNotContains(__('admin.tables.log_letters'), $labels);
+        $this->assertNotContains(LetterTemplateResource::class, $panel->getResources());
+        $this->assertNotContains(LogLetterResource::class, $panel->getResources());
+
+        // Sms has its own toggle, which is still on.
+        $this->assertContains(__('admin.tables.sms_templates'), $labels);
+        $this->assertContains(__('admin.tables.log_sms'), $labels);
+    }
+
+    public function test_shop_disabled_also_hides_its_dependent_brands_reviews_and_promocodes(): void
+    {
+        $this->skipUnlessModules('shop');
 
         $panel = $this->panelWith(['shop' => false]);
 
@@ -165,7 +171,7 @@ class AdminNavigationModuleGateTest extends TestCase
 
     public function test_every_module_enabled_shows_every_gated_item(): void
     {
-        $this->requireModules('shop', 'shop_cart', 'shop_brands', 'shop_reviews', 'shop_promocodes', 'sms');
+        $this->skipUnlessModules('shop', 'shop_cart', 'shop_brands', 'shop_product_reviews', 'shop_promocodes', 'sms', 'letter_templates');
 
         $panel = $this->panelWith([]);
 
@@ -177,6 +183,8 @@ class AdminNavigationModuleGateTest extends TestCase
             __('admin.tables.shop_promocodes'),
             __('admin.tables.sms_templates'),
             __('admin.tables.log_sms'),
+            __('admin.tables.letter_templates'),
+            __('admin.tables.log_letters'),
         ] as $label) {
             $this->assertContains($label, $labels);
         }
@@ -187,6 +195,8 @@ class AdminNavigationModuleGateTest extends TestCase
             PromocodeResource::class,
             SmsTemplateResource::class,
             LogSmsResource::class,
+            LetterTemplateResource::class,
+            LogLetterResource::class,
         ] as $resource) {
             $this->assertContains($resource, $panel->getResources());
         }

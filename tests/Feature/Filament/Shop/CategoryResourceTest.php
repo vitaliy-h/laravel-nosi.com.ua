@@ -4,6 +4,7 @@ namespace Tests\Feature\Filament\Shop;
 
 use App\Filament\Resources\Shop\Categories\Pages\ManageCategories;
 use App\Modules\Core\Models\User;
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
 use Filament\Actions\CreateAction;
@@ -24,9 +25,7 @@ class CategoryResourceTest extends TestCase
     {
         parent::setUp();
 
-        if (!config('modules.shop')) {
-            $this->markTestSkipped('Shop module is disabled');
-        }
+        $this->skipUnlessModules('shop');
 
         $this->admin = $this->actingAsAdmin();
         $this->actingAs($this->admin);

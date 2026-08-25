@@ -15,6 +15,8 @@ class IndexControllerTest extends TestCase
     {
         parent::setUp();
 
+        $this->skipUnlessModules('shop');
+
         $this->seedPagesForRouting();
     }
 

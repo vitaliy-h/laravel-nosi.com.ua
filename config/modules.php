@@ -2,66 +2,55 @@
 
 /*
 |--------------------------------------------------------------------------
-| Toggleable modules
+| Modules
 |--------------------------------------------------------------------------
 |
-| Only modules listed below can be disabled. Everything else under
-| app/Modules (Core, Index, TextPage, Sitemap, Translation, Notification,
-| _debug, ...) is a core module with no key here and is always enabled —
-| see App\Modules\Core\Support\ModuleGate.
+| Everything is enabled by default. To switch a module off, uncomment its
+| line. Only modules that may be switched off are listed here — core CMS
+| modules have no line and cannot be disabled.
 |
-| A key does NOT have to match an app/Modules folder: `shop_brands`,
-| `shop_reviews`, `shop_promocodes` and `sms` are feature toggles for code
-| that lives inside Shop / ShopCart / Notification. Their tables and models
-| always exist, but every admin surface they own (navigation item, resource,
-| dashboard card) is gated on the key, so switching it off removes the
-| feature from the panel.
+| Disabling a module stops its routes, commands, migrations, seeders and
+| admin resources from loading. `shop_brands`, `shop_product_reviews`,
+| `shop_promocodes`, `sms` and `letter_templates` have no folder of their
+| own: they only hide the admin surfaces of code living inside Shop /
+| ShopCart / Notification, the tables stay.
 |
-| Modules that have their own key here still get disabled if listed as a
-| dependent of a disabled module below (e.g. shop => false also disables
-| shop_cart even though shop_cart has no key of its own).
-|
-| `shop` CAN be toggled, but disabling it only stops its routes/commands/
-| migrations/seeders/admin resources from loading — it does NOT remove
-| shop data from views that render it outside the Shop module itself
-| (e.g. teasers/featured products on the homepage). Disabling shop with
-| existing product blocks left in page content will error when those
-| blocks try to query the (now unloaded) shop tables. Remove/replace that
-| content manually before disabling shop.
+| Careful with `shop`: product blocks left in page content will error once
+| the shop tables stop loading. Clean that content up first.
 |
 */
 
 return [
-    'auth'            => true,
-    'feedback'        => true,
-    'geo'             => true,
-    'news'            => true,
-    'shop'            => true,
-    'shop_cart'       => true,
-    'shop_brands'     => true,
-    'shop_promocodes' => true,
-    'shop_reviews'    => true,
-    'subscribers'     => true,
-    'sms'             => true,
+    //'auth'            => false,
+    //'feedback'        => false,
+    //'geo'             => false,
+    //'news'            => false,
+    //'shop'            => false,
+    //'shop_cart'       => false,
+    //'shop_brands'     => false,
+    //'shop_promocodes' => false,
+    //'shop_product_reviews'    => false,
+    //'subscribers'     => false,
+    //'sms'             => false,
+    //'letter_templates'        => false,
 
     /*
-    |----------------------------------------------------------------------
-    | Module dependencies
-    |----------------------------------------------------------------------
+    |--------------------------------------------------------------------------
+    | Dependencies
+    |--------------------------------------------------------------------------
     |
-    | Modules that only make sense together with a parent module: no cart
-    | or orders without the shop, no profile (and its social_profiles
-    | table) without auth. A dependent module is enabled only when its own
-    | key (if any) AND its parent are both enabled — see
-    | App\Modules\Core\Support\ModuleGate::isEnabled().
+    | A module here goes off together with its parent, whatever its own line
+    | says: `shop => false` also takes down the cart, brands, reviews, and
+    | through the cart the orders and promocodes. ShopOrders and Profile have
+    | no line of their own above — they exist only as dependants.
     |
     */
     'dependencies' => [
-        'shop_cart'       => 'shop',
-        'shop_orders'     => 'shop_cart',
-        'shop_brands'     => 'shop',
-        'shop_reviews'    => 'shop',
-        'shop_promocodes' => 'shop_cart',
-        'profile'         => 'auth',
+        'shop_cart'            => 'shop',
+        'shop_brands'          => 'shop',
+        'shop_product_reviews' => 'shop',
+        'shop_orders'          => 'shop_cart',
+        'shop_promocodes'      => 'shop_cart',
+        'profile'              => 'auth',
     ],
 ];

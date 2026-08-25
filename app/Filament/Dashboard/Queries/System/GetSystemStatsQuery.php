@@ -22,14 +22,16 @@ class GetSystemStatsQuery
     {
         $since = now()->subDay();
 
-        $letters = $this->deliveryCounts(
-            LogLetter::query()->where('created_at', '>=', $since),
-            LogLetterStatusEnum::SENT->value,
-            LogLetterStatusEnum::FAILED->value,
-        );
+        // A disabled channel module yields null counters, so the widget can
+        // drop the card rather than report on a channel that is not in use.
+        $letters = ModuleGate::isEnabled('letter_templates')
+            ? $this->deliveryCounts(
+                LogLetter::query()->where('created_at', '>=', $since),
+                LogLetterStatusEnum::SENT->value,
+                LogLetterStatusEnum::FAILED->value,
+            )
+            : ['sent' => null, 'failed' => null];
 
-        // A disabled sms module yields null counters, so the widget can drop
-        // the card rather than report on a channel that is not in use.
         $sms = ModuleGate::isEnabled('sms')
             ? $this->deliveryCounts(
                 LogSms::query()->where('created_at', '>=', $since),

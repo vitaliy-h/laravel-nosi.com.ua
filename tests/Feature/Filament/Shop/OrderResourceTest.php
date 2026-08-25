@@ -26,9 +26,7 @@ class OrderResourceTest extends TestCase
     {
         parent::setUp();
 
-        if (!ModuleGate::isEnabled('shop_orders')) {
-            $this->markTestSkipped('Shop orders module is disabled');
-        }
+        $this->skipUnlessModules('shop_cart');
 
         $this->admin = $this->actingAsAdmin();
         $this->actingAs($this->admin);

@@ -5,6 +5,7 @@ namespace App\Modules\Shop\Http\Controllers\Web;
 use App\Modules\ShopCart\Actions\FindCartAction;
 use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Core\Dtos\BreadcrumbData;
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Dtos\ProductRatingData;
 use App\Modules\Shop\Dtos\ProductSearchDto;
 use App\Modules\Shop\Enums\SortOptionEnum;
@@ -120,8 +121,20 @@ class IndexController extends BaseWebController
         ));
     }
 
+    /**
+     * How many of this product the visitor already has in the cart, so the
+     * quantity input opens on that number.
+     *
+     * The product page belongs to `shop` but the cart does not: without this
+     * guard the page would query a shop_carts table that stops existing once
+     * shop_cart is switched off.
+     */
     private function cartQuantityFor(int $productId): ?int
     {
+        if (!ModuleGate::isEnabled('shop_cart')) {
+            return null;
+        }
+
         $cart = $this->findCart->handle(Auth::user());
 
         return $cart?->items()->where('shop_product_id', $productId)->value('quantity');

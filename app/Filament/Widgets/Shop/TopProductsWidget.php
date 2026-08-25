@@ -25,7 +25,7 @@ class TopProductsWidget extends TableWidget
 
     public static function canView(): bool
     {
-        return ModuleGate::isEnabled('shop_orders');
+        return ModuleGate::isEnabled('shop_cart');
     }
 
     public function table(Table $table): Table

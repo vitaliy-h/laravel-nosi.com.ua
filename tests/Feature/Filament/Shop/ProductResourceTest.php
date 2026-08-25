@@ -29,9 +29,7 @@ class ProductResourceTest extends TestCase
     {
         parent::setUp();
 
-        if (! config('modules.shop')) {
-            $this->markTestSkipped('Shop module is disabled');
-        }
+        $this->skipUnlessModules('shop');
 
         $this->admin = $this->actingAsAdmin();
         $this->actingAs($this->admin);
@@ -85,9 +83,7 @@ class ProductResourceTest extends TestCase
     {
         // The brand filter is part of the shop_brands module and is hidden
         // from the table when that module is switched off.
-        if (! ModuleGate::isEnabled('shop_brands')) {
-            $this->markTestSkipped('Module [shop_brands] is disabled.');
-        }
+        $this->skipUnlessModules('shop_brands');
 
         $brand1 = Brand::factory()->create();
         $brand2 = Brand::factory()->create();
@@ -154,10 +150,8 @@ class ProductResourceTest extends TestCase
     public function test_rating_column_shows_aggregates_and_links_to_filtered_reviews(): void
     {
         // The rating column links into ReviewResource and is hidden with the
-        // shop_reviews module, whose resource then has no route to link to.
-        if (! ModuleGate::isEnabled('shop_reviews')) {
-            $this->markTestSkipped('Module [shop_reviews] is disabled.');
-        }
+        // shop_product_reviews module, whose resource then has no route to link to.
+        $this->skipUnlessModules('shop_product_reviews');
 
         $product = Product::factory()->create();
 

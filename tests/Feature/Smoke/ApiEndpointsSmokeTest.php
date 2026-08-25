@@ -12,6 +12,8 @@ class ApiEndpointsSmokeTest extends TestCase
 
     public function test_shop_categories_index_returns_success(): void
     {
+        $this->skipUnlessModules('shop');
+
         $response = $this->getJson('/api/shop/categories');
 
         $this->assertSmokeResponse($response, 200);

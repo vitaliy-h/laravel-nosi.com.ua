@@ -46,7 +46,7 @@ class GetNeedsAttentionQuery
     public function handle(): array
     {
         return [
-            'pendingReviews' => ModuleGate::isEnabled('shop_reviews')
+            'pendingReviews' => ModuleGate::isEnabled('shop_product_reviews')
                 ? ProductReview::query()->where('display', false)->count()
                 : null,
 
@@ -54,7 +54,7 @@ class GetNeedsAttentionQuery
                 ? Feedback::query()->where('processed', false)->count()
                 : null,
 
-            'staleUnpaidOrders' => ModuleGate::isEnabled('shop_orders')
+            'staleUnpaidOrders' => ModuleGate::isEnabled('shop_cart')
                 ? Order::query()
                     ->where('payment_status', PaymentStatusEnum::UNPAID)
                     ->where('created_at', '<', now()->subDays(self::STALE_UNPAID_DAYS))
@@ -65,11 +65,12 @@ class GetNeedsAttentionQuery
                 ? Subscriber::query()->whereNotNull('error')->count()
                 : null,
 
-            // Letters are part of the always-on Notification module.
-            'failedLetters' => LogLetter::query()
-                ->where('status', LogLetterStatusEnum::FAILED)
-                ->where('created_at', '>=', now()->subDay())
-                ->count(),
+            'failedLetters' => ModuleGate::isEnabled('letter_templates')
+                ? LogLetter::query()
+                    ->where('status', LogLetterStatusEnum::FAILED)
+                    ->where('created_at', '>=', now()->subDay())
+                    ->count()
+                : null,
         ];
     }
 }
