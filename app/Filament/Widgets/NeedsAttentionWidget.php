@@ -11,6 +11,7 @@ use App\Filament\Dashboard\Concerns\FormatsDashboardStats;
 use App\Filament\Dashboard\Queries\System\GetNeedsAttentionQuery;
 use App\Modules\Notification\Enums\LogLetterStatusEnum;
 use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
+use Filament\Schemas\Components\Component;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -30,6 +31,33 @@ class NeedsAttentionWidget extends StatsOverviewWidget
     protected function getHeading(): ?string
     {
         return __('admin.dashboard.widgets.needs_attention');
+    }
+
+    /**
+     * Whether anything is pending at all. The dashboard asks before it builds
+     * the block, so an empty one never reaches the page — see
+     * Dashboard::getNeedsAttentionContentComponent().
+     */
+    public static function hasAnything(): bool
+    {
+        foreach (app(GetNeedsAttentionQuery::class)->handle() as $count) {
+            if (GetNeedsAttentionQuery::isActionable($count)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Second guard, for when the block was on the page and the admin has since
+     * cleared the last item: the widget polls itself, so it has to be able to
+     * empty out without leaving a lone "Needs attention" heading behind.
+     */
+    public function getSectionContentComponent(): Component
+    {
+        return parent::getSectionContentComponent()
+            ->visible(fn (): bool => filled($this->getCachedStats()));
     }
 
     /**
@@ -94,7 +122,7 @@ class NeedsAttentionWidget extends StatsOverviewWidget
         // A null counter means the module is off; a zero counter means the
         // module is on but nothing needs attention — drop the card either
         // way instead of showing a stat no admin needs to act on.
-        if ($count === null || $count === 0) {
+        if (! GetNeedsAttentionQuery::isActionable($count)) {
             return null;
         }
 

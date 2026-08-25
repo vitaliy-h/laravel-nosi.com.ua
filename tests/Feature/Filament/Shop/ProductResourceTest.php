@@ -5,6 +5,7 @@ namespace Tests\Feature\Filament\Shop;
 use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
 use App\Filament\Resources\Shop\ProductReviews\ProductReviewResource;
 use App\Modules\Core\Models\User;
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
@@ -28,7 +29,7 @@ class ProductResourceTest extends TestCase
     {
         parent::setUp();
 
-        if (!config('modules.shop')) {
+        if (! config('modules.shop')) {
             $this->markTestSkipped('Shop module is disabled');
         }
 
@@ -47,7 +48,7 @@ class ProductResourceTest extends TestCase
     public function test_list_can_search_by_title(): void
     {
         $target = Product::factory()->create(['title' => 'UniqueProduct']);
-        $other  = Product::factory()->create(['title' => 'AnotherProduct']);
+        $other = Product::factory()->create(['title' => 'AnotherProduct']);
 
         Livewire::test(ManageProducts::class)
             ->searchTable('UniqueProduct')
@@ -58,7 +59,7 @@ class ProductResourceTest extends TestCase
     public function test_list_can_search_by_article(): void
     {
         $target = Product::factory()->create(['article' => 'ART-UNIQUE-99']);
-        $other  = Product::factory()->create(['article' => 'ART-OTHER-00']);
+        $other = Product::factory()->create(['article' => 'ART-OTHER-00']);
 
         Livewire::test(ManageProducts::class)
             ->searchTable('ART-UNIQUE-99')
@@ -71,7 +72,7 @@ class ProductResourceTest extends TestCase
         $cat1 = Category::factory()->create();
         $cat2 = Category::factory()->create();
 
-        $inCat  = Product::factory()->forCategory($cat1)->create();
+        $inCat = Product::factory()->forCategory($cat1)->create();
         $outCat = Product::factory()->forCategory($cat2)->create();
 
         Livewire::test(ManageProducts::class)
@@ -82,10 +83,16 @@ class ProductResourceTest extends TestCase
 
     public function test_list_can_filter_by_brand(): void
     {
+        // The brand filter is part of the shop_brands module and is hidden
+        // from the table when that module is switched off.
+        if (! ModuleGate::isEnabled('shop_brands')) {
+            $this->markTestSkipped('Module [shop_brands] is disabled.');
+        }
+
         $brand1 = Brand::factory()->create();
         $brand2 = Brand::factory()->create();
 
-        $inBrand  = Product::factory()->create(['brand_id' => $brand1->id]);
+        $inBrand = Product::factory()->create(['brand_id' => $brand1->id]);
         $outBrand = Product::factory()->create(['brand_id' => $brand2->id]);
 
         Livewire::test(ManageProducts::class)
@@ -100,9 +107,9 @@ class ProductResourceTest extends TestCase
 
         Livewire::test(ManageProducts::class)
             ->callAction(TestAction::make(CreateAction::getDefaultName())->table(), data: [
-                'title'       => 'New Product',
+                'title' => 'New Product',
                 'category_id' => $category->id,
-                'display'     => true,
+                'display' => true,
             ])
             ->assertHasNoFormErrors();
 
@@ -124,7 +131,7 @@ class ProductResourceTest extends TestCase
     {
         Livewire::test(ManageProducts::class)
             ->callAction(TestAction::make(CreateAction::getDefaultName())->table(), data: [
-                'title'   => 'No Category',
+                'title' => 'No Category',
                 'display' => true,
             ])
             ->assertHasFormErrors(['category_id']);
@@ -136,7 +143,7 @@ class ProductResourceTest extends TestCase
 
         Livewire::test(ManageProducts::class)
             ->callAction(TestAction::make(EditAction::getDefaultName())->table($product), data: [
-                'title'       => 'Updated Product',
+                'title' => 'Updated Product',
                 'category_id' => $product->category_id,
             ])
             ->assertHasNoFormErrors();
@@ -146,6 +153,12 @@ class ProductResourceTest extends TestCase
 
     public function test_rating_column_shows_aggregates_and_links_to_filtered_reviews(): void
     {
+        // The rating column links into ReviewResource and is hidden with the
+        // shop_reviews module, whose resource then has no route to link to.
+        if (! ModuleGate::isEnabled('shop_reviews')) {
+            $this->markTestSkipped('Module [shop_reviews] is disabled.');
+        }
+
         $product = Product::factory()->create();
 
         ProductReview::factory()->count(2)->forProduct($product)->withRating(4)->create();

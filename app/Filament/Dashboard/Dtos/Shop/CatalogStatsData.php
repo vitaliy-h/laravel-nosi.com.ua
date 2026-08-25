@@ -15,7 +15,9 @@ class CatalogStatsData extends Data
         public readonly int $productsHidden,
         public readonly int $categoriesTotal,
         public readonly int $categoriesHidden,
-        public readonly int $brandsTotal,
+        // null when the shop_brands module is off — the card is dropped
+        // instead of showing a count nobody can act on.
+        public readonly ?int $brandsTotal,
         public readonly int $incompleteProducts,
     ) {}
 }

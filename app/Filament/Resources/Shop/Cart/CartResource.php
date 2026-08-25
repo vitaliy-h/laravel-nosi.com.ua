@@ -6,6 +6,7 @@ use App\Filament\Actions\BaseEditAction;
 use App\Filament\Filters\UserSelectFilter;
 use App\Filament\Forms\UserSelect;
 use App\Filament\Resources\Shop\Cart\Pages\ManageCarts;
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Models\Product;
 use App\Modules\ShopCart\Models\Cart;
 use BackedEnum;
@@ -47,6 +48,7 @@ class CartResource extends Resource
                     ->relationship('promocode', 'code')
                     ->searchable()
                     ->preload()
+                    ->visible(ModuleGate::isEnabled('shop_promocodes'))
                     ->columnSpan(4),
                 // A cart's discount is always derived from the promocode —
                 // CartObserver recalculates it after any change here.

@@ -2,11 +2,11 @@
 
 namespace App\Filament\Widgets\Shop;
 
-use App\Filament\Resources\Shop\ProductReviews\ProductReviewResource;
 use App\Filament\Dashboard\Concerns\FormatsDashboardStats;
 use App\Filament\Dashboard\Concerns\InteractsWithDashboardPeriod;
-use App\Modules\Core\Support\ModuleGate;
 use App\Filament\Dashboard\Queries\Shop\GetProductReviewStatsQuery;
+use App\Filament\Resources\Shop\ProductReviews\ProductReviewResource;
+use App\Modules\Core\Support\ModuleGate;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -21,7 +21,7 @@ class ProductReviewStatsWidget extends StatsOverviewWidget
 
     public static function canView(): bool
     {
-        return ModuleGate::isEnabled('shop');
+        return ModuleGate::isEnabled('shop_reviews');
     }
 
     protected function getHeading(): ?string

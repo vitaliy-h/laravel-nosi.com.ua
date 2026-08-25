@@ -45,7 +45,9 @@ class CatalogStatsWidget extends StatsOverviewWidget
     {
         $stats = app(GetCatalogStatsQuery::class)->handle();
 
-        return [
+        // A null brandsTotal means shop_brands is off: BrandResource is not
+        // registered then, so the card cannot even build its link.
+        return array_values(array_filter([
             Stat::make(__('admin.dashboard.stats.products'), $stats->productsTotal)
                 ->description(__('admin.dashboard.descriptions.hidden', ['count' => $stats->productsHidden]))
                 ->icon('heroicon-o-cube')
@@ -56,7 +58,7 @@ class CatalogStatsWidget extends StatsOverviewWidget
                 ->icon('heroicon-o-squares-2x2')
                 ->url(CategoryResource::getUrl()),
 
-            Stat::make(__('admin.dashboard.stats.brands'), $stats->brandsTotal)
+            $stats->brandsTotal === null ? null : Stat::make(__('admin.dashboard.stats.brands'), $stats->brandsTotal)
                 ->icon('heroicon-o-tag')
                 ->url(BrandResource::getUrl()),
 
@@ -67,6 +69,6 @@ class CatalogStatsWidget extends StatsOverviewWidget
                 ->url(ProductResource::getUrl(parameters: [
                     'filters' => ['incomplete' => ['isActive' => '1']],
                 ])),
-        ];
+        ]));
     }
 }

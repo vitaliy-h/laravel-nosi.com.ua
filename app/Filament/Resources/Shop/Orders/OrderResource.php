@@ -6,6 +6,7 @@ use App\Filament\Actions\BaseEditAction;
 use App\Filament\Filters\UserSelectFilter;
 use App\Filament\Forms\UserSelect;
 use App\Filament\Resources\Shop\Orders\Pages\ManageOrders;
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Models\Product;
 use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrders\Enums\PaymentTypeEnum;
@@ -56,6 +57,7 @@ class OrderResource extends Resource
                     ->relationship('promocode', 'code')
                     ->searchable()
                     ->preload()
+                    ->visible(ModuleGate::isEnabled('shop_promocodes'))
                     ->columnSpan(4),
                 // Editable: an order's discount is frozen, so the admin owns it.
                 // OrderObserver recalculates total_amount from it.

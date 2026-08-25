@@ -31,7 +31,9 @@ class SystemStatsWidget extends StatsOverviewWidget
     {
         $stats = app(GetSystemStatsQuery::class)->handle();
 
-        return [
+        // Null sms counters mean the sms module is off: LogSmsResource is not
+        // registered then, so the card cannot even build its link.
+        return array_values(array_filter([
             Stat::make(__('admin.dashboard.stats.environment'), $stats->environment)
                 ->description($stats->isDebugRisky() ? __('admin.dashboard.descriptions.debug_enabled') : null)
                 ->color($stats->isDebugRisky() ? 'danger' : 'gray')
@@ -49,13 +51,13 @@ class SystemStatsWidget extends StatsOverviewWidget
                     'tableFilters' => ['status' => ['value' => LogLetterStatusEnum::FAILED->value]],
                 ])),
 
-            Stat::make(__('admin.dashboard.stats.sms_24h'), $stats->smsSent)
+            $stats->smsSent === null ? null : Stat::make(__('admin.dashboard.stats.sms_24h'), $stats->smsSent)
                 ->description(__('admin.dashboard.descriptions.failed', ['count' => $stats->smsFailed]))
-                ->descriptionColor($this->alertColor($stats->smsFailed))
+                ->descriptionColor($this->alertColor((int) $stats->smsFailed))
                 ->icon('heroicon-o-chat-bubble-bottom-center-text')
                 ->url(LogSmsResource::getUrl(parameters: [
                     'tableFilters' => ['status' => ['value' => LogSmsStatusEnum::FAILED->value]],
                 ])),
-        ];
+        ]));
     }
 }

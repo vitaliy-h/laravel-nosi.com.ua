@@ -3,6 +3,7 @@
 namespace App\Filament\Dashboard\Queries\System;
 
 use App\Filament\Dashboard\Dtos\System\SystemStatsData;
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Notification\Enums\LogLetterStatusEnum;
 use App\Modules\Notification\Enums\LogSmsStatusEnum;
 use App\Modules\Notification\Models\LogLetter;
@@ -27,11 +28,15 @@ class GetSystemStatsQuery
             LogLetterStatusEnum::FAILED->value,
         );
 
-        $sms = $this->deliveryCounts(
-            LogSms::query()->where('created_at', '>=', $since),
-            LogSmsStatusEnum::SENT->value,
-            LogSmsStatusEnum::FAILED->value,
-        );
+        // A disabled sms module yields null counters, so the widget can drop
+        // the card rather than report on a channel that is not in use.
+        $sms = ModuleGate::isEnabled('sms')
+            ? $this->deliveryCounts(
+                LogSms::query()->where('created_at', '>=', $since),
+                LogSmsStatusEnum::SENT->value,
+                LogSmsStatusEnum::FAILED->value,
+            )
+            : ['sent' => null, 'failed' => null];
 
         return new SystemStatsData(
             environment: (string) app()->environment(),

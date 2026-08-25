@@ -10,6 +10,13 @@
 | _debug, ...) is a core module with no key here and is always enabled —
 | see App\Modules\Core\Support\ModuleGate.
 |
+| A key does NOT have to match an app/Modules folder: `shop_brands`,
+| `shop_reviews`, `shop_promocodes` and `sms` are feature toggles for code
+| that lives inside Shop / ShopCart / Notification. Their tables and models
+| always exist, but every admin surface they own (navigation item, resource,
+| dashboard card) is gated on the key, so switching it off removes the
+| feature from the panel.
+|
 | Modules that have their own key here still get disabled if listed as a
 | dependent of a disabled module below (e.g. shop => false also disables
 | shop_cart even though shop_cart has no key of its own).
@@ -25,13 +32,17 @@
 */
 
 return [
-    'auth'        => true,
-    'feedback'    => true,
-    'geo'         => true,
-    'news'        => true,
-    'shop'        => true,
-    'shop_cart'   => true,
-    'subscribers' => true,
+    'auth'            => true,
+    'feedback'        => true,
+    'geo'             => true,
+    'news'            => true,
+    'shop'            => true,
+    'shop_cart'       => true,
+    'shop_brands'     => true,
+    'shop_promocodes' => true,
+    'shop_reviews'    => true,
+    'subscribers'     => true,
+    'sms'             => true,
 
     /*
     |----------------------------------------------------------------------
@@ -46,8 +57,11 @@ return [
     |
     */
     'dependencies' => [
-        'shop_cart' => 'shop',
-        'shop_orders' => 'shop_cart',
-        'profile' => 'auth',
+        'shop_cart'       => 'shop',
+        'shop_orders'     => 'shop_cart',
+        'shop_brands'     => 'shop',
+        'shop_reviews'    => 'shop',
+        'shop_promocodes' => 'shop_cart',
+        'profile'         => 'auth',
     ],
 ];

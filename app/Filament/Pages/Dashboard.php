@@ -34,9 +34,17 @@ class Dashboard extends BaseDashboard
         ]);
     }
 
+    /**
+     * Kept out of getWidgets() so it sits above the period filter — it is a
+     * to-do list, not a statistic, and the period must not apply to it.
+     *
+     * With nothing pending the grid is dropped whole: an empty widget still
+     * takes a row of its own here, and fi-page-content puts a gap around it.
+     */
     public function getNeedsAttentionContentComponent(): Component
     {
         return Grid::make(1)
+            ->visible(fn (): bool => NeedsAttentionWidget::hasAnything())
             ->schema(fn (): array => $this->getWidgetsSchemaComponents([NeedsAttentionWidget::class]));
     }
 

@@ -87,6 +87,17 @@ class GetNeedsAttentionQueryTest extends TestCase
         }
     }
 
+    /**
+     * `shop_reviews` gates the reviews counter on its own, without taking the
+     * whole shop down with it.
+     */
+    public function test_disabling_only_shop_reviews_nulls_the_reviews_counter(): void
+    {
+        config(['modules.shop_reviews' => false]);
+
+        $this->assertNull($this->query->handle()['pendingReviews']);
+    }
+
     public function test_disabled_module_yields_null_instead_of_zero(): void
     {
         config([

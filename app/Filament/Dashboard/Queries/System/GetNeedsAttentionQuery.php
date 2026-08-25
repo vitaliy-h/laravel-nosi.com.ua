@@ -19,6 +19,19 @@ class GetNeedsAttentionQuery
     public const STALE_UNPAID_DAYS = 3;
 
     /**
+     * Whether a counter is worth putting in front of an admin: null means the
+     * module is off, zero means it is on with nothing pending.
+     *
+     * Shared by the card builder and the dashboard's visibility check, so
+     * "which counters show a card" and "is the block worth rendering at all"
+     * can never drift apart.
+     */
+    public static function isActionable(?int $count): bool
+    {
+        return $count !== null && $count > 0;
+    }
+
+    /**
      * Counters of things waiting for an admin action right now — the period
      * filter is deliberately ignored.
      *
@@ -33,7 +46,7 @@ class GetNeedsAttentionQuery
     public function handle(): array
     {
         return [
-            'pendingReviews' => ModuleGate::isEnabled('shop')
+            'pendingReviews' => ModuleGate::isEnabled('shop_reviews')
                 ? ProductReview::query()->where('display', false)->count()
                 : null,
 

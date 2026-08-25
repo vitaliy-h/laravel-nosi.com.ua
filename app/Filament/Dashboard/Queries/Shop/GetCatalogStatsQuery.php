@@ -3,6 +3,7 @@
 namespace App\Filament\Dashboard\Queries\Shop;
 
 use App\Filament\Dashboard\Dtos\Shop\CatalogStatsData;
+use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
@@ -27,7 +28,9 @@ class GetCatalogStatsQuery
             productsHidden: (int) ($products->hidden ?? 0),
             categoriesTotal: (int) ($categories->total ?? 0),
             categoriesHidden: (int) ($categories->hidden ?? 0),
-            brandsTotal: Brand::query()->count(),
+            brandsTotal: ModuleGate::isEnabled('shop_brands')
+                ? Brand::query()->count()
+                : null,
             incompleteProducts: self::incomplete(Product::query())->count(),
         );
     }

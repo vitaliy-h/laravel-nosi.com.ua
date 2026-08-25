@@ -14,8 +14,10 @@ class SystemStatsData extends Data
         public readonly string $filamentVersion,
         public readonly int $mailSent,
         public readonly int $mailFailed,
-        public readonly int $smsSent,
-        public readonly int $smsFailed,
+        // null when the sms module is off — the card is dropped instead of
+        // reporting delivery health for a channel that is not in use.
+        public readonly ?int $smsSent,
+        public readonly ?int $smsFailed,
     ) {}
 
     /**

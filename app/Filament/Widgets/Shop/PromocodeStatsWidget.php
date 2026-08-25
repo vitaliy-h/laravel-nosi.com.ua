@@ -21,7 +21,7 @@ class PromocodeStatsWidget extends StatsOverviewWidget
 
     public static function canView(): bool
     {
-        return ModuleGate::isEnabled('shop_cart');
+        return ModuleGate::isEnabled('shop_promocodes');
     }
 
     protected function getHeading(): ?string
