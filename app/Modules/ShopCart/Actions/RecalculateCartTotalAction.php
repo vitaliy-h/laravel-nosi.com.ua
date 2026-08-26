@@ -30,7 +30,7 @@ class RecalculateCartTotalAction
             $result = $this->validatePromocode->handle($promocodeCode, $subtotal);
 
             if ($result->success) {
-                $discount = $result->discount;
+                $discount = $result->data->discount;
             } else {
                 $promocodeId = null;
                 $promocodeCode = null;

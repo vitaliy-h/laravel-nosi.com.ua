@@ -29,6 +29,21 @@ migrations, seeders, admin nav/resources, and tests for that module. See
 - **Resources** structure API responses
 - Response envelope: `{ success, message?, data }`
 
+## Action return values
+
+An Action returns exactly one of three things — never `bool`:
+
+1. `void` — it mutates state and has nothing to report
+2. a domain value (`Order`, `User`, `float`, …) — it always succeeds, any failure is an exception
+3. `ActionResult<T>` (`App\Modules\Core\Dtos\ActionResult`) — the failure is an
+   expected business outcome the caller must branch on (invalid promocode, quota exceeded)
+
+The payload of an `ActionResult` goes in its own small DTO inside the owning
+module, with **non-nullable** fields; the envelope only carries `success`,
+`message`, `data`. Annotate with `/** @return ActionResult<PromocodeData> */`.
+A genuine two-state query belongs in a `Query` class, not an Action.
+See `docs/starter/actions.md`.
+
 ## Code style
 
 ```bash

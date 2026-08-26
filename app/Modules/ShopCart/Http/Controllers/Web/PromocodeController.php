@@ -3,9 +3,9 @@
 namespace App\Modules\ShopCart\Http\Controllers\Web;
 
 use App\Modules\Core\Abstract\BaseWebController;
+use App\Modules\Core\Dtos\ActionResult;
 use App\Modules\ShopCart\Actions\ApplyPromocodeToCartAction;
 use App\Modules\ShopCart\Actions\RemovePromocodeFromCartAction;
-use App\Modules\ShopCart\Dtos\PromocodeResultData;
 use App\Modules\ShopCart\Http\Requests\ApplyPromocodeRequest;
 use App\Modules\ShopCart\Http\Requests\RemovePromocodeRequest;
 use App\Modules\ShopCart\Models\Cart;
@@ -53,7 +53,7 @@ class PromocodeController extends BaseWebController
      * Re-renders the promocode form, the discount rows and the total, in the
      * action format understood by public/assets/js/abc-response.js.
      */
-    private function summaryResponse(Cart $cart, ?PromocodeResultData $result): JsonResponse
+    private function summaryResponse(Cart $cart, ?ActionResult $result): JsonResponse
     {
         return response()->json([
             'success' => true,

@@ -71,6 +71,16 @@ class SubscriberControllerTest extends TestCase
         $this->assertNotNull($existing->fresh()->integrated_at);
     }
 
+    public function test_flash_message_differs_for_new_and_repeated_email(): void
+    {
+        // The message now comes from the ActionResult envelope, not from the controller.
+        $first = $this->from('/')->post('/subscriber', ['email' => 'msg@example.com']);
+        $first->assertSessionHas('success', t('subscribe.saved'));
+
+        $second = $this->from('/')->post('/subscriber', ['email' => 'msg@example.com']);
+        $second->assertSessionHas('success', t('subscribe.already'));
+    }
+
     public function test_store_creates_subscriber_not_integrated_yet(): void
     {
         $this->from('/')->post('/subscriber', [

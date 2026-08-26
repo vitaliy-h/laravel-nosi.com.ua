@@ -2,8 +2,9 @@
 
 namespace App\Modules\Subscriber\Actions;
 
+use App\Modules\Core\Dtos\ActionResult;
 use App\Modules\Subscriber\Dtos\SubscribeData;
-use App\Modules\Subscriber\Dtos\SubscribeResultData;
+use App\Modules\Subscriber\Dtos\SubscriberData;
 use App\Modules\Subscriber\Models\Subscriber;
 
 class SubscribeAction
@@ -11,18 +12,21 @@ class SubscribeAction
     /**
      * Idempotent subscribe: re-submitting an already known email is not an
      * error, the existing record is returned untouched (its CRM integration
-     * state must not be reset by a repeated subscription).
+     * state must not be reset by a repeated subscription). Both branches are a
+     * success — they differ only in the message and the alreadyExists flag.
+     *
+     * @return ActionResult<SubscriberData>
      */
-    public function handle(SubscribeData $data): SubscribeResultData
+    public function handle(SubscribeData $data): ActionResult
     {
         $subscriber = Subscriber::query()
             ->where('email', $data->email)
             ->first();
 
         if ($subscriber) {
-            return new SubscribeResultData(
-                subscriber: $subscriber,
-                alreadyExists: true,
+            return ActionResult::ok(
+                new SubscriberData(subscriber: $subscriber, alreadyExists: true),
+                t('subscribe.already'),
             );
         }
 
@@ -33,9 +37,9 @@ class SubscribeAction
             'error' => null,
         ]);
 
-        return new SubscribeResultData(
-            subscriber: $subscriber,
-            alreadyExists: false,
+        return ActionResult::ok(
+            new SubscriberData(subscriber: $subscriber, alreadyExists: false),
+            t('subscribe.saved'),
         );
     }
 }

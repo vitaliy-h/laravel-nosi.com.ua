@@ -3,6 +3,7 @@
 namespace Tests\Unit\ShopCart;
 
 use App\Modules\ShopCart\Actions\ValidatePromocodeAction;
+use App\Modules\ShopCart\Dtos\PromocodeData;
 use App\Modules\ShopCart\Models\Promocode;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -67,9 +68,19 @@ class ValidatePromocodeActionTest extends TestCase
         $result = $this->action->handle('TAKE10', 200.0);
 
         $this->assertTrue($result->success);
-        $this->assertSame($promocode->id, $result->promocode_id);
-        $this->assertSame('TAKE10', $result->code);
-        $this->assertSame(20.0, $result->discount);
+        $this->assertInstanceOf(PromocodeData::class, $result->data);
+        $this->assertSame($promocode->id, $result->data->promocode_id);
+        $this->assertSame('TAKE10', $result->data->code);
+        $this->assertSame(20.0, $result->data->discount);
+    }
+
+    public function test_failed_result_carries_no_payload(): void
+    {
+        $result = $this->action->handle('NOPE', 100.0);
+
+        $this->assertFalse($result->success);
+        $this->assertNull($result->data);
+        $this->assertNotNull($result->message);
     }
 
     public function test_code_lookup_is_case_insensitive(): void

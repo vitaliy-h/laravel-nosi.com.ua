@@ -78,7 +78,7 @@ Typical contents:
 
 * `Http/Controllers`, `Http/Routes`
 * Models
-* Actions
+* Actions — what they may return is fixed, see `docs/starter/actions.md`
 * Dtos
 * Repositories
 * Enums
@@ -87,6 +87,15 @@ Typical contents:
 * `database/migrations`, `database/seeders`
 
 Structure can grow depending on module complexity.
+
+---
+
+# Actions
+
+Business logic lives in Actions, shared between web and API controllers. An
+Action returns exactly one of three things — `void`, a domain value, or
+`App\Modules\Core\Dtos\ActionResult<T>` for an expected business failure the
+caller must branch on. See `docs/starter/actions.md`.
 
 ---
 

@@ -22,9 +22,7 @@ class SubscriberController extends BaseWebController
             ip: $request->ip(),
         ));
 
-        $message = $result->alreadyExists
-            ? t('subscribe.already')
-            : t('subscribe.saved');
+        $message = $result->message;
 
         // AJAX (data-abcr form): clear the input and render the message inline.
         if ($request->ajax()) {
@@ -39,7 +37,7 @@ class SubscriberController extends BaseWebController
                         'selector' => '#newsletter-message',
                         'content' => view('components.newsletter_message', [
                             'message' => $message,
-                            'alreadyExists' => $result->alreadyExists,
+                            'alreadyExists' => $result->data->alreadyExists,
                         ])->render(),
                     ],
                 ],
