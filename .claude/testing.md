@@ -137,8 +137,8 @@ Pattern follows existing factories (`NewsFactory`, `UserFactory`): explicit `pro
 | `BrandFactory` | `App\Modules\Shop\Models\Brand` |
 | `CategoryFactory` | `App\Modules\Shop\Models\Category` — `invisible()` |
 | `ProductFactory` | `App\Modules\Shop\Models\Product` — `forCategory()`, `invisible()` |
-| `OrderFactory` | `App\Modules\Orders\Models\Order` |
-| `OrderProductFactory` | `App\Modules\Orders\Models\OrderProduct` |
+| `OrderFactory` | `App\Modules\ShopOrder\Models\Order` |
+| `OrderProductFactory` | `App\Modules\ShopOrder\Models\OrderProduct` |
 | `FeedbackFactory` | `App\Modules\Feedback\Models\Feedback` — states: `processed()` |
 | `LetterTemplateFactory` | `App\Modules\Notification\Models\LetterTemplate` |
 | `SmsTemplateFactory` | `App\Modules\Notification\Models\SmsTemplate` |

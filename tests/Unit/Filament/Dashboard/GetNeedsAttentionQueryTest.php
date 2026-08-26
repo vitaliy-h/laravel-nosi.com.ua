@@ -6,9 +6,9 @@ use App\Filament\Dashboard\Queries\System\GetNeedsAttentionQuery;
 use App\Modules\Feedback\Models\Feedback;
 use App\Modules\Notification\Models\LogLetter;
 use App\Modules\Shop\Models\ProductReview;
-use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
-use App\Modules\ShopOrders\Models\Order;
-use App\Modules\Subscribers\Models\Subscriber;
+use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
+use App\Modules\ShopOrder\Models\Order;
+use App\Modules\Subscriber\Models\Subscriber;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
@@ -38,7 +38,7 @@ class GetNeedsAttentionQueryTest extends TestCase
     public function test_counts_everything_waiting_for_an_admin(): void
     {
         // Every counter here belongs to a module that can be switched off.
-        $this->skipUnlessModules('shop_product_reviews', 'shop_cart', 'feedback', 'subscribers', 'letter_templates');
+        $this->skipUnlessModules('shop_product_reviews', 'shop_cart', 'feedback', 'subscriber', 'letter_templates');
 
         ProductReview::factory()->invisible()->count(2)->create();
         ProductReview::factory()->create();
@@ -84,7 +84,7 @@ class GetNeedsAttentionQueryTest extends TestCase
     public function test_empty_database_returns_zeros_not_nulls(): void
     {
         // Every counter here belongs to a module that can be switched off.
-        $this->skipUnlessModules('shop_product_reviews', 'shop_cart', 'feedback', 'subscribers', 'letter_templates');
+        $this->skipUnlessModules('shop_product_reviews', 'shop_cart', 'feedback', 'subscriber', 'letter_templates');
 
         $counters = $this->query->handle();
 
@@ -110,7 +110,7 @@ class GetNeedsAttentionQueryTest extends TestCase
             'modules.shop_product_reviews' => false,
             'modules.shop_cart' => false,
             'modules.feedback' => false,
-            'modules.subscribers' => false,
+            'modules.subscriber' => false,
             'modules.letter_templates' => false,
         ]);
 

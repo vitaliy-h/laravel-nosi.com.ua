@@ -102,7 +102,7 @@ class AdminPanelProvider extends PanelProvider
                         // shop
                         ModuleGate::isEnabled('shop_cart') ? NavigationGroup::make(__('admin.tables.shop'))
                             ->items(array_filter([
-                                NavigationItem::make(__('admin.tables.shop_orders'))
+                                NavigationItem::make(__('admin.tables.shop_order'))
                                     ->icon('heroicon-o-shopping-cart')
                                     ->url(\App\Filament\Resources\Shop\Orders\OrderResource::getUrl())
                                     ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.shop.orders.*')),
@@ -126,7 +126,7 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-link')
                                     ->url(\App\Filament\Resources\SocialProfiles\SocialProfileResource::getUrl())
                                     ->isActiveWhen(fn(): bool => Request::is('admin/social-profiles*')) : null,
-                                ModuleGate::isEnabled('subscribers') ? NavigationItem::make(__('admin.tables.subscribers'))
+                                ModuleGate::isEnabled('subscriber') ? NavigationItem::make(__('admin.tables.subscriber'))
                                     ->icon('heroicon-o-envelope-open')
                                     ->url(\App\Filament\Resources\Subscribers\SubscriberResource::getUrl())
                                     ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.subscribers.*')) : null,
@@ -181,7 +181,7 @@ class AdminPanelProvider extends PanelProvider
                 ModuleGate::isEnabled('news') ? \App\Filament\Resources\News\NewsResource::class : null,
                 ModuleGate::isEnabled('feedback') ? \App\Filament\Resources\Feedback\FeedbackResource::class : null,
                 ModuleGate::isEnabled('auth') ? \App\Filament\Resources\SocialProfiles\SocialProfileResource::class : null,
-                ModuleGate::isEnabled('subscribers') ? \App\Filament\Resources\Subscribers\SubscriberResource::class : null,
+                ModuleGate::isEnabled('subscriber') ? \App\Filament\Resources\Subscribers\SubscriberResource::class : null,
                 ModuleGate::isEnabled('geo') ? \App\Filament\Resources\Geo\GeoCountries\GeoCountryResource::class : null,
                 ModuleGate::isEnabled('geo') ? \App\Filament\Resources\Geo\GeoRegions\GeoRegionResource::class : null,
                 ModuleGate::isEnabled('geo') ? \App\Filament\Resources\Geo\GeoCities\GeoCityResource::class : null,

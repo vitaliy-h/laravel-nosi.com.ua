@@ -4,7 +4,7 @@ namespace App\Filament\Resources\Subscribers;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Subscribers\Pages\ManageSubscribers;
-use App\Modules\Subscribers\Models\Subscriber;
+use App\Modules\Subscriber\Models\Subscriber;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;

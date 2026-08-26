@@ -3,7 +3,7 @@
 namespace Tests\Unit\Filament\Dashboard;
 
 use App\Filament\Dashboard\Dtos\DashboardPeriodData;
-use App\Modules\ShopOrders\Models\Order;
+use App\Modules\ShopOrder\Models\Order;
 use App\Filament\Dashboard\Queries\Shop\GetSalesChartQuery;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;

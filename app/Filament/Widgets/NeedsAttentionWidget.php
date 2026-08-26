@@ -10,7 +10,7 @@ use App\Filament\Resources\Subscribers\SubscriberResource;
 use App\Filament\Dashboard\Concerns\FormatsDashboardStats;
 use App\Filament\Dashboard\Queries\System\GetNeedsAttentionQuery;
 use App\Modules\Notification\Enums\LogLetterStatusEnum;
-use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
+use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
 use Filament\Schemas\Components\Component;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;

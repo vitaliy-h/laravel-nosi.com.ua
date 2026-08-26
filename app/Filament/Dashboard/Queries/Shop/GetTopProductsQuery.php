@@ -4,7 +4,7 @@ namespace App\Filament\Dashboard\Queries\Shop;
 
 use App\Filament\Dashboard\Dtos\DashboardPeriodData;
 use App\Modules\Shop\Models\Product;
-use App\Modules\ShopOrders\Models\OrderProduct;
+use App\Modules\ShopOrder\Models\OrderProduct;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;

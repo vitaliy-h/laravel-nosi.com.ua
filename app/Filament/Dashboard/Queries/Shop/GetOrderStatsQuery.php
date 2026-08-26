@@ -4,8 +4,8 @@ namespace App\Filament\Dashboard\Queries\Shop;
 
 use App\Filament\Dashboard\Dtos\DashboardPeriodData;
 use App\Filament\Dashboard\Dtos\Shop\OrderStatsData;
-use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
-use App\Modules\ShopOrders\Models\Order;
+use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
+use App\Modules\ShopOrder\Models\Order;
 use Carbon\CarbonImmutable;
 
 class GetOrderStatsQuery

@@ -32,7 +32,7 @@ class ModuleServiceProvider extends ServiceProvider
      * silently change its public URLs.
      */
     private const array MODULE_PREFIX_OVERRIDES = [
-        'ShopOrders' => 'orders',
+        'ShopOrder' => 'orders',
     ];
 
     /**
@@ -94,10 +94,10 @@ class ModuleServiceProvider extends ServiceProvider
     /**
      * Register a module's web routes, prefixed by the module's page slug (from DB)
      * when the module directory maps to a PageModule case. Modules that don't map
-     * to a PageModule (ShopOrders, _debug, Translation, Notification, ...) get a
+     * to a PageModule (ShopOrder, _debug, Translation, Notification, ...) get a
      * prefix derived from their own folder name instead, so their routes can
      * never collide with a PageModule's DB-driven prefix or another module's
-     * routes (e.g. `ShopOrders` → `/orders/...`, via MODULE_PREFIX_OVERRIDES).
+     * routes (e.g. `ShopOrder` → `/orders/...`, via MODULE_PREFIX_OVERRIDES).
      *
      * When a DB page is found for the module, the CMS page context (page,
      * breadcrumbs, meta, menus, cart count) is auto-shared to the view via the

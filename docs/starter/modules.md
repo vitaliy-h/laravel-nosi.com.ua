@@ -37,7 +37,7 @@ return [
     // 'shop_brands'          => false,
     // 'shop_promocodes'      => false,
     // 'shop_product_reviews' => false,
-    // 'subscribers'          => false,
+    // 'subscriber'           => false,
     // 'sms'                  => false,
     // 'letter_templates'     => false,
 
@@ -45,7 +45,7 @@ return [
         'shop_cart'            => 'shop',      // no cart without the shop
         'shop_brands'          => 'shop',
         'shop_product_reviews' => 'shop',
-        'shop_orders'          => 'shop_cart', // no orders without the cart
+        'shop_order'           => 'shop_cart', // no orders without the cart
         'shop_promocodes'      => 'shop_cart',
         'profile'              => 'auth',      // no profile without auth
     ],
@@ -54,7 +54,7 @@ return [
 
 A module listed under `dependencies` goes off together with its parent,
 whatever its own line says: `'shop' => false` also disables `shop_cart` and
-`shop_brands`, and through the cart the orders and promocodes. `shop_orders`
+`shop_brands`, and through the cart the orders and promocodes. `shop_order`
 and `profile` have no line of their own at all — they exist only as
 dependants, so the only way to switch them off is to switch off the cart or
 auth.
@@ -104,7 +104,7 @@ test depends on is off.
   product teasers/featured blocks can be placed in any page's CMS content by
   the `Core` `Page` builder, and those blocks don't know the module is off.
   Remove or replace that content manually before disabling `shop`. `auth` and
-  its dependents (`profile`, `shop_cart`/`shop_orders` are shop-only, not
+  its dependents (`profile`, `shop_cart`/`shop_order` are shop-only, not
   auth) are self-contained and safe to flip without extra cleanup.
 - **It is not a substitute for hiding a single page.** Model `Page` has its
   own `display` flag that hides one page from menus/routing without
@@ -153,8 +153,8 @@ before child, etc).
 Example — `app/Modules/Shop/database/seeders/ShopSeeder.php` calls
 `ShopCategorySeeder` → `ShopBrandSeeder` → `ShopProductSeeder` in that order
 (wrapped in `SET FOREIGN_KEY_CHECKS=0/1` since products truncate/reseed).
-`app/Modules/ShopOrders/database/seeders/ShopOrdersSeeder.php` calls
-`ShopOrderSeeder`, which depends on Shop's products already existing.
+`app/Modules/ShopOrder/database/seeders/ShopOrderSeeder.php` is the module's
+only seeder and depends on Shop's products already existing.
 
 `DatabaseSeeder::callModuleSeeders()` does the wiring automatically — no
 per-module `if` blocks to maintain:
@@ -186,9 +186,9 @@ foreach (File::directories(app_path('Modules')) as $module) {
    `php artisan db:seed` / `migrate:fresh --seed` automatically, and it's
    already skipped when the module is disabled.
 
-Cross-module ordering (e.g. Shop's products must exist before ShopOrders
+Cross-module ordering (e.g. Shop's products must exist before ShopOrder
 seeds orders) falls out of `File::directories()` returning folders
-alphabetically — `Shop` sorts before `ShopOrders`. If a future module needs
+alphabetically — `Shop` sorts before `ShopOrder`. If a future module needs
 an order that alphabetical sorting doesn't give you, that's a sign the
 dependent seeder should instead call the parent's sub-seeder methods
 directly rather than relying on loop order.

@@ -7,13 +7,13 @@ use App\Filament\Dashboard\Dtos\Users\UserStatsData;
 use App\Modules\Core\Models\User;
 use App\Filament\Dashboard\Support\DashboardSeries;
 use App\Modules\Core\Support\ModuleGate;
-use App\Modules\Subscribers\Models\Subscriber;
+use App\Modules\Subscriber\Models\Subscriber;
 
 class GetUserStatsQuery
 {
     public function handle(DashboardPeriodData $period): UserStatsData
     {
-        $hasSubscribers = ModuleGate::isEnabled('subscribers');
+        $hasSubscribers = ModuleGate::isEnabled('subscriber');
 
         return new UserStatsData(
             usersTotal: User::query()->count(),

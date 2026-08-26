@@ -34,12 +34,12 @@
                 <div class="col-lg-8 text-center">
                     <h2>{{ t('subscribe.title') }}</h2>
                     <p>{{ t('subscribe.text') }}</p>
-                    @if(\App\Modules\Core\Support\ModuleGate::isEnabled('subscribers'))
+                    @if(\App\Modules\Core\Support\ModuleGate::isEnabled('subscriber'))
                         {{-- No `php-email-form` class here: the demo template's validate.js would
                              hijack the submit and fire a second request alongside abc-response.js. --}}
                         <form id="newsletter-form"
-                              data-abcr="{{ route('subscribers.store') }}"
-                              action="{{ route('subscribers.store') }}"
+                              data-abcr="{{ route('subscriber.store') }}"
+                              action="{{ route('subscriber.store') }}"
                               method="POST">
                             @csrf
                             <div class="newsletter-form d-flex">

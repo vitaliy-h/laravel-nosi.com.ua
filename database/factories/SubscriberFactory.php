@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Modules\Subscribers\Models\Subscriber;
+use App\Modules\Subscriber\Models\Subscriber;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

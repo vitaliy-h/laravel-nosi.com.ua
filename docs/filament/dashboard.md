@@ -42,7 +42,7 @@ folders, so a widget and the query behind it are easy to pair up.
 
 A stats query that exists purely to fill an admin widget is not domain logic: the
 frontend, the API and the modules themselves never call it. Putting it in
-`app/Modules/Core` (or in `Shop`, `ShopOrders`, …) makes those modules look like
+`app/Modules/Core` (or in `Shop`, `ShopOrder`, …) makes those modules look like
 they own behaviour they do not.
 
 What *does* stay in the modules: models, enums, domain queries and actions the
@@ -87,7 +87,7 @@ spelled out inside the key itself.
    ```php
    public static function canView(): bool
    {
-       return ModuleGate::isEnabled('shop_orders');
+       return ModuleGate::isEnabled('shop_order');
    }
    ```
 

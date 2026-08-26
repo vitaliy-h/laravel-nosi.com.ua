@@ -113,7 +113,7 @@ class AdminNavigationModuleGateTest extends TestCase
         $this->assertNotContains(PromocodeResource::class, $panel->getResources());
 
         // Orders and carts only depend on shop_cart, which is still enabled.
-        $this->assertContains(__('admin.tables.shop_orders'), $this->navigationLabels($panel));
+        $this->assertContains(__('admin.tables.shop_order'), $this->navigationLabels($panel));
         $this->assertContains(__('admin.tables.shop_carts'), $this->navigationLabels($panel));
     }
 

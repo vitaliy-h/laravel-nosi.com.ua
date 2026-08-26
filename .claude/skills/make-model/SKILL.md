@@ -21,9 +21,20 @@ If user picks an **existing module** → proceed to Step 3.
 
 If user picks **New module**:
 - Ask: module display name (e.g. `Blog`)
+- Normalise it into `{ModuleName}` — the module directory name:
+  - **Singular, PascalCase**, naming the module's aggregate root: `ShopOrder`, not
+    `ShopOrders`; `Subscriber`, not `Subscribers`. A module is one entity, and the folder
+    must read as that entity — the same word as the Eloquent model it holds. (`News` is
+    fine as-is: uncountable, and its model is `News` too.)
+  - If the display name the user gave is plural, singularise it and say so before
+    creating anything.
+  - DB table names are unaffected and stay plural (`shop_orders`, `subscribers`) — this
+    rule covers the folder and namespace only.
 - Derive automatically:
-  - Enum case: `BLOG` (UPPER_SNAKE of display name)
-  - Enum value: `blog` (snake_case of display name)
+  - Enum case: `BLOG` (UPPER_SNAKE of `{ModuleName}`)
+  - Enum value: `blog` — must equal `Str::snake({ModuleName})`, because
+    `ModuleServiceProvider` and `ModuleGate` derive the module's gate key, route prefix
+    and seeder class from the folder name that way
   - Label: display name as-is
 - Edit `app/Modules/Core/Enums/PageModule.php`:
   - Add `case {CASE} = '{value}';` to the cases block
@@ -248,4 +259,6 @@ Print a short summary:
 - Enum classes created (if any), with their paths
 - Fields added
 - Seeder created (if any), with its path
+- If a new module was created: its directory name, confirming it is singular PascalCase
+  and that `Str::snake()` of it equals the `PageModule` value
 - Next suggested step: `php artisan migrate` (or `./vendor/bin/sail artisan migrate` if Sail is used)

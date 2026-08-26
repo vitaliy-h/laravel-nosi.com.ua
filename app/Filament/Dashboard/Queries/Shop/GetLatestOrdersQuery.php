@@ -2,7 +2,7 @@
 
 namespace App\Filament\Dashboard\Queries\Shop;
 
-use App\Modules\ShopOrders\Models\Order;
+use App\Modules\ShopOrder\Models\Order;
 use Illuminate\Database\Eloquent\Builder;
 
 class GetLatestOrdersQuery

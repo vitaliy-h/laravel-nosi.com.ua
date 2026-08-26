@@ -4,8 +4,8 @@ namespace App\Filament\Widgets\Shop;
 
 use App\Filament\Resources\Shop\Orders\OrderResource;
 use App\Modules\Core\Support\ModuleGate;
-use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
-use App\Modules\ShopOrders\Models\Order;
+use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
+use App\Modules\ShopOrder\Models\Order;
 use App\Filament\Dashboard\Queries\Shop\GetLatestOrdersQuery;
 use Filament\Actions\Action;
 use Filament\Support\Icons\Heroicon;

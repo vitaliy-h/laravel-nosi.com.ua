@@ -2,7 +2,7 @@
 
 namespace App\Modules\Profile\Queries;
 
-use App\Modules\ShopOrders\Models\Order;
+use App\Modules\ShopOrder\Models\Order;
 
 class FindUserOrderQuery
 {

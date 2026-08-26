@@ -33,12 +33,12 @@ return [
         'shop_product_reviews' => 'Reviews',
         'shop_carts' => 'Carts',
         'shop_categories' => 'Categories',
-        'shop_orders' => 'Orders',
+        'shop_order' => 'Orders',
         'shop_products' => 'Products',
         'shop_promocodes' => 'Promocodes',
         'users' => 'Users',
         'social_profiles' => 'Social Profiles',
-        'subscribers' => 'Subscribers',
+        'subscriber' => 'Subscribers',
     ],
 
     // fields & filters

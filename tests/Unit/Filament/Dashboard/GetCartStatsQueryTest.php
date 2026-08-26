@@ -8,7 +8,7 @@ use App\Modules\Shop\Models\Product;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
 use App\Filament\Dashboard\Queries\Shop\GetCartStatsQuery;
-use App\Modules\ShopOrders\Models\Order;
+use App\Modules\ShopOrder\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;

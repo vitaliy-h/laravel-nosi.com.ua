@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
     /**
      * Each module owning demo data exposes a {Module}Seeder that calls its
      * own sub-seeders in the required order. Disabled modules (and modules
-     * whose dependency is disabled, e.g. ShopOrders/ShopCart without Shop)
+     * whose dependency is disabled, e.g. ShopOrder/ShopCart without Shop)
      * are skipped via ModuleGate so a fully disabled module's seeder never
      * touches its (possibly deleted) tables.
      */

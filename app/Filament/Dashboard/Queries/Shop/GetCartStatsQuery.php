@@ -5,7 +5,7 @@ namespace App\Filament\Dashboard\Queries\Shop;
 use App\Filament\Dashboard\Dtos\DashboardPeriodData;
 use App\Filament\Dashboard\Dtos\Shop\CartStatsData;
 use App\Modules\ShopCart\Models\Cart;
-use App\Modules\ShopOrders\Models\Order;
+use App\Modules\ShopOrder\Models\Order;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Facades\Cache;
 

@@ -5,7 +5,7 @@ namespace Tests\Unit\Filament\Dashboard;
 use App\Filament\Dashboard\Dtos\DashboardPeriodData;
 use App\Modules\ShopCart\Models\Promocode;
 use App\Filament\Dashboard\Queries\Shop\GetPromocodeStatsQuery;
-use App\Modules\ShopOrders\Models\Order;
+use App\Modules\ShopOrder\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;

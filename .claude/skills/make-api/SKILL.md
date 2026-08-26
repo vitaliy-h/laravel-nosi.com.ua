@@ -25,6 +25,11 @@ description: >
 If not specified by user, read `app/Modules/Core/Enums/PageModule.php` and list existing modules as numbered list.
 Ask user to pick one.
 
+This skill never creates modules — pick an existing one; if the task needs a new module,
+hand it to `make-model` first. Either way the naming rule holds: module directory names are
+**singular PascalCase** and name the module's aggregate root (`ShopOrder`, not `ShopOrders`).
+Never write an `app/Modules/{Module}` path with a pluralised module name.
+
 ### Step 2 — Method name & HTTP verb
 
 Ask: **Method name?** (e.g. `index`, `show`, `store`, `update`, `destroy`)

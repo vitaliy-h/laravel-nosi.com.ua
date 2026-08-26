@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Modules\ShopOrders\Models\Order;
-use App\Modules\ShopOrders\Models\OrderProduct;
+use App\Modules\ShopOrder\Models\Order;
+use App\Modules\ShopOrder\Models\OrderProduct;
 use App\Modules\Shop\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

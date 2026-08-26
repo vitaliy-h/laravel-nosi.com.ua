@@ -7,9 +7,9 @@ use App\Modules\Feedback\Models\Feedback;
 use App\Modules\Notification\Enums\LogLetterStatusEnum;
 use App\Modules\Notification\Models\LogLetter;
 use App\Modules\Shop\Models\ProductReview;
-use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
-use App\Modules\ShopOrders\Models\Order;
-use App\Modules\Subscribers\Models\Subscriber;
+use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
+use App\Modules\ShopOrder\Models\Order;
+use App\Modules\Subscriber\Models\Subscriber;
 
 class GetNeedsAttentionQuery
 {
@@ -61,7 +61,7 @@ class GetNeedsAttentionQuery
                     ->count()
                 : null,
 
-            'failedSubscribers' => ModuleGate::isEnabled('subscribers')
+            'failedSubscribers' => ModuleGate::isEnabled('subscriber')
                 ? Subscriber::query()->whereNotNull('error')->count()
                 : null,
 

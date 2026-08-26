@@ -3,8 +3,8 @@
 namespace Tests\Unit\Filament\Dashboard;
 
 use App\Filament\Dashboard\Dtos\DashboardPeriodData;
-use App\Modules\ShopOrders\Enums\PaymentStatusEnum;
-use App\Modules\ShopOrders\Models\Order;
+use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
+use App\Modules\ShopOrder\Models\Order;
 use App\Filament\Dashboard\Queries\Shop\GetOrderStatsQuery;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;

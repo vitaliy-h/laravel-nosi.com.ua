@@ -5,7 +5,7 @@ namespace App\Filament\Dashboard\Queries\Shop;
 use App\Filament\Dashboard\Dtos\DashboardPeriodData;
 use App\Filament\Dashboard\Support\DashboardSeries;
 use App\Filament\Dashboard\Dtos\Shop\SalesChartData;
-use App\Modules\ShopOrders\Models\Order;
+use App\Modules\ShopOrder\Models\Order;
 use Illuminate\Support\Facades\Cache;
 
 class GetSalesChartQuery
