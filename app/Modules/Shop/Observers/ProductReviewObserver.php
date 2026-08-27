@@ -14,7 +14,7 @@ readonly class ProductReviewObserver
 
     public function created(ProductReview $review): void
     {
-        $this->refreshProductOf($review);
+        $this->refreshProduct($review->product_id);
     }
 
     /**
@@ -23,28 +23,33 @@ readonly class ProductReviewObserver
      */
     public function updated(ProductReview $review): void
     {
-        $this->refreshProductOf($review);
+        $this->refreshProduct($review->product_id);
 
         // Review moved to another product — the previous one needs a refresh too.
         $originalProductId = $review->getOriginal('product_id');
 
         if ($originalProductId && (int) $originalProductId !== (int) $review->product_id) {
-            $original = Product::find($originalProductId);
-
-            if ($original) {
-                $this->recalculateRating->handle($original);
-            }
+            $this->refreshProduct((int) $originalProductId);
         }
     }
 
     public function deleted(ProductReview $review): void
     {
-        $this->refreshProductOf($review);
+        $this->refreshProduct($review->product_id);
     }
 
-    private function refreshProductOf(ProductReview $review): void
+    /**
+     * Resolved by id rather than through `$review->product`: once the relation
+     * has been loaded, Eloquent keeps serving the product the review pointed at
+     * *before* `product_id` changed, so the new product would never be refreshed.
+     */
+    private function refreshProduct(?int $productId): void
     {
-        $product = $review->product;
+        if (! $productId) {
+            return;
+        }
+
+        $product = Product::find($productId);
 
         if ($product) {
             $this->recalculateRating->handle($product);
