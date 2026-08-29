@@ -1,0 +1,32 @@
+{
+    "$schema": "https://laravel-ide.com/schema/laravel-ide-v2.json",
+    "completions": [
+        {
+            "complete": "viewName",
+            "condition": [
+                {
+                    "place": "parameter",
+                    "methodNames": ["render"],
+                    "classFqn": ["App\\Modules\\Core\\Abstract\\BaseWebController"],
+                    "parameters": [1]
+                },
+                {
+                    "place": "parameter",
+                    "methodNames": ["render"],
+                    "classParentFqn": ["App\\Modules\\Core\\Abstract\\BaseWebController"],
+                    "parameters": [1]
+                }
+            ]
+        },
+        {
+            "complete": "routeName",
+            "condition": [
+                {
+                    "place": "parameter",
+                    "functionNames": ["save_route"],
+                    "parameters": [1]
+                }
+            ]
+        }
+    ]
+}
