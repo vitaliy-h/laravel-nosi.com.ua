@@ -93,13 +93,15 @@ class ShopIndexControllerTest extends TestCase
         $brandA = Brand::factory()->create();
         $brandB = Brand::factory()->create();
 
-        Product::factory()->create(['brand_id' => $brandA->id]);
+        $fromBrandA = Product::factory()->create(['brand_id' => $brandA->id]);
         Product::factory()->create(['brand_id' => $brandB->id]);
 
         $response = $this->get('/shop?brand='.$brandA->id);
 
+        // The view gets ProductViewModels, which carry no brand_id — the brand is
+        // a filter input, not something the listing renders. Identity is enough.
         $response->assertViewHas('products', fn ($products) => $products->total() === 1
-            && $products->first()->brand_id === $brandA->id);
+            && $products->first()->id === $fromBrandA->id);
     }
 
     public function test_price_range_filter_only_returns_products_within_range(): void

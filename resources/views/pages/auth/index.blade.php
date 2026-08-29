@@ -12,7 +12,7 @@
                 <div class="col-lg-5">
                     <div class="login-register-wraper">
 
-                        @include('pages.auth.forms.'.$mode)
+                        @include($form_view)
 
                     </div>
                 </div>

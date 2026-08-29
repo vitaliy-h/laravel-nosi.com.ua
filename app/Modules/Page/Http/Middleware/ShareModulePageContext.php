@@ -31,13 +31,13 @@ class ShareModulePageContext
         $pageModule = PageModule::tryFrom($moduleValue);
         $page = $pageModule ? $this->findPageByModule->handle($pageModule) : null;
 
-        if (!$page) {
-            throw new NotFoundHttpException();
+        if (! $page) {
+            throw new NotFoundHttpException;
         }
 
         // FindPageByModuleQuery reads the cached routing list, which only selects
-        // id/title/slug/module. Views need the full row (content, text, SEO fields),
-        // otherwise they silently render empty and is_indexable reads as null.
+        // id/title/slug/module. The layout needs the full row (content, SEO fields),
+        // otherwise it silently renders empty and is_indexable reads as null.
         $page = Page::findOrFail($page->id);
 
         $this->sharer->share($page);

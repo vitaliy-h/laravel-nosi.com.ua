@@ -11,13 +11,13 @@
             {{ $newsItem->title }}
         </h1>
 
-        @if($newsItem->published_at)
+        @if($newsItem->published_at_formatted)
             <div class="text-muted mb-4">
-                {{ $newsItem->published_at->format('d.m.Y H:i') }}
+                {{ $newsItem->published_at_formatted }}
             </div>
         @endif
 
-        @if($newsItem->img)
+        @if($newsItem->has_image)
             <img
                 src="{{ $newsItem->image }}"
                 class="img-fluid rounded mb-4 news-card-image"

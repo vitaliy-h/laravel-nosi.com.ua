@@ -7,7 +7,7 @@
 
     <div class="container mt-4">
 
-        @include('components.builder', ['content' => $page->content])
+        @include('blocks.page_content')
 
     </div>
 @endsection

@@ -10,13 +10,12 @@
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
 
-                        @if($item->image)
-                            <img
-                                src="{{ $item->image }}"
-                                class="news-card-list-image"
-                                alt="{{ $item->title }}"
-                            >
-                        @endif
+                        {{-- `image` always resolves — to the placeholder when the item has none. --}}
+                        <img
+                            src="{{ $item->image }}"
+                            class="news-card-list-image"
+                            alt="{{ $item->title }}"
+                        >
 
                         <div class="card-body">
                             <h5 class="card-title">
@@ -28,7 +27,7 @@
                             </p>
 
                             <a
-                                href="{{ save_route('news.show', $item->slug) }}"
+                                href="{{ $item->url }}"
                                 class="btn btn-primary"
                             >
                                 {{t('news.read_more')}}

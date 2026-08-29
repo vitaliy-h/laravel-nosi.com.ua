@@ -10,6 +10,7 @@ use App\Modules\Profile\Dtos\ProfileUpdateUserDataData;
 use App\Modules\Profile\Http\Requests\ProfileDeleteUserAccountRequest;
 use App\Modules\Profile\Http\Requests\ProfileUpdateUserDataRequest;
 use App\Modules\Profile\Http\Requests\ProfileUpdateUserPasswordRequest;
+use App\Modules\Profile\ViewModels\ProfileUserViewModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -40,7 +41,7 @@ class ProfileController extends BaseWebController
                         'method' => 'replaceWith',
                         'selector' => '#form-user-data',
                         'content' => $this->render('pages.profile.components.edit_user_data', [
-                            'user' => $request->user(),
+                            'user' => ProfileUserViewModel::from($request->user()),
                         ])->render(),
                     ],
                 ],
@@ -67,9 +68,8 @@ class ProfileController extends BaseWebController
                     [
                         'method' => 'replaceWith',
                         'selector' => '#form-user-password',
-                        'content' => $this->render('pages.profile.components.edit_user_password', [
-                            'user' => $request->user(),
-                        ])->render(),
+                        // The password form renders nothing about the user.
+                        'content' => $this->render('pages.profile.components.edit_user_password')->render(),
                     ],
                 ],
             ]);

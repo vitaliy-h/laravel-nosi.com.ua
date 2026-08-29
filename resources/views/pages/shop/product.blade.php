@@ -20,10 +20,10 @@
 
                             <div class="image-zoom-container">
 
-                                @if($product->img)
+                                @if($product->has_image)
                                     <img
                                         src="{{ $product->image }}"
-                                        alt="{{ $product->title ?? $product->name }}"
+                                        alt="{{ $product->title }}"
                                         class="img-fluid main-image"
                                     >
                                 @endif
@@ -43,7 +43,7 @@
                         <div class="product-meta mb-2">
 
                             <span class="product-category">
-                                {{ $category->title ?? $category->name }}
+                                {{ $category->title }}
                             </span>
 
                             <div class="product-rating">
@@ -57,12 +57,12 @@
                         </div>
 
                         <h1 class="product-title">
-                            {{ $product->title ?? $product->name }}
+                            {{ $product->title }}
                         </h1>
 
                         <div class="product-price-container mb-4">
 
-                            @if($product->price2)
+                            @if($product->has_discount)
                                 <span class="current-price">
                                     {{ t('shop.currency') }}{{ $product->price2 }}
                                 </span>
@@ -110,7 +110,7 @@
                                         type="number"
                                         name="count"
                                         class="quantity-input"
-                                        value="{{ $cartQuantity }}"
+                                        value="{{ $cart_quantity }}"
                                         min="1"
                                     >
 
@@ -266,7 +266,7 @@
                                                 </div>
 
                                                 <div class="specs-value">
-                                                    {{ $category->title ?? $category->name }}
+                                                    {{ $category->title }}
                                                 </div>
                                             </div>
 

@@ -10,7 +10,7 @@
 
         <div class="row g-4">
             <div class="col-lg-6">
-                @include('components.builder', ['content' => $page->content])
+                @include('blocks.page_content')
             </div>
 
             <div class="col-lg-6">

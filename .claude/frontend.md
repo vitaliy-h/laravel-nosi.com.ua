@@ -37,6 +37,27 @@ resources/
 - Page templates live in `resources/views/pages/` grouped by module
 - Layouts in `resources/views/layouts/` — extend with `@extends('layouts.app')`
 
+## Blade gets ViewModels, not models
+
+A template asks a ViewModel for a field. It does not walk relations, format
+numbers or dates, or build URLs — that work happened before the view:
+
+```blade
+{{-- no --}}
+<a href="{{ save_route('shop.product', [$product->category->slug, $product->slug_with_id]) }}">
+{{ t('shop.currency') }}{{ number_format($order->total_amount, 2) }}
+
+{{-- yes --}}
+<a href="{{ $product->url }}">
+{{ $order->total_amount_formatted }}
+```
+
+Missing a field is a signal to add it to the ViewModel, not to reach into the
+model from the template. View variables are snake_case. Presentation choices
+(which CSS class a status maps to) do stay in blade.
+
+See `docs/starter/view-models.md`.
+
 ## Translations in Blade
 
 Use `t()` helper (not `__()`) for public site strings:

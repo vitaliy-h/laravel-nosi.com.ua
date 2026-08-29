@@ -1,11 +1,8 @@
 <ul class="{{ $level === 0 ? 'category-tree list-unstyled mb-0' : 'subcategory-list list-unstyled ps-3 mt-2 collapse' }} {{ $level > 0 && !empty($parentOpened) ? 'show' : '' }}">
     @foreach($categories as $item)
         @php
-            $children = $item->children ?? collect();
-            $hasChildren = $children->isNotEmpty();
-            $isActive = (int)($item->_active ?? 0) === 1;
-            $isOpened = (int)($item->_opened ?? 0) === 1;
-            $isExpanded = $isActive || $isOpened;
+            $hasChildren = $item->children->isNotEmpty();
+            $isExpanded = $item->is_active || $item->is_opened;
             $collapseId = 'category-' . $item->id . '-children';
         @endphp
 
@@ -20,11 +17,11 @@
                 @endif
             >
                 <a
-                    href="{{ save_route('shop.category', $item->slug) }}"
-                    class="{{ $level === 0 ? 'category-link' : 'subcategory-link' }} {{ $isActive ? 'active' : '' }}"
+                    href="{{ $item->url }}"
+                    class="{{ $level === 0 ? 'category-link' : 'subcategory-link' }} {{ $item->is_active ? 'active' : '' }}"
                 >
                     {{ $item->title }}
-                    <span class="category-count">({{ $item->products_count ?? 0 }})</span>
+                    <span class="category-count">({{ $item->products_count }})</span>
                 </a>
 
                 @if($hasChildren)
@@ -41,7 +38,7 @@
                     class="subcategory-list list-unstyled ps-3 mt-2 collapse {{ $isExpanded ? 'show' : '' }}"
                 >
                     @include('pages.shop.partials.category-tree-items', [
-                        'categories' => $children,
+                        'categories' => $item->children,
                         'level' => $level + 1,
                     ])
                 </ul>

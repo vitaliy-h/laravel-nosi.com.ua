@@ -1,4 +1,4 @@
-@if($specialCategories->isNotEmpty())
+@if($special_categories->isNotEmpty())
     <section id="category-cards" class="category-cards section">
 
         <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -45,15 +45,15 @@
                 </script>
 
                 <div class="swiper-wrapper">
-                    @foreach($specialCategories as $index => $category)
+                    @foreach($special_categories as $index => $category)
                         <div class="swiper-slide">
                             <div class="category-card" data-aos="fade-up" data-aos-delay="{{ ($index % 8 + 1) * 100 }}">
                                 <div class="category-image">
-                                    <img src="{{ Storage::url($category->img) }}" alt="{{ $category->title }}" class="img-fluid">
+                                    <img src="{{ $category->image }}" alt="{{ $category->title }}" class="img-fluid">
                                 </div>
                                 <h3 class="category-title">{{ $category->title }}</h3>
                                 <p class="category-count">{{ t('shop.products_count', ['count' => $category->products_count]) }}</p>
-                                <a href="{{ save_route('shop.category', $category->slug) }}" class="stretched-link"></a>
+                                <a href="{{ $category->url }}" class="stretched-link"></a>
                             </div>
                         </div>
                     @endforeach

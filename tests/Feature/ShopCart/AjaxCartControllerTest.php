@@ -94,7 +94,9 @@ class AjaxCartControllerTest extends TestCase
 
         $response->assertStatus(200);
         $actions = $response->json('actions');
-        $this->assertTrue(collect($actions)->contains(fn ($a) => ($a['selector'] ?? null) === '.js_checkout_total' && $a['content'] === '5.00'));
+        // The total travels the way the page renders it — formatted, currency included.
+        $expected = $cart->fresh()->total_amount_formatted;
+        $this->assertTrue(collect($actions)->contains(fn ($a) => ($a['selector'] ?? null) === '.js_checkout_total' && $a['content'] === $expected));
     }
 
     public function test_delete_checkout_last_item_redirects_to_cart(): void

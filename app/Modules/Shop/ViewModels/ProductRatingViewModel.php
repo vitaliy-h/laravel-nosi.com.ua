@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Modules\Shop\Dtos;
+namespace App\Modules\Shop\ViewModels;
 
+use App\Modules\Core\Abstract\BaseViewModel;
 use App\Modules\Shop\Models\Product;
-use Spatie\LaravelData\Data;
 
-class ProductRatingData extends Data
+class ProductRatingViewModel extends BaseViewModel
 {
     /**
      * @param  array<int, int>  $breakdown  reviews per star, keyed 5 → 1
      */
     public function __construct(
         public readonly float $average,
+        public readonly string $average_formatted,
         public readonly int $total,
         public readonly array $breakdown,
     ) {}
@@ -21,8 +22,11 @@ class ProductRatingData extends Data
      */
     public static function forProduct(Product $product, array $breakdown): self
     {
+        $average = (float) $product->rating;
+
         return new self(
-            average: (float) $product->rating,
+            average: $average,
+            average_formatted: number_format($average, 1),
             total: (int) $product->reviews_count,
             breakdown: $breakdown,
         );
@@ -43,15 +47,5 @@ class ProductRatingData extends Data
     public function countFor(int $stars): int
     {
         return $this->breakdown[$stars] ?? 0;
-    }
-
-    public function fullStars(): int
-    {
-        return (int) floor($this->average);
-    }
-
-    public function hasHalfStar(): bool
-    {
-        return ($this->average - $this->fullStars()) >= 0.5;
     }
 }

@@ -262,3 +262,15 @@ Print a short summary:
 - If a new module was created: its directory name, confirming it is singular PascalCase
   and that `Str::snake()` of it equals the `PageModule` value
 - Next suggested step: `php artisan migrate` (or `./vendor/bin/sail artisan migrate` if Sail is used)
+
+---
+
+## When the model reaches a page
+
+This skill stops at the model. As soon as the model is rendered by a blade
+template, it does not go to the view itself: a controller hands blade a
+**ViewModel** — fed the Eloquent model, exposing fields already prepared for
+rendering (URLs, formatted amounts and dates, derived flags).
+
+ViewModels live in `app/Modules/{Module}/ViewModels/` on top of
+`App\Modules\Core\Abstract\BaseViewModel`. See `docs/starter/view-models.md`.

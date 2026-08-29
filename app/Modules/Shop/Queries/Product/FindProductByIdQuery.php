@@ -10,7 +10,8 @@ class FindProductByIdQuery
     {
         return Product::visible()
             ->where('id', $id)
-            ->with('brand')
+            // `category` is what gives the product its URL in the view layer.
+            ->with(['brand', 'category'])
             ->firstOrFail();
     }
 }

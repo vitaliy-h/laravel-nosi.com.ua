@@ -176,8 +176,8 @@
             </div>
 
             <div class="legal-links">
-                @foreach($footerMenu as $item)
-                    <a href="{{\App\Modules\Core\Facades\UrlFacade::normalizeForLink($item->slug)}}">{{$item->title}}</a>
+                @foreach($footer_menu as $item)
+                    <a href="{{ $item->url }}">{{ $item->title }}</a>
                 @endforeach
             </div>
 

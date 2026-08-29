@@ -10,9 +10,9 @@
                     'subtitle' => t('index.hero_subtitle')
                 ])
 
-        @include('components.builder', ['content' => $page->content])
+        @include('blocks.page_content')
 
-        @include('pages.shop.category-cards', ['specialCategories' => $specialCategories])
+        @include('pages.shop.category-cards', ['special_categories' => $special_categories])
 
         <!-- Best Sellers Section -->
         <section id="best-sellers" class="best-sellers section">
@@ -26,7 +26,7 @@
             <div class="container" data-aos="fade-up" data-aos-delay="100">
 
                 <div class="row gy-4">
-                    @foreach($bestSellers as $product)
+                    @foreach($best_sellers as $product)
                         @include('pages.shop.product-card', ['product' => $product, 'dataAttrs' => ['data-aos' => 'fade-up', 'data-aos-delay' => '100']])
                     @endforeach
                 </div>
@@ -47,7 +47,7 @@
                              data-aos="fade-up">
                             <ul class="d-flex flex-wrap gap-2 list-unstyled">
                                 <li class="filter-active" data-filter="*">All</li>
-                                @foreach($featuredCategories as $category)
+                                @foreach($featured_categories as $category)
                                     <li data-filter=".filter_category_{{ $category->id }}">{{ $category->title }}</li>
                                 @endforeach
                             </ul>
@@ -58,12 +58,9 @@
                 <div class="row product-container isotope-container best-sellers" data-aos="fade-up"
                      data-aos-delay="200">
 
-                    @foreach($featuredProducts as $product)
+                    @foreach($featured_products as $product)
                         @php
-                            $rootCategory = $product->category?->isRoot()
-                                ? $product->category
-                                : $product->category?->ancestors->first();
-                            $filterClass = $rootCategory ? 'filter_category_' . $rootCategory->id : '';
+                            $filterClass = $product->root_category_id ? 'filter_category_' . $product->root_category_id : '';
                         @endphp
                         @include('pages.shop.product-card', [
                             'product'   => $product,

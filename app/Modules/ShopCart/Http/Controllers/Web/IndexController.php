@@ -5,6 +5,7 @@ namespace App\Modules\ShopCart\Http\Controllers\Web;
 use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\ShopCart\Actions\FindCartAction;
 use App\Modules\ShopCart\Models\Cart;
+use App\Modules\ShopCart\ViewModels\CartViewModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -27,12 +28,13 @@ class IndexController extends BaseWebController
         return $this->render('pages.cart.empty_cart');
     }
 
+    /**
+     * The checkout template renders no cart data of its own yet — the totals
+     * live on the cart page.
+     */
     public function checkout(Request $request)
     {
-        $cart = $this->findCart->handle(Auth::user());
-        $cart?->load('items.product');
-
-        return $this->render('pages.cart.checkout', compact('cart'));
+        return $this->render('pages.cart.checkout');
     }
 
     public function show(Request $request, string $uuid)
@@ -48,6 +50,6 @@ class IndexController extends BaseWebController
             return $this->render('pages.cart.empty_cart');
         }
 
-        return $this->render('pages.cart.index', compact('cart'));
+        return $this->render('pages.cart.index', ['cart' => CartViewModel::from($cart)]);
     }
 }

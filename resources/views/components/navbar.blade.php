@@ -104,15 +104,11 @@
             <div class="position-relative">
                 <nav id="navmenu" class="navmenu">
                     <ul>
-                        @foreach($headerMenu as $item)
-                            @php
-                                $url = \App\Modules\Core\Facades\UrlFacade::normalizeForLink($item->slug);
-                            @endphp
-
+                        @foreach($header_menu as $item)
                             <li>
                                 <a
-                                    href="{{ $url }}"
-                                    class="{{ '/' . request()->path() === $url ? 'active' : '' }}"
+                                    href="{{ $item->url }}"
+                                    class="{{ $item->is_active ? 'active' : '' }}"
                                 >
                                     {{ $item->title }}
                                 </a>

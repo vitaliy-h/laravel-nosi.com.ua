@@ -11,6 +11,8 @@ use App\Modules\ShopCart\Actions\RemoveCartItemAction;
 use App\Modules\ShopCart\Enums\CartAction;
 use App\Modules\ShopCart\Http\Requests\ChangeCartRequest;
 use App\Modules\ShopCart\Models\Cart;
+use App\Modules\ShopCart\ViewModels\CartItemViewModel;
+use App\Modules\ShopCart\ViewModels\CartViewModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
@@ -100,11 +102,7 @@ class AjaxCartController extends BaseWebController
                 'method' => 'remove',
             ],
             $this->summaryDiscountAction($cart),
-            [
-                'selector' => '.js_checkout_total',
-                'method' => 'text',
-                'content' => $cart->total_amount,
-            ],
+            $this->checkoutTotalAction($cart),
         ];
     }
 
@@ -118,7 +116,9 @@ class AjaxCartController extends BaseWebController
             [
                 'selector' => '.js_cart_modal_content',
                 'method' => 'html',
-                'content' => $this->render('pages.shop.cart_modal_item', compact('item'))->render(),
+                'content' => $this->render('pages.shop.cart_modal_item', [
+                    'item' => CartItemViewModel::from($item->load('product')),
+                ])->render(),
             ],
             [
                 'selector' => '#cartModal',
@@ -136,7 +136,7 @@ class AjaxCartController extends BaseWebController
             [
                 'selector' => '.js_product_total',
                 'method' => 'text',
-                'content' => $item->total,
+                'content' => $item->total_formatted,
             ],
         ];
     }
@@ -151,14 +151,10 @@ class AjaxCartController extends BaseWebController
             [
                 'selector' => '.js_product_checkout_total_'.$product->id,
                 'method' => 'text',
-                'content' => $item->total,
+                'content' => $item->total_formatted,
             ],
             $this->summaryDiscountAction($cart),
-            [
-                'selector' => '.js_checkout_total',
-                'method' => 'text',
-                'content' => $cart->total_amount,
-            ],
+            $this->checkoutTotalAction($cart),
         ];
     }
 
@@ -171,7 +167,18 @@ class AjaxCartController extends BaseWebController
         return [
             'selector' => '.js_summary_discount',
             'method' => 'replaceWith',
-            'content' => $this->render('pages.cart.partials.summary-discount', compact('cart'))->render(),
+            'content' => $this->render('pages.cart.partials.summary-discount', [
+                'cart' => CartViewModel::from($cart->load('items.product')),
+            ])->render(),
+        ];
+    }
+
+    private function checkoutTotalAction(Cart $cart): array
+    {
+        return [
+            'selector' => '.js_checkout_total',
+            'method' => 'text',
+            'content' => $cart->total_amount_formatted,
         ];
     }
 

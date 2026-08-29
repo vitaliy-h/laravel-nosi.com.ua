@@ -6,7 +6,12 @@ use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Profile\Dtos\OrderFilterData;
 use App\Modules\Profile\Queries\FindUserOrderQuery;
 use App\Modules\Profile\Queries\GetUserOrdersQuery;
+use App\Modules\Profile\ViewModels\ProfileEditPageViewModel;
+use App\Modules\Profile\ViewModels\ProfileOrderPageViewModel;
+use App\Modules\Profile\ViewModels\ProfileOrdersPageViewModel;
+use App\Modules\Profile\ViewModels\ProfileUserViewModel;
 use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
+use App\Modules\ShopOrder\ViewModels\OrderViewModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -24,32 +29,40 @@ class IndexController extends BaseWebController
 
     public function edit(Request $request)
     {
-        $user = auth()->user()->load('socialProfiles');
-        $activeSection = 'edit';
+        $page = new ProfileEditPageViewModel(
+            user: ProfileUserViewModel::from(auth()->user()->load('socialProfiles')),
+        );
 
-        return $this->render('pages.profile.edit', compact('user', 'activeSection'));
+        return $this->render('pages.profile.edit', $page->toViewData());
     }
 
     public function orders(Request $request)
     {
         $user = auth()->user();
-        $activeSection = 'orders';
 
         $filter = new OrderFilterData(
             search: $request->query('search') ?: null,
             status: $request->query('status') ? PaymentStatusEnum::tryFrom($request->query('status')) : null,
         );
-        $orders = $this->getUserOrders->handle($user->id, $filter);
 
-        return $this->render('pages.profile.orders', compact('user', 'activeSection', 'orders', 'filter'));
+        $page = new ProfileOrdersPageViewModel(
+            user: ProfileUserViewModel::from($user),
+            orders: OrderViewModel::collect($this->getUserOrders->handle($user->id, $filter)),
+            filter: $filter,
+        );
+
+        return $this->render('pages.profile.orders', $page->toViewData());
     }
 
     public function order(Request $request, string $id)
     {
         $user = auth()->user();
-        $activeSection = 'orders';
-        $order = $this->findUserOrder->handle((int) $id, $user->id);
 
-        return $this->render('pages.profile.order', compact('user', 'activeSection', 'order'));
+        $page = new ProfileOrderPageViewModel(
+            user: ProfileUserViewModel::from($user),
+            order: OrderViewModel::from($this->findUserOrder->handle((int) $id, $user->id)),
+        );
+
+        return $this->render('pages.profile.order', $page->toViewData());
     }
 }

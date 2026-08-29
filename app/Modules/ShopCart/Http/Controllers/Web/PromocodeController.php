@@ -9,6 +9,7 @@ use App\Modules\ShopCart\Actions\RemovePromocodeFromCartAction;
 use App\Modules\ShopCart\Http\Requests\ApplyPromocodeRequest;
 use App\Modules\ShopCart\Http\Requests\RemovePromocodeRequest;
 use App\Modules\ShopCart\Models\Cart;
+use App\Modules\ShopCart\ViewModels\CartViewModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 
@@ -55,23 +56,28 @@ class PromocodeController extends BaseWebController
      */
     private function summaryResponse(Cart $cart, ?ActionResult $result): JsonResponse
     {
+        $cartView = CartViewModel::from($cart->load('items.product'));
+
         return response()->json([
             'success' => true,
             'actions' => [
                 [
                     'method' => 'replaceWith',
                     'selector' => '.js_promocode_block',
-                    'content' => $this->render('pages.cart.partials.promocode', compact('cart', 'result'))->render(),
+                    'content' => $this->render('pages.cart.partials.promocode', [
+                        'cart' => $cartView,
+                        'result' => $result,
+                    ])->render(),
                 ],
                 [
                     'method' => 'replaceWith',
                     'selector' => '.js_summary_discount',
-                    'content' => $this->render('pages.cart.partials.summary-discount', compact('cart'))->render(),
+                    'content' => $this->render('pages.cart.partials.summary-discount', ['cart' => $cartView])->render(),
                 ],
                 [
                     'method' => 'text',
                     'selector' => '.js_checkout_total',
-                    'content' => $cart->total_amount,
+                    'content' => $cartView->total_amount_formatted,
                 ],
             ],
         ]);

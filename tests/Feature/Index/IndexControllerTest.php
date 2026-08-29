@@ -36,9 +36,9 @@ class IndexControllerTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
-        $response->assertViewHas('bestSellers');
-        $response->assertViewHas('featuredCategories');
-        $response->assertViewHas('featuredProducts');
-        $response->assertViewHas('specialCategories');
+        $response->assertViewHas('best_sellers');
+        $response->assertViewHas('featured_categories');
+        $response->assertViewHas('featured_products');
+        $response->assertViewHas('special_categories');
     }
 }

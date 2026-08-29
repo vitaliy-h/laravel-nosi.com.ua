@@ -38,7 +38,7 @@
 
             <div class="preferences-list">
                 @foreach (config('social.providers') as $provider)
-                    @php $connected = $user->socialProfiles->firstWhere('provider', $provider); @endphp
+                    @php $connected = $user->social_profiles[$provider] ?? null; @endphp
                     <div class="preference-item">
                         <div class="preference-info">
                             <h4>{{ t('social.' . $provider) }}</h4>

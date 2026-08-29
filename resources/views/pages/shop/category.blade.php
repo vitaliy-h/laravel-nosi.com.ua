@@ -155,7 +155,7 @@
 
             <div class="col-lg-8">
 
-                @if(isset($category) && $category->text)
+                @if($category?->text)
                     <div class="mb-4">
                         {!! $category->text !!}
                     </div>

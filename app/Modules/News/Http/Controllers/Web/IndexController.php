@@ -5,6 +5,7 @@ namespace App\Modules\News\Http\Controllers\Web;
 use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\News\Queries\FindNewsBySlugQuery;
 use App\Modules\News\Queries\GetNewsListQuery;
+use App\Modules\News\ViewModels\NewsViewModel;
 use Illuminate\Http\Request;
 
 class IndexController extends BaseWebController
@@ -16,14 +17,14 @@ class IndexController extends BaseWebController
 
     public function index(Request $request)
     {
-        $news = $this->getNewsList->handle();
+        $news = NewsViewModel::collect($this->getNewsList->handle());
 
         return $this->render('pages.news.index', compact('news'));
     }
 
     public function show(Request $request, string $slug)
     {
-        $newsItem = $this->findNewsBySlug->handle($slug);
+        $newsItem = NewsViewModel::from($this->findNewsBySlug->handle($slug));
 
         view()->share([
             'meta_title' => $newsItem->meta_title,

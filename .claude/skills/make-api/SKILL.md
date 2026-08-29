@@ -12,7 +12,12 @@ description: >
 2. **Actions** hold business logic, injectable into both web and API controllers
 3. **DTOs** (`spatie/laravel-data`) carry validated data from request to action
 4. **FormRequest** per method — always has `rules()` + `attributes()` (using `t('module.field')`)
-5. **Resource** extends `JsonResource` — always used for output, never raw model/array
+5. **Resource** extends `JsonResource` — always used for output, never raw model/array.
+   Resources are the **API's** output layer only; the web side has its own —
+   a controller rendering a blade hands it a **ViewModel**
+   (`app/Modules/{Module}/ViewModels/`, see `docs/starter/view-models.md`).
+   Neither one is reused as the other: an API response and a rendered page
+   need different fields.
 6. **Routes** in `app/Modules/{Module}/Http/Routes/api.php` — auto-loaded by `ModuleServiceProvider` (wrapped in `Route::prefix('api')->middleware('api')->group(...)`)
 7. **Translations** in `lang/en/dictionary.php` under `'shop' => [...]` key (key = module slug)
 

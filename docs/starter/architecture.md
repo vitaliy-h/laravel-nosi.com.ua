@@ -129,6 +129,16 @@ The one exception is `PageText`, which owns the app's single `Route::fallback()`
 
 ---
 
+# View Models
+
+Data going from a controller to a view goes through a ViewModel: it is fed an
+Eloquent model and exposes fields already prepared for rendering, so blade never
+walks relations or formats values. They live in
+`app/Modules/{Module}/ViewModels/`, on top of
+`App\Modules\Core\Abstract\BaseViewModel`. See `docs/starter/view-models.md`.
+
+---
+
 # Blade Templates
 
 Blade templates remain in standard Laravel location:

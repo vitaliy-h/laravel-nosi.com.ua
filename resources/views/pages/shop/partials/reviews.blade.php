@@ -5,7 +5,7 @@
         <div class="overall-rating">
 
             <div class="rating-number">
-                {{ number_format($rating->average, 1) }}
+                {{ $rating->average_formatted }}
             </div>
 
             <div class="rating-stars">

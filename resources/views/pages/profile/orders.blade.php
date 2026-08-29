@@ -55,15 +55,15 @@
                         <span class="label">{{ t('profile.order_id') }}:</span>
                         <span class="value">#{{ $order->order_number }}</span>
                     </div>
-                    <div class="order-date">{{ $order->created_at->format('d M, Y') }}</div>
+                    <div class="order-date">{{ $order->created_at_formatted }}</div>
                 </div>
 
                 <div class="order-content">
                     @if($order->items->isNotEmpty())
                         <div class="product-grid">
                             @foreach($order->items as $item)
-                                @if($item->product)
-                                    <img src="{{ $item->product->image }}" alt="{{ $item->product_name }}" loading="lazy">
+                                @if($item->image)
+                                    <img src="{{ $item->image }}" alt="{{ $item->name }}" loading="lazy">
                                 @endif
                             @endforeach
                         </div>
@@ -72,13 +72,13 @@
                     <div class="order-info">
                         <div class="info-row">
                             <span>{{ t('profile.order_status') }}</span>
-                            <span class="status {{ $order->payment_status->value }}">
-                                {{ $order->payment_status->label() }}
+                            <span class="status {{ $order->payment_status }}">
+                                {{ $order->payment_status_label }}
                             </span>
                         </div>
                         <div class="info-row">
                             <span>{{ t('profile.order_items') }}</span>
-                            <span>{{ $order->items->count() }} {{ t('profile.order_items_unit') }}</span>
+                            <span>{{ $order->items_count }} {{ t('profile.order_items_unit') }}</span>
                         </div>
                         <div class="info-row">
                             <span>{{ t('profile.order_total') }}</span>
@@ -88,7 +88,7 @@
                 </div>
 
                 <div class="order-footer">
-                    @if($order->permissions->canPay())
+                    @if($order->can_pay)
                         <a href="#"
                            role="button"
                            class="btn btn-track">

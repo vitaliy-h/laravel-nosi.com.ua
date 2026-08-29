@@ -11,7 +11,7 @@
                 </h5>
 
                 <div class="review-date">
-                    {{ $review->created_at?->format('m/d/Y') }}
+                    {{ $review->created_at_formatted }}
                 </div>
             </div>
 

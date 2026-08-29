@@ -23,6 +23,7 @@ class FrontendPagesSmokeTest extends TestCase
         '/feedback' => 'feedback',
         '/user_auth' => 'user_auth',
         '/profile' => 'profile',
+        '/shop_cart' => 'shop_cart',
     ];
 
     /**
@@ -68,6 +69,7 @@ class FrontendPagesSmokeTest extends TestCase
             'shop' => ['/shop', 200],
             'feedback' => ['/feedback', 200],
             'auth' => ['/user_auth', 200],
+            'cart' => ['/shop_cart', 200],
             'text page' => ['/text-page-1', 200],
             'profile guest redirect' => ['/profile', 302],
         ];

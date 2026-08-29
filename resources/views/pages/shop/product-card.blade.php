@@ -2,8 +2,8 @@
     @foreach($dataAttrs ?? [] as $attr => $value) {{ $attr }}="{{ $value }}"@endforeach>
     <div class="product-card">
         <div class="product-image">
-            <img src="{{ $product->imageUrl('thumb') }}" class="img-fluid default-image" alt="{{ $product->title }}" loading="lazy">
-            <img src="{{ $product->imageUrl('thumb') }}" class="img-fluid hover-image" alt="{{ $product->title }}" loading="lazy">
+            <img src="{{ $product->thumb_url }}" class="img-fluid default-image" alt="{{ $product->title }}" loading="lazy">
+            <img src="{{ $product->thumb_url }}" class="img-fluid hover-image" alt="{{ $product->title }}" loading="lazy">
             @php $badge = [['class' => 'bg-accent', 'label' => t('shop.badge_new')], ['class' => 'bg-sale', 'label' => t('shop.sale')], ['class' => 'bg-sold-out', 'label' => t('shop.badge_sold_out')]][array_rand([0,1,2])]; @endphp
             <div class="product-tags">
                 <span class="badge {{ $badge['class'] }}">{{ $badge['label'] }}</span>
@@ -16,12 +16,12 @@
         </div>
         <div class="product-info">
             <h3 class="product-title">
-                <a href="{{ save_route('shop.product', [$product->category->slug, $product->slug_with_id]) }}">
+                <a href="{{ $product->url }}">
                     {{ $product->title }}
                 </a>
             </h3>
             <div class="product-price">
-                @if($product->price2)
+                @if($product->has_discount)
                     <span class="current-price">${{ $product->price2 }}</span>
                     <span class="original-price">${{ $product->price }}</span>
                 @else

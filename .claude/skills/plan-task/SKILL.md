@@ -32,7 +32,7 @@ Read the docs first — the solution may already be described:
 - topic docs: `docs/api/`, `docs/filament/`, `docs/starter/{cart,routing,letters,sms,translations,images,uuid,logs}.md`
 - `.claude/backend.md`, `.claude/frontend.md`, `.claude/testing.md`
 
-Then find everything the task touches: module(s) under `app/Modules/`, models, migrations, Actions, DTOs, Web/Api controllers, Filament resources, routes, configs, seeders, existing tests.
+Then find everything the task touches: module(s) under `app/Modules/`, models, migrations, Actions, DTOs, ViewModels, Web/Api controllers, Filament resources, routes, configs, seeders, existing tests.
 
 For broad searches delegate to `Explore` or `cavecrew-investigator`. Record files with paths and line numbers.
 
@@ -111,7 +111,7 @@ A third file, `report.md`, is written later — after the work is done (see Step
   - Do not split a step just because it touches many files; split when the *purpose* changes.
 - **Executable one step at a time or all at once.** Each step names concrete files.
 - **Track progress**: a finished step becomes `[x]`. If the approach changes mid-work, append to "Изменения плана" instead of silently rewriting history.
-- **Project architecture**: Actions hold business logic (shared by Web and API), controllers stay thin, DTOs (`spatie/laravel-data`) for input, Resources for output, tests are PHPUnit 12 (not Pest). Unsure where something belongs → ask.
+- **Project architecture**: Actions hold business logic (shared by Web and API), controllers stay thin, DTOs (`spatie/laravel-data`) for input, Resources for API output, ViewModels for anything a blade renders (`docs/starter/view-models.md`), tests are PHPUnit 12 (not Pest). Unsure where something belongs → ask.
 - **Design patterns** only where the task justifies them, never for their own sake. State the reason in "Подход".
 - **Dangerous spots** marked inline in the step with `⚠️`:
   - editing existing migrations / dropping columns / data loss

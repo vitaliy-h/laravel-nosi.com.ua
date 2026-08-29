@@ -3,11 +3,11 @@
 namespace App\Modules\Shop\Http\Controllers\Web;
 
 use App\Modules\Core\Abstract\BaseWebController;
-use App\Modules\Core\Dtos\BreadcrumbData;
 use App\Modules\Core\Support\ModuleGate;
-use App\Modules\Shop\Dtos\ProductRatingData;
+use App\Modules\Core\ViewModels\BreadcrumbViewModel;
 use App\Modules\Shop\Dtos\ProductSearchDto;
 use App\Modules\Shop\Enums\SortOptionEnum;
+use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Queries\Category\FindCategoryBySlugQuery;
 use App\Modules\Shop\Queries\Category\GetAllCategoriesQuery;
 use App\Modules\Shop\Queries\Category\GetCategoryBreadcrumbsQuery;
@@ -16,8 +16,15 @@ use App\Modules\Shop\Queries\Product\PrepareShopFilterQuery;
 use App\Modules\Shop\Queries\Product\SearchProductsQuery;
 use App\Modules\Shop\Queries\ProductReview\GetProductRatingBreakdownQuery;
 use App\Modules\Shop\Queries\ProductReview\GetReviewsByProductQuery;
+use App\Modules\Shop\ViewModels\CategoryViewModel;
+use App\Modules\Shop\ViewModels\ProductRatingViewModel;
+use App\Modules\Shop\ViewModels\ProductReviewViewModel;
+use App\Modules\Shop\ViewModels\ProductViewModel;
+use App\Modules\Shop\ViewModels\ShopCategoryPageViewModel;
+use App\Modules\Shop\ViewModels\ShopProductPageViewModel;
 use App\Modules\ShopCart\Actions\FindCartAction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class IndexController extends BaseWebController
@@ -36,15 +43,9 @@ class IndexController extends BaseWebController
 
     public function index(Request $request)
     {
-        $categories = $this->getAllCategories->handle();
         $filter = $this->prepareShopFilter->handle(null, $request);
-        $products = $this->searchProducts->handle(new ProductSearchDto(filter: $filter, sort: SortOptionEnum::tryFrom((string) $request->query('sort')), paginate: true));
 
-        return $this->render('pages.shop.category', compact(
-            'categories',
-            'products',
-            'filter',
-        ));
+        return $this->render('pages.shop.category', $this->listing(null, $filter, $request)->toViewData());
     }
 
     public function category(string $categorySlug, Request $request)
@@ -54,20 +55,12 @@ class IndexController extends BaseWebController
         view()->share([
             'meta_title' => $category->meta_title ?: $category->title,
             'meta_description' => $category->meta_description,
+            'breadcrumbs' => $this->getCategoryBreadcrumbs->handle($category),
         ]);
 
-        $categories = $this->getAllCategories->handle($category->id);
-        $breadcrumbs = $this->getCategoryBreadcrumbs->handle($category);
         $filter = $this->prepareShopFilter->handle($category, $request);
-        $products = $this->searchProducts->handle(new ProductSearchDto(category: $category, filter: $filter, sort: SortOptionEnum::tryFrom((string) $request->query('sort')), paginate: true));
 
-        return $this->render('pages.shop.category', compact(
-            'category',
-            'categories',
-            'products',
-            'filter',
-            'breadcrumbs'
-        ));
+        return $this->render('pages.shop.category', $this->listing($category, $filter, $request)->toViewData());
     }
 
     public function product(string $categorySlug, string $productSlugId, Request $request)
@@ -90,35 +83,60 @@ class IndexController extends BaseWebController
             );
         }
 
-        view()->share([
-            'meta_title' => $product->meta_title ?: $product->title,
-            'meta_description' => $product->meta_description,
-        ]);
-
         $breadcrumbs = $this->getCategoryBreadcrumbs->handle($category);
         $breadcrumbs->push(
-            new BreadcrumbData(
-                title: $product->name ?? $product->title,
+            new BreadcrumbViewModel(
+                title: (string) $product->title,
                 url: save_route('shop.product', [$category->slug, $product->slug_with_id])
             )
         );
 
-        $cartQuantity = $this->cartQuantityFor($product->id) ?? 1;
+        view()->share([
+            'meta_title' => $product->meta_title ?: $product->title,
+            'meta_description' => $product->meta_description,
+            'breadcrumbs' => $breadcrumbs,
+        ]);
 
         $reviews = $this->getReviewsByProduct->handle($product);
-        $rating = ProductRatingData::forProduct(
-            $product,
-            $this->getProductRatingBreakdown->handle($product),
+
+        $page = new ShopProductPageViewModel(
+            product: ProductViewModel::from($product),
+            category: CategoryViewModel::from($category),
+            cart_quantity: $this->cartQuantityFor($product->id) ?? 1,
+            reviews: ProductReviewViewModel::collect($reviews),
+            rating: ProductRatingViewModel::forProduct(
+                $product,
+                $this->getProductRatingBreakdown->handle($product),
+            ),
         );
 
-        return $this->render('pages.shop.product', compact(
-            'category',
-            'product',
-            'breadcrumbs',
-            'cartQuantity',
-            'reviews',
-            'rating',
+        return $this->render('pages.shop.product', $page->toViewData());
+    }
+
+    private function listing(?Category $category, $filter, Request $request): ShopCategoryPageViewModel
+    {
+        $products = $this->searchProducts->handle(new ProductSearchDto(
+            category: $category,
+            filter: $filter,
+            sort: SortOptionEnum::tryFrom((string) $request->query('sort')),
+            paginate: true,
         ));
+
+        return new ShopCategoryPageViewModel(
+            category: $category ? CategoryViewModel::from($category) : null,
+            categories: $this->categoryTree($this->getAllCategories->handle($category?->id)),
+            products: ProductViewModel::collect($products),
+            filter: $filter,
+        );
+    }
+
+    /**
+     * @param  Collection<int, Category>  $categories
+     * @return Collection<int, CategoryViewModel>
+     */
+    private function categoryTree(Collection $categories): Collection
+    {
+        return $categories->map(fn (Category $category) => CategoryViewModel::from($category))->values();
     }
 
     /**

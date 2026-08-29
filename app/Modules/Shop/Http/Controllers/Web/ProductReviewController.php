@@ -6,9 +6,10 @@ use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Shop\Actions\CreateProductReviewAction;
 use App\Modules\Shop\Dtos\CreateProductReviewData;
 use App\Modules\Shop\Http\Requests\StoreProductReviewRequest;
-use App\Modules\Shop\Models\ProductReview;
 use App\Modules\Shop\Queries\Product\FindProductByIdQuery;
 use App\Modules\Shop\Queries\ProductReview\GetReviewsByProductQuery;
+use App\Modules\Shop\ViewModels\ProductReviewViewModel;
+use App\Modules\Shop\ViewModels\ProductViewModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -78,10 +79,12 @@ class ProductReviewController extends BaseWebController
         $product = $this->findProductById->handle((int) $request->query('product'));
         $page = max(1, (int) $request->query('page', 1));
 
-        $reviews = $this->getReviewsByProduct->handle($product, $page);
+        $reviews = ProductReviewViewModel::collect(
+            $this->getReviewsByProduct->handle($product, $page)
+        );
 
         $items = $reviews
-            ->map(fn (ProductReview $review) => $this->render('pages.shop.partials.review-item', compact('review'))->render())
+            ->map(fn (ProductReviewViewModel $review) => $this->render('pages.shop.partials.review-item', compact('review'))->render())
             ->implode('');
 
         return response()->json([
@@ -94,7 +97,10 @@ class ProductReviewController extends BaseWebController
                 [
                     'method' => 'replaceWith',
                     'selector' => '#reviews-load-more',
-                    'content' => $this->render('pages.shop.partials.reviews-load-more', compact('product', 'reviews'))->render(),
+                    'content' => $this->render('pages.shop.partials.reviews-load-more', [
+                        'product' => ProductViewModel::from($product),
+                        'reviews' => $reviews,
+                    ])->render(),
                 ],
             ],
         ]);

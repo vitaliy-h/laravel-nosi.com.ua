@@ -10,14 +10,14 @@
         <nav class="menu-nav">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link {{ ($activeSection ?? '') === 'edit' ? 'active' : '' }}"
+                    <a class="nav-link {{ $active_section === 'edit' ? 'active' : '' }}"
                        href="{{ save_route('profile.edit') }}">
                         <i class="bi bi-gear"></i>
                         <span>{{t('profile.account_settings')}}</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ ($activeSection ?? '') === 'orders' ? 'active' : '' }}"
+                    <a class="nav-link {{ $active_section === 'orders' ? 'active' : '' }}"
                        href="{{ save_route('profile.orders') }}">
                         <i class="bi bi-bag"></i>
                         <span>{{t('profile.orders')}}</span>

@@ -6,11 +6,7 @@
     @include('blocks.page_title')
 
     <div class="container mt-4">
-        @if($page->text)
-            <div class="mb-4">
-                {!! $page->text !!}
-            </div>
-        @endif
+        @include('blocks.page_content')
 
             <section id="cart" class="cart section checkout">
 
@@ -37,19 +33,19 @@
                                 </div>
 
                                 @foreach($cart->items as $item)
-                                    <div class="cart-item aos-init aos-animate checkout_item" data-product="{{$item->product->id}}" data-aos="fade-up" data-aos-delay="100">
+                                    <div class="cart-item aos-init aos-animate checkout_item" data-product="{{$item->product_id}}" data-aos="fade-up" data-aos-delay="100">
                                         <div class="row align-items-center gy-4">
                                             <div class="col-lg-6 col-12 mb-3 mb-lg-0">
                                                 <div class="product-info d-flex align-items-center">
                                                     <div class="product-image">
-                                                        <img src="{{$item->product->image}}" alt="{{ $item->product_name }}" class="img-fluid" loading="lazy">
+                                                        <img src="{{$item->image}}" alt="{{ $item->name }}" class="img-fluid" loading="lazy">
                                                     </div>
                                                     <div class="product-details">
-                                                        <h6 class="product-title">{{$item->product_name}}</h6>
+                                                        <h6 class="product-title">{{$item->name}}</h6>
 
                                                         <form data-abcr="{{ save_route('change_product_count') }}" action="{{ save_route('change_product_count') }}" method="POST">
                                                             @csrf
-                                                            <input type="hidden" name="id" value="{{$item->product->id}}">
+                                                            <input type="hidden" name="id" value="{{$item->product_id}}">
                                                             <input type="hidden" name="count" value="0">
                                                             <input type="hidden" name="cart_uuid" value="{{$cart->uuid}}">
                                                             <input type="hidden" name="action" value="{{ \App\Modules\ShopCart\Enums\CartAction::DeleteCheckout->value }}">
@@ -62,20 +58,20 @@
                                             </div>
                                             <div class="col-12 col-lg-2 text-center">
                                                 <div class="price-tag">
-                                                    <span class="current-price">{{ t('shop.currency') }}{{$item->selling_price}}</span>
+                                                    <span class="current-price">{{ $item->selling_price_formatted }}</span>
                                                 </div>
                                             </div>
                                             <div class="col-12 col-lg-2 text-center">
                                                 <form data-abcr="{{ save_route('change_product_count') }}" action="{{ save_route('change_product_count') }}" method="POST">
                                                     @csrf
-                                                    <input type="hidden" name="id" value="{{$item->product->id}}">
+                                                    <input type="hidden" name="id" value="{{$item->product_id}}">
                                                     <input type="hidden" name="cart_uuid" value="{{$cart->uuid}}">
                                                     <input type="hidden" name="action" value="{{ \App\Modules\ShopCart\Enums\CartAction::ChangeCountCheckout->value }}">
                                                     <div class="quantity-selector">
                                                         <button type="button" class="quantity-btn decrease">
                                                             <i class="bi bi-dash"></i>
                                                         </button>
-                                                        <input type="number" name="count" class="quantity-input js_change_checkout_products" data-product="{{$item->product->id}}" value="{{$item->quantity}}" min="1">
+                                                        <input type="number" name="count" class="quantity-input js_change_checkout_products" data-product="{{$item->product_id}}" value="{{$item->quantity}}" min="1">
                                                         <button type="button" class="quantity-btn increase">
                                                             <i class="bi bi-plus"></i>
                                                         </button>
@@ -84,7 +80,7 @@
                                             </div>
                                             <div class="col-12 col-lg-2 text-center mt-3 mt-lg-0">
                                                 <div class="item-total">
-                                                    <span>{{ t('shop.currency') }}<span class="js_product_checkout_total_{{$item->product->id}}">{{$item->total}}</span></span>
+                                                    <span class="js_product_checkout_total_{{$item->product_id}}">{{ $item->total_formatted }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -194,7 +190,7 @@
 
                                 <div class="summary-total">
                                     <span class="summary-label">{{ t('shop.total') }}</span>
-                                    <span class="summary-value ">{{ t('shop.currency') }}<span class="js_checkout_total">{{$cart->total_amount}}</span></span>
+                                    <span class="summary-value "><span class="js_checkout_total">{{ $cart->total_amount_formatted }}</span></span>
                                 </div>
 
                                 <div class="checkout-button">

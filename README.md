@@ -29,6 +29,7 @@ Base project modules.
 * [Claude Code Setup](docs/starter/claude.md)
 * [Architecture Overview](docs/starter/architecture.md)
     * [Action](docs/starter/actions.md)
+    * [View Models](docs/starter/view-models.md)
     * [Disabling Modules](docs/starter/modules.md)
     * [Routing](docs/starter/routing.md)
     * [Images](docs/starter/images.md)

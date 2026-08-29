@@ -6,11 +6,7 @@
     @include('blocks.page_title')
 
     <div class="container mt-4">
-        @if($page->text)
-            <div class="mb-4">
-                {!! $page->text !!}
-            </div>
-        @endif
+        @include('blocks.page_content')
 
             <section id="checkout" class="checkout section">
 

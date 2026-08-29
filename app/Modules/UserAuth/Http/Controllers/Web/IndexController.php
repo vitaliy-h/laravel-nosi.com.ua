@@ -3,33 +3,33 @@
 namespace App\Modules\UserAuth\Http\Controllers\Web;
 
 use App\Modules\Core\Abstract\BaseWebController;
+use App\Modules\UserAuth\ViewModels\AuthPageViewModel;
 use Illuminate\Http\Request;
 
 class IndexController extends BaseWebController
 {
-    private const MODES = [
-        'login',
-        'register',
-        'password_recovery',
-        'password_reset',
-    ];
-
     public function index(Request $request)
     {
-        $mode = 'login';
+        $page = AuthPageViewModel::make(
+            mode: $this->resolveMode($request),
+            token: $request->input('token'),
+            email: $request->input('email'),
+        );
 
-        foreach (self::MODES as $availableMode) {
+        return $this->render('pages.auth.index', $page->toViewData());
+    }
 
-            if ($request->has($availableMode)) {
-                $mode = $availableMode;
-                break;
+    /**
+     * The form to open is picked by a bare query flag: /auth?register.
+     */
+    private function resolveMode(Request $request): string
+    {
+        foreach (AuthPageViewModel::MODES as $mode) {
+            if ($request->has($mode)) {
+                return $mode;
             }
         }
 
-        return $this->render('pages.auth.index', [
-            'mode' => $mode,
-            'token' => $request->input('token'),
-            'email' => $request->input('email'),
-        ]);
+        return 'login';
     }
 }

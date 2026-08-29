@@ -1,14 +1,14 @@
 <div class="col-lg-6">
     <div class="product-box">
         <div class="product-thumb">
-            @if($product->price2)
+            @if($product->has_discount)
                 <span class="product-label product-label-sale">{{ t('shop.sale') }}</span>
             @endif
 
-            @if($product->img)
+            @if($product->has_image)
                 <img
-                    src="{{ $product->imageUrl('thumb') }}"
-                    alt="{{ $product->title ?? $product->name }}"
+                    src="{{ $product->thumb_url }}"
+                    alt="{{ $product->title }}"
                     class="main-img"
                     loading="lazy"
                 >
@@ -24,7 +24,7 @@
                         <i class="bi bi-arrow-repeat"></i>
                     </button>
                     <a
-                        href="{{ save_route('shop.product', [$product->category->slug, $product->slug. '-' . $product->id]) }}"
+                        href="{{ $product->url }}"
                         class="quick-action-btn"
                     >
                         <i class="bi bi-eye"></i>
@@ -48,13 +48,13 @@
         <div class="product-content">
             <div class="product-details">
                 <h3 class="product-title">
-                    <a href="{{ save_route('shop.product', [$product->category->slug, $product->slug_with_id]) }}">
-                        {{ $product->title ?? $product->name }}
+                    <a href="{{ $product->url }}">
+                        {{ $product->title }}
                     </a>
                 </h3>
 
                 <div class="product-price">
-                    @if($product->price2)
+                    @if($product->has_discount)
                         <span class="original">{{ t('shop.currency') }}{{ $product->price }}</span>
                         <span class="sale">{{ t('shop.currency') }}{{ $product->price2 }}</span>
                     @elseif($product->price)

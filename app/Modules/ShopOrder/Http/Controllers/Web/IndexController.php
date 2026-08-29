@@ -3,54 +3,42 @@
 namespace App\Modules\ShopOrder\Http\Controllers\Web;
 
 use App\Modules\Core\Abstract\BaseWebController;
-use App\Modules\Page\Services\MenuService;
-use App\Modules\ShopCart\Services\CartService;
+use App\Modules\Page\Services\PageContextSharer;
 use App\Modules\ShopOrder\Queries\FindOrderByUuidQuery;
+use App\Modules\ShopOrder\ViewModels\OrderViewModel;
 use Illuminate\View\View;
 
 class IndexController extends BaseWebController
 {
     public function __construct(
         private readonly FindOrderByUuidQuery $findOrderByUuid,
-        private readonly MenuService $menu,
-        private readonly CartService $cart,
+        private readonly PageContextSharer $pageContextSharer,
     ) {}
 
     public function show(string $uuid): View
     {
-        $order = $this->findOrderByUuid->handle($uuid);
+        $order = OrderViewModel::from($this->findOrderByUuid->handle($uuid));
 
-        $this->shareLayoutVars();
+        $this->pageContextSharer->shareWithoutPage();
 
         return $this->render('pages.shop.order.index', compact('order'));
     }
 
     public function success(string $uuid): View
     {
-        $order = $this->findOrderByUuid->handle($uuid);
+        $order = OrderViewModel::from($this->findOrderByUuid->handle($uuid));
 
-        $this->shareLayoutVars();
+        $this->pageContextSharer->shareWithoutPage();
 
         return $this->render('pages.shop.order.success', compact('order'));
     }
 
     public function error(string $uuid): View
     {
-        $order = $this->findOrderByUuid->handle($uuid);
+        $order = OrderViewModel::from($this->findOrderByUuid->handle($uuid));
 
-        $this->shareLayoutVars();
+        $this->pageContextSharer->shareWithoutPage();
 
         return $this->render('pages.shop.order.error', compact('order'));
-    }
-
-    private function shareLayoutVars(): void
-    {
-        view()->share([
-            'page' => null,
-            'breadcrumbs' => collect(),
-            'headerMenu' => $this->menu->getHeaderMenu(),
-            'footerMenu' => $this->menu->getFooterMenu(),
-            'cartCount' => $this->cart->getCount(),
-        ]);
     }
 }

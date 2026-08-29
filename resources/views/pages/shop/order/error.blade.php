@@ -26,7 +26,7 @@
                             <div class="summary-item">
                                 <span class="summary-label">{{ t('profile.order_status') }}</span>
                                 <span class="summary-value">
-                                    <span class="badge rounded-pill bg-secondary">{{ $order->payment_status->label() }}</span>
+                                    <span class="badge rounded-pill bg-secondary">{{ $order->payment_status_label }}</span>
                                 </span>
                             </div>
                             <div class="summary-total">
@@ -36,7 +36,7 @@
                         </div>
 
                         <div class="d-flex gap-3 justify-content-center flex-wrap">
-                            <a href="{{ route('order.show', $order->uuid) }}" class="btn btn-outline-secondary rounded-pill px-4">
+                            <a href="{{ $order->url }}" class="btn btn-outline-secondary rounded-pill px-4">
                                 <i class="bi bi-receipt me-2"></i>{{ t('shop.view_order') }}
                             </a>
                         </div>

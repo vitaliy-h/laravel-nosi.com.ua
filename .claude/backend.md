@@ -23,6 +23,22 @@ Modules can be disabled via `config/modules.php`, gated by
 migrations, seeders, admin nav/resources, and tests for that module. See
 `docs/starter/modules.md`.
 
+## View layer
+
+Data going from a controller to a view goes through a **ViewModel**: fed an
+Eloquent model, it exposes fields already prepared for rendering. Controllers
+never hand a blade an Eloquent model.
+
+ViewModels live in `app/Modules/{Module}/ViewModels/` on top of
+`App\Modules\Core\Abstract\BaseViewModel`. Two levels: `{Model}ViewModel` per
+entity (reused across screens) and `{Page}ViewModel` per screen. Build them with
+spatie's magical `from{Type}()`, collect with `::collect()` (paginators stay
+paginators), hand a page to the view with `$page->toViewData()`.
+
+A ViewModel never queries the DB — eager-loading is the caller's job — never
+reaches into a switchable module in place of `ModuleGate`, and never carries a
+field the page does not render. See `docs/starter/view-models.md`.
+
 ## API layer conventions
 
 - **Actions** hold business logic — shared between web and API controllers

@@ -11,7 +11,8 @@ class FindUserOrderQuery
         return Order::query()
             ->where('id', $orderId)
             ->where('user_id', $userId)
-            ->with('items.product')
+            // `category` is what gives an order line its link back to the catalogue.
+            ->with('items.product.category')
             ->firstOrFail();
     }
 }
