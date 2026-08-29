@@ -27,3 +27,5 @@ Thumbs.db
 /.osp/
 /package-lock.json
 tasks
+/public/css/filament
+/public/js/filament
