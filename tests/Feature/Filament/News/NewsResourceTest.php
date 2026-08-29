@@ -3,7 +3,7 @@
 namespace Tests\Feature\Filament\News;
 
 use App\Filament\Resources\News\Pages\ManageNews;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\News\Models\News;
 use Filament\Actions\CreateAction;

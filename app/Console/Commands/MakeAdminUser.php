@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Console\Command;
 use Spatie\Permission\Models\Permission;
 

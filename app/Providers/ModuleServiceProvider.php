@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use App\Modules\Core\Enums\PageModule;
-use App\Modules\Core\Models\Page;
+use App\Modules\Page\Enums\PageModule;
+use App\Modules\Page\Models\Page;
 use App\Modules\Core\Observers\LogObserver;
-use App\Modules\Core\Queries\FindPageByModuleQuery;
+use App\Modules\Page\Queries\FindPageByModuleQuery;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Core\Traits\Models\CascadesDeletes;
 use Illuminate\Console\Application as Artisan;
@@ -108,7 +108,7 @@ class ModuleServiceProvider extends ServiceProvider
     {
         $pageModule = PageModule::tryFrom(Str::snake(basename($module)));
 
-        // TextPage has N pages sharing the module (no single DB-driven prefix to
+        // PageText has N pages sharing the module (no single DB-driven prefix to
         // resolve, each page has its own independent slug) so it skips prefix/
         // share.page resolution and registers its own fallback route instead.
         if ($pageModule === PageModule::TEXT) {

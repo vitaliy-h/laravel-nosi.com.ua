@@ -44,8 +44,12 @@ Route::middleware(['web', 'share.page:'.$pageModule->value])
 ```
 
 - `$prefix` is the module's `Page->slug` from the DB (resolved once at boot),
-  or `''` for `PageModule::INDEX` (mounted at the root).
-- `share.page` is `App\Modules\Core\Http\Middleware\ShareModulePageContext` —
+  or `''` for `PageModule::INDEX` (mounted at the root). The slug is **not** the
+  `PageModule` value: `user_auth` is served from `/auth`, `shop_cart` from
+  `/cart`. With no page row in the DB yet the prefix falls back to the enum
+  value itself — which is what tests hit, since they seed pages only after the
+  app has booted (`/user_auth/login` in a test, `/auth/login` in a seeded app).
+- `share.page` is `App\Modules\Page\Http\Middleware\ShareModulePageContext` —
   at **request time** it resolves the `Page` for that `PageModule` and shares
   `page`, `breadcrumbs`, `meta_title`, `meta_description`, `headerMenu`,
   `footerMenu`, `cartCount` to the view via `PageContextSharer::share()`.
@@ -65,12 +69,12 @@ Route::middleware(['web', 'share.page:'.$pageModule->value])
 
 ---
 
-## 3. TextPage — the one exception
+## 3. PageText — the one exception
 
-`text_page` has **N pages sharing one module**, each with its own independent
+`page_text` has **N pages sharing one module**, each with its own independent
 slug — there's no single prefix to resolve. It skips prefix/`share.page`
 resolution and instead registers a `Route::fallback(...)`. Only one
-`Route::fallback()` can ever be active app-wide, which is why `TextPage` owns it.
+`Route::fallback()` can ever be active app-wide, which is why `PageText` owns it.
 
 ---
 

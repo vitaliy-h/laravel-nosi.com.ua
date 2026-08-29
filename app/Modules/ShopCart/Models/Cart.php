@@ -2,7 +2,7 @@
 
 namespace App\Modules\ShopCart\Models;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Core\Traits\Models\CascadesDeletes;
 use App\Modules\Core\Traits\Models\HasUuid;
 use Database\Factories\CartFactory;

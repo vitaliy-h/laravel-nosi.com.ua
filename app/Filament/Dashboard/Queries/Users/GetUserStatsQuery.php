@@ -4,7 +4,7 @@ namespace App\Filament\Dashboard\Queries\Users;
 
 use App\Filament\Dashboard\Dtos\DashboardPeriodData;
 use App\Filament\Dashboard\Dtos\Users\UserStatsData;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Filament\Dashboard\Support\DashboardSeries;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Subscriber\Models\Subscriber;

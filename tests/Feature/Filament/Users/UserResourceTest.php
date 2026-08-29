@@ -3,7 +3,7 @@
 namespace Tests\Feature\Filament\Users;
 
 use App\Filament\Resources\Users\Pages\ManageUsers;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;

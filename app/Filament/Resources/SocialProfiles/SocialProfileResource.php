@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\SocialProfiles;
 
 use App\Filament\Resources\SocialProfiles\Pages\ManageSocialProfiles;
-use App\Modules\Core\Models\SocialProfile;
+use App\Modules\UserAuth\Models\SocialProfile;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;

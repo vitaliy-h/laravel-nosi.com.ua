@@ -122,7 +122,7 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-users')
                                     ->url(\App\Filament\Resources\Users\UserResource::getUrl())
                                     ->isActiveWhen(fn(): bool => Request::is('admin/users') || Request::is('admin/users/create') || Request::is('admin/users/*/edit')),
-                                ModuleGate::isEnabled('auth') ? NavigationItem::make(__('admin.tables.social_profiles'))
+                                ModuleGate::isEnabled('user_auth') ? NavigationItem::make(__('admin.tables.social_profiles'))
                                     ->icon('heroicon-o-link')
                                     ->url(\App\Filament\Resources\SocialProfiles\SocialProfileResource::getUrl())
                                     ->isActiveWhen(fn(): bool => Request::is('admin/social-profiles*')) : null,
@@ -180,7 +180,7 @@ class AdminPanelProvider extends PanelProvider
                 ModuleGate::isEnabled('sms') ? \App\Filament\Resources\LogSms\LogSmsResource::class : null,
                 ModuleGate::isEnabled('news') ? \App\Filament\Resources\News\NewsResource::class : null,
                 ModuleGate::isEnabled('feedback') ? \App\Filament\Resources\Feedback\FeedbackResource::class : null,
-                ModuleGate::isEnabled('auth') ? \App\Filament\Resources\SocialProfiles\SocialProfileResource::class : null,
+                ModuleGate::isEnabled('user_auth') ? \App\Filament\Resources\SocialProfiles\SocialProfileResource::class : null,
                 ModuleGate::isEnabled('subscriber') ? \App\Filament\Resources\Subscribers\SubscriberResource::class : null,
                 ModuleGate::isEnabled('geo') ? \App\Filament\Resources\Geo\GeoCountries\GeoCountryResource::class : null,
                 ModuleGate::isEnabled('geo') ? \App\Filament\Resources\Geo\GeoRegions\GeoRegionResource::class : null,

@@ -205,5 +205,5 @@ Mounted under the `/cart` prefix (the module's CMS page slug) by
   Shop currently creates an order directly from a passed DTO and is **not** wired to
   the cart — the `/cart/checkout` page is still a static mockup with no real
   order-placement logic
-- **Core** (`ShareModulePageContext` middleware) — shares `cartCount` with all
+- **Page** (`ShareModulePageContext` middleware) — shares `cartCount` with all
   views via `PageContextSharer::share()`, using `FindCartAction`

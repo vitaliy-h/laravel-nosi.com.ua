@@ -3,8 +3,8 @@
 namespace App\Modules\Sitemap\Http\Controllers;
 
 use App\Modules\Core\Abstract\BaseWebController;
-use App\Modules\Core\Enums\PageModule;
-use App\Modules\Core\Models\Page;
+use App\Modules\Page\Enums\PageModule;
+use App\Modules\Page\Models\Page;
 use App\Modules\News\Models\News;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;

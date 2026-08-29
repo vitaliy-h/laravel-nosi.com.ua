@@ -10,7 +10,7 @@ use App\Filament\Resources\Shop\ProductReviews\ProductReviewResource;
 use App\Filament\Resources\Shop\Promocodes\PromocodeResource;
 use App\Filament\Resources\SmsTemplates\SmsTemplateResource;
 use App\Filament\Widgets\Shop\ProductReviewStatsWidget;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Providers\Filament\AdminPanelProvider;
 use Filament\Panel;
 use Illuminate\Foundation\Testing\RefreshDatabase;

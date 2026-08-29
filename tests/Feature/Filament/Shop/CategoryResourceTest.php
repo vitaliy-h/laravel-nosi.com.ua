@@ -3,7 +3,7 @@
 namespace Tests\Feature\Filament\Shop;
 
 use App\Filament\Resources\Shop\Categories\Pages\ManageCategories;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;

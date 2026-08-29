@@ -145,7 +145,7 @@ class ShopCatalogApiTest extends TestCase
 
 ### Example — validation and authentication
 
-From `tests/Feature/Auth/AuthApiTest.php`. Note `assertJsonValidationErrors(...)` for
+From `tests/Feature/UserAuth/AuthApiTest.php`. Note `assertJsonValidationErrors(...)` for
 `422` responses and `actingAs($user, 'sanctum')` to test authenticated endpoints:
 
 ```php

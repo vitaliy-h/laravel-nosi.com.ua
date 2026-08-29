@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Modules\Core\Models\SocialProfile;
-use App\Modules\Core\Models\User;
+use App\Modules\UserAuth\Models\SocialProfile;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

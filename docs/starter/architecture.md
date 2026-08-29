@@ -17,10 +17,12 @@ Example:
 ```text
 app/Modules/
 ├── Core/
+├── Page/
+├── User/
 ├── Index/
 ├── News/
 ├── Feedback/
-└── TextPage/
+└── PageText/
 ```
 
 Module folder names correspond to site page/modules.
@@ -30,7 +32,9 @@ Examples:
 * `Index` → homepage
 * `News` → news module
 * `Feedback` → feedback page
-* `TextPage` → static text pages
+* `PageText` → static text pages
+* `Page` → the CMS `pages` table itself and everything that renders it
+* `User` → the `users` table
 
 ---
 
@@ -51,7 +55,9 @@ Core contains:
 * Base classes
 * Common utilities
 
-Core is used by all other modules.
+Core is used by all other modules. It holds nothing domain-specific: the CMS
+page lives in the `Page` module, the user in `User`, authentication in
+`UserAuth`.
 
 ---
 
@@ -118,7 +124,7 @@ routes/api.php
 
 Every module has its own explicit, named routes in `app/Modules/{Module}/Http/Routes/web.php`,
 mounted under a DB-driven prefix resolved once at boot by `ModuleServiceProvider`.
-The one exception is `TextPage`, which owns the app's single `Route::fallback()`
+The one exception is `PageText`, which owns the app's single `Route::fallback()`
 (N pages, no fixed prefix). See `docs/starter/routing.md` for the full pattern.
 
 ---

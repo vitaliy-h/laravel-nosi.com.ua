@@ -2,7 +2,7 @@
 
 namespace App\Filament\Support;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;

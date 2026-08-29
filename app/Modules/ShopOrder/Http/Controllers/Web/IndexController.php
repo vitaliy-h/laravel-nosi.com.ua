@@ -3,7 +3,7 @@
 namespace App\Modules\ShopOrder\Http\Controllers\Web;
 
 use App\Modules\Core\Abstract\BaseWebController;
-use App\Modules\Core\Services\MenuService;
+use App\Modules\Page\Services\MenuService;
 use App\Modules\ShopCart\Services\CartService;
 use App\Modules\ShopOrder\Queries\FindOrderByUuidQuery;
 use Illuminate\View\View;

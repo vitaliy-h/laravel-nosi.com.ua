@@ -3,7 +3,7 @@
 namespace Tests\Feature\Filament\Subscriber;
 
 use App\Filament\Resources\Subscribers\Pages\ManageSubscribers;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Subscriber\Models\Subscriber;
 use Filament\Actions\CreateAction;

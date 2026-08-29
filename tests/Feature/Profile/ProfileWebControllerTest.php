@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Profile;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Core\Support\ModuleGate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

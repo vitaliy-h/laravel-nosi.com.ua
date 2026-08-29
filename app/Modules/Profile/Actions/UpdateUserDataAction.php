@@ -2,7 +2,7 @@
 
 namespace App\Modules\Profile\Actions;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Profile\Dtos\ProfileUpdateUserDataData;
 
 class UpdateUserDataAction

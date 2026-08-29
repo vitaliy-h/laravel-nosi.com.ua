@@ -2,7 +2,7 @@
 
 namespace App\Modules\Profile\Http\Controllers\Web;
 
-use App\Modules\Auth\Actions\DisconnectSocialProfileAction;
+use App\Modules\UserAuth\Actions\DisconnectSocialProfileAction;
 use App\Modules\Core\Abstract\BaseWebController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

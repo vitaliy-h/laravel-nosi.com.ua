@@ -3,7 +3,7 @@
 namespace Tests\Feature\Filament\LetterTemplates;
 
 use App\Filament\Resources\LetterTemplates\Pages\ManageLetterTemplates;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Notification\Enums\LetterEnum;
 use App\Modules\Notification\Models\LetterTemplate;
 use Filament\Actions\CreateAction;

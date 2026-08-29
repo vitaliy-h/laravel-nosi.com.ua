@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrder\Enums\PaymentTypeEnum;
 use App\Modules\ShopOrder\Models\Order;

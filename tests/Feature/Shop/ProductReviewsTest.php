@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Shop;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
 use App\Modules\Shop\Models\ProductReview;

@@ -3,7 +3,7 @@
 namespace Tests\Feature\Filament\Dashboard;
 
 use App\Filament\Widgets\NeedsAttentionWidget;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Notification\Models\LogLetter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;

@@ -5,7 +5,7 @@ namespace Tests\Unit\ShopCart;
 use App\Modules\ShopCart\Actions\MergeCartOnAuthAction;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Shop\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Session;

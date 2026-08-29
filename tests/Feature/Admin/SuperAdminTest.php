@@ -3,7 +3,7 @@
 namespace Tests\Feature\Admin;
 
 use App\Filament\Pages\DebugTools\DebugTools;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Livewire;

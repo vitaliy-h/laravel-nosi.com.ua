@@ -10,7 +10,7 @@ use App\Filament\Builder\Blocks\TextBlock;
 use App\Filament\Builder\Blocks\VideoBlock;
 use App\Filament\Resources\News\Pages\ManageNews;
 use App\Filament\Traits\HasSeoFields;
-use App\Modules\Core\Enums\PageModule;
+use App\Modules\Page\Enums\PageModule;
 use App\Modules\News\Models\News;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;

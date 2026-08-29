@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\ShopOrder;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
 use App\Modules\ShopOrder\Actions\PlaceOrderFromCartAction;

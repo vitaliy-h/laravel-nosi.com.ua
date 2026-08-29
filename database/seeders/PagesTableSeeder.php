@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Modules\Core\Enums\PageModule;
-use App\Modules\Core\Models\Page;
+use App\Modules\Page\Enums\PageModule;
+use App\Modules\Page\Models\Page;
 use Illuminate\Database\Seeder;
 
 class PagesTableSeeder extends Seeder

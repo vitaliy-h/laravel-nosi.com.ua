@@ -1,7 +1,7 @@
 <?php
 
 use App\Modules\Core\Http\Middleware\Authenticate;
-use App\Modules\Core\Http\Middleware\ShareModulePageContext;
+use App\Modules\Page\Http\Middleware\ShareModulePageContext;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

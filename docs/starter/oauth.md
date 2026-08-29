@@ -66,7 +66,7 @@ Table `social_profiles` links a user to a social account:
 | `token_expires_at` | timestamp | nullable |
 | `avatar` | string | nullable |
 
-Model: `App\Modules\Core\Models\SocialProfile`  
+Model: `App\Modules\UserAuth\Models\SocialProfile`  
 Relation on User: `User::socialProfiles()` → `hasMany(SocialProfile::class)`
 
 ---

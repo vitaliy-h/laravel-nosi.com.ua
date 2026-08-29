@@ -13,7 +13,7 @@ use App\Filament\Widgets\Shop\TopProductsWidget;
 use App\Filament\Widgets\System\RecentActivityWidget;
 use App\Filament\Widgets\System\SystemStatsWidget;
 use App\Filament\Widgets\Users\UserStatsWidget;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\DataProvider;

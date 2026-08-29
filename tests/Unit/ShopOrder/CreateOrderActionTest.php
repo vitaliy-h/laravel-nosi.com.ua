@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\ShopOrder;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Notification\Enums\LetterEnum;
 use App\Modules\Notification\Facades\LetterTemplateFacade;
 use App\Modules\Shop\Models\Product;

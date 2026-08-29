@@ -2,7 +2,7 @@
 
 namespace App\Modules\Shop\Models;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Core\Traits\Models\HasVisibility;
 use Database\Factories\ProductReviewFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

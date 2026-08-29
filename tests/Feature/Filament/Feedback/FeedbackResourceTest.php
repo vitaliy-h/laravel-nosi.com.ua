@@ -3,7 +3,7 @@
 namespace Tests\Feature\Filament\Feedback;
 
 use App\Filament\Resources\Feedback\Pages\ManageFeedback;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Feedback\Models\Feedback;
 use Filament\Actions\CreateAction;

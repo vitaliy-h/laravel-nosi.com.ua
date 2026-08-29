@@ -3,7 +3,7 @@
 namespace Tests\Unit\Filament\Dashboard;
 
 use App\Filament\Dashboard\Dtos\DashboardPeriodData;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Shop\Models\Product;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;

@@ -4,6 +4,7 @@ namespace App\Modules\Core\Models;
 
 use App\Modules\Core\Enums\LogEventEnum;
 use App\Modules\Core\Enums\LogSourceEnum;
+use App\Modules\User\Models\User;
 use Database\Factories\LogFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

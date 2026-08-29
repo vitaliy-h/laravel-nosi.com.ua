@@ -2,7 +2,7 @@
 
 namespace App\Modules\ShopOrder\Models;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Core\Traits\Models\CascadesDeletes;
 use App\Modules\Core\Traits\Models\HasUuid;
 use App\Modules\ShopCart\Models\Promocode;

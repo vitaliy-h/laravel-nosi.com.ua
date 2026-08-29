@@ -3,9 +3,9 @@
 namespace Tests\Feature\Filament\Pages;
 
 use App\Filament\Resources\Pages\Pages\ManagePages;
-use App\Modules\Core\Enums\PageModule;
-use App\Modules\Core\Models\Page;
-use App\Modules\Core\Models\User;
+use App\Modules\Page\Enums\PageModule;
+use App\Modules\Page\Models\Page;
+use App\Modules\User\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;

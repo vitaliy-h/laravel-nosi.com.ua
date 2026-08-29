@@ -2,7 +2,7 @@
 
 namespace App\Modules\Profile\Actions;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class UpdateUserPasswordAction

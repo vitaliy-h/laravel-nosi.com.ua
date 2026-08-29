@@ -3,7 +3,7 @@
 namespace Tests\Feature\Filament\Dashboard;
 
 use App\Filament\Pages\Dashboard;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;

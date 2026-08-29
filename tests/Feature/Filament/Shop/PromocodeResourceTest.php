@@ -3,7 +3,7 @@
 namespace Tests\Feature\Filament\Shop;
 
 use App\Filament\Resources\Shop\Promocodes\Pages\ManagePromocodes;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\ShopCart\Enums\PromocodeTypeEnum;
 use App\Modules\ShopCart\Models\Promocode;
 use Filament\Actions\CreateAction;

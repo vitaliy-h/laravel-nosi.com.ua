@@ -3,7 +3,7 @@
 namespace Tests\Feature\Filament\Logs;
 
 use App\Filament\Resources\LogLetters\Pages\ManageLogLetters;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Notification\Enums\LogLetterStatusEnum;
 use App\Modules\Notification\Enums\NotificationSourceEnum;
 use App\Modules\Notification\Models\LogLetter;

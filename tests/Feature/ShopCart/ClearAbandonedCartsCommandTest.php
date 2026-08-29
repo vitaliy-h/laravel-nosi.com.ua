@@ -3,7 +3,7 @@
 namespace Tests\Feature\ShopCart;
 
 use App\Modules\ShopCart\Models\Cart;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

@@ -5,7 +5,7 @@ namespace Tests\Feature\Filament\Geo;
 use PHPUnit\Framework\Attributes\Group;
 
 use App\Filament\Resources\Geo\GeoCountries\Pages\ManageGeoCountries;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Geo\Models\GeoCountry;
 use Filament\Actions\CreateAction;

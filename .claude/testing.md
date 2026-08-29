@@ -132,8 +132,8 @@ Pattern follows existing factories (`NewsFactory`, `UserFactory`): explicit `pro
 
 | Factory | Model |
 |---------|-------|
-| `UserFactory` | `App\Modules\Core\Models\User` |
-| `PageFactory` | `App\Modules\Core\Models\Page` — states: `forModule()`, `withSlug()`, `invisible()` |
+| `UserFactory` | `App\Modules\User\Models\User` |
+| `PageFactory` | `App\Modules\Page\Models\Page` — states: `forModule()`, `withSlug()`, `invisible()` |
 | `BrandFactory` | `App\Modules\Shop\Models\Brand` |
 | `CategoryFactory` | `App\Modules\Shop\Models\Category` — `invisible()` |
 | `ProductFactory` | `App\Modules\Shop\Models\Product` — `forCategory()`, `invisible()` |
@@ -203,7 +203,7 @@ Each Filament resource gets its own subdirectory. Name the class `{Resource}Reso
 namespace Tests\Feature\Filament\Users;
 
 use App\Filament\Resources\Users\Pages\ManageUsers;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -316,7 +316,7 @@ class UserResourceTest extends TestCase
 ```php
 namespace Tests\Unit\Shop;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Shop\Actions\CreateOrderAction;
 use App\Modules\Shop\Dtos\CreateOrderData;
 use App\Modules\Shop\Models\Product;
@@ -355,7 +355,7 @@ class CreateOrderActionTest extends TestCase
 ```php
 namespace Tests\Feature\Profile;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -410,7 +410,7 @@ class FrontendPagesSmokeTest extends TestCase
 ### Feature: custom page via factory
 
 ```php
-use App\Modules\Core\Models\Page;
+use App\Modules\Page\Models\Page;
 
 $page = Page::factory()->withSlug('custom-route')->create();
 

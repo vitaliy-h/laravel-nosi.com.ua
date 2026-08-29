@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Infrastructure;
 
-use App\Modules\Core\Enums\PageModule;
-use App\Modules\Core\Models\Page;
+use App\Modules\Page\Enums\PageModule;
+use App\Modules\Page\Models\Page;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -29,10 +29,18 @@ class PageFactoryTest extends TestCase
             'module' => PageModule::INDEX->value,
         ]);
 
-        foreach ([PageModule::NEWS, PageModule::SHOP, PageModule::AUTH] as $module) {
+        // Slug and enum value are not the same thing: the UserAuth module's page
+        // is served from /auth, so the pairs are spelled out.
+        $modulePages = [
+            [PageModule::NEWS, 'news'],
+            [PageModule::SHOP, 'shop'],
+            [PageModule::AUTH, 'auth'],
+        ];
+
+        foreach ($modulePages as [$module, $slug]) {
             $condition = $module->isEnabled() ? 'assertDatabaseHas' : 'assertDatabaseMissing';
 
-            $this->{$condition}('pages', ['slug' => $module->value, 'module' => $module->value]);
+            $this->{$condition}('pages', ['slug' => $slug, 'module' => $module->value]);
         }
     }
 }

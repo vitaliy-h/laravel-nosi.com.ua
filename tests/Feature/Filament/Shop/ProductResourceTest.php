@@ -4,7 +4,7 @@ namespace Tests\Feature\Filament\Shop;
 
 use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
 use App\Filament\Resources\Shop\ProductReviews\ProductReviewResource;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;

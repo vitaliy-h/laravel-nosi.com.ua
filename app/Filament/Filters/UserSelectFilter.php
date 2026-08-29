@@ -2,7 +2,7 @@
 
 namespace App\Filament\Filters;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Filament\Tables\Filters\SelectFilter;
 
 /**

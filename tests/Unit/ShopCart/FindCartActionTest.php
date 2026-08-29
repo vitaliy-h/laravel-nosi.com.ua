@@ -4,7 +4,7 @@ namespace Tests\Unit\ShopCart;
 
 use App\Modules\ShopCart\Actions\FindCartAction;
 use App\Modules\ShopCart\Models\Cart;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;

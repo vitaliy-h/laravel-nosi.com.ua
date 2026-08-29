@@ -5,7 +5,7 @@ namespace App\Filament\Pages\Auth;
 use Filament\Forms\Components\TextInput;
 use Filament\Auth\Pages\Login as BaseLogin;
 use Filament\Schemas\Schema;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Validation\ValidationException;
 
 class Login extends BaseLogin

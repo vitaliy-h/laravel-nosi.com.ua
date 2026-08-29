@@ -13,7 +13,7 @@ use App\Filament\Widgets\Shop\SalesChartWidget;
 use App\Filament\Widgets\Shop\SalesStatsWidget;
 use App\Filament\Widgets\Shop\TopProductsWidget;
 use App\Filament\Widgets\Users\UserStatsWidget;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Providers\Filament\AdminPanelProvider;
 use Filament\Panel;
 use Illuminate\Foundation\Testing\RefreshDatabase;

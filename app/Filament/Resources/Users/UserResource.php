@@ -4,8 +4,8 @@ namespace App\Filament\Resources\Users;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Users\Pages\ManageUsers;
-use App\Modules\Auth\Actions\GenerateImpersonationTokenAction;
-use App\Modules\Core\Models\User;
+use App\Modules\UserAuth\Actions\GenerateImpersonationTokenAction;
+use App\Modules\User\Models\User;
 use App\Modules\Core\Support\ModuleGate;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -143,7 +143,7 @@ class UserResource extends Resource
                     ->openUrlInNewTab()
                     // Impersonation is served by the Auth module's routes, so it's
                     // unavailable when that module is disabled.
-                    ->visible(fn(): bool => ModuleGate::isEnabled('auth'))
+                    ->visible(fn(): bool => ModuleGate::isEnabled('user_auth'))
                     ->hidden(fn(User $record): bool => $record->id === auth()->id()),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),

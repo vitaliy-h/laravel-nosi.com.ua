@@ -3,7 +3,7 @@
 namespace Tests\Feature\Filament\Logs;
 
 use App\Filament\Resources\LogSms\Pages\ManageLogSms;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Notification\Enums\LogSmsStatusEnum;
 use App\Modules\Notification\Enums\NotificationSourceEnum;
 use App\Modules\Notification\Models\LogSms;

@@ -28,7 +28,7 @@ modules that may be switched off, every line commented out:
 ```php
 // config/modules.php
 return [
-    // 'auth'                 => false,
+    // 'user_auth'            => false,
     // 'feedback'             => false,
     // 'geo'                  => false,
     // 'news'                 => false,
@@ -47,7 +47,7 @@ return [
         'shop_product_reviews' => 'shop',
         'shop_order'           => 'shop_cart', // no orders without the cart
         'shop_promocodes'      => 'shop_cart',
-        'profile'              => 'auth',      // no profile without auth
+        'profile'              => 'user_auth', // no profile without auth
     ],
 ];
 ```
@@ -57,7 +57,7 @@ whatever its own line says: `'shop' => false` also disables `shop_cart` and
 `shop_brands`, and through the cart the orders and promocodes. `shop_order`
 and `profile` have no line of their own at all — they exist only as
 dependants, so the only way to switch them off is to switch off the cart or
-auth.
+`user_auth`.
 
 Not every key matches an `app/Modules` folder: `shop_brands`,
 `shop_product_reviews`, `shop_promocodes`, `sms` and `letter_templates` are
@@ -65,12 +65,18 @@ feature toggles for code living inside Shop / ShopCart / Notification —
 switching one off hides its admin surfaces (navigation item, resource,
 dashboard card), the tables stay.
 
-Core CMS modules (`Core`, `Index`, `TextPage`, `Sitemap`, `Translation`,
-`Notification`, `_debug`, ...) have no line here and cannot be disabled —
-`ModuleGate::isEnabled()` simply always reports them as enabled.
+Core CMS modules (`Core`, `Page`, `User`, `Index`, `PageText`, `Sitemap`,
+`Translation`, `Notification`, `_debug`, ...) have no line here and cannot be
+disabled — `ModuleGate::isEnabled()` simply always reports them as enabled.
+`Page` (the CMS `pages` table and everything that renders it) and `User` (the
+`users` table) are the two the whole app is built on, so they have no toggle by
+design.
 
 The key/folder name is the `Str::snake()`'d module folder name and matches
-the `PageModule` enum's string value (`shop_cart`, `geo`, `news`, ...).
+the `PageModule` enum's string value (`shop_cart`, `user_auth`, `page_text`,
+`geo`, `news`, ...). It is **not** the page's public URL: the `UserAuth`
+module's page is served from `/auth`, `ShopCart`'s from `/cart` — that comes
+from `pages.slug`, not from this key.
 
 ---
 
@@ -102,10 +108,11 @@ test depends on is off.
   module's tables, it will error (missing table) once that module's
   migrations stop running. The known case in this project is `shop`: its
   product teasers/featured blocks can be placed in any page's CMS content by
-  the `Core` `Page` builder, and those blocks don't know the module is off.
-  Remove or replace that content manually before disabling `shop`. `auth` and
-  its dependents (`profile`, `shop_cart`/`shop_order` are shop-only, not
-  auth) are self-contained and safe to flip without extra cleanup.
+  the `Page` module's content builder, and those blocks don't know the module
+  is off. Remove or replace that content manually before disabling `shop`.
+  `user_auth` and its dependents (`profile`; `shop_cart`/`shop_order` are
+  shop-only, not auth) are self-contained and safe to flip without extra
+  cleanup.
 - **It is not a substitute for hiding a single page.** Model `Page` has its
   own `display` flag that hides one page from menus/routing without
   touching code loading. Use that for "this one page shouldn't show up
@@ -124,6 +131,11 @@ reference the module once its config key is `false` (see the shop content
 caveat above). This is the intended way to strip an unused module out of a
 project permanently, once you've confirmed the project genuinely never
 enables it.
+
+Two back-references on `App\Modules\User\Models\User` are the exception, and
+have to be removed by hand when you delete the module they point at:
+`User::socialProfiles()` → `UserAuth\Models\SocialProfile` and `User::cart()`
+→ `ShopCart\Models\Cart`.
 
 ---
 

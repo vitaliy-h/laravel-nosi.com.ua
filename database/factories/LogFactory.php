@@ -5,7 +5,7 @@ namespace Database\Factories;
 use App\Modules\Core\Enums\LogEventEnum;
 use App\Modules\Core\Enums\LogSourceEnum;
 use App\Modules\Core\Models\Log;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

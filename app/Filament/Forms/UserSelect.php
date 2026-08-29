@@ -2,7 +2,7 @@
 
 namespace App\Filament\Forms;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Filament\Forms\Components\Select;
 
 /**

@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Modules\Core\Enums\PageModule;
-use App\Modules\Core\Models\Page;
+use App\Modules\Page\Enums\PageModule;
+use App\Modules\Page\Models\Page;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

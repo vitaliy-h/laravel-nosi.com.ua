@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use App\Modules\Core\Models\Page;
-use App\Modules\Core\Models\User;
-use App\Modules\Core\Observers\PageObserver;
-use App\Modules\Core\Queries\GetAllPagesQuery;
+use App\Modules\Page\Models\Page;
+use App\Modules\User\Models\User;
+use App\Modules\Page\Observers\PageObserver;
+use App\Modules\Page\Queries\GetAllPagesQuery;
 use App\Modules\Core\Services\UrlHelper;
 use App\Modules\Notification\Services\LetterTemplateService;
 use App\Modules\Notification\Services\SmsTemplateService;

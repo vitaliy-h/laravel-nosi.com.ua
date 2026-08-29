@@ -3,7 +3,7 @@
 namespace Tests\Feature\Admin;
 
 use App\Filament\Pages\Auth\Login;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;

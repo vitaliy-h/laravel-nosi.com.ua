@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -16,7 +16,7 @@ class UserFactory extends Factory
      * The name of the factory's corresponding model.
      *
      * Explicitly set because the model lives outside the default
-     * App\Models namespace (App\Modules\Core\Models\User).
+     * App\Models namespace (App\Modules\User\Models\User).
      *
      * @var class-string<User>
      */

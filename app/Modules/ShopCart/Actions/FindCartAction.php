@@ -3,7 +3,7 @@
 namespace App\Modules\ShopCart\Actions;
 
 use App\Modules\ShopCart\Models\Cart;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Session;
 
 class FindCartAction

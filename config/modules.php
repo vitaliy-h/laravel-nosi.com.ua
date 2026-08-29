@@ -21,7 +21,7 @@
 */
 
 return [
-    //'auth'            => false,
+    //'user_auth'       => false,
     //'feedback'        => false,
     //'geo'             => false,
     //'news'            => false,
@@ -51,6 +51,6 @@ return [
         'shop_product_reviews' => 'shop',
         'shop_order'           => 'shop_cart',
         'shop_promocodes'      => 'shop_cart',
-        'profile'              => 'auth',
+        'profile'              => 'user_auth',
     ],
 ];

@@ -3,7 +3,7 @@
 namespace Tests\Feature\Filament\Shop;
 
 use App\Filament\Resources\Shop\Orders\Pages\ManageOrders;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrder\Enums\PaymentTypeEnum;

@@ -2,7 +2,7 @@
 
 namespace Tests\Concerns;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;

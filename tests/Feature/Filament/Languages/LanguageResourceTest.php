@@ -3,7 +3,7 @@
 namespace Tests\Feature\Filament\Languages;
 
 use App\Filament\Resources\Languages\Pages\ManageLanguages;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\Translation\Enums\Localization;
 use App\Modules\Translation\Models\Language;
 use Filament\Actions\CreateAction;

@@ -2,7 +2,7 @@
 
 namespace App\Modules\ShopOrder\database\seeders;
 
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use App\Modules\ShopOrder\Actions\CreateOrderAction;
 use App\Modules\ShopOrder\Actions\GenerateOrderNumberAction;
 use App\Modules\ShopOrder\Dtos\CreateOrderData;

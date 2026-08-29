@@ -5,7 +5,7 @@ namespace Tests\Feature\Filament\Logs;
 use App\Filament\Resources\Logs\Pages\ManageLogs;
 use App\Modules\Core\Enums\LogEventEnum;
 use App\Modules\Core\Models\Log;
-use App\Modules\Core\Models\User;
+use App\Modules\User\Models\User;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\Testing\TestAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
