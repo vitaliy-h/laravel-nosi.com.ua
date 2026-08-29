@@ -3,10 +3,10 @@
 namespace App\Modules\Profile\Http\Controllers\Web;
 
 use App\Modules\Core\Abstract\BaseWebController;
-use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
 use App\Modules\Profile\Dtos\OrderFilterData;
 use App\Modules\Profile\Queries\FindUserOrderQuery;
 use App\Modules\Profile\Queries\GetUserOrdersQuery;
+use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -27,7 +27,7 @@ class IndexController extends BaseWebController
         $user = auth()->user()->load('socialProfiles');
         $activeSection = 'edit';
 
-        return view('pages.profile.edit', compact('user', 'activeSection'));
+        return $this->render('pages.profile.edit', compact('user', 'activeSection'));
     }
 
     public function orders(Request $request)
@@ -41,7 +41,7 @@ class IndexController extends BaseWebController
         );
         $orders = $this->getUserOrders->handle($user->id, $filter);
 
-        return view('pages.profile.orders', compact('user', 'activeSection', 'orders', 'filter'));
+        return $this->render('pages.profile.orders', compact('user', 'activeSection', 'orders', 'filter'));
     }
 
     public function order(Request $request, string $id)
@@ -50,6 +50,6 @@ class IndexController extends BaseWebController
         $activeSection = 'orders';
         $order = $this->findUserOrder->handle((int) $id, $user->id);
 
-        return view('pages.profile.order', compact('user', 'activeSection', 'order'));
+        return $this->render('pages.profile.order', compact('user', 'activeSection', 'order'));
     }
 }

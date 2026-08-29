@@ -23,6 +23,6 @@ class IndexController extends BaseWebController
         $featuredProducts = $this->searchProducts->handle(new ProductSearchDto(random: true, limit: 8, with: ['category.ancestors']));
         $specialCategories = $this->searchCategories->handle(new CategorySearchDto(hasImage: true, onlyWithProducts: true, random: true, limit: 12));
 
-        return view('pages.index', compact('bestSellers', 'featuredCategories', 'featuredProducts', 'specialCategories'));
+        return $this->render('pages.index', compact('bestSellers', 'featuredCategories', 'featuredProducts', 'specialCategories'));
     }
 }

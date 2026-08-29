@@ -2,9 +2,9 @@
 
 namespace App\Modules\ShopCart\Http\Controllers\Web;
 
+use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\ShopCart\Actions\FindCartAction;
 use App\Modules\ShopCart\Models\Cart;
-use App\Modules\Core\Abstract\BaseWebController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -24,7 +24,7 @@ class IndexController extends BaseWebController
             return redirect(save_route('cart.show', $cart->uuid));
         }
 
-        return view('pages.cart.empty_cart');
+        return $this->render('pages.cart.empty_cart');
     }
 
     public function checkout(Request $request)
@@ -32,12 +32,12 @@ class IndexController extends BaseWebController
         $cart = $this->findCart->handle(Auth::user());
         $cart?->load('items.product');
 
-        return view('pages.cart.checkout', compact('cart'));
+        return $this->render('pages.cart.checkout', compact('cart'));
     }
 
     public function show(Request $request, string $uuid)
     {
-        if (!Str::isUuid($uuid)) {
+        if (! Str::isUuid($uuid)) {
             return $this->index($request);
         }
 
@@ -45,9 +45,9 @@ class IndexController extends BaseWebController
         $cart->load('items.product');
 
         if ($cart->items->isEmpty()) {
-            return view('pages.cart.empty_cart');
+            return $this->render('pages.cart.empty_cart');
         }
 
-        return view('pages.cart.index', compact('cart'));
+        return $this->render('pages.cart.index', compact('cart'));
     }
 }

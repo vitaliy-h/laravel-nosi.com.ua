@@ -10,13 +10,13 @@ class AbcResponseController extends BaseWebController
 {
     public function abc_response_index(Request $request)
     {
-        return view('pages.test.abc_response');
+        return $this->render('pages.test.abc_response');
     }
 
     public function abc_response_request(Request $request, string $action): JsonResponse
     {
         $response = [
-            //'success' => true,
+            // 'success' => true,
             'actions' => [],
         ];
 
@@ -132,7 +132,6 @@ class AbcResponseController extends BaseWebController
                 ];
 
                 break;
-
 
         }
 

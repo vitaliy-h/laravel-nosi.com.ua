@@ -9,6 +9,6 @@ class IndexController extends BaseWebController
 {
     public function index(Request $request)
     {
-        return view('pages.feedback');
+        return $this->render('pages.feedback');
     }
 }

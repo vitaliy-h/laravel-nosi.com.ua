@@ -2,7 +2,7 @@
 
 namespace App\Modules\Sitemap\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Core\Enums\PageModule;
 use App\Modules\Core\Models\Page;
 use App\Modules\News\Models\News;
@@ -10,7 +10,7 @@ use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
 use Illuminate\Http\Response;
 
-class SitemapController extends Controller
+class SitemapController extends BaseWebController
 {
     private const int PER_PAGE = 500;
 
@@ -25,7 +25,7 @@ class SitemapController extends Controller
     private function xmlResponse(string $view, array $data = []): Response
     {
         return response(
-            '<?xml version="1.0" encoding="UTF-8"?>' . view($view, $data)->render(),
+            '<?xml version="1.0" encoding="UTF-8"?>' . $this->render($view, $data)->render(),
             200,
             ['Content-Type' => 'application/xml']
         );

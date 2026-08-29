@@ -6,6 +6,8 @@ Module web controllers (`Http/Controllers/Web/`) extend `App\Modules\Core\Abstra
 
 All API controllers (`Http/Controllers/Api/`) extend `App\Modules\Core\Abstract\BaseApiController`.
 
+Controllers never call the `view()` helper directly — they return `$this->render('blade.path', $data)` from `BaseWebController`. (`view()->share()` for shared view data is unaffected.)
+
 ## Module seeders
 
 Demo data for a module goes through one entry-point seeder named

@@ -25,7 +25,8 @@ class IndexController extends BaseWebController
                 break;
             }
         }
-        return view('pages.auth.index', [
+
+        return $this->render('pages.auth.index', [
             'mode' => $mode,
             'token' => $request->input('token'),
             'email' => $request->input('email'),

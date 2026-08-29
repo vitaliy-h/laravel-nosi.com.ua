@@ -2,9 +2,9 @@
 
 namespace App\Modules\ShopOrder\Http\Controllers\Web;
 
-use App\Modules\ShopCart\Services\CartService;
 use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Core\Services\MenuService;
+use App\Modules\ShopCart\Services\CartService;
 use App\Modules\ShopOrder\Queries\FindOrderByUuidQuery;
 use Illuminate\View\View;
 
@@ -22,7 +22,7 @@ class IndexController extends BaseWebController
 
         $this->shareLayoutVars();
 
-        return view('pages.shop.order.index', compact('order'));
+        return $this->render('pages.shop.order.index', compact('order'));
     }
 
     public function success(string $uuid): View
@@ -31,7 +31,7 @@ class IndexController extends BaseWebController
 
         $this->shareLayoutVars();
 
-        return view('pages.shop.order.success', compact('order'));
+        return $this->render('pages.shop.order.success', compact('order'));
     }
 
     public function error(string $uuid): View
@@ -40,7 +40,7 @@ class IndexController extends BaseWebController
 
         $this->shareLayoutVars();
 
-        return view('pages.shop.order.error', compact('order'));
+        return $this->render('pages.shop.order.error', compact('order'));
     }
 
     private function shareLayoutVars(): void

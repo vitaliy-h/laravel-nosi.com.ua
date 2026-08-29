@@ -2,11 +2,12 @@
 
 namespace App\Modules\Core\Http\Controllers;
 
+use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Core\Services\ImageConversionService;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-class ImagePreviewController
+class ImagePreviewController extends BaseWebController
 {
     public function __invoke(
         string $preset,
@@ -28,7 +29,7 @@ class ImagePreviewController
         abort_unless(
             Storage::exists($path),
             404,
-            "Original image not found."
+            'Original image not found.'
         );
 
         $entity = explode('/', $path)[0];

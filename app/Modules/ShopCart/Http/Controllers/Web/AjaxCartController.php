@@ -118,7 +118,7 @@ class AjaxCartController extends BaseWebController
             [
                 'selector' => '.js_cart_modal_content',
                 'method' => 'html',
-                'content' => view('pages.shop.cart_modal_item', compact('item'))->render(),
+                'content' => $this->render('pages.shop.cart_modal_item', compact('item'))->render(),
             ],
             [
                 'selector' => '#cartModal',
@@ -171,7 +171,7 @@ class AjaxCartController extends BaseWebController
         return [
             'selector' => '.js_summary_discount',
             'method' => 'replaceWith',
-            'content' => view('pages.cart.partials.summary-discount', compact('cart'))->render(),
+            'content' => $this->render('pages.cart.partials.summary-discount', compact('cart'))->render(),
         ];
     }
 

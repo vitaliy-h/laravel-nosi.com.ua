@@ -2,7 +2,6 @@
 
 namespace App\Modules\Shop\Http\Controllers\Web;
 
-use App\Modules\ShopCart\Actions\FindCartAction;
 use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Core\Dtos\BreadcrumbData;
 use App\Modules\Core\Support\ModuleGate;
@@ -17,6 +16,7 @@ use App\Modules\Shop\Queries\Product\PrepareShopFilterQuery;
 use App\Modules\Shop\Queries\Product\SearchProductsQuery;
 use App\Modules\Shop\Queries\ProductReview\GetProductRatingBreakdownQuery;
 use App\Modules\Shop\Queries\ProductReview\GetReviewsByProductQuery;
+use App\Modules\ShopCart\Actions\FindCartAction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -40,7 +40,7 @@ class IndexController extends BaseWebController
         $filter = $this->prepareShopFilter->handle(null, $request);
         $products = $this->searchProducts->handle(new ProductSearchDto(filter: $filter, sort: SortOptionEnum::tryFrom((string) $request->query('sort')), paginate: true));
 
-        return view('pages.shop.category', compact(
+        return $this->render('pages.shop.category', compact(
             'categories',
             'products',
             'filter',
@@ -61,7 +61,7 @@ class IndexController extends BaseWebController
         $filter = $this->prepareShopFilter->handle($category, $request);
         $products = $this->searchProducts->handle(new ProductSearchDto(category: $category, filter: $filter, sort: SortOptionEnum::tryFrom((string) $request->query('sort')), paginate: true));
 
-        return view('pages.shop.category', compact(
+        return $this->render('pages.shop.category', compact(
             'category',
             'categories',
             'products',
@@ -111,7 +111,7 @@ class IndexController extends BaseWebController
             $this->getProductRatingBreakdown->handle($product),
         );
 
-        return view('pages.shop.product', compact(
+        return $this->render('pages.shop.product', compact(
             'category',
             'product',
             'breadcrumbs',
@@ -131,7 +131,7 @@ class IndexController extends BaseWebController
      */
     private function cartQuantityFor(int $productId): ?int
     {
-        if (!ModuleGate::isEnabled('shop_cart')) {
+        if (! ModuleGate::isEnabled('shop_cart')) {
             return null;
         }
 
