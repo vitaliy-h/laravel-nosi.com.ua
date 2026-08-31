@@ -86,6 +86,11 @@ A third file, `report.md`, is written later — after the work is done (see Step
 
 Статус: не начато | в работе | готово
 
+## Что меняем и как это будет работать
+{простыми словами, до 10 строк: какие сущности/таблицы появляются, какие точки кода трогаем,
+как проходит поток данных после изменений (шаг за шагом), что увидит пользователь.
+Пишется для программиста, который задачу не исследовал — он должен понять механику до чтения пунктов.}
+
 ## Подход
 {2-5 предложений: архитектурное решение, применяемые паттерны и почему}
 
@@ -110,6 +115,8 @@ A third file, `report.md`, is written later — after the work is done (see Step
   - A typical plan is **5-12 steps**. More than ~15 means actions are being written as steps — merge them. One step per file is a smell.
   - Do not split a step just because it touches many files; split when the *purpose* changes.
 - **Executable one step at a time or all at once.** Each step names concrete files.
+- **Numbering**: steps are numbered with plain arabic numerals — `1.`, `2.`, `3.` … Never roman numerals, letters or unnumbered bullets.
+- **"Что меняем и как это будет работать" comes first**, before "Подход". It describes the mechanics (what appears, what is touched, how the flow runs end to end), not the architectural justification — that stays in "Подход". No file lists there, they live in the steps.
 - **Track progress**: a finished step becomes `[x]`. If the approach changes mid-work, append to "Изменения плана" instead of silently rewriting history.
 - **Project architecture**: Actions hold business logic (shared by Web and API), controllers stay thin, DTOs (`spatie/laravel-data`) for input, Resources for API output, ViewModels for anything a blade renders (`docs/starter/view-models.md`), tests are PHPUnit 12 (not Pest). Unsure where something belongs → ask.
 - **Design patterns** only where the task justifies them, never for their own sake. State the reason in "Подход".

@@ -116,6 +116,15 @@ Do not mock internal classes. Mock only external boundaries (e.g. `LetterTemplat
 7. Run via Sail: `./vendor/bin/sail test --filter=YourTest`
 8. Stage new test files in git manually (do not auto-`git add` from agents)
 
+### Sign-in cooldown
+
+After a failed sign-in the same login + IP is blocked for 5 seconds
+(`config/auth_log.php`). A test that tries to sign in several times in a row
+must either disable it — `config(['auth_log.cooldown_seconds' => 0]);` — or
+travel past the window with `$this->travel(6)->seconds()`. Otherwise the second
+attempt comes back as a validation error on the login field and is written to
+`log_auth` with result `blocked`.
+
 ## Factories and seeders
 
 ### Rule: always create a factory for models that lack one

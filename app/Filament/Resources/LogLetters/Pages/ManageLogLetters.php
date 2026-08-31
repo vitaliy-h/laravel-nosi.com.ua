@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\LogLetters\Pages;
 
 use App\Filament\Resources\LogLetters\LogLetterResource;
+use App\Filament\Actions\ClearLogAction;
+use App\Modules\Notification\Models\LogLetter;
 use Filament\Resources\Pages\ManageRecords;
 
 class ManageLogLetters extends ManageRecords
@@ -12,7 +14,7 @@ class ManageLogLetters extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-
+            ClearLogAction::make(LogLetter::class),
         ];
     }
 

@@ -154,6 +154,10 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-archive-box')
                                     ->url(\App\Filament\Resources\Logs\LogResource::getUrl())
                                     ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.logs.*')),
+                                NavigationItem::make(__('admin.tables.log_auth'))
+                                    ->icon('heroicon-o-finger-print')
+                                    ->url(\App\Filament\Resources\AuthLogs\AuthLogResource::getUrl())
+                                    ->isActiveWhen(fn(): bool => Request::routeIs('filament.admin.resources.auth-logs.*')),
                                 ModuleGate::isEnabled('letter_templates') ? NavigationItem::make(__('admin.tables.log_letters'))
                                     ->icon('heroicon-o-inbox')
                                     ->url(\App\Filament\Resources\LogLetters\LogLetterResource::getUrl())
@@ -175,6 +179,7 @@ class AdminPanelProvider extends PanelProvider
                 ModuleGate::isEnabled('letter_templates') ? \App\Filament\Resources\LetterTemplates\LetterTemplateResource::class : null,
                 ModuleGate::isEnabled('letter_templates') ? \App\Filament\Resources\LogLetters\LogLetterResource::class : null,
                 \App\Filament\Resources\Logs\LogResource::class,
+                \App\Filament\Resources\AuthLogs\AuthLogResource::class,
                 \App\Filament\Resources\Users\UserResource::class,
                 ModuleGate::isEnabled('sms') ? \App\Filament\Resources\SmsTemplates\SmsTemplateResource::class : null,
                 ModuleGate::isEnabled('sms') ? \App\Filament\Resources\LogSms\LogSmsResource::class : null,

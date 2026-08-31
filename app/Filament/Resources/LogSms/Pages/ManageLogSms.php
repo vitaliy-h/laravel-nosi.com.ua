@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\LogSms\Pages;
 
 use App\Filament\Resources\LogSms\LogSmsResource;
+use App\Filament\Actions\ClearLogAction;
+use App\Modules\Notification\Models\LogSms;
 use Filament\Resources\Pages\ManageRecords;
 
 class ManageLogSms extends ManageRecords
@@ -11,7 +13,9 @@ class ManageLogSms extends ManageRecords
 
     protected function getHeaderActions(): array
     {
-        return [];
+        return [
+            ClearLogAction::make(LogSms::class),
+        ];
     }
 
     public function getTitle(): string

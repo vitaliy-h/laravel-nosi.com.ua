@@ -2,6 +2,8 @@
 
 namespace App\Modules\UserAuth\Actions;
 
+use App\Modules\Core\Enums\AuthLogActionEnum;
+use App\Modules\Core\Services\AuthLogService;
 use App\Modules\UserAuth\Dtos\PasswordRecoveryData;
 use App\Modules\User\Queries\FindUserByEmailQuery;
 use App\Modules\Notification\Dtos\SendLetterTemplateData;
@@ -14,6 +16,7 @@ class SendPasswordResetAction
 {
     public function __construct(
         private readonly FindUserByEmailQuery $findUserByEmail,
+        private readonly AuthLogService $authLog,
     ) {}
 
     public function handle(
@@ -24,6 +27,12 @@ class SendPasswordResetAction
             ->handle($data->email);
 
         if (! $user) {
+
+            $this->authLog->failure(
+                AuthLogActionEnum::PASSWORD_RESET_REQUEST,
+                $data->email,
+            );
+
             throw ValidationException::withMessages([
                 'email' => [t('auth.user_not_found')],
             ]);
@@ -46,6 +55,12 @@ class SendPasswordResetAction
                 ],
                 to: $user->email
             )
+        );
+
+        $this->authLog->success(
+            AuthLogActionEnum::PASSWORD_RESET_REQUEST,
+            $user->email,
+            $user,
         );
     }
 }

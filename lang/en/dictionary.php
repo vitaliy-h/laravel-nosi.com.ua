@@ -153,6 +153,7 @@ return [
         'remember_me' => 'Remember me',
         'or_continue_with' => 'or continue with',
         'invalid_credentials' => 'Invalid credentials',
+        'cooldown' => 'Too many attempts. Try again in :seconds seconds.',
         'forgot_password' => 'Forgot Password?',
         'terms:html' => 'I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>',
         'user_not_found' => 'User not found',

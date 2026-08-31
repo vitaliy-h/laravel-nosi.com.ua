@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Logs\Pages;
 
 use App\Filament\Resources\Logs\LogResource;
+use App\Filament\Actions\ClearLogAction;
+use App\Modules\Core\Models\Log;
 use Filament\Resources\Pages\ManageRecords;
 
 class ManageLogs extends ManageRecords
@@ -12,7 +14,7 @@ class ManageLogs extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-
+            ClearLogAction::make(Log::class),
         ];
     }
 

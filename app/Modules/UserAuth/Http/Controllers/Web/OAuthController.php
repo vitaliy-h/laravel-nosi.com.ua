@@ -6,6 +6,8 @@ use App\Modules\UserAuth\Actions\ConnectSocialProfileAction;
 use App\Modules\UserAuth\Actions\FindOrCreateSocialUserAction;
 use App\Modules\ShopCart\Actions\MergeCartOnAuthAction;
 use App\Modules\Core\Abstract\BaseWebController;
+use App\Modules\Core\Enums\AuthLogActionEnum;
+use App\Modules\Core\Services\AuthLogService;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -15,6 +17,7 @@ class OAuthController extends BaseWebController
         private readonly FindOrCreateSocialUserAction $findOrCreate,
         private readonly ConnectSocialProfileAction   $connect,
         private readonly MergeCartOnAuthAction      $mergeCart,
+        private readonly AuthLogService             $authLog,
     ) {}
 
     public function redirect(string $provider): RedirectResponse
@@ -31,6 +34,9 @@ class OAuthController extends BaseWebController
         try {
             $socialUser = Socialite::driver($provider)->user();
         } catch (\Throwable) {
+
+            $this->authLog->failure(AuthLogActionEnum::SOCIAL, $provider);
+
             return redirect()->to(save_route('auth.index'))
                 ->withErrors(['social' => t('social.auth_failed')]);
         }
@@ -45,6 +51,12 @@ class OAuthController extends BaseWebController
         $user = $this->findOrCreate->handle($provider, $socialUser);
 
         auth()->login($user, true);
+
+        $this->authLog->success(
+            AuthLogActionEnum::SOCIAL,
+            $user->email ?? $provider,
+            $user,
+        );
 
         $this->mergeCart->handle($user);
 

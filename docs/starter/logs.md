@@ -5,6 +5,12 @@
 The Logs system provides a centralized audit trail for all
 changes made within the application.
 
+There are two independent journals:
+
+- **change log** (`logs`) — what was created, updated or deleted (this page, sections below)
+- **authentication log** (`log_auth`) — who signed in, when, from where and with what result
+  (see [Authentication log](#authentication-log))
+
 It automatically tracks:
 
 - Created records
@@ -185,6 +191,123 @@ created, updated, deleted
 ## Sources
 
 admin, api, console, client
+
+
+------------------------------------------------------------------------
+
+<a id="authentication-log"></a>
+
+## Authentication log (`log_auth`)
+
+A separate journal with its own table, its own records and its own filters.
+The change log above is untouched by it.
+
+### What is recorded
+
+| Field | Notes |
+|---|---|
+| `created_at` | date and time |
+| `user_id` | nullable — the login may not belong to any user |
+| `login` | the submitted login, always stored, even when no such user exists |
+| `source` | `AuthLogSourceEnum` |
+| `action` | `AuthLogActionEnum` |
+| `result` | `AuthLogResultEnum` |
+| `ip_address` | |
+| `user_agent`, `browser`, `platform` | raw string plus what `UserAgentParser` could read out of it |
+
+Passwords are never written to the journal in any form.
+
+### Sources (`AuthLogSourceEnum`)
+
+`website`, `admin_panel`, `api` (the mobile app talks to the same endpoints as
+any other API client).
+
+Deliberately not `LogSourceEnum`: the change log's enum carries `console` and
+`system`, which no sign-in attempt can ever have.
+
+### Actions (`AuthLogActionEnum`)
+
+`login_password`, `social`, `password_reset_request`, `password_change`.
+
+Magic-link sign-in is not implemented in the project, so it has no case here.
+
+### Results (`AuthLogResultEnum`)
+
+`success`, `failure`, `blocked`.
+
+### Where records come from
+
+Writing goes through `AuthLogService` — explicit calls, no event listeners
+(`LoginAction` checks the password by hand and fires no `Failed` event, while
+Filament fires `Login` on the same guard as the website, which would double
+every record):
+
+| Place | Events |
+|---|---|
+| `UserAuth\Actions\LoginAction` | website and API sign-in: success / failure / blocked |
+| `Filament\Pages\Auth\Login` | admin panel sign-in — it never goes through `LoginAction` |
+| `UserAuth\Http\Controllers\Web\OAuthController` | social sign-in: success / provider failure |
+| `UserAuth\Actions\SendPasswordResetAction` | password reset request (failure = unknown email) |
+| `UserAuth\Actions\ResetPasswordAction` | password change through the reset link |
+| `Profile\Actions\UpdateUserPasswordAction` | password change from the profile |
+
+`AuthLogSourceResolver` resolves the source. Unlike `LogSourceResolver` it
+checks the HTTP request first, because authentication always happens inside a
+request and `runningInConsole()` is true under tests. The Filament login page
+passes `AuthLogSourceEnum::ADMIN_PANEL` explicitly — Livewire drives it outside
+a panel request, so nothing else could tell.
+
+### config/auth_log.php
+
+``` php
+return [
+    'enabled' => env('AUTH_LOG_ENABLED', true),
+    'cooldown_seconds' => env('AUTH_COOLDOWN_SECONDS', 5),
+];
+```
+
+------------------------------------------------------------------------
+
+## Sign-in cooldown
+
+After a wrong password the next sign-in attempt for the same **login + IP**
+pair is rejected for `auth_log.cooldown_seconds` seconds (5 by default). The
+rejected attempt is written to the journal with result `blocked`.
+
+- `AuthCooldownService` keeps the state in `RateLimiter`, key
+  `auth-cooldown:` + sha1 of the lowercased login and the IP
+- the IP is part of the key on purpose: a stranger must not be able to lock
+  somebody else's account out, and logins that match no user are covered too
+- a successful sign-in clears the key
+- `AuthCooldownException` carries the remaining seconds and is turned into a
+  normal validation error on the login field, so website, API and admin panel
+  all answer in their usual format
+- `cooldown_seconds = 0` switches the cooldown off completely
+
+### In tests
+
+The cooldown is **on** in tests. A test that makes several sign-in attempts
+for the same login in a row either disables it:
+
+``` php
+config(['auth_log.cooldown_seconds' => 0]);
+```
+
+or travels past the window with `$this->travel(6)->seconds()`.
+
+------------------------------------------------------------------------
+
+## Retention and cleanup
+
+- Every journal page (change log, authentication log, letters, SMS) has a red
+  **Clear journal** header button. It asks for confirmation and wipes the whole
+  journal with a single query — irreversible.
+- `php artisan logs:prune` deletes records older than
+  `config('log.retention_days')` (365 days by default, `LOG_RETENTION_DAYS`)
+  from all four journals, in chunks. `--dry-run` only reports the counts.
+- The command is scheduled daily at 03:00 in `routes/console.php`.
+
+------------------------------------------------------------------------
 
 ---
 

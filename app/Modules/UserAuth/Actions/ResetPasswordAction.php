@@ -2,6 +2,9 @@
 
 namespace App\Modules\UserAuth\Actions;
 
+use App\Modules\Core\Enums\AuthLogActionEnum;
+use App\Modules\Core\Services\AuthLogService;
+use App\Modules\User\Queries\FindUserByEmailQuery;
 use App\Modules\UserAuth\Dtos\PasswordResetData;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Hash;
@@ -11,6 +14,11 @@ use Illuminate\Validation\ValidationException;
 
 class ResetPasswordAction
 {
+    public function __construct(
+        private readonly AuthLogService $authLog,
+        private readonly FindUserByEmailQuery $findUserByEmail,
+    ) {}
+
     public function handle(
         PasswordResetData $data
     ): void
@@ -34,11 +42,25 @@ class ResetPasswordAction
             }
         );
 
+        $user = $this->findUserByEmail->handle($data->email);
+
         if ($status !== Password::PASSWORD_RESET) {
+
+            $this->authLog->failure(
+                AuthLogActionEnum::PASSWORD_CHANGE,
+                $data->email,
+                $user,
+            );
 
             throw ValidationException::withMessages([
                 'email' => [t('auth.password_reset_error')],
             ]);
         }
+
+        $this->authLog->success(
+            AuthLogActionEnum::PASSWORD_CHANGE,
+            $data->email,
+            $user,
+        );
     }
 }

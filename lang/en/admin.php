@@ -26,6 +26,7 @@ return [
         'sms_templates' => 'SMS templates',
         'log_sms' => 'SMS',
         'logs' => 'Logs',
+        'log_auth' => 'Authentication',
         'news' => 'News',
         'pages' => 'Pages',
         'shop' => 'Shop',
@@ -60,6 +61,12 @@ return [
         'imgs' => 'Images',
         'integrated_at' => 'Integrated at',
         'ip' => 'IP',
+        'login' => 'Submitted login',
+        'action' => 'Action',
+        'result' => 'Result',
+        'browser' => 'Browser',
+        'platform' => 'Platform',
+        'user_agent' => 'User agent',
         'code' => 'Code',
         'geo_country_id' => 'Country',
         'geo_region_id' => 'Region',
@@ -262,15 +269,40 @@ return [
         'delete_forbidden_has_children' => 'Remove child categories first',
         'delete_forbidden_has_products' => 'Move or remove products from this category first',
         'page_delete_forbidden' => 'System modules cannot be deleted',
+        'clear_log_heading' => 'Clear the whole journal?',
+        'clear_log_description' => 'All records of this journal will be deleted permanently. This cannot be undone.',
+        'clear_log_done' => 'Journal cleared: :count records deleted',
     ],
     // buttons & actions
     'actions' => [
         'save' => 'Save',
         'saveClose' => 'Save & Close',
         'view_logs' => 'View Logs',
+        'clear_log' => 'Clear journal',
         'impersonate' => 'Login as this user',
         'run' => 'Run',
         'close' => 'Close',
+    ],
+
+    // authentication journal (log_auth)
+    'auth_log' => [
+        'actions' => [
+            'login_password' => 'Login and password',
+            'social' => 'Social sign-in',
+            'password_reset_request' => 'Password reset request',
+            'password_change' => 'Password change',
+        ],
+        'sources' => [
+            'website' => 'Website',
+            'admin_panel' => 'Admin panel',
+            'api' => 'API / mobile app',
+        ],
+        'results' => [
+            'success' => 'Success',
+            'failure' => 'Failure',
+            'blocked' => 'Blocked',
+        ],
+        'cooldown' => 'Too many attempts. Try again in :seconds seconds.',
     ],
 
     // Debug Tools page (Super Admin only)
