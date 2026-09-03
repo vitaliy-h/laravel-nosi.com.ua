@@ -141,18 +141,24 @@ walks relations or formats values. They live in
 
 # Blade Templates
 
-Blade templates remain in standard Laravel location:
+Blade templates live in the standard Laravel location, mirroring the module
+layout of `app/Modules`:
 
 ```text
-resources/views
+resources/views/modules/{module}/
 ```
 
-Example:
+The folder name is the `PageModule` enum value, so `app/Modules/ShopCart`
+renders from `resources/views/modules/shop_cart/`:
 
 ```text
-resources/views/news
-resources/views/feedback
+resources/views/modules/news/index.blade.php
+resources/views/modules/shop_cart/partials/promocode.blade.php
 ```
+
+Shared templates sit outside `modules/`: `layouts/` (base layouts),
+`components/` (anonymous `<x-...>` components) and `partials/` (global
+`@include` templates). See `.claude/frontend.md` for the full convention.
 
 ---
 

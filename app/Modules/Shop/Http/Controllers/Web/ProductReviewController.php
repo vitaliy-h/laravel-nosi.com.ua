@@ -51,7 +51,7 @@ class ProductReviewController extends BaseWebController
                 [
                     'method' => 'html',
                     'selector' => '#review-message',
-                    'content' => $this->render('components.review_message', [
+                    'content' => $this->render('modules.shop.partials.review_message', [
                         'message' => $message,
                     ])->render(),
                 ],
@@ -84,7 +84,7 @@ class ProductReviewController extends BaseWebController
         );
 
         $items = $reviews
-            ->map(fn (ProductReviewViewModel $review) => $this->render('pages.shop.partials.review-item', compact('review'))->render())
+            ->map(fn (ProductReviewViewModel $review) => $this->render('modules.shop.partials.review_item', compact('review'))->render())
             ->implode('');
 
         return response()->json([
@@ -97,7 +97,7 @@ class ProductReviewController extends BaseWebController
                 [
                     'method' => 'replaceWith',
                     'selector' => '#reviews-load-more',
-                    'content' => $this->render('pages.shop.partials.reviews-load-more', [
+                    'content' => $this->render('modules.shop.partials.reviews_load_more', [
                         'product' => ProductViewModel::from($product),
                         'reviews' => $reviews,
                     ])->render(),

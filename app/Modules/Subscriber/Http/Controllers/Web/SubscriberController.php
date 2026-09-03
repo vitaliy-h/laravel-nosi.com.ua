@@ -35,7 +35,7 @@ class SubscriberController extends BaseWebController
                     [
                         'method' => 'html',
                         'selector' => '#newsletter-message',
-                        'content' => $this->render('components.newsletter_message', [
+                        'content' => $this->render('modules.subscriber.partials.newsletter_message', [
                             'message' => $message,
                             'already_exists' => $result->data->alreadyExists,
                         ])->render(),

@@ -166,7 +166,7 @@ class LogLetterResource extends Resource
             Section::make(__('admin.fields.content'))
                 ->schema([
                     ViewField::make('content_view')
-                        ->view('filament.log_letter.email-preview'),
+                        ->view('filament.log_letter.email_preview'),
                 ]),
 
             Section::make()

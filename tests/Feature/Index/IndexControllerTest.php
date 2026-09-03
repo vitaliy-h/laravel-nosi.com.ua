@@ -25,7 +25,7 @@ class IndexControllerTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
-        $response->assertViewIs('pages.index');
+        $response->assertViewIs('modules.index.index');
     }
 
     public function test_home_page_renders_with_products_and_categories(): void

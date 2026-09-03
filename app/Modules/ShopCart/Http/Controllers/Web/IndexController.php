@@ -25,7 +25,7 @@ class IndexController extends BaseWebController
             return redirect(save_route('cart.show', $cart->uuid));
         }
 
-        return $this->render('pages.cart.empty_cart');
+        return $this->render('modules.shop_cart.empty_cart');
     }
 
     /**
@@ -34,7 +34,7 @@ class IndexController extends BaseWebController
      */
     public function checkout(Request $request)
     {
-        return $this->render('pages.cart.checkout');
+        return $this->render('modules.shop_cart.checkout');
     }
 
     public function show(Request $request, string $uuid)
@@ -47,9 +47,9 @@ class IndexController extends BaseWebController
         $cart->load('items.product');
 
         if ($cart->items->isEmpty()) {
-            return $this->render('pages.cart.empty_cart');
+            return $this->render('modules.shop_cart.empty_cart');
         }
 
-        return $this->render('pages.cart.index', ['cart' => CartViewModel::from($cart)]);
+        return $this->render('modules.shop_cart.index', ['cart' => CartViewModel::from($cart)]);
     }
 }

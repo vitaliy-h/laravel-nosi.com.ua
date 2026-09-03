@@ -111,7 +111,7 @@ $page = new ShopProductPageViewModel(
     rating: ProductRatingViewModel::forProduct($product, $breakdown),
 );
 
-return $this->render('pages.shop.product', $page->toViewData());
+return $this->render('modules.shop.product', $page->toViewData());
 ```
 
 `toArray()` stays what tests assert against.

@@ -40,7 +40,7 @@ class SitemapController extends BaseWebController
         $categoriesTotalPages = $shopEnabled ? (int) ceil(Category::visible()->count() / self::PER_PAGE) : 0;
         $productsTotalPages = $shopEnabled ? (int) ceil(Product::visible()->count() / self::PER_PAGE) : 0;
 
-        return $this->xmlResponse('sitemap.index', compact('newsTotalPages', 'categoriesTotalPages', 'productsTotalPages'));
+        return $this->xmlResponse('modules.sitemap.index', compact('newsTotalPages', 'categoriesTotalPages', 'productsTotalPages'));
     }
 
     public function base(): Response
@@ -50,7 +50,7 @@ class SitemapController extends BaseWebController
             ->orderBy('rank', 'DESC')
             ->get();
 
-        return $this->xmlResponse('sitemap.base', compact('pages'));
+        return $this->xmlResponse('modules.sitemap.base', compact('pages'));
     }
 
     public function news(int $page): Response
@@ -63,7 +63,7 @@ class SitemapController extends BaseWebController
                 ->get()
             : collect();
 
-        return $this->xmlResponse('sitemap.news', compact('items'));
+        return $this->xmlResponse('modules.sitemap.news', compact('items'));
     }
 
     public function categories(int $page): Response
@@ -76,7 +76,7 @@ class SitemapController extends BaseWebController
                 ->get()
             : collect();
 
-        return $this->xmlResponse('sitemap.categories', compact('items'));
+        return $this->xmlResponse('modules.sitemap.categories', compact('items'));
     }
 
     public function products(int $page): Response
@@ -90,6 +90,6 @@ class SitemapController extends BaseWebController
                 ->get()
             : collect();
 
-        return $this->xmlResponse('sitemap.products', compact('items'));
+        return $this->xmlResponse('modules.sitemap.products', compact('items'));
     }
 }

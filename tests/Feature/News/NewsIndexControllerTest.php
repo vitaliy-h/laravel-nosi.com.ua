@@ -25,7 +25,7 @@ class NewsIndexControllerTest extends TestCase
         $response = $this->get('/news');
 
         $response->assertStatus(200);
-        $response->assertViewIs('pages.news.index');
+        $response->assertViewIs('modules.news.index');
         $response->assertViewHas('news', function ($news) use ($visible) {
             return $news->pluck('id')->contains($visible->id) && $news->count() === 1;
         });
@@ -38,7 +38,7 @@ class NewsIndexControllerTest extends TestCase
         $response = $this->get('/news/my-news-item');
 
         $response->assertStatus(200);
-        $response->assertViewIs('pages.news.show');
+        $response->assertViewIs('modules.news.show');
         $response->assertViewHas('newsItem', fn ($newsItem) => $newsItem->id === $news->id);
     }
 

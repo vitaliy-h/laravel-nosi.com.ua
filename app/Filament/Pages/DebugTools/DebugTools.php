@@ -53,7 +53,7 @@ class DebugTools extends Page
         return Action::make('viewOutput')
             ->label(__('admin.debug_tools.output'))
             ->modalHeading(fn (): string => __('admin.debug_tools.output_modal_heading', ['command' => $this->lastCommand]))
-            ->modalContent(fn () => view('filament.pages.debug-tools.output', ['output' => $this->output]))
+            ->modalContent(fn () => view('filament.pages.debug_tools.output', ['output' => $this->output]))
             ->modalWidth('2xl')
             ->modalSubmitAction(false)
             ->modalCancelActionLabel(__('admin.actions.close'));

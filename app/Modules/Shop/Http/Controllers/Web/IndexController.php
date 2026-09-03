@@ -45,7 +45,7 @@ class IndexController extends BaseWebController
     {
         $filter = $this->prepareShopFilter->handle(null, $request);
 
-        return $this->render('pages.shop.category', $this->listing(null, $filter, $request)->toViewData());
+        return $this->render('modules.shop.category', $this->listing(null, $filter, $request)->toViewData());
     }
 
     public function category(string $categorySlug, Request $request)
@@ -60,7 +60,7 @@ class IndexController extends BaseWebController
 
         $filter = $this->prepareShopFilter->handle($category, $request);
 
-        return $this->render('pages.shop.category', $this->listing($category, $filter, $request)->toViewData());
+        return $this->render('modules.shop.category', $this->listing($category, $filter, $request)->toViewData());
     }
 
     public function product(string $categorySlug, string $productSlugId, Request $request)
@@ -110,7 +110,7 @@ class IndexController extends BaseWebController
             ),
         );
 
-        return $this->render('pages.shop.product', $page->toViewData());
+        return $this->render('modules.shop.product', $page->toViewData());
     }
 
     private function listing(?Category $category, $filter, Request $request): ShopCategoryPageViewModel

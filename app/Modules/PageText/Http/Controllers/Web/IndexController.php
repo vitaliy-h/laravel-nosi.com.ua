@@ -22,6 +22,6 @@ class IndexController extends BaseWebController
 
         $this->pageContextSharer->share($page);
 
-        return $this->render('pages.text_page');
+        return $this->render('modules.page_text.index');
     }
 }

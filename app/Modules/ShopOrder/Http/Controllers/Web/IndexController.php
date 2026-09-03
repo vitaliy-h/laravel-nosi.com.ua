@@ -21,7 +21,7 @@ class IndexController extends BaseWebController
 
         $this->pageContextSharer->shareWithoutPage();
 
-        return $this->render('pages.shop.order.index', compact('order'));
+        return $this->render('modules.shop_order.index', compact('order'));
     }
 
     public function success(string $uuid): View
@@ -30,7 +30,7 @@ class IndexController extends BaseWebController
 
         $this->pageContextSharer->shareWithoutPage();
 
-        return $this->render('pages.shop.order.success', compact('order'));
+        return $this->render('modules.shop_order.success', compact('order'));
     }
 
     public function error(string $uuid): View
@@ -39,6 +39,6 @@ class IndexController extends BaseWebController
 
         $this->pageContextSharer->shareWithoutPage();
 
-        return $this->render('pages.shop.order.error', compact('order'));
+        return $this->render('modules.shop_order.error', compact('order'));
     }
 }

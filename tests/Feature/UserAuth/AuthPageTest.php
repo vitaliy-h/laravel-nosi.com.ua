@@ -20,7 +20,7 @@ class AuthPageTest extends TestCase
     {
         $this->get(save_route('auth.index'))
             ->assertStatus(200)
-            ->assertViewHas('form_view', 'pages.auth.forms.login')
+            ->assertViewHas('form_view', 'modules.user_auth.partials.forms.login')
             ->assertViewHas('is_login', true);
     }
 
@@ -33,7 +33,7 @@ class AuthPageTest extends TestCase
             $this->get(save_route('auth.index').'?'.$mode)
                 ->assertStatus(200)
                 ->assertViewHas('mode', $mode)
-                ->assertViewHas('form_view', 'pages.auth.forms.'.$mode);
+                ->assertViewHas('form_view', 'modules.user_auth.partials.forms.'.$mode);
         }
     }
 
@@ -53,6 +53,6 @@ class AuthPageTest extends TestCase
     {
         $this->get(save_route('auth.index').'?'.urlencode('../../../etc/passwd'))
             ->assertStatus(200)
-            ->assertViewHas('form_view', 'pages.auth.forms.login');
+            ->assertViewHas('form_view', 'modules.user_auth.partials.forms.login');
     }
 }

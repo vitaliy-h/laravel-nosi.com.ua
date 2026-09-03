@@ -19,7 +19,7 @@ class IndexController extends BaseWebController
     {
         $news = NewsViewModel::collect($this->getNewsList->handle());
 
-        return $this->render('pages.news.index', compact('news'));
+        return $this->render('modules.news.index', compact('news'));
     }
 
     public function show(Request $request, string $slug)
@@ -31,6 +31,6 @@ class IndexController extends BaseWebController
             'meta_description' => $newsItem->meta_description,
         ]);
 
-        return $this->render('pages.news.show', compact('newsItem'));
+        return $this->render('modules.news.show', compact('newsItem'));
     }
 }

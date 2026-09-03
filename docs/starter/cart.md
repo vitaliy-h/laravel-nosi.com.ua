@@ -81,7 +81,7 @@ trait on `Cart` also removes its `CartProduct` items. It's registered in
 ### Empty cart
 
 If the cart has no items (`empty_cart`), a dedicated placeholder page is shown
-instead of a form (`pages.cart.empty_cart`). A shared-link cart with no items
+instead of a form (`modules.shop_cart.empty_cart`). A shared-link cart with no items
 shows the same placeholder.
 
 ---
@@ -120,14 +120,14 @@ shows the same placeholder.
 
 ### Controllers
 
-- **`IndexController`** (`pages.cart.*`, explicit named routes — see Routes below)
+- **`IndexController`** (`modules.shop_cart.*`, explicit named routes — see Routes below)
   - `index(Request $request)` — resolves the current user's/guest's cart; if it
     has items, redirects to `/cart/{uuid}`, otherwise shows the empty-cart
     placeholder
-  - `checkout(Request $request)` → checkout page (`pages.cart.checkout`,
+  - `checkout(Request $request)` → checkout page (`modules.shop_cart.checkout`,
     **currently a static mockup, not wired to real order-placement logic**)
   - `show(Request $request, string $uuid)` — shows a specific cart by link
-    (`pages.cart.index`, or `pages.cart.empty_cart` if it has no items or
+    (`modules.shop_cart.index`, or `modules.shop_cart.empty_cart` if it has no items or
     `$uuid` isn't a valid UUID — falls back to `index()`'s own-cart behavior)
 
 - **`AjaxCartController::change`** (`POST /cart/change`, route `change_product_count`)
