@@ -27,7 +27,7 @@ class ShopIndexControllerTest extends TestCase
         $response = $this->get('/shop');
 
         $response->assertStatus(200);
-        $response->assertViewIs('pages.shop.category');
+        $response->assertViewIs('modules.shop.category');
         $response->assertViewHas('products', function ($products) use ($visible) {
             return $products->pluck('id')->contains($visible->id) && $products->total() === 1;
         });
@@ -44,7 +44,7 @@ class ShopIndexControllerTest extends TestCase
         $response = $this->get('/shop/'.$category->slug);
 
         $response->assertStatus(200);
-        $response->assertViewIs('pages.shop.category');
+        $response->assertViewIs('modules.shop.category');
         $response->assertViewHas('products', fn ($products) => $products->total() === 2);
     }
 
@@ -137,7 +137,7 @@ class ShopIndexControllerTest extends TestCase
         $response = $this->get('/shop/'.$category->slug.'/'.$product->slug_with_id);
 
         $response->assertStatus(200);
-        $response->assertViewIs('pages.shop.product');
+        $response->assertViewIs('modules.shop.product');
         $response->assertViewHas('product', fn ($viewProduct) => $viewProduct->id === $product->id);
     }
 

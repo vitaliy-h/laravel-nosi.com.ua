@@ -64,7 +64,7 @@ class PromocodeController extends BaseWebController
                 [
                     'method' => 'replaceWith',
                     'selector' => '.js_promocode_block',
-                    'content' => $this->render('pages.cart.partials.promocode', [
+                    'content' => $this->render('modules.shop_cart.partials.promocode', [
                         'cart' => $cartView,
                         'result' => $result,
                     ])->render(),
@@ -72,7 +72,7 @@ class PromocodeController extends BaseWebController
                 [
                     'method' => 'replaceWith',
                     'selector' => '.js_summary_discount',
-                    'content' => $this->render('pages.cart.partials.summary-discount', ['cart' => $cartView])->render(),
+                    'content' => $this->render('modules.shop_cart.partials.summary_discount', ['cart' => $cartView])->render(),
                 ],
                 [
                     'method' => 'text',

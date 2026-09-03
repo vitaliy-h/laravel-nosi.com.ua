@@ -37,7 +37,7 @@ class ProfileWebControllerTest extends TestCase
         $response = $this->actingAs($user)->get('/profile/edit');
 
         $response->assertStatus(200);
-        $response->assertViewIs('pages.profile.edit');
+        $response->assertViewIs('modules.profile.edit');
     }
 
     public function test_orders_returns_200_for_authenticated_user(): void
@@ -49,7 +49,7 @@ class ProfileWebControllerTest extends TestCase
         $response = $this->actingAs($user)->get('/profile/orders');
 
         $response->assertStatus(200);
-        $response->assertViewIs('pages.profile.orders');
+        $response->assertViewIs('modules.profile.orders');
     }
 
     public function test_orders_page_lists_the_users_orders(): void
@@ -90,7 +90,7 @@ class ProfileWebControllerTest extends TestCase
         $response = $this->actingAs($user)->get(save_route('profile.orders.show', $order->id));
 
         $response->assertStatus(200)
-            ->assertViewIs('pages.profile.order')
+            ->assertViewIs('modules.profile.order')
             ->assertSee('Ordered Thing')
             ->assertSee('SKU-9')
             ->assertSee(save_route('shop.product', [$category->slug, $product->slug_with_id]), false)

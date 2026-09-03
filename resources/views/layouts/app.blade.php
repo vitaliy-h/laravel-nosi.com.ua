@@ -36,7 +36,7 @@
     <link href="{{asset('assets/css/app.css')}}?v={{ file_exists(public_path('assets/css/app.css')) ? filemtime(public_path('assets/css/app.css')) : time() }}" rel="stylesheet">
 
     {{-- Global styles --}}
-    @include('components.head')
+    @include('partials.head')
 
     {{-- Page styles --}}
     @stack('styles')
@@ -44,15 +44,15 @@
 <body class="@yield('body-class', 'default-page')">
 
 {{-- Navbar --}}
-@include('components.navbar')
+@include('partials.navbar')
 
 <main class="py-4">
     @yield('content')
 </main>
 
 {{-- Footer --}}
-@include('components.footer')
-@include('components.modals')
+@include('partials.footer')
+@include('partials.modals')
 
 <!-- Vendor JS Files -->
 <script src="/demo/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -75,7 +75,7 @@
 <script src="{{asset('assets/js/app.js')}}?v={{ file_exists(public_path('assets/js/app.js')) ? filemtime(public_path('assets/js/app.js')) : time() }}"></script>
 
 {{-- Global scripts --}}
-@include('components.scripts')
+@include('partials.scripts')
 
 {{-- Page scripts --}}
 @stack('scripts')

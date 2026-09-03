@@ -88,7 +88,7 @@ If the check fails, the sitemap index (`/sitemap.xml`) omits those sub-sitemaps 
 |------|------|
 | Controller | `app/Modules/Core/Http/Controllers/SitemapController.php` |
 | Routes | `app/Modules/Core/Http/Routes/web.php` |
-| Views | `resources/views/sitemap/` |
+| Views | `resources/views/modules/sitemap/` |
 
 Views: `index.blade.php`, `base.blade.php`, `news.blade.php`, `categories.blade.php`, `products.blade.php`
 

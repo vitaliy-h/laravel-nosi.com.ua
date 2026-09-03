@@ -22,7 +22,7 @@ class CartIndexControllerTest extends TestCase
         $response = $this->get(save_route('cart.index'));
 
         $response->assertStatus(200);
-        $response->assertViewIs('pages.cart.empty_cart');
+        $response->assertViewIs('modules.shop_cart.empty_cart');
     }
 
     public function test_index_redirects_to_uuid_url_when_cart_has_items(): void
@@ -43,7 +43,7 @@ class CartIndexControllerTest extends TestCase
         $response = $this->get(save_route('cart.show', $cart->uuid));
 
         $response->assertStatus(200);
-        $response->assertViewIs('pages.cart.index');
+        $response->assertViewIs('modules.shop_cart.index');
     }
 
     public function test_index_by_uuid_shows_empty_view_when_no_items(): void
@@ -53,7 +53,7 @@ class CartIndexControllerTest extends TestCase
         $response = $this->get(save_route('cart.show', $cart->uuid));
 
         $response->assertStatus(200);
-        $response->assertViewIs('pages.cart.empty_cart');
+        $response->assertViewIs('modules.shop_cart.empty_cart');
     }
 
     public function test_index_by_unknown_uuid_returns_404(): void
@@ -71,6 +71,6 @@ class CartIndexControllerTest extends TestCase
         $response = $this->withSession(['cart_uuid' => $cart->uuid])->get(save_route('cart.checkout'));
 
         $response->assertStatus(200);
-        $response->assertViewIs('pages.cart.checkout');
+        $response->assertViewIs('modules.shop_cart.checkout');
     }
 }

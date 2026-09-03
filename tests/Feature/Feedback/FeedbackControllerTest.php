@@ -22,7 +22,7 @@ class FeedbackControllerTest extends TestCase
         $response = $this->get('/feedback');
 
         $response->assertStatus(200);
-        $response->assertViewIs('pages.feedback');
+        $response->assertViewIs('modules.feedback.index');
     }
 
     public function test_store_with_valid_data_creates_feedback_and_redirects_back(): void
