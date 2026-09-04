@@ -28,7 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         // Must run after the session has started (StartSession) so services it
-        // depends on (auth, basket) work correctly, regardless of unrelated
+        // depends on (auth, cart) work correctly, regardless of unrelated
         // middleware ordering in module route groups.
         $middleware->appendToPriorityList(
             after: \Illuminate\Session\Middleware\StartSession::class,
@@ -36,7 +36,7 @@ return Application::configure(basePath: dirname(__DIR__))
         );
     })
     ->withSchedule(function (Schedule $schedule): void {
-        $schedule->command('basket:clear-abandoned')->daily();
+        $schedule->command('cart:clear-abandoned')->daily();
     })
     ->withExceptions(function (Exceptions $exceptions) {
 
