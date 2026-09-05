@@ -3,14 +3,14 @@
 namespace App\Filament\Resources\Shop\Products;
 
 use App\Filament\Actions\BaseEditAction;
-use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
+use App\Filament\Dashboard\Queries\Shop\GetCatalogStatsQuery;
 use App\Filament\Resources\Shop\ProductReviews\ProductReviewResource;
+use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
 use App\Filament\Traits\HasSeoFields;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
-use App\Filament\Dashboard\Queries\Shop\GetCatalogStatsQuery;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -68,7 +68,7 @@ class ProductResource extends Resource
                             ->get()
                             ->toFlatTree()
                             ->mapWithKeys(fn ($category) => [
-                                $category->id => str_repeat('— ', $category->depth).$category->title,
+                                $category->id => str_repeat('— ', $category->depth) . $category->title,
                             ])
                     )
                     ->searchable()
@@ -150,7 +150,7 @@ class ProductResource extends Resource
                     ->alignEnd()
                     ->color('primary')
                     ->visible(ModuleGate::isEnabled('shop_product_reviews'))
-                    ->formatStateUsing(fn (Product $record): string => number_format($record->rating, 2).' ('.$record->reviews_count.')')
+                    ->formatStateUsing(fn (Product $record): string => number_format($record->rating, 2) . ' (' . $record->reviews_count . ')')
                     ->url(fn (Product $record): string => ProductReviewResource::getUrl(parameters: [
                         'filters' => ['product_id' => ['value' => $record->id]],
                     ])),
@@ -178,7 +178,7 @@ class ProductResource extends Resource
                             ->get()
                             ->toFlatTree()
                             ->mapWithKeys(fn ($category) => [
-                                $category->id => str_repeat('— ', $category->depth).$category->title,
+                                $category->id => str_repeat('— ', $category->depth) . $category->title,
                             ])
                     )
                     ->searchable()

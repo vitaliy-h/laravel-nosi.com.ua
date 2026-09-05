@@ -63,17 +63,28 @@ Each field listed will be auto-generated on creation.
 
 ## Fetching by UUID
 
-Put lookup logic in a repository, not a controller:
+Put the lookup in a Query class, not a controller (there are no repositories in this
+project — see `.claude/backend.md` → «Read layer»):
 
 ```php
-// app/Modules/Shop/Repository/OrderRepository.php
+// app/Modules/ShopOrder/Queries/FindOrderByUuidQuery.php
 
-public function findByUuid(string $uuid): Order
+class FindOrderByUuidQuery
 {
-    return Order::where('uuid', $uuid)
-        ->with(['items.product.category'])
-        ->firstOrFail();
+    public function handle(string $uuid): Order
+    {
+        return Order::where('uuid', $uuid)
+            ->with(['items.product.category'])
+            ->firstOrFail();
+    }
 }
+```
+
+The controller injects it and hands the result to a ViewModel
+(`ShopOrder\Http\Controllers\Web\IndexController`):
+
+```php
+$order = OrderViewModel::from($this->findOrderByUuid->handle($uuid));
 ```
 
 ---
@@ -83,17 +94,23 @@ public function findByUuid(string $uuid): Order
 Routes go in the module's `Http/Routes/web.php`:
 
 ```php
-// app/Modules/Shop/Http/Routes/web.php
+// app/Modules/ShopOrder/Http/Routes/web.php
 
-Route::get('/order/{uuid}', [OrderController::class, 'show'])
+Route::get('/{uuid}', [IndexController::class, 'show'])
     ->name('order.show');
 ```
+
+`ShopOrder` maps to no `PageModule`, so the group is mounted under `/orders`
+(`ModuleServiceProvider::MODULE_PREFIX_OVERRIDES`) — the public URL is
+`/orders/{uuid}`.
 
 For modules mapped to a `PageModule`, `ShareModulePageContext` middleware
 shares `page`, `breadcrumbs`, `headerMenu`, `footerMenu`, `cartCount`
 automatically — no manual `view()->share()` needed. Modules without a
-`PageModule` mapping (`Core`, `ShopOrder`, etc.) don't get this and must share
-what the layout needs themselves. See `docs/starter/routing.md`.
+`PageModule` mapping don't get this and must share what the layout needs
+themselves: `ShopOrder`'s controller calls
+`PageContextSharer::shareWithoutPage()` for exactly that. See
+`docs/starter/routing.md`.
 
 ---
 
@@ -104,12 +121,12 @@ what the layout needs themselves. See `docs/starter/routing.md`.
 ```php
 $order = Order::factory()->create();
 
-$this->get('/order/' . $order->uuid)->assertOk();
+$this->get('/orders/' . $order->uuid)->assertOk();
 ```
 
-To test the repository directly:
+To test the Query directly:
 
 ```php
 $this->expectException(ModelNotFoundException::class);
-$this->repository->findByUuid('00000000-0000-0000-0000-000000000000');
+app(FindOrderByUuidQuery::class)->handle('00000000-0000-0000-0000-000000000000');
 ```

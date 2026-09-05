@@ -19,7 +19,7 @@ class ApplyPromocodeRequest extends FormRequest
     {
         return [
             'cart_uuid' => ['required', 'uuid', 'exists:shop_carts,uuid'],
-            'code' => ['required', 'string', 'max:64'],
+            'code'      => ['required', 'string', 'max:64'],
         ];
     }
 

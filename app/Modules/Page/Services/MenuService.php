@@ -11,7 +11,7 @@ class MenuService
         return Page::query()
             ->visible()
             ->where('display_menu', true)
-            ->orderBy('rank','DESC')
+            ->orderBy('rank', 'DESC')
             ->get();
     }
 
@@ -20,7 +20,7 @@ class MenuService
         return Page::query()
             ->visible()
             ->where('display_menu_footer', true)
-            ->orderBy('rank','DESC')
+            ->orderBy('rank', 'DESC')
             ->get();
     }
 }

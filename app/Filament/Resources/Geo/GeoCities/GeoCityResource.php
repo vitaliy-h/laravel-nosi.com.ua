@@ -5,7 +5,10 @@ namespace App\Filament\Resources\Geo\GeoCities;
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Geo\GeoCities\Pages\ManageGeoCities;
 use App\Modules\Geo\Models\GeoCity;
+use App\Modules\Geo\Models\GeoCountry;
+use App\Modules\Geo\Models\GeoRegion;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\Select;
@@ -16,11 +19,10 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use App\Modules\Geo\Models\GeoCountry;
-use App\Modules\Geo\Models\GeoRegion;
 
 class GeoCityResource extends Resource
 {
@@ -117,15 +119,16 @@ class GeoCityResource extends Resource
                         if (!empty($data['geo_region_id'])) {
                             $indicators[] = GeoRegion::find($data['geo_region_id'])?->title;
                         }
+
                         return array_filter($indicators);
                     }),
             ])
             ->recordActions([
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),
-            ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+            ], position: RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
-                \Filament\Actions\CreateAction::make(),
+                CreateAction::make(),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

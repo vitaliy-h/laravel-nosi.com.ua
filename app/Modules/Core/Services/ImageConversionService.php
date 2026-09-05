@@ -2,6 +2,7 @@
 
 namespace App\Modules\Core\Services;
 
+use App\Modules\Core\Support\ImageResizer;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
@@ -25,7 +26,7 @@ class ImageConversionService
 
     public function generate(string $originalPath, string $preset): void
     {
-        if (! Storage::exists($originalPath)) {
+        if (!Storage::exists($originalPath)) {
             return;
         }
 

@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\ShopCart;
 
+use App\Modules\Shop\Models\Product;
 use App\Modules\ShopCart\Actions\RemoveCartItemAction;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
-use App\Modules\Shop\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -18,9 +18,9 @@ class RemoveCartItemActionTest extends TestCase
         $cart = Cart::factory()->create();
         $product = Product::factory()->create();
         $item = CartProduct::factory()->create([
-            'cart_id' => $cart->id,
+            'cart_id'         => $cart->id,
             'shop_product_id' => $product->id,
-            'total' => 20,
+            'total'           => 20,
         ]);
         CartProduct::factory()->create(['cart_id' => $cart->id, 'total' => 5]);
 

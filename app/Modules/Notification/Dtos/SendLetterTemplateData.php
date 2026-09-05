@@ -9,7 +9,7 @@ use Spatie\LaravelData\Data;
 class SendLetterTemplateData extends Data
 {
     /**
-     * @param LetterAttachmentData[] $attachments
+     * @param  LetterAttachmentData[]  $attachments
      */
     public function __construct(
         public LetterEnum $key,

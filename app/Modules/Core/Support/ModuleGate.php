@@ -6,7 +6,7 @@ class ModuleGate
 {
     /**
      * Whether the module is enabled, by its snake_case name (matching both the
-     * config/modules.php key and the Str::snake'd app/Modules folder name).
+     * config/modules.php `list` key and the Str::snake'd app/Modules folder name).
      *
      * Everything is on by default. A module is off only when config/modules.php
      * says so out loud, which is why that file lists nothing but the modules you
@@ -14,14 +14,23 @@ class ModuleGate
      *
      * A module listed under `dependencies` also goes off with its parent.
      */
-    public static function isEnabled(string $module): bool
+    public static function isEnabled(string $module, array $seen = []): bool
     {
-        if (!config("modules.{$module}", true)) {
+        if (!config("modules.list.{$module}", true)) {
             return false;
         }
 
         $dependsOn = config("modules.dependencies.{$module}");
 
-        return $dependsOn === null || self::isEnabled($dependsOn);
+        if ($dependsOn === null) {
+            return true;
+        }
+
+        // A cycle in `dependencies` (a → b → a) would otherwise recurse forever.
+        if (in_array($module, $seen, true)) {
+            return true;
+        }
+
+        return self::isEnabled($dependsOn, [...$seen, $module]);
     }
 }

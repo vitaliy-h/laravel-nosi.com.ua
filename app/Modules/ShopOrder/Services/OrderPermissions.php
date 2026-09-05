@@ -7,9 +7,7 @@ use App\Modules\ShopOrder\Models\Order;
 
 readonly class OrderPermissions
 {
-    public function __construct(private Order $order)
-    {
-    }
+    public function __construct(private Order $order) {}
 
     public function canPay(): bool
     {

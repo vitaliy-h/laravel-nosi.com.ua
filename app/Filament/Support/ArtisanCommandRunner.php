@@ -13,57 +13,61 @@ class ArtisanCommandRunner
      * Whitelisted actions the Super Admin can trigger from the admin panel.
      * Keys are arbitrary action ids (shown in the UI, translated via
      * admin.debug_tools.commands.*); `command`/`params` are what actually gets
-     * passed to Artisan::call(). Actions marked `destructive` require an extra
-     * confirmation step in the UI.
+     * passed to Artisan::call().
+     *
+     * `destructive` actions (they drop tables, roll migrations back or rewrite
+     * seed data) require an extra confirmation step in the UI, and are refused
+     * outright in production — see isAvailable(). Everything else is safe
+     * enough to run on a live site: forward migrations and cache clearing.
      */
     public const COMMANDS = [
         'migrate' => [
-            'params' => [],
+            'params'      => [],
             'destructive' => false,
         ],
         'migrate:rollback' => [
-            'params' => [],
+            'params'      => [],
             'destructive' => true,
         ],
         'migrate:status' => [
-            'params' => [],
+            'params'      => [],
             'destructive' => false,
         ],
         'migrate:fresh' => [
-            'params' => [],
+            'params'      => [],
             'destructive' => true,
         ],
         'migrate:fresh --seed' => [
-            'command' => 'migrate:fresh',
-            'params' => ['--seed' => true],
+            'command'     => 'migrate:fresh',
+            'params'      => ['--seed' => true],
             'destructive' => true,
         ],
         'db:seed' => [
-            'params' => [],
+            'params'      => [],
             'destructive' => true,
         ],
         'cache:clear' => [
-            'params' => [],
+            'params'      => [],
             'destructive' => false,
         ],
         'config:clear' => [
-            'params' => [],
+            'params'      => [],
             'destructive' => false,
         ],
         'route:clear' => [
-            'params' => [],
+            'params'      => [],
             'destructive' => false,
         ],
         'view:clear' => [
-            'params' => [],
+            'params'      => [],
             'destructive' => false,
         ],
         'queue:restart' => [
-            'params' => [],
+            'params'      => [],
             'destructive' => false,
         ],
         'optimize:clear' => [
-            'params' => [],
+            'params'      => [],
             'destructive' => false,
         ],
     ];
@@ -78,10 +82,33 @@ class ArtisanCommandRunner
         return self::COMMANDS[$key]['destructive'] ?? false;
     }
 
+    /**
+     * Whether the action can be run in the current environment.
+     *
+     * A destructive action wipes or rewrites data, so it stays a staging tool:
+     * `migrate:fresh`, `migrate:fresh --seed`, `db:seed` and `migrate:rollback`
+     * are hidden and refused once the app runs in production. The forward
+     * migration and the cache/queue commands stay available everywhere.
+     */
+    public static function isAvailable(string $key): bool
+    {
+        if (!self::isAllowed($key)) {
+            return false;
+        }
+
+        return !self::isDestructive($key) || !app()->isProduction();
+    }
+
     public function run(string $key, User $actor): string
     {
         if (!self::isAllowed($key)) {
             throw new InvalidArgumentException("Action [{$key}] is not whitelisted.");
+        }
+
+        if (!self::isAvailable($key)) {
+            throw new InvalidArgumentException(
+                "Action [{$key}] is destructive and cannot be run in production."
+            );
         }
 
         $meta = self::COMMANDS[$key];
@@ -92,12 +119,12 @@ class ArtisanCommandRunner
         $output = Artisan::output();
 
         Log::warning('[SuperAdmin] Artisan command executed from admin panel', [
-            'action' => $key,
-            'command' => $command,
-            'params' => $params,
-            'user_id' => $actor->id,
+            'action'     => $key,
+            'command'    => $command,
+            'params'     => $params,
+            'user_id'    => $actor->id,
             'user_email' => $actor->email,
-            'exit_code' => $exitCode,
+            'exit_code'  => $exitCode,
         ]);
 
         return $output;

@@ -15,12 +15,12 @@ class LetterTemplateSeeder extends Seeder
     {
         foreach (LetterEnum::cases() as $case) {
             $data = __("letter_templates.{$case->value}");
-            if (!LetterTemplate::where('key',$case)->exists()) {
+            if (!LetterTemplate::where('key', $case)->exists()) {
                 LetterTemplate::create(
                     [
-                        'key' => $case->value,
+                        'key'     => $case->value,
                         'subject' => $data['subject'],
-                        'body' => $data['body'],
+                        'body'    => $data['body'],
                     ]
                 );
             }

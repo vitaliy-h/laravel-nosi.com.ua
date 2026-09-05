@@ -13,8 +13,8 @@ readonly class RemovePromocodeFromCartAction
     public function handle(Cart $cart): void
     {
         $cart->withoutEvents(fn () => $cart->update([
-            'promocode_id' => null,
-            'promocode_code' => null,
+            'promocode_id'    => null,
+            'promocode_code'  => null,
             'discount_amount' => 0,
         ]));
 

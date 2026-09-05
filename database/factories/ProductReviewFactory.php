@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Modules\User\Models\User;
 use App\Modules\Shop\Models\Product;
 use App\Modules\Shop\Models\ProductReview;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -26,14 +26,14 @@ class ProductReviewFactory extends Factory
     public function definition(): array
     {
         return [
-            'display' => true,
+            'display'    => true,
             'product_id' => Product::factory(),
-            'user_id' => null,
-            'rating' => fake()->numberBetween(1, 5),
-            'name' => fake()->name(),
-            'email' => fake()->safeEmail(),
-            'text' => fake()->paragraph(),
-            'ip' => fake()->ipv4(),
+            'user_id'    => null,
+            'rating'     => fake()->numberBetween(1, 5),
+            'name'       => fake()->name(),
+            'email'      => fake()->safeEmail(),
+            'text'       => fake()->paragraph(),
+            'ip'         => fake()->ipv4(),
         ];
     }
 

@@ -119,15 +119,18 @@ GET /api/shop/products
 
 ### Query Parameters
 
-| Parameter   | Type    | Required | Description                                             |
-|-------------|---------|----------|----------------------------------------------------------|
-| category_id | integer | no       | Restrict to a category (and its descendants)              |
-| brand       | string  | no       | Comma-separated brand IDs                                  |
-| price_from  | number  | no       | Minimum price                                               |
-| price_to    | number  | no       | Maximum price                                               |
-| search      | string  | no       | Search term                                                 |
-| sort        | string  | no       | `price_asc`, `price_desc`, `newest`, `title_asc`, `title_desc` |
-| page        | integer | no       | Page number (default: 1)                                    |
+All parameters are optional and validated by `ShopProductsRequest`; anything invalid
+returns `422` in the standard validation-error envelope.
+
+| Parameter   | Type    | Rules | Description |
+|-------------|---------|-------|-------------|
+| category_id | integer | must exist in `shop_categories` | Restrict to a category (and its descendants) |
+| brand       | string / array | `1,2,3` or `brand[]=1&brand[]=2`; every id a positive integer | Filter by brand |
+| price_from  | number  | `>= 0` | Minimum price |
+| price_to    | number  | `>= 0`, not below `price_from` | Maximum price |
+| search      | string  | max 255 characters | Search term |
+| sort        | string  | one of the values below | `price_asc`, `price_desc`, `newest`, `title_asc`, `title_desc` |
+| page        | integer | `>= 1` | Page number (default: 1) |
 
 ### Success Response
 

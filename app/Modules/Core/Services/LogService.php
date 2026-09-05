@@ -9,6 +9,45 @@ use Illuminate\Database\Eloquent\Model;
 
 class LogService
 {
+    /**
+     * Rows collected while a batch is open, instead of being inserted one by one.
+     * `null` means no batch is running and every entry is written immediately.
+     *
+     * @var array<int, array<string, mixed>>|null
+     */
+    private ?array $buffer = null;
+
+    /**
+     * Run $callback with journal writes buffered, then insert them in one query.
+     *
+     * A cascading delete produces one journal row per child; without this each of
+     * them is a separate INSERT.
+     *
+     * Nested calls join the outer batch — only the outermost one flushes. The
+     * flush sits in a `finally`, so a failure half-way still records what already
+     * happened.
+     */
+    public function batch(callable $callback): mixed
+    {
+        if ($this->buffer !== null) {
+            return $callback();
+        }
+
+        $this->buffer = [];
+
+        try {
+            return $callback();
+        } finally {
+            $rows = $this->buffer;
+
+            $this->buffer = null;
+
+            if ($rows !== []) {
+                Log::query()->insert($rows);
+            }
+        }
+    }
+
     public function logCreated(Model $model): void
     {
         if (!$this->shouldLog($model)) {
@@ -52,9 +91,10 @@ class LogService
         $newValues = [];
 
         foreach ($changes as $field => $value) {
-            if($this->onlyTrackChanges($field)) {
+            if ($this->onlyTrackChanges($field)) {
                 $oldValues[$field] = null;
                 $newValues[$field] = null;
+
                 continue;
             }
             $oldValues[$field] = $this->normalizeValue(
@@ -99,13 +139,13 @@ class LogService
 
     protected function createLog(LogEventEnum $event, Model $model, ?array $oldValues, ?array $newValues, array $changedFields): void
     {
-        Log::query()->create([
+        $attributes = [
             'user_id' => request()->user()?->id,
 
             'event' => $event,
 
             'model_type' => $model::class,
-            'model_id' => $model->getKey(),
+            'model_id'   => $model->getKey(),
 
             'old_values' => $oldValues,
             'new_values' => $newValues,
@@ -115,8 +155,27 @@ class LogService
             'source' => LogSourceResolver::resolve(),
 
             'ip_address' => request()?->ip(),
+        ];
 
-        ]);
+        if ($this->buffer === null) {
+            Log::query()->create($attributes);
+
+            return;
+        }
+
+        // Model casts do not run on a bulk insert, so encode by hand here.
+        $now = now();
+
+        $this->buffer[] = [
+            ...$attributes,
+            'event'          => $event->value,
+            'source'         => $attributes['source']?->value,
+            'old_values'     => $oldValues === null ? null : json_encode($oldValues),
+            'new_values'     => $newValues === null ? null : json_encode($newValues),
+            'changed_fields' => json_encode($changedFields),
+            'created_at'     => $now,
+            'updated_at'     => $now,
+        ];
     }
 
     protected function shouldLog(Model $model): bool
@@ -139,14 +198,13 @@ class LogService
     protected function normalizeAttributes(
         array $attributes,
         Model $model,
-    ): array
-    {
+    ): array {
         $ignored = $this->getIgnoredAttributes($model);
 
         return collect($attributes)
             ->except($ignored)
-            ->map(fn($value, $key) => $this->onlyTrackChanges($key) ? null : $this->normalizeValue($value))
-            ->filter(fn($value) => $value !== null)
+            ->map(fn ($value, $key) => $this->onlyTrackChanges($key) ? null : $this->normalizeValue($value))
+            ->filter(fn ($value) => $value !== null)
             ->toArray();
     }
 
@@ -180,14 +238,14 @@ class LogService
 
         if (is_array($value)) {
             return collect($value)
-                ->map(fn($item) => $this->normalizeValue($item))
+                ->map(fn ($item) => $this->normalizeValue($item))
                 ->toArray();
         }
 
         if (is_object($value)) {
             return method_exists($value, 'toArray')
                 ? $value->toArray()
-                : (string)$value;
+                : (string) $value;
         }
 
         return $value;

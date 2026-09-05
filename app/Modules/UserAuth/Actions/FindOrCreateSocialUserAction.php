@@ -2,9 +2,9 @@
 
 namespace App\Modules\UserAuth\Actions;
 
+use App\Modules\User\Models\User;
 use App\Modules\UserAuth\Dtos\RegisterData;
 use App\Modules\UserAuth\Models\SocialProfile;
-use App\Modules\User\Models\User;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Contracts\User as SocialUser;
 
@@ -31,7 +31,7 @@ readonly class FindOrCreateSocialUserAction
             ? User::where('email', $email)->first()
             : null;
 
-        if (! $user) {
+        if (!$user) {
             $user = $this->register->handle(new RegisterData(
                 name: $socialUser->getName() ?? $socialUser->getNickname() ?? 'User',
                 email: $email,
@@ -41,7 +41,7 @@ readonly class FindOrCreateSocialUserAction
         }
 
         $user->socialProfiles()->create([
-            'provider' => $provider,
+            'provider'    => $provider,
             'provider_id' => $socialUser->getId(),
             ...$this->socialProfileData($socialUser),
         ]);
@@ -55,12 +55,12 @@ readonly class FindOrCreateSocialUserAction
     private function socialProfileData(SocialUser $socialUser): array
     {
         return [
-            'token' => $socialUser->token,
-            'refresh_token' => $socialUser->refreshToken,
+            'token'            => $socialUser->token,
+            'refresh_token'    => $socialUser->refreshToken,
             'token_expires_at' => $socialUser->expiresIn
                 ? now()->addSeconds($socialUser->expiresIn)
                 : null,
-            'avatar' => $socialUser->getAvatar(),
+            'avatar'     => $socialUser->getAvatar(),
             'identifier' => $socialUser->getEmail() ?? $socialUser->getNickname(),
         ];
     }

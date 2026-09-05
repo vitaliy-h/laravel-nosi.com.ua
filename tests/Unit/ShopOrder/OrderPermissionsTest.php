@@ -14,7 +14,7 @@ class OrderPermissionsTest extends TestCase
 
     // canPay
 
-    public function test_canPay_returns_true_when_unpaid(): void
+    public function test_can_pay_returns_true_when_unpaid(): void
     {
         $order = Order::factory()->create([
             'payment_status' => PaymentStatusEnum::UNPAID,
@@ -23,7 +23,7 @@ class OrderPermissionsTest extends TestCase
         $this->assertTrue((new OrderPermissions($order))->canPay());
     }
 
-    public function test_canPay_returns_false_when_processing(): void
+    public function test_can_pay_returns_false_when_processing(): void
     {
         $order = Order::factory()->create([
             'payment_status' => PaymentStatusEnum::PROCESSING,
@@ -32,7 +32,7 @@ class OrderPermissionsTest extends TestCase
         $this->assertFalse((new OrderPermissions($order))->canPay());
     }
 
-    public function test_canPay_returns_false_when_paid(): void
+    public function test_can_pay_returns_false_when_paid(): void
     {
         $order = Order::factory()->create([
             'payment_status' => PaymentStatusEnum::PAID,

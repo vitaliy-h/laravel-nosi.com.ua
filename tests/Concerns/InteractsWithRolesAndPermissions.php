@@ -26,7 +26,7 @@ trait InteractsWithRolesAndPermissions
 
         foreach ($permissions as $permission) {
             Permission::firstOrCreate([
-                'name' => $permission,
+                'name'       => $permission,
                 'guard_name' => 'web',
             ]);
         }
@@ -58,7 +58,7 @@ trait InteractsWithRolesAndPermissions
         $this->seedRolesAndPermissions();
 
         $role = Role::firstOrCreate([
-            'name' => 'super_admin',
+            'name'       => 'super_admin',
             'guard_name' => 'web',
         ]);
 

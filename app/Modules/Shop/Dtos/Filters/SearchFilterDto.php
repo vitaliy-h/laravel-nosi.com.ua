@@ -11,8 +11,7 @@ class SearchFilterDto extends BaseFilterDto
         public readonly string $key,
         public readonly FilterTypeEnum $type,
         public readonly ?string $value,
-    ) {
-    }
+    ) {}
 
     public function apply(Builder $query): void
     {

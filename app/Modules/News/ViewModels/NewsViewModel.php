@@ -30,7 +30,7 @@ class NewsViewModel extends BaseViewModel
             title: (string) $news->title,
             url: save_route('news.show', $news->slug),
             short_text: $news->short_text,
-            has_image: ! empty($news->img),
+            has_image: !empty($news->img),
             image: $news->image,
             published_at_formatted: $news->published_at?->format('d.m.Y H:i'),
             content: $news->content ?? [],

@@ -24,8 +24,8 @@ class PasswordResetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'token' => ['required', 'string'],
-            'email' => ['required', 'email'],
+            'token'    => ['required', 'string'],
+            'email'    => ['required', 'email'],
             'password' => [
                 'required',
                 'confirmed',
@@ -41,7 +41,7 @@ class PasswordResetRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'email' => t('auth.email'),
+            'email'    => t('auth.email'),
             'password' => t('auth.new_password'),
         ];
     }

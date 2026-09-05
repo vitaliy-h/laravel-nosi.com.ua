@@ -26,7 +26,7 @@ class AdminAuthenticationTest extends TestCase
 
         Livewire::test(Login::class)
             ->fillForm([
-                'login' => $admin->email,
+                'login'    => $admin->email,
                 'password' => 'password',
             ])
             ->call('authenticate')
@@ -65,7 +65,7 @@ class AdminAuthenticationTest extends TestCase
 
         Livewire::test(Login::class)
             ->fillForm([
-                'login' => $admin->email,
+                'login'    => $admin->email,
                 'password' => 'wrong-password',
             ])
             ->call('authenticate')

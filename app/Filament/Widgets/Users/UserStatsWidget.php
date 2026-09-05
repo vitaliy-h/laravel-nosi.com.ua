@@ -2,11 +2,11 @@
 
 namespace App\Filament\Widgets\Users;
 
-use App\Filament\Resources\Subscribers\SubscriberResource;
-use App\Filament\Resources\Users\UserResource;
 use App\Filament\Dashboard\Concerns\FormatsDashboardStats;
 use App\Filament\Dashboard\Concerns\InteractsWithDashboardPeriod;
 use App\Filament\Dashboard\Queries\Users\GetUserStatsQuery;
+use App\Filament\Resources\Subscribers\SubscriberResource;
+use App\Filament\Resources\Users\UserResource;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 

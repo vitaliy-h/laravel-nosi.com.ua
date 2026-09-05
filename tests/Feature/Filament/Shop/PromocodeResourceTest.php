@@ -3,9 +3,9 @@
 namespace Tests\Feature\Filament\Shop;
 
 use App\Filament\Resources\Shop\Promocodes\Pages\ManagePromocodes;
-use App\Modules\User\Models\User;
 use App\Modules\ShopCart\Enums\PromocodeTypeEnum;
 use App\Modules\ShopCart\Models\Promocode;
+use App\Modules\User\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -75,9 +75,9 @@ class PromocodeResourceTest extends TestCase
     {
         Livewire::test(ManagePromocodes::class)
             ->callAction(TestAction::make(CreateAction::getDefaultName())->table(), data: [
-                'code' => 'NEWCODE',
-                'type' => PromocodeTypeEnum::PERCENT->value,
-                'value' => 15,
+                'code'    => 'NEWCODE',
+                'type'    => PromocodeTypeEnum::PERCENT->value,
+                'value'   => 15,
                 'display' => true,
             ])
             ->assertHasNoFormErrors();
@@ -92,7 +92,7 @@ class PromocodeResourceTest extends TestCase
     {
         Livewire::test(ManagePromocodes::class)
             ->callAction(TestAction::make(CreateAction::getDefaultName())->table(), data: [
-                'type' => PromocodeTypeEnum::FIXED->value,
+                'type'  => PromocodeTypeEnum::FIXED->value,
                 'value' => 10,
             ])
             ->assertHasFormErrors(['code']);
@@ -104,14 +104,14 @@ class PromocodeResourceTest extends TestCase
 
         Livewire::test(ManagePromocodes::class)
             ->callAction(TestAction::make(EditAction::getDefaultName())->table($promocode), data: [
-                'code' => 'OLDCODE',
-                'type' => PromocodeTypeEnum::FIXED->value,
+                'code'  => 'OLDCODE',
+                'type'  => PromocodeTypeEnum::FIXED->value,
                 'value' => 25,
             ])
             ->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('shop_promocodes', [
-            'id' => $promocode->id,
+            'id'    => $promocode->id,
             'value' => 25.00,
         ]);
     }

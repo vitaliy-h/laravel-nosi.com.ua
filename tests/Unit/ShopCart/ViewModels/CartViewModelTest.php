@@ -29,8 +29,8 @@ class CartViewModelTest extends TestCase
         $cart = Cart::factory()->create([
             'subtotal_amount' => 100,
             'discount_amount' => 10,
-            'total_amount' => 90,
-            'promocode_code' => 'SAVE10',
+            'total_amount'    => 90,
+            'promocode_code'  => 'SAVE10',
         ]);
 
         $vm = CartViewModel::from($cart->load('items.product'));
@@ -50,9 +50,9 @@ class CartViewModelTest extends TestCase
         $cart = Cart::factory()->create();
         $product = Product::factory()->create(['title' => 'Current Title']);
         CartProduct::factory()->create([
-            'cart_id' => $cart->id,
+            'cart_id'         => $cart->id,
             'shop_product_id' => $product->id,
-            'product_name' => 'Name When Added',
+            'product_name'    => 'Name When Added',
         ]);
 
         $item = CartViewModel::from($cart->load('items.product'))->items->first();

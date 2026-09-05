@@ -25,7 +25,7 @@ class FeedbackFactory extends Factory
 
     public function processed(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'processed' => true,
         ]);
     }

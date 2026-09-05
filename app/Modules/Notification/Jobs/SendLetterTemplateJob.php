@@ -2,9 +2,9 @@
 
 namespace App\Modules\Notification\Jobs;
 
+use App\Modules\Core\Mail\TemplateMail;
 use App\Modules\Notification\Enums\LogLetterStatusEnum;
 use App\Modules\Notification\Models\LogLetter;
-use App\Modules\Core\Mail\TemplateMail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Mail;
@@ -35,12 +35,12 @@ class SendLetterTemplateJob implements ShouldQueue
             Mail::to($this->logLetter->receiver)->send($mail);
 
             $this->logLetter->update([
-                'status' => LogLetterStatusEnum::SENT,
+                'status'  => LogLetterStatusEnum::SENT,
                 'content' => $finalHtml,
             ]);
         } catch (Throwable $e) {
             $this->logLetter->update([
-                'status' => LogLetterStatusEnum::FAILED,
+                'status'        => LogLetterStatusEnum::FAILED,
                 'error_message' => $e->getMessage(),
             ]);
 

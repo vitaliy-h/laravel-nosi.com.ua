@@ -4,10 +4,10 @@ namespace App\Filament\Dashboard\Queries\Users;
 
 use App\Filament\Dashboard\Dtos\DashboardPeriodData;
 use App\Filament\Dashboard\Dtos\Users\UserStatsData;
-use App\Modules\User\Models\User;
 use App\Filament\Dashboard\Support\DashboardSeries;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Subscriber\Models\Subscriber;
+use App\Modules\User\Models\User;
 
 class GetUserStatsQuery
 {
@@ -48,7 +48,7 @@ class GetUserStatsQuery
             ->whereBetween('created_at', [$period->from, $period->to])
             ->selectRaw(
                 DashboardSeries::bucketExpression($period, 'created_at')
-                .' AS bucket, COUNT(*) AS total'
+                . ' AS bucket, COUNT(*) AS total'
             )
             ->groupBy('bucket')
             ->pluck('total', 'bucket');

@@ -26,7 +26,7 @@ enum PageModule: string
 
     public static function active(): array
     {
-        return array_values(array_filter(self::cases(), fn($case) => $case->isEnabled()));
+        return array_values(array_filter(self::cases(), fn ($case) => $case->isEnabled()));
     }
 
     public static function activeOptions(): array
@@ -39,16 +39,15 @@ enum PageModule: string
     public function label(): string
     {
         return match ($this) {
-            self::INDEX => 'Main Page',
-            self::TEXT => 'Text Page',
-            self::NEWS => 'News',
-            self::FEEDBACK => 'Feedback',
-            self::SHOP => 'Shop',
+            self::INDEX     => 'Main Page',
+            self::TEXT      => 'Text Page',
+            self::NEWS      => 'News',
+            self::FEEDBACK  => 'Feedback',
+            self::SHOP      => 'Shop',
             self::SHOP_CART => 'Shop cart',
-            self::AUTH => 'Auth',
-            self::PROFILE => 'Profile',
-            self::GEO => 'Geo',
+            self::AUTH      => 'Auth',
+            self::PROFILE   => 'Profile',
+            self::GEO       => 'Geo',
         };
     }
-
 }

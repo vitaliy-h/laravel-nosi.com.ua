@@ -79,7 +79,7 @@ class AdminResourceClassGenerator extends ResourceClassGenerator
     public function outputTableActions(): string
     {
         return implode(PHP_EOL . '        ', array_map(
-            fn(string $action) => "{$this->simplifyFqn($action)}::make()->iconButton(),",
+            fn (string $action) => "{$this->simplifyFqn($action)}::make()->iconButton(),",
             $this->getTableActions(),
         ));
     }

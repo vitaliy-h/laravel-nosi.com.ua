@@ -12,7 +12,7 @@ trait FormatsDashboardStats
 {
     protected function money(float $amount): string
     {
-        return t('shop.currency').number_format($amount, 2);
+        return t('shop.currency') . number_format($amount, 2);
     }
 
     /**
@@ -34,15 +34,15 @@ trait FormatsDashboardStats
             return __('admin.dashboard.descriptions.no_change');
         }
 
-        return ($percent > 0 ? '+' : '').$percent.'%';
+        return ($percent > 0 ? '+' : '') . $percent . '%';
     }
 
     protected function trendColor(?float $percent): string
     {
         return match (true) {
             $percent === null, $percent === 0.0 => 'gray',
-            $percent > 0 => 'success',
-            default => 'danger',
+            $percent > 0                        => 'success',
+            default                             => 'danger',
         };
     }
 
@@ -50,8 +50,8 @@ trait FormatsDashboardStats
     {
         return match (true) {
             $percent === null, $percent === 0.0 => null,
-            $percent > 0 => 'heroicon-m-arrow-trending-up',
-            default => 'heroicon-m-arrow-trending-down',
+            $percent > 0                        => 'heroicon-m-arrow-trending-up',
+            default                             => 'heroicon-m-arrow-trending-down',
         };
     }
 

@@ -21,20 +21,19 @@ class ResetPasswordAction
 
     public function handle(
         PasswordResetData $data
-    ): void
-    {
+    ): void {
 
         $status = Password::reset(
             [
-                'email' => $data->email,
-                'password' => $data->password,
+                'email'                 => $data->email,
+                'password'              => $data->password,
                 'password_confirmation' => $data->password_confirmation,
-                'token' => $data->token,
+                'token'                 => $data->token,
             ],
             function ($user, $password) {
 
                 $user->forceFill([
-                    'password' => Hash::make($password),
+                    'password'       => Hash::make($password),
                     'remember_token' => Str::random(60),
                 ])->save();
 

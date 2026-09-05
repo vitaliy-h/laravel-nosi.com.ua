@@ -23,19 +23,19 @@ class OrderControllerTest extends TestCase
     {
         $cart = Cart::factory()->create();
         CartProduct::factory()->create([
-            'cart_id' => $cart->id,
-            'quantity' => 2,
+            'cart_id'       => $cart->id,
+            'quantity'      => 2,
             'selling_price' => 10,
-            'total' => 20,
+            'total'         => 20,
         ]);
 
         $response = $this->post(route('order.create'), [
-            'cart_uuid' => $cart->uuid,
-            'user_name' => 'John',
+            'cart_uuid'    => $cart->uuid,
+            'user_name'    => 'John',
             'user_surname' => 'Doe',
-            'user_email' => 'john@example.com',
-            'user_phone' => '+123456789',
-            'comment' => 'Please call before delivery',
+            'user_email'   => 'john@example.com',
+            'user_phone'   => '+123456789',
+            'comment'      => 'Please call before delivery',
         ]);
 
         $order = Order::firstOrFail();
@@ -56,7 +56,7 @@ class OrderControllerTest extends TestCase
         CartProduct::factory()->create(['cart_id' => $cart->id]);
 
         $this->post(route('order.create'), [
-            'cart_uuid' => $cart->uuid,
+            'cart_uuid'  => $cart->uuid,
             'user_email' => 'john@example.com',
         ]);
 
@@ -79,7 +79,7 @@ class OrderControllerTest extends TestCase
         CartProduct::factory()->create(['cart_id' => $cart->id]);
 
         $this->post(route('order.create'), [
-            'cart_uuid' => $cart->uuid,
+            'cart_uuid'  => $cart->uuid,
             'user_email' => 'not-an-email',
         ])->assertSessionHasErrors('user_email');
     }
@@ -94,7 +94,7 @@ class OrderControllerTest extends TestCase
     public function test_place_order_with_unknown_cart_uuid_fails_validation(): void
     {
         $this->post(route('order.create'), [
-            'cart_uuid' => '00000000-0000-0000-0000-000000000000',
+            'cart_uuid'  => '00000000-0000-0000-0000-000000000000',
             'user_email' => 'john@example.com',
         ])->assertSessionHasErrors('cart_uuid');
     }

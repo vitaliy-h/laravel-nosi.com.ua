@@ -21,7 +21,7 @@ and adds missing translation keys.
 
 If the user did not specify a model, ask: **Which model?** (PascalCase, e.g. `Product`)
 
-Read `app/Modules/Core/Enums/PageModule.php` to get existing modules.
+Read `app/Modules/Page/Enums/PageModule.php` to get existing modules.
 Find the model at `app/Modules/{Module}/Models/{ModelName}.php`.
 
 If multiple modules exist with that model name, present options and ask.
@@ -52,9 +52,9 @@ Lang keys: lang/en/admin.php (+ lang/uk/admin.php only if that locale file alrea
 ```
 
 `{ModelNamePlural}` is the artisan generator's auto-pluralized form of `{ModelName}` (e.g.
-`Product` → `Products`, `Category` → `Categories`). When a module has only one resource whose
-name already matches the module name (e.g. `News/News`), Filament collapses this into a single
-folder — see real examples below.
+`Product` → `Products`, `Category` → `Categories`). The `{Module}/` segment is **not**
+always there — see «Where the resource actually goes» below, and print the path you
+picked in this summary.
 
 Ask: **Proceed?**
 
@@ -87,11 +87,29 @@ This creates:
 - `app/Filament/Resources/{Module}/{ModelNamePlural}/{ModelName}Resource.php`
 - `app/Filament/Resources/{Module}/{ModelNamePlural}/Pages/Manage{ModelName}s.php`
 
-Real examples: `Shop/Product` → `app/Filament/Resources/Shop/Products/ProductResource.php`;
-`Geo/GeoCountry` → `app/Filament/Resources/Geo/GeoCountries/GeoCountryResource.php`. When
-model and module share the same name (e.g. `News/News`), the generator collapses the plural
-folder into the module folder: `app/Filament/Resources/News/NewsResource.php` (no extra
-`News/` subfolder), same for `Basket`, `Feedback`, `Users`, etc.
+#### Where the resource actually goes
+
+`app/Filament/Resources/` is grouped by **admin domain**, not by `app/Modules/` folder, and
+only a domain that owns several resources gets a folder of its own. Check the existing tree
+before generating and follow it:
+
+| Case | Path | Real examples |
+|---|---|---|
+| Domain with several resources | `Resources/{Domain}/{ModelNamePlural}/{ModelName}Resource.php` | `Shop/Products/ProductResource.php`, `Shop/Categories/CategoryResource.php`, `Geo/GeoCountries/GeoCountryResource.php` |
+| Single resource | `Resources/{ModelNamePlural}/{ModelName}Resource.php` | `Users/UserResource.php`, `Subscribers/SubscriberResource.php`, `SmsTemplates/SmsTemplateResource.php`, `SocialProfiles/SocialProfileResource.php` |
+| Model name is already plural / equals the folder name | `Resources/{ModelName}/{ModelName}Resource.php` | `News/NewsResource.php`, `Feedback/FeedbackResource.php` |
+
+Two things the generator's default path gets wrong here:
+
+- **The domain is not the module.** `ShopCart` and `ShopOrder` models are administered under
+  `Shop/`: `Shop/Cart/CartResource.php`, `Shop/Orders/OrderResource.php`,
+  `Shop/Promocodes/PromocodeResource.php`. `Core` models are administered flat:
+  `Logs/LogResource.php`, `AuthLogs/AuthLogResource.php`.
+- **`Shop/Cart/` is singular** — the folder was not pluralized. Match the neighbours rather
+  than trusting the pluralizer.
+
+So pass the path you actually want to `make:filament-resource` (`Shop/Product`, `Users/User`,
+…) and move the generated folder if the generator guessed differently.
 
 The generated file will have placeholder `form()` and `table()` — replace both entirely per rules below.
 

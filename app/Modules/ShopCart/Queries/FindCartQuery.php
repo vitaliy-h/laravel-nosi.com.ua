@@ -1,12 +1,16 @@
 <?php
 
-namespace App\Modules\ShopCart\Actions;
+namespace App\Modules\ShopCart\Queries;
 
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Session;
 
-class FindCartAction
+/**
+ * Finds an existing cart for the user or guest — never creates one.
+ * Creating is GetOrCreateCartAction's job, which is why that one stays an Action.
+ */
+class FindCartQuery
 {
     public function handle(?User $user): ?Cart
     {

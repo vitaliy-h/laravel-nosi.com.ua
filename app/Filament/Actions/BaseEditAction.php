@@ -5,7 +5,6 @@ namespace App\Filament\Actions;
 use App\Filament\Support\NestedSetFields;
 use Filament\Actions\EditAction;
 
-
 class BaseEditAction
 {
     public static function make(): EditAction
@@ -14,7 +13,7 @@ class BaseEditAction
             ->iconButton()
             ->modalSubmitAction(false)
             ->modalCancelAction(false)
-            ->extraModalFooterActions(fn(EditAction $action, $record) => [
+            ->extraModalFooterActions(fn (EditAction $action, $record) => [
 
                 $action->makeModalSubmitAction(
                     'save',

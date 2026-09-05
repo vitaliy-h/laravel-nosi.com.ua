@@ -3,12 +3,10 @@
 namespace Tests\Feature\Filament\Shop;
 
 use App\Filament\Resources\Shop\Orders\Pages\ManageOrders;
-use App\Modules\User\Models\User;
-use App\Modules\Core\Support\ModuleGate;
 use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrder\Enums\PaymentTypeEnum;
 use App\Modules\ShopOrder\Models\Order;
-use Filament\Actions\CreateAction;
+use App\Modules\User\Models\User;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\Testing\TestAction;
@@ -43,7 +41,7 @@ class OrderResourceTest extends TestCase
     public function test_list_can_search_by_order_number(): void
     {
         $target = Order::factory()->create(['order_number' => 1000001]);
-        $other  = Order::factory()->create(['order_number' => 9999999]);
+        $other = Order::factory()->create(['order_number' => 9999999]);
 
         Livewire::test(ManageOrders::class)
             ->searchTable('1000001')
@@ -53,7 +51,7 @@ class OrderResourceTest extends TestCase
 
     public function test_list_can_filter_by_payment_status(): void
     {
-        $paid   = Order::factory()->create(['payment_status' => PaymentStatusEnum::PAID]);
+        $paid = Order::factory()->create(['payment_status' => PaymentStatusEnum::PAID]);
         $unpaid = Order::factory()->create(['payment_status' => PaymentStatusEnum::UNPAID]);
 
         Livewire::test(ManageOrders::class)

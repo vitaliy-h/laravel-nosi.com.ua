@@ -2,8 +2,8 @@
 
 namespace App\Modules\Profile\Actions;
 
-use App\Modules\User\Models\User;
 use App\Modules\Profile\Dtos\ProfileUpdateUserDataData;
+use App\Modules\User\Models\User;
 
 class UpdateUserDataAction
 {

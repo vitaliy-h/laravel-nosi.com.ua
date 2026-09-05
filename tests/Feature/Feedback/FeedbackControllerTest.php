@@ -30,18 +30,18 @@ class FeedbackControllerTest extends TestCase
         $this->seedLetterTemplates();
 
         $response = $this->from('/feedback')->post('/feedback', [
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'phone' => '+380671234567',
+            'name'    => 'John Doe',
+            'email'   => 'john@example.com',
+            'phone'   => '+380671234567',
             'message' => 'Hello there',
         ]);
 
         $response->assertRedirect('/feedback');
         $response->assertSessionHas('success');
         $this->assertDatabaseHas('feedback', [
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'phone' => '+380671234567',
+            'name'    => 'John Doe',
+            'email'   => 'john@example.com',
+            'phone'   => '+380671234567',
             'message' => 'Hello there',
         ]);
     }
@@ -58,8 +58,8 @@ class FeedbackControllerTest extends TestCase
     public function test_store_with_invalid_email_redirects_back_with_validation_error(): void
     {
         $response = $this->from('/feedback')->post('/feedback', [
-            'name' => 'John Doe',
-            'email' => 'not-an-email',
+            'name'    => 'John Doe',
+            'email'   => 'not-an-email',
             'message' => 'Hello there',
         ]);
 

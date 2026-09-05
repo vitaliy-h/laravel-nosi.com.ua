@@ -3,10 +3,10 @@
 namespace Tests\Feature\Filament\Logs;
 
 use App\Filament\Resources\LogLetters\Pages\ManageLogLetters;
-use App\Modules\User\Models\User;
 use App\Modules\Notification\Enums\LogLetterStatusEnum;
 use App\Modules\Notification\Enums\NotificationSourceEnum;
 use App\Modules\Notification\Models\LogLetter;
+use App\Modules\User\Models\User;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\Testing\TestAction;
 use Filament\Actions\ViewAction;
@@ -83,8 +83,8 @@ class LogLetterResourceTest extends TestCase
     {
         $log = LogLetter::factory()->create([
             'subject' => 'Preview Subject XYZ',
-            'body' => '<p>Preview Body Content ABC</p>',
-            'status' => LogLetterStatusEnum::QUEUED,
+            'body'    => '<p>Preview Body Content ABC</p>',
+            'status'  => LogLetterStatusEnum::QUEUED,
             'content' => null,
         ]);
 
@@ -96,7 +96,7 @@ class LogLetterResourceTest extends TestCase
     public function test_view_action_renders_content_preview_for_sent_letter(): void
     {
         $log = LogLetter::factory()->create([
-            'status' => LogLetterStatusEnum::SENT,
+            'status'  => LogLetterStatusEnum::SENT,
             'content' => '<!DOCTYPE html><html><body><p>Final HTML</p></body></html>',
         ]);
 

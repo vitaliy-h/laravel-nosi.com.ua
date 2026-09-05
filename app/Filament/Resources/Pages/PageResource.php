@@ -10,8 +10,8 @@ use App\Filament\Builder\Blocks\TextBlock;
 use App\Filament\Builder\Blocks\VideoBlock;
 use App\Filament\Resources\Pages\Pages\ManagePages;
 use App\Filament\Traits\HasSeoFields;
+use App\Modules\Core\Support\UrlHelper;
 use App\Modules\Page\Enums\PageModule;
-use App\Modules\Core\Facades\UrlFacade;
 use App\Modules\Page\Models\Page;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -27,6 +27,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
 
 class PageResource extends Resource
@@ -102,7 +103,7 @@ class PageResource extends Resource
                 TextColumn::make('module')
                     ->searchable()
                     ->badge()
-                    ->formatStateUsing(fn($state) => $state?->label()),
+                    ->formatStateUsing(fn ($state) => $state?->label()),
                 TextInputColumn::make('rank')
                     ->type('number')
                     ->sortable()
@@ -130,17 +131,17 @@ class PageResource extends Resource
             ->recordActions([
                 ViewAction::make()
                     ->iconButton()
-                    ->url(fn($record) => UrlFacade::normalizeForLink($record->slug))
+                    ->url(fn ($record) => UrlHelper::normalizeForLink($record->slug))
                     ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()
                     ->iconButton()
-                    ->disabled(fn($record) => $record->module !== PageModule::TEXT && !auth()->user()?->isSuperAdmin())
-                    ->tooltip(fn($record) => $record->module !== PageModule::TEXT && !auth()->user()?->isSuperAdmin()
+                    ->disabled(fn ($record) => $record->module !== PageModule::TEXT && !auth()->user()?->isSuperAdmin())
+                    ->tooltip(fn ($record) => $record->module !== PageModule::TEXT && !auth()->user()?->isSuperAdmin()
                         ? __('admin.messages.page_delete_forbidden')
                         : null
                     ),
-            ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+            ], position: RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
                 CreateAction::make(),
                 BulkActionGroup::make([
@@ -149,10 +150,10 @@ class PageResource extends Resource
                             $isSuperAdmin = auth()->user()?->isSuperAdmin();
 
                             $records
-                                ->filter(fn($record) => $isSuperAdmin || $record->module === PageModule::TEXT)
+                                ->filter(fn ($record) => $isSuperAdmin || $record->module === PageModule::TEXT)
                                 ->each
                                 ->delete();
-                        })
+                        }),
                 ]),
             ]);
     }

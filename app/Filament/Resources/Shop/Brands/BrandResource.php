@@ -8,11 +8,11 @@ use App\Filament\Traits\HasSeoFields;
 use App\Modules\Shop\Models\Brand;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
@@ -21,11 +21,13 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
 
 class BrandResource extends Resource
 {
     use HasSeoFields;
+
     protected static ?string $model = Brand::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
@@ -51,7 +53,7 @@ class BrandResource extends Resource
                     ->columnSpan(6)
                     ->visibility('public')
                     ->getUploadedFileNameForStorageUsing(function ($file, $record) {
-                        return ($record ?? new Brand())->getFilePath(
+                        return ($record ?? new Brand)->getFilePath(
                             $file->getClientOriginalName(),
                             'img',
                         );
@@ -103,14 +105,13 @@ class BrandResource extends Resource
                 DeleteAction::make()
                     ->iconButton()
                     ->disabled(fn ($record) => $record->products()->exists())
-                    ->tooltip(fn ($record) =>
-                    $record->products()->exists()
+                    ->tooltip(fn ($record) => $record->products()->exists()
                         ? __('admin.messages.delete_child_items_forbidden')
                         : null
                     ),
-            ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+            ], position: RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
-                \Filament\Actions\CreateAction::make(),
+                CreateAction::make(),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

@@ -3,6 +3,7 @@
 namespace App\Modules\User\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Modules\ShopCart\Models\Cart;
 use App\Modules\UserAuth\Models\SocialProfile;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
@@ -10,9 +11,10 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -21,7 +23,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles, HasApiTokens;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
     /**
      * Get the attributes that should be cast.
@@ -32,7 +34,7 @@ class User extends Authenticatable implements FilamentUser
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
     }
 
@@ -51,9 +53,9 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(SocialProfile::class);
     }
 
-    public function cart(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function cart(): HasOne
     {
-        return $this->hasOne(\App\Modules\ShopCart\Models\Cart::class);
+        return $this->hasOne(Cart::class);
     }
 
     public function getFormattedNameAttribute()
@@ -67,7 +69,7 @@ class User extends Authenticatable implements FilamentUser
      */
     public function getSelectLabelAttribute(): string
     {
-        return trim(($this->surname ?? '').' '.($this->name ?? ''))
+        return trim(($this->surname ?? '') . ' ' . ($this->name ?? ''))
             ?: ($this->email ?? (string) $this->getKey());
     }
 }

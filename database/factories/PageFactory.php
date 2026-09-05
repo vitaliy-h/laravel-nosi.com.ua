@@ -22,16 +22,16 @@ class PageFactory extends Factory
     public function definition(): array
     {
         return [
-            'display' => true,
-            'display_menu' => false,
+            'display'             => true,
+            'display_menu'        => false,
             'display_menu_footer' => false,
-            'title' => fake()->words(2, true),
-            'slug' => fake()->unique()->slug(),
-            'module' => PageModule::TEXT,
-            'rank' => fake()->numberBetween(1, 100),
-            'content' => null,
-            'meta_title' => null,
-            'meta_description' => null,
+            'title'               => fake()->words(2, true),
+            'slug'                => fake()->unique()->slug(),
+            'module'              => PageModule::TEXT,
+            'rank'                => fake()->numberBetween(1, 100),
+            'content'             => null,
+            'meta_title'          => null,
+            'meta_description'    => null,
         ];
     }
 

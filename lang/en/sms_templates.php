@@ -6,7 +6,7 @@ return [
 
     SmsEnum::VERIFICATION->value => [
         'subject' => 'Verification code',
-        'body' => 'Your verification code is: {{ $code }}.',
+        'body'    => 'Your verification code is: {{ $code }}.',
     ],
 
 ];

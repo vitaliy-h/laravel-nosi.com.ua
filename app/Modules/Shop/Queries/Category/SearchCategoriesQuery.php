@@ -37,4 +37,30 @@ class SearchCategoriesQuery
 
         return $query->get();
     }
+
+    /**
+     * Preload the whole visible category tree in one query and attach each node's
+     * children in memory, instead of letting CategoryResource query children per node.
+     *
+     * Lives here rather than in the controller: it is a read, and a controller is
+     * an HTTP adapter (see .claude/backend.md).
+     */
+    public function withVisibleChildren(Collection $categories): Collection
+    {
+        if ($categories->isEmpty()) {
+            return $categories;
+        }
+
+        $byParent = Category::visible()->defaultOrder()->get()->groupBy('parent_id');
+
+        $assign = function (Category $node) use (&$assign, $byParent): void {
+            $children = $byParent->get($node->id, collect());
+            $node->setRelation('children', $children);
+            $children->each($assign);
+        };
+
+        $categories->each($assign);
+
+        return $categories;
+    }
 }

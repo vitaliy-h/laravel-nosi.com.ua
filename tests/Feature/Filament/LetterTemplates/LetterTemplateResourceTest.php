@@ -3,9 +3,9 @@
 namespace Tests\Feature\Filament\LetterTemplates;
 
 use App\Filament\Resources\LetterTemplates\Pages\ManageLetterTemplates;
-use App\Modules\User\Models\User;
 use App\Modules\Notification\Enums\LetterEnum;
 use App\Modules\Notification\Models\LetterTemplate;
+use App\Modules\User\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;

@@ -13,7 +13,7 @@ trait CanGenerateGetTitleMethod
             ->setPublic()
             ->setReturnType('string')
             ->setBody(
-                <<<PHP
+                <<<'PHP'
                 return '';
                 PHP
             );
@@ -21,7 +21,5 @@ trait CanGenerateGetTitleMethod
         $this->configureGetTitleMethod($method);
     }
 
-    protected function configureGetTitleMethod(Method $method): void
-    {
-    }
+    protected function configureGetTitleMethod(Method $method): void {}
 }

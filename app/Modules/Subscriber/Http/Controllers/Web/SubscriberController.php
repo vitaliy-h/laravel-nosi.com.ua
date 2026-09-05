@@ -29,14 +29,14 @@ class SubscriberController extends BaseWebController
             return response()->json([
                 'actions' => [
                     [
-                        'method' => 'clearForm',
+                        'method'   => 'clearForm',
                         'selector' => '#newsletter-form',
                     ],
                     [
-                        'method' => 'html',
+                        'method'   => 'html',
                         'selector' => '#newsletter-message',
-                        'content' => $this->render('modules.subscriber.partials.newsletter_message', [
-                            'message' => $message,
+                        'content'  => $this->render('modules.subscriber.partials.newsletter_message', [
+                            'message'        => $message,
                             'already_exists' => $result->data->alreadyExists,
                         ])->render(),
                     ],

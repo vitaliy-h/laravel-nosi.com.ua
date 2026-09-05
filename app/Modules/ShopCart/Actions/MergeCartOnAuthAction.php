@@ -15,7 +15,7 @@ class MergeCartOnAuthAction
 
     public function handle(User $user): void
     {
-        if(!ModuleGate::isEnabled('shop_cart')){
+        if (!ModuleGate::isEnabled('shop_cart')) {
             return;
         }
 
@@ -43,11 +43,11 @@ class MergeCartOnAuthAction
             $userCart->items()->updateOrCreate(
                 ['shop_product_id' => $item->shop_product_id],
                 [
-                    'product_name' => $item->product_name,
+                    'product_name'    => $item->product_name,
                     'product_article' => $item->product_article,
-                    'selling_price' => $item->selling_price,
-                    'quantity' => $item->quantity,
-                    'total' => $item->total,
+                    'selling_price'   => $item->selling_price,
+                    'quantity'        => $item->quantity,
+                    'total'           => $item->total,
                 ],
             );
         }

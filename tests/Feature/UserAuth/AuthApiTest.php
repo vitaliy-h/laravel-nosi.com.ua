@@ -22,7 +22,7 @@ class AuthApiTest extends TestCase
         User::factory()->create(['email' => 'a@b.com']);
 
         $response = $this->postJson('/api/auth/login', [
-            'email' => 'a@b.com',
+            'email'    => 'a@b.com',
             'password' => 'password',
         ]);
 
@@ -47,7 +47,7 @@ class AuthApiTest extends TestCase
         User::factory()->create(['email' => 'a@b.com']);
 
         $response = $this->postJson('/api/auth/login', [
-            'email' => 'a@b.com',
+            'email'    => 'a@b.com',
             'password' => 'wrong',
         ]);
 
@@ -68,11 +68,11 @@ class AuthApiTest extends TestCase
     public function test_register_succeeds(): void
     {
         $response = $this->postJson('/api/auth/register', [
-            'name' => 'X',
-            'email' => 'new@b.com',
-            'password' => 'password123',
+            'name'                  => 'X',
+            'email'                 => 'new@b.com',
+            'password'              => 'password123',
             'password_confirmation' => 'password123',
-            'terms' => true,
+            'terms'                 => true,
         ]);
 
         $response->assertStatus(201);
@@ -98,11 +98,11 @@ class AuthApiTest extends TestCase
         User::factory()->create(['email' => 'dup@b.com']);
 
         $response = $this->postJson('/api/auth/register', [
-            'name' => 'X',
-            'email' => 'dup@b.com',
-            'password' => 'password123',
+            'name'                  => 'X',
+            'email'                 => 'dup@b.com',
+            'password'              => 'password123',
             'password_confirmation' => 'password123',
-            'terms' => true,
+            'terms'                 => true,
         ]);
 
         $response->assertStatus(422);
@@ -113,10 +113,10 @@ class AuthApiTest extends TestCase
     public function test_register_rejects_unconfirmed_short_password(): void
     {
         $response = $this->postJson('/api/auth/register', [
-            'name' => 'X',
-            'email' => 'new@b.com',
+            'name'     => 'X',
+            'email'    => 'new@b.com',
             'password' => 'short',
-            'terms' => true,
+            'terms'    => true,
         ]);
 
         $response->assertStatus(422);
@@ -127,11 +127,11 @@ class AuthApiTest extends TestCase
     public function test_register_rejects_unaccepted_terms(): void
     {
         $response = $this->postJson('/api/auth/register', [
-            'name' => 'X',
-            'email' => 'new@b.com',
-            'password' => 'password123',
+            'name'                  => 'X',
+            'email'                 => 'new@b.com',
+            'password'              => 'password123',
             'password_confirmation' => 'password123',
-            'terms' => false,
+            'terms'                 => false,
         ]);
 
         $response->assertStatus(422);

@@ -11,8 +11,7 @@ class ShopFilterDto extends Data
         public readonly InFilterDto $brand,
         public readonly RangeFilterDto $price,
         public readonly SearchFilterDto $search,
-    ) {
-    }
+    ) {}
 
     public function withBrand(InFilterDto $brand): self
     {
@@ -30,8 +29,8 @@ class ShopFilterDto extends Data
     public function toApplicable(): Collection
     {
         return collect([
-            'brand' => $this->brand,
-            'price' => $this->price,
+            'brand'  => $this->brand,
+            'price'  => $this->price,
             'search' => $this->search,
         ]);
     }

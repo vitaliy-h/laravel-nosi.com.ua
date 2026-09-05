@@ -17,14 +17,14 @@ class IndexControllerTest extends TestCase
     {
         $order = Order::factory()->create();
 
-        $this->get('/orders/'.$order->uuid)->assertOk();
+        $this->get('/orders/' . $order->uuid)->assertOk();
     }
 
     public function test_show_order_response_contains_cart_structure(): void
     {
         $order = Order::factory()->create();
 
-        $this->get('/orders/'.$order->uuid)
+        $this->get('/orders/' . $order->uuid)
             ->assertOk()
             ->assertSee('cart-items', false)
             ->assertSee('cart-summary', false);
@@ -37,9 +37,9 @@ class IndexControllerTest extends TestCase
         $product = Product::factory()->forCategory($category)->create();
 
         $item = OrderProduct::factory()->create([
-            'shop_order_id' => $order->id,
+            'shop_order_id'   => $order->id,
             'shop_product_id' => $product->id,
-            'product_name' => 'Snapshot Name',
+            'product_name'    => 'Snapshot Name',
             'product_article' => 'SKU-1',
         ]);
 
@@ -47,7 +47,7 @@ class IndexControllerTest extends TestCase
         // product's current title.
         $product->update(['title' => 'Renamed Later']);
 
-        $this->get('/orders/'.$order->uuid)
+        $this->get('/orders/' . $order->uuid)
             ->assertOk()
             ->assertSee('Snapshot Name')
             ->assertDontSee('Renamed Later')
@@ -65,14 +65,14 @@ class IndexControllerTest extends TestCase
     {
         $order = Order::factory()->create();
 
-        $this->get('/orders/'.$order->uuid.'/success')->assertOk();
+        $this->get('/orders/' . $order->uuid . '/success')->assertOk();
     }
 
     public function test_success_page_contains_success_marker(): void
     {
         $order = Order::factory()->create();
 
-        $this->get('/orders/'.$order->uuid.'/success')
+        $this->get('/orders/' . $order->uuid . '/success')
             ->assertOk()
             ->assertSee('bi-check-circle-fill', false);
     }
@@ -86,14 +86,14 @@ class IndexControllerTest extends TestCase
     {
         $order = Order::factory()->create();
 
-        $this->get('/orders/'.$order->uuid.'/error')->assertOk();
+        $this->get('/orders/' . $order->uuid . '/error')->assertOk();
     }
 
     public function test_error_page_contains_error_marker(): void
     {
         $order = Order::factory()->create();
 
-        $this->get('/orders/'.$order->uuid.'/error')
+        $this->get('/orders/' . $order->uuid . '/error')
             ->assertOk()
             ->assertSee('bi-x-circle-fill', false);
     }
@@ -107,8 +107,8 @@ class IndexControllerTest extends TestCase
     {
         $order = Order::factory()->create();
 
-        $this->get('/orders/'.$order->uuid)->assertOk();
-        $this->get('/orders/'.$order->uuid.'/success')->assertOk();
-        $this->get('/orders/'.$order->uuid.'/error')->assertOk();
+        $this->get('/orders/' . $order->uuid)->assertOk();
+        $this->get('/orders/' . $order->uuid . '/success')->assertOk();
+        $this->get('/orders/' . $order->uuid . '/error')->assertOk();
     }
 }

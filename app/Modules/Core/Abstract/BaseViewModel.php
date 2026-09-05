@@ -60,7 +60,7 @@ abstract class BaseViewModel extends Data
         $data = [];
 
         foreach ((new ReflectionClass($this))->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
-            if (! $property->isStatic()) {
+            if (!$property->isStatic()) {
                 $data[$property->getName()] = $property->getValue($this);
             }
         }

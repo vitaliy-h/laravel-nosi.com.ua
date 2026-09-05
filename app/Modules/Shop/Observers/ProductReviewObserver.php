@@ -45,7 +45,7 @@ readonly class ProductReviewObserver
      */
     private function refreshProduct(?int $productId): void
     {
-        if (! $productId) {
+        if (!$productId) {
             return;
         }
 

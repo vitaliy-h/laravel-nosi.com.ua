@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Notification;
 
+use App\Modules\Notification\Contracts\SmsProviderInterface;
 use App\Modules\Notification\Dtos\SendSmsData;
 use App\Modules\Notification\Enums\LogSmsStatusEnum;
 use App\Modules\Notification\Enums\NotificationSourceEnum;
 use App\Modules\Notification\Enums\SmsEnum;
-use App\Modules\Notification\Models\LogSms;
 use App\Modules\Notification\Models\SmsTemplate;
 use App\Modules\Notification\Services\SmsTemplateService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,7 +22,7 @@ class SmsTemplateServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->service = new SmsTemplateService();
+        $this->service = new SmsTemplateService;
 
         $this->seedSmsTemplates();
     }
@@ -39,8 +39,8 @@ class SmsTemplateServiceTest extends TestCase
 
         $this->assertDatabaseHas('log_sms', [
             'template_key' => SmsEnum::VERIFICATION->value,
-            'receiver' => '+380991234567',
-            'status' => LogSmsStatusEnum::SENT->value,
+            'receiver'     => '+380991234567',
+            'status'       => LogSmsStatusEnum::SENT->value,
         ]);
     }
 
@@ -60,7 +60,7 @@ class SmsTemplateServiceTest extends TestCase
 
         $this->assertDatabaseHas('log_sms', [
             'receiver' => '+380991234567',
-            'body' => 'Your code is 999888. Expires in 5 min.',
+            'body'     => 'Your code is 999888. Expires in 5 min.',
         ]);
     }
 
@@ -77,7 +77,7 @@ class SmsTemplateServiceTest extends TestCase
 
         $this->assertDatabaseHas('log_sms', [
             'receiver' => '+380991234567',
-            'source' => NotificationSourceEnum::ADMIN->value,
+            'source'   => NotificationSourceEnum::ADMIN->value,
         ]);
     }
 
@@ -97,17 +97,19 @@ class SmsTemplateServiceTest extends TestCase
 
         $this->assertDatabaseHas('log_sms', [
             'receiver' => '+380991234567',
-            'subject' => 'Verification',
+            'subject'  => 'Verification',
         ]);
     }
 
     public function test_send_marks_log_failed_when_provider_throws(): void
     {
         // Override provider to always throw
-        $service = new class extends SmsTemplateService {
-            protected function resolveProvider(): \App\Modules\Notification\Contracts\SmsProviderInterface
+        $service = new class extends SmsTemplateService
+        {
+            protected function resolveProvider(): SmsProviderInterface
             {
-                return new class implements \App\Modules\Notification\Contracts\SmsProviderInterface {
+                return new class implements SmsProviderInterface
+                {
                     public function send(string $to, string $body): void
                     {
                         throw new \RuntimeException('Provider unavailable');
@@ -125,10 +127,9 @@ class SmsTemplateServiceTest extends TestCase
         $service->send($dto);
 
         $this->assertDatabaseHas('log_sms', [
-            'receiver' => '+380991234567',
-            'status' => LogSmsStatusEnum::FAILED->value,
+            'receiver'      => '+380991234567',
+            'status'        => LogSmsStatusEnum::FAILED->value,
             'error_message' => 'Provider unavailable',
         ]);
     }
-
 }

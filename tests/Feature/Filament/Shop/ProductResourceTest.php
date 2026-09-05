@@ -2,14 +2,13 @@
 
 namespace Tests\Feature\Filament\Shop;
 
-use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
 use App\Filament\Resources\Shop\ProductReviews\ProductReviewResource;
-use App\Modules\User\Models\User;
-use App\Modules\Core\Support\ModuleGate;
+use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
 use App\Modules\Shop\Models\ProductReview;
+use App\Modules\User\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -103,9 +102,9 @@ class ProductResourceTest extends TestCase
 
         Livewire::test(ManageProducts::class)
             ->callAction(TestAction::make(CreateAction::getDefaultName())->table(), data: [
-                'title' => 'New Product',
+                'title'       => 'New Product',
                 'category_id' => $category->id,
-                'display' => true,
+                'display'     => true,
             ])
             ->assertHasNoFormErrors();
 
@@ -127,7 +126,7 @@ class ProductResourceTest extends TestCase
     {
         Livewire::test(ManageProducts::class)
             ->callAction(TestAction::make(CreateAction::getDefaultName())->table(), data: [
-                'title' => 'No Category',
+                'title'   => 'No Category',
                 'display' => true,
             ])
             ->assertHasFormErrors(['category_id']);
@@ -139,7 +138,7 @@ class ProductResourceTest extends TestCase
 
         Livewire::test(ManageProducts::class)
             ->callAction(TestAction::make(EditAction::getDefaultName())->table($product), data: [
-                'title' => 'Updated Product',
+                'title'       => 'Updated Product',
                 'category_id' => $product->category_id,
             ])
             ->assertHasNoFormErrors();

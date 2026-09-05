@@ -2,11 +2,11 @@
 
 namespace App\Filament\Widgets\Shop;
 
+use App\Filament\Dashboard\Queries\Shop\GetLatestOrdersQuery;
 use App\Filament\Resources\Shop\Orders\OrderResource;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrder\Models\Order;
-use App\Filament\Dashboard\Queries\Shop\GetLatestOrdersQuery;
 use Filament\Actions\Action;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -48,7 +48,7 @@ class LatestOrdersWidget extends TableWidget
                     // Guest orders have no user row: fall back to the name typed
                     // at checkout.
                     ->state(fn (Order $record): string => $record->user?->select_label
-                        ?: trim(($record->user_surname ?? '').' '.($record->user_name ?? ''))
+                        ?: trim(($record->user_surname ?? '') . ' ' . ($record->user_name ?? ''))
                         ?: ($record->user_email ?? __('admin.dashboard.values.none'))),
                 TextColumn::make('total_amount')
                     ->label(__('admin.fields.total_amount'))
@@ -57,9 +57,9 @@ class LatestOrdersWidget extends TableWidget
                     ->label(__('admin.fields.payment_status'))
                     ->badge()
                     ->color(fn (?PaymentStatusEnum $state): string => match ($state) {
-                        PaymentStatusEnum::PAID => 'success',
+                        PaymentStatusEnum::PAID       => 'success',
                         PaymentStatusEnum::PROCESSING => 'warning',
-                        default => 'gray',
+                        default                       => 'gray',
                     })
                     ->formatStateUsing(fn (?PaymentStatusEnum $state): ?string => $state?->label()),
                 TextColumn::make('created_at')
@@ -74,7 +74,7 @@ class LatestOrdersWidget extends TableWidget
                     // Resources here are single-page ManageRecords: deep-link the
                     // edit modal instead of a dedicated edit page.
                     ->url(fn (Order $record): string => OrderResource::getUrl(parameters: [
-                        'tableAction' => 'edit',
+                        'tableAction'       => 'edit',
                         'tableActionRecord' => $record->getKey(),
                     ])),
             ], position: RecordActionsPosition::BeforeColumns);

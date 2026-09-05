@@ -2,13 +2,13 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Dashboard\Concerns\FormatsDashboardStats;
+use App\Filament\Dashboard\Queries\System\GetNeedsAttentionQuery;
 use App\Filament\Resources\Feedback\FeedbackResource;
 use App\Filament\Resources\LogLetters\LogLetterResource;
 use App\Filament\Resources\Shop\Orders\OrderResource;
 use App\Filament\Resources\Shop\ProductReviews\ProductReviewResource;
 use App\Filament\Resources\Subscribers\SubscriberResource;
-use App\Filament\Dashboard\Concerns\FormatsDashboardStats;
-use App\Filament\Dashboard\Queries\System\GetNeedsAttentionQuery;
 use App\Modules\Notification\Enums\LogLetterStatusEnum;
 use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
 use Filament\Schemas\Components\Component;
@@ -122,7 +122,7 @@ class NeedsAttentionWidget extends StatsOverviewWidget
         // A null counter means the module is off; a zero counter means the
         // module is on but nothing needs attention — drop the card either
         // way instead of showing a stat no admin needs to act on.
-        if (! GetNeedsAttentionQuery::isActionable($count)) {
+        if (!GetNeedsAttentionQuery::isActionable($count)) {
             return null;
         }
 

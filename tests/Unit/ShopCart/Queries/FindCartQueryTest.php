@@ -1,21 +1,21 @@
 <?php
 
-namespace Tests\Unit\ShopCart;
+namespace Tests\Unit\ShopCart\Queries;
 
-use App\Modules\ShopCart\Actions\FindCartAction;
 use App\Modules\ShopCart\Models\Cart;
+use App\Modules\ShopCart\Queries\FindCartQuery;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
 
-class FindCartActionTest extends TestCase
+class FindCartQueryTest extends TestCase
 {
     use RefreshDatabase;
 
     public function test_returns_null_for_guest_without_session_uuid(): void
     {
-        $result = app(FindCartAction::class)->handle(null);
+        $result = app(FindCartQuery::class)->handle(null);
 
         $this->assertNull($result);
     }
@@ -25,7 +25,7 @@ class FindCartActionTest extends TestCase
         $cart = Cart::factory()->create();
         Session::put('cart_uuid', $cart->uuid);
 
-        $result = app(FindCartAction::class)->handle(null);
+        $result = app(FindCartQuery::class)->handle(null);
 
         $this->assertSame($cart->id, $result->id);
     }
@@ -36,7 +36,7 @@ class FindCartActionTest extends TestCase
         $cart = Cart::factory()->create(['user_id' => $user->id]);
         Session::put('cart_uuid', $cart->uuid);
 
-        $result = app(FindCartAction::class)->handle(null);
+        $result = app(FindCartQuery::class)->handle(null);
 
         $this->assertNull($result);
     }
@@ -46,7 +46,7 @@ class FindCartActionTest extends TestCase
         $user = User::factory()->create();
         $cart = Cart::factory()->create(['user_id' => $user->id]);
 
-        $result = app(FindCartAction::class)->handle($user);
+        $result = app(FindCartQuery::class)->handle($user);
 
         $this->assertSame($cart->id, $result->id);
     }
@@ -55,7 +55,7 @@ class FindCartActionTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $result = app(FindCartAction::class)->handle($user);
+        $result = app(FindCartQuery::class)->handle($user);
 
         $this->assertNull($result);
     }

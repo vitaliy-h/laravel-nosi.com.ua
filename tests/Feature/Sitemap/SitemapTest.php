@@ -2,10 +2,9 @@
 
 namespace Tests\Feature\Sitemap;
 
+use App\Modules\News\Models\News;
 use App\Modules\Page\Enums\PageModule;
 use App\Modules\Page\Models\Page;
-use App\Modules\Core\Support\ModuleGate;
-use App\Modules\News\Models\News;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;

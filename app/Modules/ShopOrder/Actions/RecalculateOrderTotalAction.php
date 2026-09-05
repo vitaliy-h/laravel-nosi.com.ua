@@ -19,7 +19,7 @@ class RecalculateOrderTotalAction
         $order->withoutEvents(fn () => $order->update([
             'subtotal_amount' => $subtotal,
             'discount_amount' => $discount,
-            'total_amount' => max(0, round($subtotal - $discount, 2)),
+            'total_amount'    => max(0, round($subtotal - $discount, 2)),
         ]));
     }
 }

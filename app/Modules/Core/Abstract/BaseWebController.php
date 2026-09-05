@@ -13,14 +13,19 @@ abstract class BaseWebController extends Controller
      * don't call the view() helper directly.
      *
      * `$data` carries ViewModels, not Eloquent models: the view layer gets
-     * fields that are already prepared for rendering. See
-     * `App\Modules\Core\Abstract\BaseViewModel`.
+     * fields that are already prepared for rendering. Hand it a page ViewModel
+     * and it calls `toViewData()` itself, so the rule stops being a verbal
+     * agreement. See `App\Modules\Core\Abstract\BaseViewModel`.
      */
-    protected function render(string $view, array $data = [], array $mergeData = []): View
+    protected function render(string $view, BaseViewModel|array $data = [], array $mergeData = []): View
     {
         /** @var Factory $factory */
         $factory = view();
 
-        return $factory->make($view, $data, $mergeData);
+        return $factory->make(
+            $view,
+            $data instanceof BaseViewModel ? $data->toViewData() : $data,
+            $mergeData,
+        );
     }
 }

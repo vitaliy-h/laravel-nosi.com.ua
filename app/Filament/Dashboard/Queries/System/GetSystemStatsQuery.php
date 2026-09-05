@@ -64,7 +64,7 @@ class GetSystemStatsQuery
             ->pluck('total', 'status');
 
         return [
-            'sent' => (int) ($counts[$sent] ?? 0),
+            'sent'   => (int) ($counts[$sent] ?? 0),
             'failed' => (int) ($counts[$failed] ?? 0),
         ];
     }

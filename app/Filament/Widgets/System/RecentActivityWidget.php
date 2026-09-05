@@ -2,11 +2,11 @@
 
 namespace App\Filament\Widgets\System;
 
+use App\Filament\Dashboard\Queries\System\GetRecentActivityQuery;
 use App\Filament\Resources\Logs\LogResource;
 use App\Modules\Core\Enums\LogEventEnum;
 use App\Modules\Core\Enums\LogSourceEnum;
 use App\Modules\Core\Models\Log;
-use App\Filament\Dashboard\Queries\System\GetRecentActivityQuery;
 use Filament\Actions\Action;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -41,7 +41,7 @@ class RecentActivityWidget extends TableWidget
                     ->color(fn (?LogEventEnum $state): string => match ($state) {
                         LogEventEnum::CREATED => 'success',
                         LogEventEnum::DELETED => 'danger',
-                        default => 'gray',
+                        default               => 'gray',
                     }),
                 TextColumn::make('model_type')
                     ->label(__('admin.fields.model_type'))
@@ -56,7 +56,7 @@ class RecentActivityWidget extends TableWidget
                     ->icon(Heroicon::OutlinedEye)
                     ->iconButton()
                     ->url(fn (Log $record): string => LogResource::getUrl(parameters: [
-                        'tableAction' => 'view',
+                        'tableAction'       => 'view',
                         'tableActionRecord' => $record->getKey(),
                     ])),
             ], position: RecordActionsPosition::BeforeColumns);

@@ -19,7 +19,7 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
 
         $this->skipIfModuleDisabled();

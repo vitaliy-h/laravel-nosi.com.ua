@@ -6,7 +6,7 @@ return [
 
     LetterEnum::FEEDBACK->value => [
         'subject' => 'New feedback',
-        'body' => '
+        'body'    => '
             <p>User {{ $user_name}} {{ $user_email}} added new feedback.</p>
 
             <p>Message:{{ $message }}</p>
@@ -15,7 +15,7 @@ return [
 
     LetterEnum::PASSWORD_RESET->value => [
         'subject' => 'Reset password',
-        'body' => '
+        'body'    => '
            <h2>Password recovery</h2>
 
         <p>
@@ -36,7 +36,7 @@ return [
 
     LetterEnum::REGISTRATION->value => [
         'subject' => 'Welcome! Your account details',
-        'body' => '
+        'body'    => '
         <h2>Welcome, {{ $user_name }}</h2>
 
         <p>
@@ -58,7 +58,7 @@ return [
 
     LetterEnum::ORDER_CREATED->value => [
         'subject' => 'Order #{{ $order_number }} created',
-        'body' => '
+        'body'    => '
         <h2>Thank you for your order</h2>
 
         <p>

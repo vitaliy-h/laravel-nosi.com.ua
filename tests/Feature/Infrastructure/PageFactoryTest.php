@@ -25,7 +25,7 @@ class PageFactoryTest extends TestCase
         $this->seedPagesForRouting();
 
         $this->assertDatabaseHas('pages', [
-            'slug' => '',
+            'slug'   => '',
             'module' => PageModule::INDEX->value,
         ]);
 

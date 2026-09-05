@@ -10,12 +10,12 @@ class BasePaginationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'total' => $this->total(),
-            'per_page' => $this->perPage(),
+            'total'        => $this->total(),
+            'per_page'     => $this->perPage(),
             'current_page' => $this->currentPage(),
-            'last_page' => $this->lastPage(),
-            'from' => $this->firstItem(),
-            'to' => $this->lastItem(),
+            'last_page'    => $this->lastPage(),
+            'from'         => $this->firstItem(),
+            'to'           => $this->lastItem(),
         ];
     }
 }

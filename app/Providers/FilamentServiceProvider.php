@@ -31,7 +31,7 @@ class FilamentServiceProvider extends ServiceProvider
         $this->translateFilamentLabels();
     }
 
-    //Automatic labels in forms, tables, pop-ups, etc.
+    // Automatic labels in forms, tables, pop-ups, etc.
     private function translateFilamentLabels(): void
     {
         $configure = function ($component) {
@@ -51,7 +51,7 @@ class FilamentServiceProvider extends ServiceProvider
                 return;
             }
 
-            $defaultLabel = (string)str($name)
+            $defaultLabel = (string) str($name)
                 ->replace(['_', '-'], ' ')
                 ->ucfirst();
 

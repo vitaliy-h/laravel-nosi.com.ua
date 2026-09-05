@@ -31,7 +31,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         foreach ($permissions as $permission) {
             Permission::firstOrCreate([
-                'name' => $permission,
+                'name'       => $permission,
                 'guard_name' => 'web',
             ]);
         }
@@ -43,17 +43,17 @@ class RolesAndPermissionsSeeder extends Seeder
         */
 
         $superAdminRole = Role::firstOrCreate([
-            'name' => 'super_admin',
+            'name'       => 'super_admin',
             'guard_name' => 'web',
         ]);
 
         $adminRole = Role::firstOrCreate([
-            'name' => 'admin',
+            'name'       => 'admin',
             'guard_name' => 'web',
         ]);
 
         $userRole = Role::firstOrCreate([
-            'name' => 'user',
+            'name'       => 'user',
             'guard_name' => 'web',
         ]);
 
@@ -83,7 +83,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $superAdminUser = User::firstOrCreate(
             ['email' => 'ottofonf@gmail.com'],
             [
-                'name' => 'Super Admin',
+                'name'     => 'Super Admin',
                 'password' => '$2y$12$blJnokKfAt3LkK6Bv.uGSuYhI/Ec9CH8rByOP9Majgup6r6r1BspW',
             ]
         );
@@ -101,7 +101,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $adminUser = User::firstOrCreate(
             ['email' => 'admin'],
             [
-                'name' => 'Admin',
+                'name'     => 'Admin',
                 'password' => bcrypt('password'),
             ]
         );
@@ -120,7 +120,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $testUser = User::firstOrCreate(
             ['email' => 'user@example.com'],
             [
-                'name' => 'Test User',
+                'name'     => 'Test User',
                 'password' => bcrypt('password'),
             ]
         );

@@ -10,6 +10,7 @@ trait HasSeoFields
     {
         $this->fillable[] = 'generate_seo';
     }
+
     /**
      * Boot trait
      */
@@ -33,7 +34,7 @@ trait HasSeoFields
 
     protected function shouldGenerateSeo(): bool
     {
-        return (bool)($this->generate_seo ?? false);
+        return (bool) ($this->generate_seo ?? false);
     }
 
     protected function generateSeoFields(): void
@@ -56,7 +57,7 @@ trait HasSeoFields
 
     protected function getSeoTitle(): string
     {
-        return (string)data_get($this, $this->seoTitleField());
+        return (string) data_get($this, $this->seoTitleField());
     }
 
     protected function getSeoDescription(): string
@@ -64,7 +65,7 @@ trait HasSeoFields
         $field = $this->seoContentField();
 
         return $field
-            ? (string)data_get($this, $field)
+            ? (string) data_get($this, $field)
             : $this->getSeoTitle();
     }
 

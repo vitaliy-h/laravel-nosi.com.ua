@@ -42,7 +42,7 @@ class ProductViewModel extends BaseViewModel
             url: $category
                 ? save_route('shop.product', [$category->slug, $product->slug_with_id])
                 : null,
-            has_image: ! empty($product->img),
+            has_image: !empty($product->img),
             image: $product->image,
             thumb_url: $product->imageUrl('thumb'),
             price: $product->price,

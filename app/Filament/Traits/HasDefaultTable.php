@@ -9,6 +9,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
+
 trait HasDefaultTable
 {
     protected static function applyDefaultTable(Table $table): Table

@@ -31,10 +31,10 @@ class SubscribeAction
         }
 
         $subscriber = Subscriber::create([
-            'email' => $data->email,
-            'ip' => $data->ip,
+            'email'         => $data->email,
+            'ip'            => $data->ip,
             'integrated_at' => null,
-            'error' => null,
+            'error'         => null,
         ]);
 
         return ActionResult::ok(

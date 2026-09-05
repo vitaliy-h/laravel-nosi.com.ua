@@ -17,7 +17,7 @@ class ProfileApiTest extends TestCase
 
         $response = $this->actingAs($user, 'sanctum')
             ->postJson('/api/profile/update-user-data', [
-                'name' => 'New',
+                'name'  => 'New',
                 'email' => 'new@b.com',
             ]);
 
@@ -25,9 +25,9 @@ class ProfileApiTest extends TestCase
         $response->assertJsonPath('success', true);
 
         $this->assertDatabaseHas('users', [
-            'id' => $user->id,
+            'id'    => $user->id,
             'email' => 'new@b.com',
-            'name' => 'New',
+            'name'  => 'New',
         ]);
     }
 
@@ -38,7 +38,7 @@ class ProfileApiTest extends TestCase
 
         $response = $this->actingAs($user, 'sanctum')
             ->postJson('/api/profile/update-user-data', [
-                'name' => 'New',
+                'name'  => 'New',
                 'email' => 'other@b.com',
             ]);
 
@@ -53,7 +53,7 @@ class ProfileApiTest extends TestCase
 
         $response = $this->actingAs($user, 'sanctum')
             ->postJson('/api/profile/update-user-data', [
-                'name' => 'Mine',
+                'name'  => 'Mine',
                 'email' => 'mine@b.com',
             ]);
 
@@ -61,9 +61,9 @@ class ProfileApiTest extends TestCase
         $response->assertJsonPath('success', true);
 
         $this->assertDatabaseHas('users', [
-            'id' => $user->id,
+            'id'    => $user->id,
             'email' => 'mine@b.com',
-            'name' => 'Mine',
+            'name'  => 'Mine',
         ]);
     }
 
@@ -73,8 +73,8 @@ class ProfileApiTest extends TestCase
 
         $response = $this->actingAs($user, 'sanctum')
             ->postJson('/api/profile/update-user-password', [
-                'current_password' => 'password',
-                'password' => 'newpass123',
+                'current_password'      => 'password',
+                'password'              => 'newpass123',
                 'password_confirmation' => 'newpass123',
             ]);
 
@@ -90,8 +90,8 @@ class ProfileApiTest extends TestCase
 
         $response = $this->actingAs($user, 'sanctum')
             ->postJson('/api/profile/update-user-password', [
-                'current_password' => 'wrong-password',
-                'password' => 'newpass123',
+                'current_password'      => 'wrong-password',
+                'password'              => 'newpass123',
                 'password_confirmation' => 'newpass123',
             ]);
 
@@ -107,7 +107,7 @@ class ProfileApiTest extends TestCase
         $response = $this->actingAs($user, 'sanctum')
             ->postJson('/api/profile/update-user-password', [
                 'current_password' => 'password',
-                'password' => 'short',
+                'password'         => 'short',
             ]);
 
         $response->assertStatus(422);
@@ -149,7 +149,7 @@ class ProfileApiTest extends TestCase
     public function test_update_user_data_requires_authentication(): void
     {
         $response = $this->postJson('/api/profile/update-user-data', [
-            'name' => 'New',
+            'name'  => 'New',
             'email' => 'new@b.com',
         ]);
 
@@ -160,8 +160,8 @@ class ProfileApiTest extends TestCase
     public function test_update_user_password_requires_authentication(): void
     {
         $response = $this->postJson('/api/profile/update-user-password', [
-            'current_password' => 'password',
-            'password' => 'newpass123',
+            'current_password'      => 'password',
+            'password'              => 'newpass123',
             'password_confirmation' => 'newpass123',
         ]);
 

@@ -110,5 +110,5 @@
         @endforelse
     </div>
 
-    {{ $orders->links('partials.pagination.profile') }}
+    {{ $orders->links('modules.profile.partials.pagination') }}
 @endsection

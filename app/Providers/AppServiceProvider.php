@@ -2,24 +2,12 @@
 
 namespace App\Providers;
 
-use App\Modules\Page\Models\Page;
-use App\Modules\User\Models\User;
-use App\Modules\Page\Observers\PageObserver;
-use App\Modules\Page\Queries\GetAllPagesQuery;
-use App\Modules\Core\Services\UrlHelper;
+use App\Modules\Core\Services\LogService;
 use App\Modules\Notification\Services\LetterTemplateService;
 use App\Modules\Notification\Services\SmsTemplateService;
-use App\Modules\Shop\Models\ProductReview;
-use App\Modules\Shop\Observers\ProductReviewObserver;
-use App\Modules\ShopCart\Models\Cart;
-use App\Modules\ShopCart\Models\CartProduct;
-use App\Modules\ShopCart\Observers\CartObserver;
-use App\Modules\ShopCart\Observers\CartProductObserver;
-use App\Modules\ShopOrder\Models\Order;
-use App\Modules\ShopOrder\Models\OrderProduct;
-use App\Modules\ShopOrder\Observers\OrderObserver;
-use App\Modules\ShopOrder\Observers\OrderProductObserver;
+use App\Modules\Page\Queries\GetAllPagesQuery;
 use App\Modules\Translation\Services\TranslationService;
+use App\Modules\User\Models\User;
 use App\Policies\UserPolicy;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Event;
@@ -36,16 +24,12 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(GetAllPagesQuery::class);
-        $this->app->singleton('url-helper', UrlHelper::class);
-        $this->app->singleton('translation', function () {
-            return app(TranslationService::class);
-        });
-        $this->app->singleton('letter-template-service', function () {
-            return new LetterTemplateService;
-        });
-        $this->app->singleton('sms-template-service', function () {
-            return new SmsTemplateService;
-        });
+        $this->app->singleton(LogService::class);
+        // Bound by class name so the dependency is visible at the injection
+        // point; string aliases hid it and `new` skipped the container entirely.
+        $this->app->singleton(TranslationService::class);
+        $this->app->singleton(LetterTemplateService::class);
+        $this->app->singleton(SmsTemplateService::class);
     }
 
     /**
@@ -53,18 +37,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // The frontend is the Bootstrap 5 demo theme
         Paginator::useBootstrap();
 
         // Super Admin bypasses every Gate/Policy check in the app.
         Gate::before(fn ($user, string $ability) => $user->hasRole('super_admin') ? true : null);
         Gate::policy(User::class, UserPolicy::class);
 
-        Page::observe(PageObserver::class);
-        Order::observe(OrderObserver::class);
-        OrderProduct::observe(OrderProductObserver::class);
-        Cart::observe(CartObserver::class);
-        CartProduct::observe(CartProductObserver::class);
-        ProductReview::observe(ProductReviewObserver::class);
+        // Model observers are registered per module by ModuleServiceProvider.
+
         $this->mergeSocialConfig();
     }
 
@@ -74,6 +55,6 @@ class AppServiceProvider extends ServiceProvider
             config(["services.{$provider}" => config("social.{$provider}")]);
         }
 
-        Event::listen(SocialiteWasCalled::class, TelegramExtendSocialite::class.'@handle');
+        Event::listen(SocialiteWasCalled::class, TelegramExtendSocialite::class . '@handle');
     }
 }

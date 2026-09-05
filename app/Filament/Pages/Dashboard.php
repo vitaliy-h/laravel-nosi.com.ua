@@ -65,10 +65,10 @@ class Dashboard extends BaseDashboard
             Select::make('period')
                 ->label(__('admin.dashboard.filters.period'))
                 ->options([
-                    'today' => __('admin.dashboard.periods.today'),
-                    '7' => __('admin.dashboard.periods.last_7_days'),
-                    '30' => __('admin.dashboard.periods.last_30_days'),
-                    '90' => __('admin.dashboard.periods.last_90_days'),
+                    'today'  => __('admin.dashboard.periods.today'),
+                    '7'      => __('admin.dashboard.periods.last_7_days'),
+                    '30'     => __('admin.dashboard.periods.last_30_days'),
+                    '90'     => __('admin.dashboard.periods.last_90_days'),
                     'custom' => __('admin.dashboard.periods.custom'),
                 ])
                 ->default('30')

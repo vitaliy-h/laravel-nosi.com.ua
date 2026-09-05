@@ -2,12 +2,12 @@
 
 namespace App\Modules\UserAuth\Http\Controllers\Web;
 
-use App\Modules\UserAuth\Actions\ConnectSocialProfileAction;
-use App\Modules\UserAuth\Actions\FindOrCreateSocialUserAction;
-use App\Modules\ShopCart\Actions\MergeCartOnAuthAction;
 use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Core\Enums\AuthLogActionEnum;
 use App\Modules\Core\Services\AuthLogService;
+use App\Modules\ShopCart\Actions\MergeCartOnAuthAction;
+use App\Modules\UserAuth\Actions\ConnectSocialProfileAction;
+use App\Modules\UserAuth\Actions\FindOrCreateSocialUserAction;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -15,9 +15,9 @@ class OAuthController extends BaseWebController
 {
     public function __construct(
         private readonly FindOrCreateSocialUserAction $findOrCreate,
-        private readonly ConnectSocialProfileAction   $connect,
-        private readonly MergeCartOnAuthAction      $mergeCart,
-        private readonly AuthLogService             $authLog,
+        private readonly ConnectSocialProfileAction $connect,
+        private readonly MergeCartOnAuthAction $mergeCart,
+        private readonly AuthLogService $authLog,
     ) {}
 
     public function redirect(string $provider): RedirectResponse

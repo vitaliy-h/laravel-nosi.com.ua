@@ -7,12 +7,12 @@ use App\Modules\Core\Enums\AuthLogSourceEnum;
 use App\Modules\Core\Exceptions\AuthCooldownException;
 use App\Modules\Core\Services\AuthCooldownService;
 use App\Modules\Core\Services\AuthLogService;
+use App\Modules\User\Models\User;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse;
+use Filament\Auth\Pages\Login as BaseLogin;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\TextInput;
-use Filament\Auth\Pages\Login as BaseLogin;
 use Filament\Schemas\Schema;
-use App\Modules\User\Models\User;
 use Illuminate\Validation\ValidationException;
 
 class Login extends BaseLogin
@@ -80,7 +80,7 @@ class Login extends BaseLogin
     {
         $user = User::query()->where('email', $data['login'])->first();
 
-        if (! $user) {
+        if (!$user) {
             $this->throwFailureValidationException();
         }
 
@@ -110,6 +110,6 @@ class Login extends BaseLogin
 
     private function submittedLogin(): string
     {
-        return (string)($this->data['login'] ?? '');
+        return (string) ($this->data['login'] ?? '');
     }
 }

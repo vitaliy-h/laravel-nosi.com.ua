@@ -13,6 +13,7 @@ class Brand extends Model
 {
     /** @use HasFactory<BrandFactory> */
     use HasFactory;
+
     use HasImage;
     use HasSeoFields;
 

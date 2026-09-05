@@ -28,7 +28,7 @@ class LanguageFactory extends Factory
 
     public function forLocalization(Localization $localization): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'localization' => $localization,
             'title'        => $localization->label(),
             'dictionary'   => $this->dictionaryFor($localization),

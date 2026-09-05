@@ -21,18 +21,30 @@
 */
 
 return [
-    //'user_auth'       => false,
-    //'feedback'        => false,
-    //'geo'             => false,
-    //'news'            => false,
-    //'shop'            => false,
-    //'shop_cart'       => false,
-    //'shop_brands'     => false,
-    //'shop_promocodes' => false,
-    //'shop_product_reviews'    => false,
-    //'subscriber'      => false,
-    //'sms'             => false,
-    //'letter_templates'        => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Switches
+    |--------------------------------------------------------------------------
+    |
+    | Kept under their own key so a module can never collide with `dependencies`
+    | and so ModuleGate reads one flat list.
+    |
+    */
+    'list' => [
+        // 'user_auth'       => false,
+        // 'feedback'        => false,
+        // 'geo'             => false,
+        // 'news'            => false,
+        // 'shop'            => false,
+        // 'shop_cart'       => false,
+        // 'shop_brands'     => false,
+        // 'shop_promocodes' => false,
+        // 'shop_product_reviews'    => false,
+        // 'subscriber'      => false,
+        // 'sms'             => false,
+        // 'letter_templates'        => false,
+    ],
 
     /*
     |--------------------------------------------------------------------------

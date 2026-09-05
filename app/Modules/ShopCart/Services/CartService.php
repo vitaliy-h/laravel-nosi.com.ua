@@ -3,20 +3,20 @@
 namespace App\Modules\ShopCart\Services;
 
 use App\Modules\Core\Support\ModuleGate;
-use App\Modules\ShopCart\Actions\FindCartAction;
 use App\Modules\ShopCart\Models\Cart;
+use App\Modules\ShopCart\Queries\FindCartQuery;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class CartService
 {
     public function __construct(
-        private FindCartAction $findCart,
+        private FindCartQuery $findCart,
     ) {}
 
     public function getCount(): int
     {
-        if(!ModuleGate::isEnabled('shop_cart')){
+        if (!ModuleGate::isEnabled('shop_cart')) {
             return 0;
         }
 

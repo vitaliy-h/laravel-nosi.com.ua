@@ -31,7 +31,7 @@ class ShareModulePageContext
         $pageModule = PageModule::tryFrom($moduleValue);
         $page = $pageModule ? $this->findPageByModule->handle($pageModule) : null;
 
-        if (! $page) {
+        if (!$page) {
             throw new NotFoundHttpException;
         }
 

@@ -12,6 +12,7 @@ class GeoRegion extends Model
 {
     /** @use HasFactory<GeoRegionFactory> */
     use HasFactory;
+
     use HasVisibility;
 
     protected $fillable = [

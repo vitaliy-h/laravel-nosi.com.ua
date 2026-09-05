@@ -14,11 +14,6 @@ class TranslationService
 
     public function __construct(private readonly GetTranslationsByLocaleQuery $getTranslationsByLocale) {}
 
-    /**
-     * @param string $key
-     * @param array $replace
-     * @return string
-     */
     public function get(string $key, array $replace = []): string
     {
         $locale = app()->getLocale();
@@ -48,7 +43,7 @@ class TranslationService
         // replacements
         foreach ($replace as $search => $value) {
             $translation = str_replace(
-                ':'.$search,
+                ':' . $search,
                 $value,
                 $translation,
             );
@@ -57,11 +52,6 @@ class TranslationService
         return $translation;
     }
 
-    /**
-     * @param string $locale
-     * @param string $key
-     * @return string|null
-     */
     protected function findTranslation(string $locale, string $key): ?string
     {
         $dictionary = $this->getDictionary($locale);

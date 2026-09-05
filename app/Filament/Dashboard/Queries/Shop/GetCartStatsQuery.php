@@ -71,8 +71,8 @@ class GetCartStatsQuery
         // over 100% (few surviving carts, many orders placed from carts that
         // already got deleted).
         $cartsInPeriod = Cart::query()
-                ->whereBetween('created_at', [$period->from, $period->to])
-                ->count()
+            ->whereBetween('created_at', [$period->from, $period->to])
+            ->count()
             + $ordersInPeriod;
 
         return new CartStatsData(

@@ -8,6 +8,7 @@ use App\Modules\Translation\Enums\Localization;
 use App\Modules\Translation\Models\Language;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\RichEditor;
@@ -24,6 +25,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
 
 class LanguageResource extends Resource
@@ -88,7 +90,7 @@ class LanguageResource extends Resource
                 TextColumn::make('localization')
                     ->searchable()
                     ->badge()
-                    ->formatStateUsing(fn($state) => $state?->label()),
+                    ->formatStateUsing(fn ($state) => $state?->label()),
                 TextInputColumn::make('rank')
                     ->type('number')
                     ->sortable()
@@ -109,9 +111,9 @@ class LanguageResource extends Resource
             ->recordActions([
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),
-            ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+            ], position: RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
-                \Filament\Actions\CreateAction::make(),
+                CreateAction::make(),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
@@ -230,15 +232,15 @@ class LanguageResource extends Resource
             }
 
             if (str_starts_with($part, 'input')) {
-                $span = (int)str_replace('input', '', $part);
+                $span = (int) str_replace('input', '', $part);
             }
         }
 
         return [
-            'key' => $key,
+            'key'  => $key,
             'type' => $type,
             'span' => $span,
-            'br' => $br,
+            'br'   => $br,
         ];
     }
 

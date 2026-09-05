@@ -48,20 +48,20 @@ class GetNeedsAttentionQueryTest extends TestCase
 
         Order::factory()->create([
             'payment_status' => PaymentStatusEnum::UNPAID,
-            'created_at' => '2026-08-10 10:00:00',
-            'updated_at' => '2026-08-10 10:00:00',
+            'created_at'     => '2026-08-10 10:00:00',
+            'updated_at'     => '2026-08-10 10:00:00',
         ]);
         // Recent, so not stale yet.
         Order::factory()->create([
             'payment_status' => PaymentStatusEnum::UNPAID,
-            'created_at' => '2026-08-23 09:00:00',
-            'updated_at' => '2026-08-23 09:00:00',
+            'created_at'     => '2026-08-23 09:00:00',
+            'updated_at'     => '2026-08-23 09:00:00',
         ]);
         // Old but paid.
         Order::factory()->create([
             'payment_status' => PaymentStatusEnum::PAID,
-            'created_at' => '2026-08-01 10:00:00',
-            'updated_at' => '2026-08-01 10:00:00',
+            'created_at'     => '2026-08-01 10:00:00',
+            'updated_at'     => '2026-08-01 10:00:00',
         ]);
 
         Subscriber::factory()->withError()->count(2)->create();
@@ -99,7 +99,7 @@ class GetNeedsAttentionQueryTest extends TestCase
      */
     public function test_disabling_only_shop_product_reviews_nulls_the_reviews_counter(): void
     {
-        config(['modules.shop_product_reviews' => false]);
+        config(['modules.list.shop_product_reviews' => false]);
 
         $this->assertNull($this->query->handle()['pendingReviews']);
     }
@@ -107,11 +107,11 @@ class GetNeedsAttentionQueryTest extends TestCase
     public function test_disabled_module_yields_null_instead_of_zero(): void
     {
         config([
-            'modules.shop_product_reviews' => false,
-            'modules.shop_cart' => false,
-            'modules.feedback' => false,
-            'modules.subscriber' => false,
-            'modules.letter_templates' => false,
+            'modules.list.shop_product_reviews' => false,
+            'modules.list.shop_cart'            => false,
+            'modules.list.feedback'             => false,
+            'modules.list.subscriber'           => false,
+            'modules.list.letter_templates'     => false,
         ]);
 
         $counters = $this->query->handle();

@@ -5,6 +5,7 @@ namespace Tests\Feature\ShopCart;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class CartIndexControllerTest extends TestCase
@@ -58,7 +59,7 @@ class CartIndexControllerTest extends TestCase
 
     public function test_index_by_unknown_uuid_returns_404(): void
     {
-        $response = $this->get(save_route('cart.show', \Illuminate\Support\Str::uuid()));
+        $response = $this->get(save_route('cart.show', Str::uuid()));
 
         $response->assertStatus(404);
     }

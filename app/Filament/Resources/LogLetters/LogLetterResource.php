@@ -4,8 +4,8 @@ namespace App\Filament\Resources\LogLetters;
 
 use App\Filament\Resources\LogLetters\Pages\ManageLogLetters;
 use App\Modules\Notification\Enums\LetterEnum;
-use App\Modules\Notification\Enums\NotificationSourceEnum;
 use App\Modules\Notification\Enums\LogLetterStatusEnum;
+use App\Modules\Notification\Enums\NotificationSourceEnum;
 use App\Modules\Notification\Models\LogLetter;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
@@ -24,6 +24,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
@@ -62,7 +63,7 @@ class LogLetterResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('created_at','DESC')
+            ->defaultSort('created_at', 'DESC')
             ->columns([
                 TextColumn::make('template_key')
                     ->badge()
@@ -108,9 +109,9 @@ class LogLetterResource extends Resource
                     ->slideOver()
                     ->schema(self::getViewSchema()),
                 DeleteAction::make()->iconButton(),
-            ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+            ], position: RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
-//                \Filament\Actions\CreateAction::make(),
+                //                \Filament\Actions\CreateAction::make(),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

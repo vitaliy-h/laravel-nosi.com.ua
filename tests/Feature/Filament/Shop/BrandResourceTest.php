@@ -3,10 +3,9 @@
 namespace Tests\Feature\Filament\Shop;
 
 use App\Filament\Resources\Shop\Brands\Pages\ManageBrands;
-use App\Modules\User\Models\User;
-use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Product;
+use App\Modules\User\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -42,7 +41,7 @@ class BrandResourceTest extends TestCase
     public function test_list_can_search_by_title(): void
     {
         $target = Brand::factory()->create(['title' => 'UniqueBrand']);
-        $other  = Brand::factory()->create(['title' => 'AnotherBrand']);
+        $other = Brand::factory()->create(['title' => 'AnotherBrand']);
 
         Livewire::test(ManageBrands::class)
             ->searchTable('UniqueBrand')
@@ -53,7 +52,7 @@ class BrandResourceTest extends TestCase
     public function test_list_can_search_by_slug(): void
     {
         $target = Brand::factory()->create(['slug' => 'find-this-brand']);
-        $other  = Brand::factory()->create(['slug' => 'other-brand']);
+        $other = Brand::factory()->create(['slug' => 'other-brand']);
 
         Livewire::test(ManageBrands::class)
             ->searchTable('find-this-brand')

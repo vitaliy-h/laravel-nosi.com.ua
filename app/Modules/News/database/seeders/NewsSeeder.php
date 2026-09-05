@@ -26,20 +26,20 @@ class NewsSeeder extends Seeder
             );
 
             News::create([
-                'title' => "Test news {$i}",
-                'slug' => Str::slug("Test news {$i}"),
-                'short_text' => "Short description for news {$i}",
-                'display' => rand(0, 1),
-                'published_at' => now()->subDays(rand(0, 30)),
-                'meta_title' => "Test news {$i}",
+                'title'            => "Test news {$i}",
+                'slug'             => Str::slug("Test news {$i}"),
+                'short_text'       => "Short description for news {$i}",
+                'display'          => rand(0, 1),
+                'published_at'     => now()->subDays(rand(0, 30)),
+                'meta_title'       => "Test news {$i}",
                 'meta_description' => "Short description for news {$i}",
-                'img' => $dir . $filename,
-                'content' => [
+                'img'              => $dir . $filename,
+                'content'          => [
                     [
                         'type' => 'text',
                         'data' => [
-                            'style' => 'default',
-                            'title' => null,
+                            'style'   => 'default',
+                            'title'   => null,
                             'content' => "<p>Full content of test news {$i}. Lorem ipsum dolor sit amet...</p>",
                         ],
                     ],

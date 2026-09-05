@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Logs\Pages;
 
-use App\Filament\Resources\Logs\LogResource;
 use App\Filament\Actions\ClearLogAction;
+use App\Filament\Resources\Logs\LogResource;
 use App\Modules\Core\Models\Log;
 use Filament\Resources\Pages\ManageRecords;
 

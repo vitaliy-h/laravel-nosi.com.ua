@@ -2,7 +2,8 @@
 name: make-model
 description: >
   Interactive generator for Laravel Eloquent models with migrations, placed inside the correct
-  app/Modules/{Module}/Models/ directory. Handles new module creation (PageModule enum + folder).
+  app/Modules/{Module}/Models/ directory. Handles new module creation (folder, optional
+  PageModule case, optional config/modules.php switch).
   Use when the user says "create model", "make model", "нова модель", "створи модель", or invokes /make-model.
 ---
 
@@ -14,8 +15,9 @@ Ask: **Model name?** (PascalCase, e.g. `Product`)
 
 ### Step 2 — Module
 
-Read `app/Modules/Core/Enums/PageModule.php` to list existing modules.
-Present them as a numbered list plus a **"+ New module"** option.
+List the directories in `app/Modules/` — that is the full set of modules
+(`PageModule` holds only the ones that own a public CMS page, so it is **not** the
+module list). Present them as a numbered list plus a **"+ New module"** option.
 
 If user picks an **existing module** → proceed to Step 3.
 
@@ -30,16 +32,56 @@ If user picks **New module**:
     creating anything.
   - DB table names are unaffected and stay plural (`shop_orders`, `subscribers`) — this
     rule covers the folder and namespace only.
-- Derive automatically:
-  - Enum case: `BLOG` (UPPER_SNAKE of `{ModuleName}`)
-  - Enum value: `blog` — must equal `Str::snake({ModuleName})`, because
-    `ModuleServiceProvider` and `ModuleGate` derive the module's gate key, route prefix
-    and seeder class from the folder name that way
-  - Label: display name as-is
-- Edit `app/Modules/Core/Enums/PageModule.php`:
-  - Add `case {CASE} = '{value}';` to the cases block
-  - Add `self::{CASE} => '{Label}',` to the `label()` match block
 - Create directory: `app/Modules/{ModuleName}/Models/`
+- The module's key everywhere else is `Str::snake({ModuleName})` (`blog`, `shop_order`):
+  `ModuleServiceProvider` and `ModuleGate` derive the gate key, route prefix and seeder
+  class from the folder name that way.
+
+Then ask the two questions below. They are independent — a module can be either, both,
+or neither.
+
+#### Step 2a-1 — Does this module own a public CMS page?
+
+Ask: **Will this module have its own page in the CMS (a `Page` row an editor can
+rename, whose slug becomes the module's URL prefix)?**
+
+**Yes** → add a `PageModule` case. Edit `app/Modules/Page/Enums/PageModule.php`:
+- Add `case {CASE} = '{value}';` to the cases block (`{CASE}` = UPPER_SNAKE of
+  `{ModuleName}`, `{value}` = `Str::snake({ModuleName})` — the match matters, the enum
+  value is what `ModuleGate` and the route prefix resolution use)
+- Add `self::{CASE} => '{Label}',` to the `label()` match block
+
+**No** → do not touch the enum. Most modules are in this group: `ShopOrder`,
+`Subscriber`, `Sitemap`, `Translation`, `Notification`, `User`, `Core`, `_debug` have no
+case. Their `Http/Routes/web.php` (if any) is mounted under a prefix derived from the
+folder name — `Str::kebab({ModuleName})` — or under an explicit entry in
+`ModuleServiceProvider::MODULE_PREFIX_OVERRIDES` (that is how `ShopOrder` becomes
+`/orders`). Add such an override only when the folder name would give a bad URL, and say
+so in the summary.
+
+⚠️ Do not add a case "just in case": a case with no `Page` row makes the module fall back
+to `Str::lower($case->value)` as its prefix and shows up in admin page-module pickers.
+
+#### Step 2a-2 — Should this module be switchable off?
+
+Ask: **Should this module be removable from a project via `config/modules.php`?**
+
+**Yes** → add a commented line under the `list` key in `config/modules.php`, keeping the
+existing alignment:
+```php
+'list' => [
+    // 'blog'            => false,
+],
+```
+If it only makes sense together with another module, also add it to `dependencies`
+(`'blog' => 'news'` means `news => false` takes `blog` down too), and remember that a
+dependant does not need its own line — `shop_order` and `profile` exist only there.
+
+**No** → leave `config/modules.php` alone; the module is then core and always loaded
+(like `Page`, `Core`, `Translation`, `Notification`).
+
+Whichever answer: `ModuleGate::isEnabled('{value}')` returns `true` for a module with no
+line at all, so nothing else has to change.
 
 ### Step 2b — Cascade delete relations
 
@@ -259,8 +301,9 @@ Print a short summary:
 - Enum classes created (if any), with their paths
 - Fields added
 - Seeder created (if any), with its path
-- If a new module was created: its directory name, confirming it is singular PascalCase
-  and that `Str::snake()` of it equals the `PageModule` value
+- If a new module was created: its directory name (singular PascalCase), its
+  `Str::snake()` key, whether a `PageModule` case was added, whether a
+  `config/modules.php` line (and dependency) was added, and the route prefix it will get
 - Next suggested step: `php artisan migrate` (or `./vendor/bin/sail artisan migrate` if Sail is used)
 
 ---

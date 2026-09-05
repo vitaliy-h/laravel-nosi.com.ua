@@ -38,7 +38,7 @@ class AuthLogResourceTest extends TestCase
     public function test_list_can_search_by_login(): void
     {
         $target = AuthLog::factory()->create(['login' => 'target@example.com']);
-        $other  = AuthLog::factory()->create(['login' => 'other@example.com']);
+        $other = AuthLog::factory()->create(['login' => 'other@example.com']);
 
         Livewire::test(ManageAuthLogs::class)
             ->searchTable('target@example.com')
@@ -49,7 +49,7 @@ class AuthLogResourceTest extends TestCase
     public function test_list_can_search_by_ip(): void
     {
         $target = AuthLog::factory()->create(['ip_address' => '10.0.0.111']);
-        $other  = AuthLog::factory()->create(['ip_address' => '10.0.0.222']);
+        $other = AuthLog::factory()->create(['ip_address' => '10.0.0.222']);
 
         Livewire::test(ManageAuthLogs::class)
             ->searchTable('10.0.0.111')

@@ -3,9 +3,9 @@
 namespace Tests\Unit\Filament\Dashboard;
 
 use App\Filament\Dashboard\Dtos\DashboardPeriodData;
+use App\Filament\Dashboard\Queries\Shop\GetOrderStatsQuery;
 use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrder\Models\Order;
-use App\Filament\Dashboard\Queries\Shop\GetOrderStatsQuery;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
@@ -129,12 +129,12 @@ class GetOrderStatsQueryTest extends TestCase
         float $discount = 0.0,
     ): Order {
         return Order::factory()->create([
-            'payment_status' => $status,
-            'total_amount' => $total,
+            'payment_status'  => $status,
+            'total_amount'    => $total,
             'discount_amount' => $discount,
-            'created_at' => $createdAt,
-            'updated_at' => $createdAt,
-            'payment_date' => $paymentDate,
+            'created_at'      => $createdAt,
+            'updated_at'      => $createdAt,
+            'payment_date'    => $paymentDate,
         ]);
     }
 }

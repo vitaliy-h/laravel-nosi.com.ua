@@ -94,7 +94,7 @@ class UserResourceTest extends TestCase
             ->assertHasFormErrors(['name']);
     }
 
-public function test_create_user_requires_unique_email(): void
+    public function test_create_user_requires_unique_email(): void
     {
         User::factory()->create(['email' => 'taken@example.com']);
 
@@ -222,7 +222,7 @@ public function test_create_user_requires_unique_email(): void
         // is rejected as a form error before it ever reaches the database.
         Livewire::test(ManageUsers::class)
             ->callAction(TestAction::make(EditAction::getDefaultName())->table($target), data: [
-                'name' => $target->name,
+                'name'  => $target->name,
                 'email' => $target->email,
                 'roles' => [$superAdminRole->id],
             ])
@@ -242,7 +242,7 @@ public function test_create_user_requires_unique_email(): void
 
         Livewire::test(ManageUsers::class)
             ->callAction(TestAction::make(EditAction::getDefaultName())->table($target), data: [
-                'name' => $target->name,
+                'name'  => $target->name,
                 'email' => $target->email,
                 'roles' => [$superAdminRole->id],
             ])

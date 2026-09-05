@@ -33,7 +33,7 @@ class AuthLogFactory extends Factory
 
     public function forUser(User $user): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'user_id' => $user->id,
             'login'   => $user->email,
         ]);
@@ -41,14 +41,14 @@ class AuthLogFactory extends Factory
 
     public function forAction(AuthLogActionEnum $action): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'action' => $action,
         ]);
     }
 
     public function forResult(AuthLogResultEnum $result): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'result' => $result,
         ]);
     }

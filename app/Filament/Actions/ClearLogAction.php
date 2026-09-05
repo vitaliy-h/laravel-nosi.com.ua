@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 class ClearLogAction
 {
     /**
-     * @param class-string<Model> $model
+     * @param  class-string<Model>  $model
      */
     public static function make(string $model): Action
     {

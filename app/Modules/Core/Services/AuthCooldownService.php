@@ -54,7 +54,7 @@ class AuthCooldownService
 
     private function seconds(): int
     {
-        return (int)config('auth_log.cooldown_seconds', 5);
+        return (int) config('auth_log.cooldown_seconds', 5);
     }
 
     private function enabled(): bool

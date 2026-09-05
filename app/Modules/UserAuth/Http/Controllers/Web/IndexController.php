@@ -16,7 +16,7 @@ class IndexController extends BaseWebController
             email: $request->input('email'),
         );
 
-        return $this->render('modules.user_auth.index', $page->toViewData());
+        return $this->render('modules.user_auth.index', $page);
     }
 
     /**

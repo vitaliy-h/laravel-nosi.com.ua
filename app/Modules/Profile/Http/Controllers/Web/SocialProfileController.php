@@ -2,10 +2,11 @@
 
 namespace App\Modules\Profile\Http\Controllers\Web;
 
-use App\Modules\UserAuth\Actions\DisconnectSocialProfileAction;
 use App\Modules\Core\Abstract\BaseWebController;
+use App\Modules\UserAuth\Actions\DisconnectSocialProfileAction;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class SocialProfileController extends BaseWebController
 {
@@ -20,7 +21,7 @@ class SocialProfileController extends BaseWebController
 
             return redirect()->to(save_route('profile.edit'))
                 ->with('success', t('social.disconnected'));
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return redirect()->to(save_route('profile.edit'))
                 ->withErrors($e->errors());
         }

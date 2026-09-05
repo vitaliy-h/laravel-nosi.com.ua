@@ -64,9 +64,24 @@ php artisan migrate
 php artisan make:filament-resource Shop/Product --simple --generate --no-interaction
 ```
 
-Resources are namespaced per module, e.g. `App\Filament\Resources\Shop\Products\ProductResource`,
-under `app/Filament/Resources/{Module}/{ModelName}s/`. See `.claude/skills/make-filament-resource/SKILL.md`
-for the full generation flow (including navigation wiring and translations).
+`app/Filament/Resources/` is grouped by **admin domain**, and only a domain that owns
+several resources gets a folder of its own:
+
+* several resources → `Resources/{Domain}/{ModelNamePlural}/{ModelName}Resource.php`
+  (`Shop/Products/ProductResource.php`, `Geo/GeoCountries/GeoCountryResource.php`)
+* a single resource → `Resources/{ModelNamePlural}/{ModelName}Resource.php`
+  (`Users/UserResource.php`, `Subscribers/SubscriberResource.php`)
+* a name that is already plural → `Resources/{ModelName}/{ModelName}Resource.php`
+  (`News/NewsResource.php`, `Feedback/FeedbackResource.php`)
+
+The domain is not the module: `ShopCart` and `ShopOrder` models are administered under
+`Shop/` (`Shop/Cart/CartResource.php` — singular, not pluralised). Check the neighbouring
+folders before generating, and move what the generator produced if it guessed differently.
+
+See `.claude/skills/make-filament-resource/SKILL.md` for the full generation flow
+(including navigation wiring and translations), and
+[Shared building blocks](README.md#shared-building-blocks) for `HasDefaultTable`,
+`BaseEditAction` and the other pieces a generated resource is expected to use.
 
 ### Flags explanation:
 

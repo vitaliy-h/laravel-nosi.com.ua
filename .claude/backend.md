@@ -18,7 +18,7 @@ and calls it automatically — don't add per-module `if` blocks there. See
 
 ## Module toggles
 
-Modules can be disabled via `config/modules.php`, gated by
+Modules can be disabled via `config/modules.php` (`list` key), gated by
 `App\Modules\Core\Support\ModuleGate`. This affects routes, commands,
 migrations, seeders, admin nav/resources, and tests for that module. See
 `docs/starter/modules.md`.
@@ -39,9 +39,63 @@ A ViewModel never queries the DB — eager-loading is the caller's job — never
 reaches into a switchable module in place of `ModuleGate`, and never carries a
 field the page does not render. See `docs/starter/view-models.md`.
 
+## Container bindings
+
+Bind and inject by **class name**. `AppServiceProvider` registers the shared services
+(`TranslationService`, `LetterTemplateService`, `SmsTemplateService`, `LogService`,
+`GetAllPagesQuery`) as singletons under their class, and everything else is resolved
+automatically — no string aliases, so a dependency is visible where it is injected.
+
+Facades (`Trans`, `LetterTemplateFacade`, `SmsTemplateFacade`) exist for blade and the
+`t()` helper. In PHP code inject the service instead; that is also what makes it mockable
+in tests without touching a facade.
+
+A pure helper does not need any of this: `Core\Support\UrlHelper` is static.
+
+## Services vs Support
+
+Both live under `app/Modules/{Module}/`, and the split is by what the class touches:
+
+- **`Services/`** — work with state: the database, the filesystem, an external API, the
+  log. `LogService`, `AuthLogService`, `AuthCooldownService`, `ImageConversionService`.
+- **`Support/`** — pure helpers and resolvers: same input, same output, nothing stored.
+  `ModuleGate`, `UrlHelper`, `ImageResizer`, `UserAgentParser`, `LogSourceResolver`.
+
+If a class needs no dependencies and could be unit-tested without a database, it belongs
+in `Support/`.
+
+## Read layer
+
+Every read goes through a **Query** class in `app/Modules/{Module}/Queries/`. There are
+no repositories in this project, and a read is not an Action: an Action changes state,
+a Query answers a question.
+
+- **Naming:** `Find*Query` returns one record (`FindOrderByUuidQuery`,
+  `FindCategoryBySlugQuery`), `Get*Query` returns a known set
+  (`GetNewsListQuery`, `GetUserOrdersQuery`), `Search*Query` returns a set built from
+  criteria (`SearchProductsQuery`).
+- **One read per class**, a single public `handle()`. Return the model, `Collection`,
+  `LengthAwarePaginator` or array the caller needs — not a builder, unless the class says
+  so in its name (`BuildProductsQuery`).
+- **Input is scalars, enums, models or a DTO — never a `Request`.** Several criteria go
+  into a DTO (`SearchCategoriesQuery::handle(CategorySearchDto $criteria)`,
+  `GetUserOrdersQuery::handle(int $userId, OrderFilterData $filter)`), so the same Query
+  serves web and API — `PrepareShopFilterQuery` takes `ShopFilterCriteriaDto`, which the
+  controller builds from the request.
+- **Layout:** flat in `Queries/` for a small module (`News/Queries/GetNewsListQuery.php`);
+  grouped per entity once there are many
+  (`Shop/Queries/{Category,Product,ProductReview}/`).
+- **Who calls it:** controllers inject Queries directly, and so do Actions that need to
+  read before they write. A ViewModel never queries — it is fed what a Query returned.
+- Dashboard widgets have their own family under `app/Filament/Dashboard/Queries/`,
+  same rules.
+- Caching belongs inside the Query that owns the read — and so does its invalidation
+  (`GetAllPagesQuery` + `PageObserver`). Full page: `docs/starter/queries.md`.
+
 ## API layer conventions
 
-- **Actions** hold business logic — shared between web and API controllers
+- **Actions** hold write logic — shared between web and API controllers
+- **Queries** hold reads — see «Read layer» above
 - **Controllers** are thin HTTP adapters only
 - **DTOs** (`spatie/laravel-data`) structure input validation
 - **Resources** structure API responses
@@ -65,5 +119,10 @@ See `docs/starter/actions.md`.
 ## Code style
 
 ```bash
-./vendor/bin/pint
+./vendor/bin/pint          # fix
+./vendor/bin/pint --test   # check only, no writes
 ```
+
+`pint.json` pins the `laravel` preset. CI runs `pint --test` before the test
+suite (`.github/workflows/tests.yml`), so unformatted code fails the build —
+run Pint before committing.

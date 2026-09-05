@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Modules\Core\Observers;
+namespace App\Modules\Core\Listeners;
 
 use App\Modules\Core\Services\LogService;
 use Illuminate\Database\Eloquent\Model;
 
-class LogObserver
+class LogListener
 {
     public function created(Model $model): void
     {

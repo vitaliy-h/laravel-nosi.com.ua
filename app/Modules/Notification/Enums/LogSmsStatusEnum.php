@@ -15,9 +15,9 @@ enum LogSmsStatusEnum: string
     public function color(): string
     {
         return match ($this) {
-            self::SENT => 'success',
+            self::SENT   => 'success',
             self::FAILED => 'danger',
-            default => 'warning',
+            default      => 'warning',
         };
     }
 }

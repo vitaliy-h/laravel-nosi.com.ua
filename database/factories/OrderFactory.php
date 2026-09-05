@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Modules\User\Models\User;
 use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrder\Enums\PaymentTypeEnum;
 use App\Modules\ShopOrder\Models\Order;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -24,10 +24,10 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
-            'total_amount' => 0,
+            'user_id'        => User::factory(),
+            'total_amount'   => 0,
             'payment_status' => PaymentStatusEnum::UNPAID,
-            'payment_type' => PaymentTypeEnum::NONE,
+            'payment_type'   => PaymentTypeEnum::NONE,
         ];
     }
 }

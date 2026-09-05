@@ -23,9 +23,9 @@ class StoreFeedbackRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:255'],
+            'name'    => ['required', 'string', 'max:255'],
+            'email'   => ['required', 'email', 'max:255'],
+            'phone'   => ['nullable', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:5000'],
         ];
     }
@@ -36,9 +36,9 @@ class StoreFeedbackRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name' => t('feedback.name'),
-            'email' => t('feedback.email'),
-            'phone' => t('feedback.phone'),
+            'name'    => t('feedback.name'),
+            'email'   => t('feedback.email'),
+            'phone'   => t('feedback.phone'),
             'message' => t('feedback.message'),
         ];
     }

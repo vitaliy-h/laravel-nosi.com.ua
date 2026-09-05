@@ -3,9 +3,9 @@
 namespace Tests\Feature\Filament\SmsTemplates;
 
 use App\Filament\Resources\SmsTemplates\Pages\ManageSmsTemplates;
-use App\Modules\User\Models\User;
 use App\Modules\Notification\Enums\SmsEnum;
 use App\Modules\Notification\Models\SmsTemplate;
+use App\Modules\User\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;

@@ -36,10 +36,10 @@ class ProfileUpdateUserDataRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name' => t('profile.user_name'),
+            'name'    => t('profile.user_name'),
             'surname' => t('profile.user_surname'),
-            'email' => t('profile.user_email'),
-            'phone' => t('profile.user_phone'),
+            'email'   => t('profile.user_email'),
+            'phone'   => t('profile.user_phone'),
         ];
     }
 }

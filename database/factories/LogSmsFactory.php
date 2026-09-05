@@ -29,7 +29,7 @@ class LogSmsFactory extends Factory
 
     public function failed(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'status'        => LogSmsStatusEnum::FAILED,
             'error_message' => fake()->sentence(),
         ]);

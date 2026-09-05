@@ -42,7 +42,7 @@ class OrderViewModel extends BaseViewModel
     public static function fromOrder(Order $order): self
     {
         $items = $order->items->map(fn (OrderProduct $item) => OrderItemViewModel::from($item))->values();
-        $customerName = trim($order->user_name.' '.$order->user_surname);
+        $customerName = trim($order->user_name . ' ' . $order->user_surname);
 
         return new self(
             id: $order->id,

@@ -32,7 +32,7 @@ class GeoImporter
     {
         $allowed = config('geo.countries');
 
-        $reader = new XMLReader();
+        $reader = new XMLReader;
         $reader->open(storage_path('app/public/geo/countries.xml'));
 
         $map = [];
@@ -45,8 +45,7 @@ class GeoImporter
 
             $xml = new SimpleXMLElement($reader->readOuterXML());
 
-            $iso2 = (string)$xml->iso2;
-
+            $iso2 = (string) $xml->iso2;
 
             if (!in_array($iso2, $allowed, true)) {
                 continue;
@@ -55,15 +54,15 @@ class GeoImporter
             $country = GeoCountry::updateOrCreate(
                 ['iso2' => $iso2],
                 [
-                    'iso3' => (string)$xml->iso3,
-                    'title' => $this->getCurrentLocateValue($xml->translations,(string)$xml->name),
-                    'phone_code' => (string)$xml->phonecode,
-                    'currency_code' => (string)$xml->currency,
-                    'timezone' => $timezone,
+                    'iso3'          => (string) $xml->iso3,
+                    'title'         => $this->getCurrentLocateValue($xml->translations, (string) $xml->name),
+                    'phone_code'    => (string) $xml->phonecode,
+                    'currency_code' => (string) $xml->currency,
+                    'timezone'      => $timezone,
                 ]
             );
 
-            $map[(int)$xml->id] = $country->id;
+            $map[(int) $xml->id] = $country->id;
         }
 
         $reader->close();
@@ -76,7 +75,7 @@ class GeoImporter
      */
     protected function importRegions(array $countryMap): array
     {
-        $reader = new XMLReader();
+        $reader = new XMLReader;
         $reader->open(storage_path('app/public/geo/regions.xml'));
 
         $map = [];
@@ -89,7 +88,7 @@ class GeoImporter
 
             $xml = new SimpleXMLElement($reader->readOuterXML());
 
-            $countryId = $countryMap[(int)$xml->country_id] ?? null;
+            $countryId = $countryMap[(int) $xml->country_id] ?? null;
 
             if (!$countryId) {
                 continue;
@@ -97,15 +96,15 @@ class GeoImporter
 
             $region = GeoRegion::updateOrCreate(
                 [
-                    'code' => (string)$xml->iso2 ?? null,
+                    'code' => (string) $xml->iso2 ?? null,
                 ],
                 [
                     'geo_country_id' => $countryId,
-                    'title' => $this->getCurrentLocateValue($xml->translations,(string)$xml->name),
+                    'title'          => $this->getCurrentLocateValue($xml->translations, (string) $xml->name),
                 ]
             );
 
-            $map[(int)$xml->id] = $region->id;
+            $map[(int) $xml->id] = $region->id;
         }
 
         $reader->close();
@@ -118,7 +117,7 @@ class GeoImporter
      */
     protected function importCities(array $countryMap, array $regionMap): void
     {
-        $reader = new XMLReader();
+        $reader = new XMLReader;
         $reader->open(storage_path('app/public/geo/cities.xml'));
 
         $batch = [];
@@ -131,22 +130,22 @@ class GeoImporter
 
             $xml = new SimpleXMLElement($reader->readOuterXML());
 
-            $countryId = $countryMap[(int)$xml->country_id] ?? null;
+            $countryId = $countryMap[(int) $xml->country_id] ?? null;
             if (!$countryId) {
                 continue;
             }
 
-            $regionId = $regionMap[(int)$xml->state_id] ?? null;
+            $regionId = $regionMap[(int) $xml->state_id] ?? null;
 
             $batch[] = [
-                'external_id' => (int)$xml->id,
+                'external_id'    => (int) $xml->id,
                 'geo_country_id' => $countryId,
-                'geo_region_id' => $regionId,
-                'title' => $this->getCurrentLocateValue($xml->translations,(string)$xml->name),
-                'latitude' => (string)$xml->latitude,
-                'longitude' => (string)$xml->longitude,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'geo_region_id'  => $regionId,
+                'title'          => $this->getCurrentLocateValue($xml->translations, (string) $xml->name),
+                'latitude'       => (string) $xml->latitude,
+                'longitude'      => (string) $xml->longitude,
+                'created_at'     => now(),
+                'updated_at'     => now(),
             ];
 
             if (count($batch) >= 1000) {
@@ -193,7 +192,7 @@ class GeoImporter
         $result = [];
 
         foreach ($translations->children() as $key => $value) {
-            $result[$key] = (string)$value;
+            $result[$key] = (string) $value;
         }
         if (array_key_exists(config('app.locale'), $result)) {
             return $result[config('app.locale')];

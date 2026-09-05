@@ -22,13 +22,13 @@ readonly class ApplyPromocodeToCartAction
 
         $result = $this->validatePromocode->handle($code, $subtotal);
 
-        if (! $result->success) {
+        if (!$result->success) {
             return $result;
         }
 
         // Only the link is written here; the money is recalculated in one place.
         $cart->withoutEvents(fn () => $cart->update([
-            'promocode_id' => $result->data->promocode_id,
+            'promocode_id'   => $result->data->promocode_id,
             'promocode_code' => $result->data->code,
         ]));
 

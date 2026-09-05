@@ -2,11 +2,11 @@
 
 namespace App\Filament\Widgets\Shop;
 
-use App\Filament\Resources\Shop\Promocodes\PromocodeResource;
 use App\Filament\Dashboard\Concerns\FormatsDashboardStats;
 use App\Filament\Dashboard\Concerns\InteractsWithDashboardPeriod;
-use App\Modules\Core\Support\ModuleGate;
 use App\Filament\Dashboard\Queries\Shop\GetPromocodeStatsQuery;
+use App\Filament\Resources\Shop\Promocodes\PromocodeResource;
+use App\Modules\Core\Support\ModuleGate;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 

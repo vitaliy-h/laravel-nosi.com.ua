@@ -31,15 +31,15 @@ class Promocode extends Model
     ];
 
     protected $casts = [
-        'type' => PromocodeTypeEnum::class,
-        'value' => 'decimal:2',
+        'type'             => PromocodeTypeEnum::class,
+        'value'            => 'decimal:2',
         'min_order_amount' => 'decimal:2',
-        'max_discount' => 'decimal:2',
-        'starts_at' => 'datetime',
-        'expires_at' => 'datetime',
-        'usage_limit' => 'integer',
-        'used_count' => 'integer',
-        'display' => 'boolean',
+        'max_discount'     => 'decimal:2',
+        'starts_at'        => 'datetime',
+        'expires_at'       => 'datetime',
+        'usage_limit'      => 'integer',
+        'used_count'       => 'integer',
+        'display'          => 'boolean',
     ];
 
     /**
@@ -70,8 +70,8 @@ class Promocode extends Model
     public function getDiscountLabelAttribute(): string
     {
         return $this->type === PromocodeTypeEnum::PERCENT
-            ? rtrim(rtrim(number_format((float) $this->value, 2, '.', ''), '0'), '.').'%'
-            : t('shop.currency').number_format((float) $this->value, 2);
+            ? rtrim(rtrim(number_format((float) $this->value, 2, '.', ''), '0'), '.') . '%'
+            : t('shop.currency') . number_format((float) $this->value, 2);
     }
 
     protected static function newFactory(): PromocodeFactory

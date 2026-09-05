@@ -4,7 +4,10 @@
 
 XML sitemap split into multiple files for performance and SEO tooling compatibility.
 
-All sitemap routes are defined in `app/Modules/Core/Http/Routes/web.php` and handled by `App\Modules\Core\Http\Controllers\SitemapController`.
+All sitemap routes are defined in `app/Modules/Sitemap/Http/Routes/web.php` and handled by
+`App\Modules\Sitemap\Http\Controllers\SitemapController`. The module is mounted at the app
+root rather than under a prefix (`ModuleServiceProvider::ROOT_LEVEL_MODULES`), because
+`/sitemap.xml` is a fixed, SEO-standard path.
 
 ---
 
@@ -18,7 +21,9 @@ All sitemap routes are defined in `app/Modules/Core/Http/Routes/web.php` and han
 | `/sitemap-categories-{page}.xml` | Shop categories, paginated |
 | `/sitemap-products-{page}.xml` | Shop products, paginated |
 
-Page numbering starts at `1`. Pages with no records still return valid empty XML.
+Page numbering starts at `1` — the routes constrain `{page}` to `[1-9][0-9]*`, so
+`/sitemap-news-0.xml` or a non-numeric page 404s rather than returning empty XML.
+A valid page number with no records still returns valid empty XML.
 
 ---
 
@@ -30,7 +35,7 @@ Includes all `pages` table rows where:
 - `display = true`
 - `is_indexable = true`
 
-URL generated via `url(UrlFacade::normalizeForLink($page->slug))`. Sorted by `rank DESC`.
+URL generated via `url(UrlHelper::normalizeForLink($page->slug))`. Sorted by `rank DESC`.
 
 ### News (`/sitemap-news-{page}.xml`)
 
@@ -78,7 +83,10 @@ Page::where('module', $module)
 - `PageModule::NEWS` gates the news sitemap
 - `PageModule::SHOP` gates both categories and products sitemaps
 
-If the check fails, the sitemap index (`/sitemap.xml`) omits those sub-sitemaps entirely, and direct requests to those URLs return empty XML.
+The check is `isModuleIndexable()`: a `pages` row for that `PageModule` must exist with
+`display = true` and `is_indexable = true`. A module with no page row at all fails it too.
+If the check fails, the sitemap index (`/sitemap.xml`) omits those sub-sitemaps entirely,
+and direct requests to those URLs return empty XML.
 
 ---
 
@@ -86,8 +94,8 @@ If the check fails, the sitemap index (`/sitemap.xml`) omits those sub-sitemaps 
 
 | Type | Path |
 |------|------|
-| Controller | `app/Modules/Core/Http/Controllers/SitemapController.php` |
-| Routes | `app/Modules/Core/Http/Routes/web.php` |
+| Controller | `app/Modules/Sitemap/Http/Controllers/SitemapController.php` |
+| Routes | `app/Modules/Sitemap/Http/Routes/web.php` |
 | Views | `resources/views/modules/sitemap/` |
 
 Views: `index.blade.php`, `base.blade.php`, `news.blade.php`, `categories.blade.php`, `products.blade.php`

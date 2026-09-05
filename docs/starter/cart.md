@@ -8,7 +8,7 @@ shared via a direct link.
 
 ### Where the cart is stored
 
-A cart is a row in the `carts` table, tied either to `user_id` (logged-in user)
+A cart is a row in the `shop_carts` table, tied either to `user_id` (logged-in user)
 or only to a `uuid` (guest). Which cart the current browser sees is determined by
 the **Laravel session**: the uuid of the active cart is stored in the session under
 the `cart_uuid` key (`Session::put('cart_uuid', $cart->uuid)`).
@@ -17,7 +17,7 @@ the `cart_uuid` key (`Session::put('cart_uuid', $cart->uuid)`).
   lives in the session. Clearing cookies/session "loses" the cart (the data isn't
   deleted from the DB, the session just no longer knows its uuid).
 - **Logged-in user**: the cart is tied to `user_id` (`User::hasOne(Cart)`), so it
-  is available from any device/session after login — `FindCartAction` for a user
+  is available from any device/session after login — `FindCartQuery` for a user
   simply takes `$user->cart`, no session lookup needed.
 
 ### What happens on login / registration
@@ -44,7 +44,7 @@ sends it to someone else:
   controller (`AjaxCartController::change`) — checks whether it's the caller's
   "own" cart (`isOwnCart()`: matching `user_id` with the current user, or matching
   `uuid` with the one stored in the guest's session). If the cart is **not the
-  caller's own**, `ForkCartAction` is triggered on the first modification attempt:
+  caller's own**, `DuplicateCartAction` is triggered on the first modification attempt:
     - the caller's current (own) cart is deleted,
     - a **new** cart (fork) is created, and all items from the viewed (foreign)
       cart are copied into it,
@@ -90,7 +90,7 @@ shows the same placeholder.
 
 ### Models
 
-- **`Cart`** (`carts`)
+- **`Cart`** (`shop_carts`)
   - `uuid` (public identifier used for links, via the `HasUuid` trait)
   - `user_id` (nullable, `belongsTo(User)`)
   - `total_amount` (decimal, cached total)
@@ -106,17 +106,27 @@ shows the same placeholder.
   - `quantity`, `total`
   - `getTotalFormattedAttribute()` — same, with currency
 
+### Queries
+
+| Query | Purpose |
+|---|---|
+| `FindCartQuery` | Finds an *existing* cart for the user/guest (user → `$user->cart`, guest → lookup by `cart_uuid` from the session among carts with no `user_id`). Never creates anything — creating is `GetOrCreateCartAction`'s job. |
+
 ### Actions
 
 | Action | Purpose |
 |---|---|
-| `FindCartAction` | Finds an *existing* cart for the user/guest (user → `$user->cart`, guest → lookup by `cart_uuid` from the session among carts with no `user_id`). Never creates anything. |
 | `GetOrCreateCartAction` | Same, but creates a new cart and stores its `uuid` in the session if none is found. For a logged-in user it additionally tries to pick up a "leftover" guest cart from the session before creating a new one. |
 | `AddOrUpdateCartItemAction` | `updateOrCreate`s an item in the cart (add / change quantity). |
 | `RemoveCartItemAction` | Removes an item, then recalculates the total. |
 | `RecalculateCartTotalAction` | `sum('total')` over items → `Cart::update(['total_amount' => ...])` without firing events. |
-| `ForkCartAction` | Copies items from a foreign/viewed cart (`$source`) into a newly created cart for the current user/guest, deleting their previous own cart; updates `cart_uuid` in the session. |
+| `DuplicateCartAction` | Copies items from a foreign/viewed cart (`$source`) into a newly created cart for the current user/guest, deleting their previous own cart; updates `cart_uuid` in the session. |
 | `MergeCartOnAuthAction` | On login/registration, merges the guest cart (from the session) into the user's cart (or "adopts" it if the user had no cart yet). |
+| `ValidatePromocodeAction` | `handle(string $code, float $subtotal): ActionResult` — checks the code exists, is visible, is inside its `starts_at`/`expires_at` window, has usage left and meets `min_order_amount`. Returns `ActionResult` because every failure is an expected business outcome with its own message. |
+| `ApplyPromocodeToCartAction` | `handle(Cart $cart, string $code): ActionResult` — validates, computes the discount and writes `promocode_id`, `promocode_code`, `discount_amount` and the new `total_amount` onto the cart. |
+| `RemovePromocodeFromCartAction` | `handle(Cart $cart): void` — clears those columns and restores the total to the subtotal. |
+| `CalculateDiscountAction` | `handle(Promocode $promocode, float $subtotal): float` — fixed or percentage discount, capped by `max_discount`. |
+| `IncrementPromocodeUsageAction` | `handle(Promocode $promocode): void` — bumps `used_count`; called when an order is actually placed, not when the code is applied. |
 
 ### Controllers
 
@@ -124,8 +134,9 @@ shows the same placeholder.
   - `index(Request $request)` — resolves the current user's/guest's cart; if it
     has items, redirects to `/cart/{uuid}`, otherwise shows the empty-cart
     placeholder
-  - `checkout(Request $request)` → checkout page (`modules.shop_cart.checkout`,
-    **currently a static mockup, not wired to real order-placement logic**)
+  - `checkout(Request $request)` → renders `modules.shop_cart.checkout`. The template
+    itself carries no cart data — the real checkout form lives on the cart page
+    (`modules/shop_cart/index.blade.php`), which posts to `order.create`
   - `show(Request $request, string $uuid)` — shows a specific cart by link
     (`modules.shop_cart.index`, or `modules.shop_cart.empty_cart` if it has no items or
     `$uuid` isn't a valid UUID — falls back to `index()`'s own-cart behavior)
@@ -138,13 +149,20 @@ shows the same placeholder.
     - if `cart_uuid` is passed and it's the caller's own cart (`isOwnCart`) —
       works with it
     - if `cart_uuid` is passed but the cart is **foreign** — forks it
-      (`ForkCartAction`) and returns a redirect command to the frontend instead of a
+      (`DuplicateCartAction`) and returns a redirect command to the frontend instead of a
       regular response
     - if no `cart_uuid` is passed — gets/creates the caller's own cart
       (`GetOrCreateCartAction`)
   - Performs one of 5 actions (`CartAction`) and returns JSON with an `actions`
     array for the frontend's "ABC-response" runner (DOM patches: update text/html,
-    remove an element, open a modal)
+    remove an element, open a modal) — see `docs/starter/abc-response.md`
+
+- **`PromocodeController`** (`POST /cart/promocode/apply`, `POST /cart/promocode/remove`)
+  - resolves the cart by `cart_uuid`, then calls `ApplyPromocodeToCartAction` /
+    `RemovePromocodeFromCartAction`
+  - answers JSON in the same "ABC-response" action format as `AjaxCartController` when
+    the request expects JSON (re-rendering the promocode form, the discount rows and the
+    total from `CartViewModel`), and a `back()` redirect with a flash message otherwise
 
 ### `CartAction` enum
 
@@ -165,15 +183,19 @@ count `.js_cart_count`, an item's total, the cart's grand total, etc.).
 'id' => ['required', 'integer', 'exists:shop_products,id'],
 'count' => ['required', 'integer', 'min:0'],
 'action' => ['required', Rule::enum(CartAction::class)],
-'cart_uuid' => ['nullable', 'uuid', 'exists:carts,uuid'],
+'cart_uuid' => ['nullable', 'uuid', 'exists:shop_carts,uuid'],
 ```
 
 ### Observer
 
-`CartProductObserver` is registered in `AppServiceProvider`
-(`CartProduct::observe(CartProductObserver::class)`); on `created`/`updated`
+`CartProductObserver` is auto-registered by `ModuleServiceProvider` from
+`app/Modules/ShopCart/Observers/` (see modules.md §4); on `created`/`updated`
 events it calls `RecalculateCartTotalAction`, so the cart's `total_amount` is
 always up to date without an explicit call after every item action.
+`CartObserver` is registered the same way and watches the cart row itself: when
+`promocode_id` or `discount_amount` changes (an admin editing the cart in Filament), it
+re-runs `RecalculateCartTotalAction`. That write goes through `withoutEvents()`, so it
+does not re-trigger the observer.
 
 ### Routes
 
@@ -184,15 +206,49 @@ Route::get('/checkout', [IndexController::class, 'checkout'])->name('cart.checko
 Route::get('/{uuid}', [IndexController::class, 'show'])->name('cart.show');
 
 Route::post('/change', [AjaxCartController::class, 'change'])->name('change_product_count');
+Route::post('/promocode/apply', [PromocodeController::class, 'apply'])->name('promocode.apply');
+Route::post('/promocode/remove', [PromocodeController::class, 'remove'])->name('promocode.remove');
 ```
 
 Mounted under the `/cart` prefix (the module's CMS page slug) by
-`ModuleServiceProvider`.
+`ModuleServiceProvider`. Order placement itself belongs to `ShopOrder`:
+`POST /orders/create` (`order.create`), see below.
+
+### Promocodes
+
+A promocode lives on the cart, not on the order: applying one writes
+`promocode_id`, `promocode_code` and `discount_amount` onto `shop_carts`, and
+`total_amount` becomes `subtotal_amount - discount_amount`.
+
+- **Model** `Promocode` (`shop_promocodes`), `PromocodeTypeEnum` — `FIXED` or `PERCENT`
+- **Flow** `PromocodeController` → `ApplyPromocodeToCartAction` →
+  `ValidatePromocodeAction` (+ `FindPromocodeByCodeQuery`) → `CalculateDiscountAction`
+- **Usage counting** happens at order time: `CreateOrderAction` calls
+  `IncrementPromocodeUsageAction`, so an applied-but-abandoned cart never burns a code
+- **Admin** `app/Filament/Resources/Shop/Promocodes/PromocodeResource.php`,
+  demo rows in `app/Modules/ShopCart/database/seeders/PromocodeSeeder.php`
+- **Toggle** `shop_promocodes` in `config/modules.php` (a dependant of `shop_cart`, so
+  it also goes off with `shop_cart` or `shop`) — it hides the admin surfaces, the
+  `shop_promocodes` table stays
+
+### Checkout and order placement
+
+The cart page's checkout form posts to `POST /orders/create` (`order.create`,
+`ShopOrder\Http\Controllers\Web\OrderController::create`), which resolves the cart by
+`cart_uuid`, builds a `CustomerData` DTO from the validated request and calls
+`ShopOrder\Actions\PlaceOrderFromCartAction::handle(Cart $cart, CustomerData $customer)`.
+That action copies the cart items into the order (through `CreateOrderAction`, which also
+increments promocode usage) and the controller redirects to `order.show`
+(`/orders/{uuid}`). See `docs/starter/uuid.md` for the uuid-addressed order pages.
 
 ### Migrations
 
-- `carts`: `id`, `uuid` (unique), `user_id` (nullable, FK to `users`), `total_amount`,
-  timestamps
+- `shop_carts`: `id`, `uuid` (unique), `user_id` (nullable, FK to `users`),
+  `total_amount`, `subtotal_amount`, `promocode_id` (nullable, indexed),
+  `promocode_code`, `discount_amount`, timestamps
+- `shop_promocodes`: `id`, `code` (unique), `type` (`PromocodeTypeEnum`), `value`,
+  `min_order_amount`, `max_discount`, `starts_at`, `expires_at`, `usage_limit`,
+  `used_count`, `display`, `comment`, timestamps
 - `shop_cart_products`: `id`, `cart_id` (FK), `shop_product_id` (FK to
   `shop_products`), `product_name`, `product_article`, `selling_price`, `quantity`,
   `total`, timestamps
@@ -201,9 +257,8 @@ Mounted under the `/cart` prefix (the module's CMS page slug) by
 
 - **Auth** (`AuthController`, `OAuthController`) — calls `MergeCartOnAuthAction` on
   login/registration/OAuth
-- **Shop** (`Product`) — the product being added to the cart. `CreateOrderAction` in
-  Shop currently creates an order directly from a passed DTO and is **not** wired to
-  the cart — the `/cart/checkout` page is still a static mockup with no real
-  order-placement logic
+- **Shop** (`Product`) — the product being added to the cart
+- **ShopOrder** — turns a cart into an order: `PlaceOrderFromCartAction`,
+  `CreateOrderAction`, route `POST /orders/create`
 - **Page** (`ShareModulePageContext` middleware) — shares `cartCount` with all
-  views via `PageContextSharer::share()`, using `FindCartAction`
+  views via `PageContextSharer::share()`, using `FindCartQuery`

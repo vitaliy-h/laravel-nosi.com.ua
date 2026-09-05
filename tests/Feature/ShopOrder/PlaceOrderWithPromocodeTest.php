@@ -26,19 +26,19 @@ class PlaceOrderWithPromocodeTest extends TestCase
     {
         $promocode = Promocode::factory()->fixed(20)->create(['code' => 'MINUS20']);
         $cart = $this->cartWithItemTotal(100, [
-            'promocode_id' => $promocode->id,
+            'promocode_id'   => $promocode->id,
             'promocode_code' => 'MINUS20',
         ]);
 
         $order = app(PlaceOrderFromCartAction::class)->handle($cart, $this->customer());
 
         $this->assertDatabaseHas('shop_orders', [
-            'id' => $order->id,
-            'promocode_id' => $promocode->id,
-            'promocode_code' => 'MINUS20',
+            'id'              => $order->id,
+            'promocode_id'    => $promocode->id,
+            'promocode_code'  => 'MINUS20',
             'subtotal_amount' => 100.00,
             'discount_amount' => 20.00,
-            'total_amount' => 80.00,
+            'total_amount'    => 80.00,
         ]);
     }
 
@@ -46,7 +46,7 @@ class PlaceOrderWithPromocodeTest extends TestCase
     {
         $promocode = Promocode::factory()->fixed(20)->create(['code' => 'MINUS20']);
         $cart = $this->cartWithItemTotal(100, [
-            'promocode_id' => $promocode->id,
+            'promocode_id'   => $promocode->id,
             'promocode_code' => 'MINUS20',
         ]);
 
@@ -59,18 +59,18 @@ class PlaceOrderWithPromocodeTest extends TestCase
     {
         $promocode = Promocode::factory()->fixed(20)->expired()->create(['code' => 'OLD']);
         $cart = $this->cartWithItemTotal(100, [
-            'promocode_id' => $promocode->id,
+            'promocode_id'   => $promocode->id,
             'promocode_code' => 'OLD',
         ]);
 
         $order = app(PlaceOrderFromCartAction::class)->handle($cart, $this->customer());
 
         $this->assertDatabaseHas('shop_orders', [
-            'id' => $order->id,
-            'promocode_id' => null,
-            'promocode_code' => null,
+            'id'              => $order->id,
+            'promocode_id'    => null,
+            'promocode_code'  => null,
             'discount_amount' => 0.00,
-            'total_amount' => 100.00,
+            'total_amount'    => 100.00,
         ]);
         $this->assertSame(0, $promocode->refresh()->used_count);
     }
@@ -82,9 +82,9 @@ class PlaceOrderWithPromocodeTest extends TestCase
         $order = app(PlaceOrderFromCartAction::class)->handle($cart, $this->customer());
 
         $this->assertDatabaseHas('shop_orders', [
-            'id' => $order->id,
+            'id'              => $order->id,
             'discount_amount' => 0.00,
-            'total_amount' => 100.00,
+            'total_amount'    => 100.00,
         ]);
     }
 
@@ -107,10 +107,10 @@ class PlaceOrderWithPromocodeTest extends TestCase
         $cart = Cart::factory()->create($cartAttributes);
 
         CartProduct::factory()->create([
-            'cart_id' => $cart->id,
+            'cart_id'       => $cart->id,
             'selling_price' => $total,
-            'quantity' => 1,
-            'total' => $total,
+            'quantity'      => 1,
+            'total'         => $total,
         ]);
 
         return $cart->refresh();

@@ -33,7 +33,7 @@ class AuthPageViewModel extends BaseViewModel
 
         return new self(
             mode: $mode,
-            form_view: 'modules.user_auth.partials.forms.'.$mode,
+            form_view: 'modules.user_auth.partials.forms.' . $mode,
             is_login: $mode === 'login',
             is_register: $mode === 'register',
             token: $token,

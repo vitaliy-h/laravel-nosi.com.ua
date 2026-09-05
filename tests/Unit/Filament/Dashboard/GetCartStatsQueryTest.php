@@ -3,12 +3,12 @@
 namespace Tests\Unit\Filament\Dashboard;
 
 use App\Filament\Dashboard\Dtos\DashboardPeriodData;
-use App\Modules\User\Models\User;
+use App\Filament\Dashboard\Queries\Shop\GetCartStatsQuery;
 use App\Modules\Shop\Models\Product;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
-use App\Filament\Dashboard\Queries\Shop\GetCartStatsQuery;
 use App\Modules\ShopOrder\Models\Order;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -68,7 +68,7 @@ class GetCartStatsQueryTest extends TestCase
 
         $this->cartWithItems(150.00, '2026-08-19 10:00:00', $user);
         Order::factory()->create([
-            'user_id' => $user->id,
+            'user_id'    => $user->id,
             'created_at' => '2026-08-19 10:30:00',
             'updated_at' => '2026-08-19 10:30:00',
         ]);
@@ -154,14 +154,14 @@ class GetCartStatsQueryTest extends TestCase
         // Eloquent sees no change from the original (pre-recalculation)
         // in-memory attributes and silently skips them in the UPDATE.
         CartProduct::factory()->create([
-            'cart_id' => $cart->id,
+            'cart_id'         => $cart->id,
             'shop_product_id' => Product::factory(),
         ]);
 
         $cart->refresh()->forceFill([
             'total_amount' => $total,
-            'created_at' => $updatedAt,
-            'updated_at' => $updatedAt,
+            'created_at'   => $updatedAt,
+            'updated_at'   => $updatedAt,
         ])->save();
 
         return $cart;

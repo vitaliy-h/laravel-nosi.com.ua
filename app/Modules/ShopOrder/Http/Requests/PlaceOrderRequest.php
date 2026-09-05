@@ -23,12 +23,12 @@ class PlaceOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cart_uuid' => ['required', 'uuid', 'exists:shop_carts,uuid'],
-            'user_name' => ['nullable', 'string', 'max:255'],
+            'cart_uuid'    => ['required', 'uuid', 'exists:shop_carts,uuid'],
+            'user_name'    => ['nullable', 'string', 'max:255'],
             'user_surname' => ['nullable', 'string', 'max:255'],
-            'user_email' => ['required', 'email', 'max:255'],
-            'user_phone' => ['nullable', 'string', 'max:50'],
-            'comment' => ['nullable', 'string', 'max:2000'],
+            'user_email'   => ['required', 'email', 'max:255'],
+            'user_phone'   => ['nullable', 'string', 'max:50'],
+            'comment'      => ['nullable', 'string', 'max:2000'],
         ];
     }
 
@@ -38,11 +38,11 @@ class PlaceOrderRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'user_name' => t('profile.user_name'),
+            'user_name'    => t('profile.user_name'),
             'user_surname' => t('profile.user_surname'),
-            'user_email' => t('profile.user_email'),
-            'user_phone' => t('profile.user_phone'),
-            'comment' => t('profile.order_comment'),
+            'user_email'   => t('profile.user_email'),
+            'user_phone'   => t('profile.user_phone'),
+            'comment'      => t('profile.order_comment'),
         ];
     }
 }

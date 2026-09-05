@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\LogLetters\Pages;
 
-use App\Filament\Resources\LogLetters\LogLetterResource;
 use App\Filament\Actions\ClearLogAction;
+use App\Filament\Resources\LogLetters\LogLetterResource;
 use App\Modules\Notification\Models\LogLetter;
 use Filament\Resources\Pages\ManageRecords;
 

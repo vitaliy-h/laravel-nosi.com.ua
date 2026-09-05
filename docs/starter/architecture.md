@@ -12,18 +12,61 @@ All site modules are stored in:
 app/Modules
 ```
 
-Example:
+All 18 modules currently in the starter:
 
 ```text
 app/Modules/
-├── Core/
-├── Page/
-├── User/
-├── Index/
+├── Core/           # shared abstractions, logging, images, helpers — never disabled
+├── Page/           # CMS pages, content builder, menus
+├── Index/          # home page
+├── PageText/       # free-form text pages (owns the fallback route)
 ├── News/
 ├── Feedback/
-└── PageText/
+├── Shop/           # catalog: products, categories, brands, reviews
+├── ShopCart/       # cart + promocodes
+├── ShopOrder/      # orders and payment state
+├── Subscriber/
+├── Geo/            # countries / regions / cities
+├── User/           # the User model itself
+├── UserAuth/       # login, registration, OAuth, impersonation
+├── Profile/        # authenticated user's own account pages
+├── Notification/   # letter and SMS templates, sending jobs
+├── Translation/    # locales and dictionaries
+├── Sitemap/        # sitemap*.xml
+└── _debug/         # dev-only tooling
 ```
+
+### What each module is
+
+Modules with a page of their own in the CMS (a `PageModule` case, so an editor renames the
+page and its URL prefix follows — see `docs/starter/routing.md`):
+
+| Module | What it does |
+|---|---|
+| `Index` | The home page: `GET /` and the view models behind it |
+| `PageText` | Free-form CMS pages. It owns the app's single `Route::fallback()`, because each of its N pages has its own slug |
+| `News` | News list and item, with the CMS content builder |
+| `Feedback` | The contact page (`GET /`) and its form handler (`POST /`), which stores a `Feedback` row and sends a letter |
+| `Shop` | Catalog: products, categories, brands, reviews, filters |
+| `ShopCart` | Cart and promocodes — `docs/starter/cart.md` |
+| `Profile` | The signed-in user's own pages: profile, edit, orders list and one order, plus the update/delete/social-disconnect endpoints. Everything behind `auth` |
+| `UserAuth` | Login, registration, password recovery, OAuth (`docs/starter/oauth.md`) and impersonation (`docs/starter/impersonation.md`) |
+| `Geo` | Countries, regions, cities — `docs/starter/geo.md` |
+
+Modules with no page of their own — they mount under a prefix derived from the folder name,
+or nowhere at all:
+
+| Module | What it does |
+|---|---|
+| `Core` | Shared abstractions used by every other module: base controllers and view models, `ActionResult`, `ModuleGate`, image handling, logging, helpers. Mounted at the app root for image previews |
+| `Page` | The CMS itself: `pages` table, content builder, menus, breadcrumbs. Not switchable |
+| `User` | The `User` model and its queries; auth behaviour lives in `UserAuth` |
+| `ShopOrder` | Orders and payment state, mounted at `/orders` — the checkout target for `ShopCart` |
+| `Subscriber` | One `POST /subscriber` endpoint behind `SubscribeAction`, which is idempotent: re-subscribing an existing email returns success with `alreadyExists`, never an error |
+| `Notification` | Letter and SMS templates, their sending jobs and logs — `docs/starter/letters.md`, `docs/starter/sms.md` |
+| `Translation` | Locales and database-backed dictionaries behind the `t()` helper — `docs/starter/translations.md` |
+| `Sitemap` | `sitemap*.xml`, mounted at the app root — `docs/starter/sitemap.md` |
+| `_debug` | Super-admin-only playground for the ABC-response protocol — `docs/starter/abc-response.md` |
 
 Module folder names correspond to site page/modules.
 
@@ -82,17 +125,24 @@ app/Modules/News/
 
 Typical contents:
 
-* `Http/Controllers`, `Http/Routes`
-* Models
-* Actions — what they may return is fixed, see `docs/starter/actions.md`
-* Dtos
-* Repositories
-* Enums
-* Policies
+* `Http/` — `Controllers/{Web,Api}`, `Routes/{web,api}.php`, `Requests`, `Resources`
+* `Models`
+* `Actions` — write logic; what they may return is fixed, see `docs/starter/actions.md`
+* `Queries` — reads, one class per read (`Find*`/`Get*`/`Search*`Query)
+* `ViewModels` — what a controller hands a blade, see `docs/starter/view-models.md`
+* `Dtos`
+* `Enums`
+* `Observers` — auto-registered per module by `ModuleServiceProvider`
+* `Services` — only where neither an Action nor a Query fits (`CartService`, `GeoImporter`)
 * `Console/Commands`
 * `database/migrations`, `database/seeders`
 
-Structure can grow depending on module complexity.
+No module has a `Repositories/` or a `Policies/` folder: reads go through `Queries`, and
+the app's single policy is `app/Policies/UserPolicy.php`.
+
+No module has all of these. `Sitemap` and `_debug` are just `Http/`; `User` is
+`Models` + `Queries` + `database`; `Shop` and `ShopCart` are the widest.
+Structure grows with module complexity.
 
 ---
 
@@ -115,12 +165,8 @@ works and when to use it.
 
 # Routing
 
-Routes remain in standard Laravel folders for POST and API methods:
-
-```text
-routes/web.php
-routes/api.php
-```
+Routes are declared per module, in `app/Modules/{Module}/Http/Routes/web.php` and
+`api.php`. The root `routes/web.php` and `routes/api.php` stay empty.
 
 Every module has its own explicit, named routes in `app/Modules/{Module}/Http/Routes/web.php`,
 mounted under a DB-driven prefix resolved once at boot by `ModuleServiceProvider`.

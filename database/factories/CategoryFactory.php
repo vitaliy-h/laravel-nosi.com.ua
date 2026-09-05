@@ -22,10 +22,10 @@ class CategoryFactory extends Factory
     {
         return [
             'display' => true,
-            'title' => fake()->words(2, true),
-            'slug' => fake()->unique()->slug(),
-            'img' => null,
-            'text' => null,
+            'title'   => fake()->words(2, true),
+            'slug'    => fake()->unique()->slug(),
+            'img'     => null,
+            'text'    => null,
         ];
     }
 

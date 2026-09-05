@@ -12,6 +12,7 @@ class GeoCity extends Model
 {
     /** @use HasFactory<GeoCityFactory> */
     use HasFactory;
+
     use HasVisibility;
 
     protected $fillable = [

@@ -30,7 +30,7 @@ class AuthLogTest extends TestCase
         $user = User::factory()->create(['email' => 'user@example.com']);
 
         $this->post('/user_auth/login', [
-            'email' => 'user@example.com',
+            'email'    => 'user@example.com',
             'password' => 'password',
         ]);
 
@@ -47,7 +47,7 @@ class AuthLogTest extends TestCase
         User::factory()->create(['email' => 'user@example.com']);
 
         $this->post('/user_auth/login', [
-            'email' => 'user@example.com',
+            'email'    => 'user@example.com',
             'password' => 'wrong-password',
         ]);
 
@@ -60,7 +60,7 @@ class AuthLogTest extends TestCase
     public function test_login_of_an_unknown_user_is_logged_with_the_submitted_login(): void
     {
         $this->post('/user_auth/login', [
-            'email' => 'ghost@example.com',
+            'email'    => 'ghost@example.com',
             'password' => 'whatever',
         ]);
 
@@ -76,7 +76,7 @@ class AuthLogTest extends TestCase
         User::factory()->create(['email' => 'user@example.com']);
 
         $this->postJson('/api/auth/login', [
-            'email' => 'user@example.com',
+            'email'    => 'user@example.com',
             'password' => 'password',
         ]);
 
@@ -91,13 +91,13 @@ class AuthLogTest extends TestCase
         User::factory()->create(['email' => 'user@example.com']);
 
         $this->post('/user_auth/login', [
-            'email' => 'user@example.com',
+            'email'    => 'user@example.com',
             'password' => 'wrong-password',
         ]);
 
         // correct password, but the cooldown has not expired yet
         $response = $this->post('/user_auth/login', [
-            'email' => 'user@example.com',
+            'email'    => 'user@example.com',
             'password' => 'password',
         ]);
 
@@ -115,14 +115,14 @@ class AuthLogTest extends TestCase
         User::factory()->create(['email' => 'user@example.com']);
 
         $this->post('/user_auth/login', [
-            'email' => 'user@example.com',
+            'email'    => 'user@example.com',
             'password' => 'wrong-password',
         ]);
 
         $this->travel(6)->seconds();
 
         $this->post('/user_auth/login', [
-            'email' => 'user@example.com',
+            'email'    => 'user@example.com',
             'password' => 'password',
         ]);
 
@@ -140,12 +140,12 @@ class AuthLogTest extends TestCase
 
         // failure for another login must not block this one
         $this->post('/user_auth/login', [
-            'email' => 'other@example.com',
+            'email'    => 'other@example.com',
             'password' => 'wrong-password',
         ]);
 
         $this->post('/user_auth/login', [
-            'email' => 'user@example.com',
+            'email'    => 'user@example.com',
             'password' => 'password',
         ]);
 
@@ -187,10 +187,10 @@ class AuthLogTest extends TestCase
         $token = Password::broker()->createToken($user);
 
         $this->post('/user_auth/password-reset', [
-            'email' => $user->email,
-            'password' => 'newpassword123',
+            'email'                 => $user->email,
+            'password'              => 'newpassword123',
             'password_confirmation' => 'newpassword123',
-            'token' => $token,
+            'token'                 => $token,
         ]);
 
         $log = AuthLog::query()
@@ -206,8 +206,8 @@ class AuthLogTest extends TestCase
         $user = User::factory()->create(['email' => 'user@example.com']);
 
         $this->actingAs($user)->post('/profile/update-user-password', [
-            'current_password' => 'password',
-            'password' => 'newpassword123',
+            'current_password'      => 'password',
+            'password'              => 'newpassword123',
             'password_confirmation' => 'newpassword123',
         ]);
 

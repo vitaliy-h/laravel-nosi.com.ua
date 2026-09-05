@@ -71,7 +71,7 @@ class RecalculateOrderTotalActionTest extends TestCase
         // The order keeps its frozen discount even for a code that no longer
         // validates in the cart.
         $order = $this->orderWithItemTotal(100, [
-            'promocode_code' => 'DELETED',
+            'promocode_code'  => 'DELETED',
             'discount_amount' => 10,
         ]);
 
@@ -93,8 +93,8 @@ class RecalculateOrderTotalActionTest extends TestCase
         OrderProduct::factory()->create([
             'shop_order_id' => $order->id,
             'selling_price' => $total,
-            'quantity' => 1,
-            'total' => $total,
+            'quantity'      => 1,
+            'total'         => $total,
         ]);
 
         return $order->refresh();

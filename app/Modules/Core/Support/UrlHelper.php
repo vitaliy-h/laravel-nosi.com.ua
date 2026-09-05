@@ -1,15 +1,19 @@
 <?php
 
-namespace App\Modules\Core\Services;
+namespace App\Modules\Core\Support;
 
 use Illuminate\Support\Str;
 
+/**
+ * Pure URL string helpers: static because they hold no state and need no
+ * dependencies — there is nothing for a container binding or a facade to add.
+ */
 class UrlHelper
 {
     /**
      * Normalize raw URL string (trim + clean slashes).
      */
-    public function normalize(?string $url = ''): string
+    public static function normalize(?string $url = ''): string
     {
         $url = trim($url);
 
@@ -19,17 +23,17 @@ class UrlHelper
     /**
      * Normalize URL for usage in links (/path/to/page).
      */
-    public function normalizeForLink(?string $url = ''): string
+    public static function normalizeForLink(?string $url = ''): string
     {
-        $url = $this->normalize($url);
+        $url = self::normalize($url);
 
-        return $url === '' ? '/' : '/'.$url;
+        return $url === '' ? '/' : '/' . $url;
     }
 
     /**
      * Generate slug with support for nested paths (parent/child-page).
      */
-    public function slug(string $value): string
+    public static function slug(string $value): string
     {
         $value = trim($value);
 

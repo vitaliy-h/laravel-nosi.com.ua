@@ -2,7 +2,7 @@
 
 namespace App\Modules\ShopOrder\database\seeders;
 
-use App\Modules\User\Models\User;
+use App\Modules\Shop\Models\Product;
 use App\Modules\ShopOrder\Actions\CreateOrderAction;
 use App\Modules\ShopOrder\Actions\GenerateOrderNumberAction;
 use App\Modules\ShopOrder\Dtos\CreateOrderData;
@@ -11,15 +11,13 @@ use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrder\Enums\PaymentTypeEnum;
 use App\Modules\ShopOrder\Models\Order;
 use App\Modules\ShopOrder\Models\OrderProduct;
-use App\Modules\Shop\Models\Product;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class ShopOrderSeeder extends Seeder
 {
-    public function __construct(private readonly CreateOrderAction $createOrder, private readonly GenerateOrderNumberAction $generateOrderNumberAction)
-    {
-    }
+    public function __construct(private readonly CreateOrderAction $createOrder, private readonly GenerateOrderNumberAction $generateOrderNumberAction) {}
 
     public function run(): void
     {
@@ -33,54 +31,55 @@ class ShopOrderSeeder extends Seeder
 
         if ($products->isEmpty()) {
             $this->command->warn('No products found. Run ShopProductSeeder first.');
+
             return;
         }
 
         $orders = [
             [
                 'payment_status' => PaymentStatusEnum::UNPAID,
-                'payment_type' => PaymentTypeEnum::NONE,
-                'item_count' => 2,
+                'payment_type'   => PaymentTypeEnum::NONE,
+                'item_count'     => 2,
             ],
             [
                 'payment_status' => PaymentStatusEnum::PROCESSING,
-                'payment_type' => PaymentTypeEnum::ONLINE_PAYMENT,
-                'item_count' => 3,
+                'payment_type'   => PaymentTypeEnum::ONLINE_PAYMENT,
+                'item_count'     => 3,
             ],
             [
                 'payment_status' => PaymentStatusEnum::PAID,
-                'payment_type' => PaymentTypeEnum::MANUAL_PAYMENT,
-                'item_count' => 1,
+                'payment_type'   => PaymentTypeEnum::MANUAL_PAYMENT,
+                'item_count'     => 1,
             ],
             [
                 'payment_status' => PaymentStatusEnum::PAID,
-                'payment_type' => PaymentTypeEnum::ONLINE_PAYMENT,
-                'item_count' => 1,
+                'payment_type'   => PaymentTypeEnum::ONLINE_PAYMENT,
+                'item_count'     => 1,
             ],
             [
                 'payment_status' => PaymentStatusEnum::PROCESSING,
-                'payment_type' => PaymentTypeEnum::NONE,
-                'item_count' => 5,
+                'payment_type'   => PaymentTypeEnum::NONE,
+                'item_count'     => 5,
             ],
             [
                 'payment_status' => PaymentStatusEnum::PAID,
-                'payment_type' => PaymentTypeEnum::MANUAL_PAYMENT,
-                'item_count' => 6,
+                'payment_type'   => PaymentTypeEnum::MANUAL_PAYMENT,
+                'item_count'     => 6,
             ],
             [
                 'payment_status' => PaymentStatusEnum::PROCESSING,
-                'payment_type' => PaymentTypeEnum::NONE,
-                'item_count' => 3,
+                'payment_type'   => PaymentTypeEnum::NONE,
+                'item_count'     => 3,
             ],
             [
                 'payment_status' => PaymentStatusEnum::PAID,
-                'payment_type' => PaymentTypeEnum::ONLINE_PAYMENT,
-                'item_count' => 8,
+                'payment_type'   => PaymentTypeEnum::ONLINE_PAYMENT,
+                'item_count'     => 8,
             ],
             [
                 'payment_status' => PaymentStatusEnum::PROCESSING,
-                'payment_type' => PaymentTypeEnum::MANUAL_PAYMENT,
-                'item_count' => 1,
+                'payment_type'   => PaymentTypeEnum::MANUAL_PAYMENT,
+                'item_count'     => 1,
             ],
         ];
 
@@ -89,7 +88,7 @@ class ShopOrderSeeder extends Seeder
         foreach ($orders as $index => $config) {
             $chunk = $productChunks->get($index % $productChunks->count(), $productChunks->first());
 
-            $items = $chunk->take($config['item_count'])->map(fn(Product $product) => new OrderItemData(
+            $items = $chunk->take($config['item_count'])->map(fn (Product $product) => new OrderItemData(
                 shop_product_id: $product->id,
                 product_name: $product->title,
                 product_article: $product->article ?? null,

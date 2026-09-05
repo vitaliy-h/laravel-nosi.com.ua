@@ -15,10 +15,11 @@ class Category extends Model
 {
     /** @use HasFactory<CategoryFactory> */
     use HasFactory;
-    use HasVisibility;
+
     use HasImage;
-    use NodeTrait;
     use HasSeoFields;
+    use HasVisibility;
+    use NodeTrait;
 
     protected $table = 'shop_categories';
 

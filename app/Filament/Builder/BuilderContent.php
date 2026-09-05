@@ -16,7 +16,7 @@ class BuilderContent
                 : $component->getModelInstance()->getTable();
             $id = $record?->getKey() ?? 'temp';
             $parts = explode('.', $component->getStatePath());
-            $uuidIndex = collect($parts)->search(fn($p) => Str::isUuid($p));
+            $uuidIndex = collect($parts)->search(fn ($p) => Str::isUuid($p));
             $blockUuid = $uuidIndex !== false ? $parts[$uuidIndex] : null;
             $field = $uuidIndex > 0 ? $parts[$uuidIndex - 1] : 'content';
 
@@ -32,8 +32,8 @@ class BuilderContent
                 $blockIndex = $map[$blockUuid];
             } else {
                 $existing = collect(Storage::disk('public')->directories($basePath))
-                    ->map(fn($dir) => (int)basename($dir))
-                    ->filter(fn($n) => $n > 0);
+                    ->map(fn ($dir) => (int) basename($dir))
+                    ->filter(fn ($n) => $n > 0);
                 $blockIndex = ($existing->max() ?? 0) + 1;
 
                 if ($blockUuid) {

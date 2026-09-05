@@ -1,8 +1,10 @@
 # Модифікації товару (`shop_product_items`) — інструкція до реалізації
 
-> Це лише інструкція/план. Жодні файли, крім цього, у поточній сесії не змінювались.
+> **Статус: специфікація, не реалізовано.** Перевірено 2026-09-05: таблиці
+> `shop_product_items` і супутніх класів у проєкті немає.
 > Документ описує, що саме треба зробити, у яких файлах і чому, щоб інша сесія
 > (або ця ж пізніше) могла виконати задачу без повторного дослідження коду.
+> Читати як план робіт, а не як опис поточної поведінки.
 
 ## 1. Мета
 
@@ -49,7 +51,7 @@
   місця **перестануть працювати**. Рішення — §5.
 - Кошик/замовлення прив'язані до товару через `shop_product_id`:
   `shop_cart_products` (`app/Modules/ShopCart/database/migrations/0001_01_01_000020_create_shop_cart_products_table.php`),
-  `shop_order_products` (`app/Modules/ShopOrders/database/migrations/0001_01_01_000018_create_shop_order_products_table.php`).
+  `shop_order_products` (`app/Modules/ShopOrder/database/migrations/0001_01_01_000018_create_shop_order_products_table.php`).
   Обидві таблиці зберігають знімок (`product_name`, `product_article`, `selling_price`, `quantity`, `total`)
   на момент додавання/оформлення — це не змінюємо, лише додаємо посилання на модифікацію.
 
@@ -70,7 +72,7 @@
 | Файл | Що робимо |
 |------|-----------|
 | `app/Modules/Shop/database/migrations/0001_01_01_000016_create_shop_products_table.php` | прибрати `price`, `price2`, `img`, `imgs` з `shop_products`; у цьому ж файлі створити `shop_product_items` |
-| `app/Modules/ShopOrders/database/migrations/0001_01_01_000018_create_shop_order_products_table.php` | додати колонку `shop_product_item_id` |
+| `app/Modules/ShopOrder/database/migrations/0001_01_01_000018_create_shop_order_products_table.php` | додати колонку `shop_product_item_id` |
 | `app/Modules/ShopCart/database/migrations/0001_01_01_000020_create_shop_cart_products_table.php` | додати колонку `shop_product_item_id` |
 
 ## 3. Нова таблиця `shop_product_items`
@@ -321,7 +323,7 @@ public function scopeWithCheapestItemPrice($query)
   `prepareRangeFilter()` правити не треба: `min()`/`max()` в Query Builder і так
   очищають список колонок перед агрегатом.
 
-- `app/Modules/Shop/Queries/Product/GetCatalogStatsQuery.php::incomplete()` —
+- `app/Filament/Dashboard/Queries/Shop/GetCatalogStatsQuery.php::incomplete()` —
   переписати без залежності від join (цей самий метод використовується як
   фільтр таблиці в Filament, де скоупа немає):
 
@@ -342,7 +344,7 @@ public static function incomplete(Builder $query): Builder
   join не потрібен, потрібні самі модифікації для радіобатонів:
   `->with(['brand', 'cheapestItem', 'visibleItems'])`.
 
-- `app/Modules/Shop/Queries/Product/GetTopProductsQuery.php` — читає лише `id`
+- `app/Filament/Dashboard/Queries/Shop/GetTopProductsQuery.php` — читає лише `id`
   товару, у join не бере участі; **не чіпаємо**. Але віджет
   `app/Filament/Widgets/Shop/TopProductsWidget.php` може виводити колонку ціни —
   перевірити: якщо там `TextColumn::make('price')`, то це вже акцесор, і колонка
@@ -418,7 +420,7 @@ Repeater::make('items')
 `shop_product_id` (нових файлів не створюємо, див. §2.1):
 
 - `app/Modules/ShopCart/database/migrations/0001_01_01_000020_create_shop_cart_products_table.php`
-- `app/Modules/ShopOrders/database/migrations/0001_01_01_000018_create_shop_order_products_table.php`
+- `app/Modules/ShopOrder/database/migrations/0001_01_01_000018_create_shop_order_products_table.php`
 
 ```php
 $table->foreignId('shop_product_item_id')
@@ -435,7 +437,7 @@ $table->foreignId('shop_product_item_id')
 
 ### Моделі
 
-- `App\Modules\ShopCart\Models\CartProduct` і `App\Modules\ShopOrders\Models\OrderProduct` —
+- `App\Modules\ShopCart\Models\CartProduct` і `App\Modules\ShopOrder\Models\OrderProduct` —
   додати `shop_product_item_id` в `$fillable`, relation `productItem()` →
   `belongsTo(ProductItem::class, 'shop_product_item_id')`.
 
@@ -462,10 +464,10 @@ $table->foreignId('shop_product_item_id')
   дістати `$item = $product->items()->findOrFail($request->input('item_id'))`
   (саме через relation товару — це і є перевірка приналежності) і прокинути в
   усі `handle*` виклики поряд з `$product`.
-- `app/Modules/ShopOrders/Actions/CreateOrderAction.php` +
-  `app/Modules/ShopOrders/Dtos/OrderItemData.php` — додати `shop_product_item_id`
+- `app/Modules/ShopOrder/Actions/CreateOrderAction.php` +
+  `app/Modules/ShopOrder/Dtos/OrderItemData.php` — додати `shop_product_item_id`
   в DTO і в `$order->items()->create([...])`. Джерело значення — рядки кошика
-  (перевірити `app/Modules/ShopOrders/Actions/PlaceOrderFromCartAction.php`, що
+  (перевірити `app/Modules/ShopOrder/Actions/PlaceOrderFromCartAction.php`, що
   мапить `CartProduct` → `OrderItemData`, і додати туди поле).
 - `app/Modules/ShopCart/Actions/RemoveCartItemAction.php` — зараз видаляє
   `->where('shop_product_id', $product->id)`, тобто **всі** модифікації товару.
@@ -594,7 +596,7 @@ for ($j = 0; $j < $itemsCount; $j++) {
   `afterCreating(fn ($product) => ProductItem::factory()->for($product, 'product')->create())`
   або окремий явний стейт `Product::factory()->withItem()` — обрати за тим, що
   зручніше існуючим тестам (частина з них створює товари й одразу читає ціну).
-- `app/Modules/ShopOrders/database/seeders/ShopOrderSeeder.php:96` —
+- `app/Modules/ShopOrder/database/seeders/ShopOrderSeeder.php:96` —
   `selling_price: $product->price` формально працюватиме через акцесор (§4),
   але правильніше брати `$product->cheapestItem->price` і одразу класти
   `shop_product_item_id`, щоб демо-замовлення мали заповнений FK.
@@ -612,7 +614,7 @@ for ($j = 0; $j < $itemsCount; $j++) {
 **Змінити (міграції — існуючі файли, нових не додаємо):**
 
 - `app/Modules/Shop/database/migrations/0001_01_01_000016_create_shop_products_table.php`
-- `app/Modules/ShopOrders/database/migrations/0001_01_01_000018_create_shop_order_products_table.php`
+- `app/Modules/ShopOrder/database/migrations/0001_01_01_000018_create_shop_order_products_table.php`
 - `app/Modules/ShopCart/database/migrations/0001_01_01_000020_create_shop_cart_products_table.php`
 
 **Змінити (код):**
@@ -620,7 +622,7 @@ for ($j = 0; $j < $itemsCount; $j++) {
 - `app/Modules/Shop/Models/Product.php`
 - `app/Modules/Shop/Queries/Product/BuildProductsQuery.php`
 - `app/Modules/Shop/Queries/Product/PrepareShopFilterQuery.php` (скинути select у `prepareBrandFilter`, §5)
-- `app/Modules/Shop/Queries/Product/GetCatalogStatsQuery.php`
+- `app/Filament/Dashboard/Queries/Shop/GetCatalogStatsQuery.php`
 - `app/Modules/Shop/Queries/Product/FindProductByIdQuery.php`
 - `app/Filament/Resources/Shop/Products/ProductResource.php`
 - `app/Filament/Widgets/Shop/TopProductsWidget.php` (перевірити колонку ціни, §5)
@@ -631,17 +633,17 @@ for ($j = 0; $j < $itemsCount; $j++) {
 - `app/Modules/ShopCart/Actions/RemoveCartItemAction.php`
 - `app/Modules/ShopCart/Actions/MergeCartOnAuthAction.php`, `DuplicateCartAction.php` (дедуплікація по парі id, §7)
 - `app/Modules/ShopCart/Models/CartProduct.php`
-- `app/Modules/ShopOrders/Models/OrderProduct.php`
-- `app/Modules/ShopOrders/Actions/CreateOrderAction.php`
-- `app/Modules/ShopOrders/Actions/PlaceOrderFromCartAction.php`
-- `app/Modules/ShopOrders/Dtos/OrderItemData.php`
+- `app/Modules/ShopOrder/Models/OrderProduct.php`
+- `app/Modules/ShopOrder/Actions/CreateOrderAction.php`
+- `app/Modules/ShopOrder/Actions/PlaceOrderFromCartAction.php`
+- `app/Modules/ShopOrder/Dtos/OrderItemData.php`
 - `resources/views/modules/shop/product.blade.php`
 - `resources/views/modules/shop/partials/product_card.blade.php`
 - `resources/views/modules/shop/partials/product_box.blade.php` (перевірити, чи є там форма кошика)
 - решта в'юх з `change_product_count` (кошик, чекаут, `cart_modal_item`) — прокинути `item_id`
 - JS сторінки товару (перемикання ціни/фото по радіобатону, §8)
 - `app/Modules/Shop/database/seeders/ShopProductSeeder.php`
-- `app/Modules/ShopOrders/database/seeders/ShopOrderSeeder.php`
+- `app/Modules/ShopOrder/database/seeders/ShopOrderSeeder.php`
 - `database/factories/ProductFactory.php`
 - `database/factories/CartProductFactory.php`
 - `database/factories/OrderProductFactory.php`
@@ -658,10 +660,10 @@ for ($j = 0; $j < $itemsCount; $j++) {
 - `tests/Unit/ShopCart/RemoveCartItemActionTest.php`
 - `tests/Unit/ShopCart/MergeCartOnAuthActionTest.php`
 - `tests/Feature/ShopCart/AjaxCartControllerTest.php`
-- `tests/Unit/ShopOrders/CreateOrderActionTest.php`
-- `tests/Unit/ShopOrders/OrderDtoTest.php`
+- `tests/Unit/ShopOrder/CreateOrderActionTest.php`
+- `tests/Unit/ShopOrder/OrderDtoTest.php`
 - `tests/Feature/Shop/ProductReviewsTest.php` (створює товари фабрикою)
-- `tests/Unit/Dashboard/GetCartStatsQueryTest.php`
+- `tests/Unit/Filament/Dashboard/GetCartStatsQueryTest.php`
 - новий тест на вибір найдешевшої модифікації (`cheapestItem` + `withCheapestItemPrice`)
 
 ## 11. Що свідомо НЕ робимо зараз

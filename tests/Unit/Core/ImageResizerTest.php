@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Core;
 
-use App\Modules\Core\Services\ImageResizer;
+use App\Modules\Core\Support\ImageResizer;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 

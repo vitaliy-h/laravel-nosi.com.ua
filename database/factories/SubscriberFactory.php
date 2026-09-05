@@ -15,10 +15,10 @@ class SubscriberFactory extends Factory
     public function definition(): array
     {
         return [
-            'email' => fake()->unique()->safeEmail(),
-            'ip' => fake()->ipv4(),
+            'email'         => fake()->unique()->safeEmail(),
+            'ip'            => fake()->ipv4(),
             'integrated_at' => null,
-            'error' => null,
+            'error'         => null,
         ];
     }
 
@@ -26,7 +26,7 @@ class SubscriberFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'integrated_at' => now(),
-            'error' => null,
+            'error'         => null,
         ]);
     }
 
@@ -34,7 +34,7 @@ class SubscriberFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'integrated_at' => null,
-            'error' => 'CRM responded with HTTP 500',
+            'error'         => 'CRM responded with HTTP 500',
         ]);
     }
 }

@@ -39,7 +39,7 @@
             @endforeach
         </div>
 
-        <div class="mt-4">
+        <div class="category-pagination mt-4">
             {{ $news->links() }}
         </div>
 

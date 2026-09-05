@@ -8,6 +8,7 @@ use App\Modules\Notification\Enums\LetterEnum;
 use App\Modules\Notification\Models\LetterTemplate;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\RichEditor;
@@ -17,6 +18,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
 
 class LetterTemplateResource extends Resource
@@ -76,7 +78,7 @@ class LetterTemplateResource extends Resource
 
                 TextColumn::make('receivers')
                     ->limit(40)
-                    ->tooltip(fn($record) => $record->receivers)
+                    ->tooltip(fn ($record) => $record->receivers)
                     ->searchable(),
 
                 TextColumn::make('subject')
@@ -93,9 +95,9 @@ class LetterTemplateResource extends Resource
             ->recordActions([
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),
-            ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+            ], position: RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
-                \Filament\Actions\CreateAction::make(),
+                CreateAction::make(),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

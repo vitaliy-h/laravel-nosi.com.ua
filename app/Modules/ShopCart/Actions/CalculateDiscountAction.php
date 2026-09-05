@@ -17,7 +17,7 @@ class CalculateDiscountAction
 
         $discount = match ($promocode->type) {
             PromocodeTypeEnum::PERCENT => round($subtotal * (float) $promocode->value / 100, 2),
-            PromocodeTypeEnum::FIXED => (float) $promocode->value,
+            PromocodeTypeEnum::FIXED   => (float) $promocode->value,
         };
 
         if ($promocode->type === PromocodeTypeEnum::PERCENT && $promocode->max_discount !== null) {

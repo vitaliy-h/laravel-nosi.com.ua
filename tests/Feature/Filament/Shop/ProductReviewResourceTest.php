@@ -3,10 +3,9 @@
 namespace Tests\Feature\Filament\Shop;
 
 use App\Filament\Resources\Shop\ProductReviews\Pages\ManageProductReviews;
-use App\Modules\User\Models\User;
-use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Models\Product;
 use App\Modules\Shop\Models\ProductReview;
+use App\Modules\User\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -103,16 +102,16 @@ class ProductReviewResourceTest extends TestCase
         Livewire::test(ManageProductReviews::class)
             ->callAction(TestAction::make(CreateAction::getDefaultName())->table(), data: [
                 'product_id' => $product->id,
-                'rating' => 4,
-                'name' => 'New Reviewer',
-                'text' => 'Solid product.',
+                'rating'     => 4,
+                'name'       => 'New Reviewer',
+                'text'       => 'Solid product.',
             ])
             ->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('shop_product_reviews', [
             'product_id' => $product->id,
-            'name' => 'New Reviewer',
-            'rating' => 4,
+            'name'       => 'New Reviewer',
+            'rating'     => 4,
             // Reviews created in the admin panel are hidden until published.
             'display' => false,
         ]);
@@ -138,7 +137,7 @@ class ProductReviewResourceTest extends TestCase
             ->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('shop_product_reviews', [
-            'id' => $review->id,
+            'id'   => $review->id,
             'text' => 'Updated text',
         ]);
     }

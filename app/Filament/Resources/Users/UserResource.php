@@ -4,11 +4,12 @@ namespace App\Filament\Resources\Users;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Users\Pages\ManageUsers;
-use App\Modules\UserAuth\Actions\GenerateImpersonationTokenAction;
-use App\Modules\User\Models\User;
 use App\Modules\Core\Support\ModuleGate;
+use App\Modules\User\Models\User;
+use App\Modules\UserAuth\Actions\GenerateImpersonationTokenAction;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\DateTimePicker;
@@ -17,6 +18,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -86,9 +88,9 @@ class UserResource extends Resource
                 TextInput::make('password')
                     ->columnSpan(4)
                     ->password()
-                    ->dehydrated(fn($state) => filled($state))
-                    ->dehydrateStateUsing(fn($state) => filled($state) ? Hash::make($state) : null)
-                    ->required(fn(string $context) => $context === 'create'),
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->dehydrateStateUsing(fn ($state) => filled($state) ? Hash::make($state) : null)
+                    ->required(fn (string $context) => $context === 'create'),
                 TextInput::make('ip')
                     ->columnSpan(4)
                     ->disabled()
@@ -139,17 +141,17 @@ class UserResource extends Resource
                     ->icon('heroicon-o-identification')
                     ->iconButton()
                     ->tooltip(__('admin.actions.impersonate'))
-                    ->url(fn(User $record): string => app(GenerateImpersonationTokenAction::class)->handle($record))
+                    ->url(fn (User $record): string => app(GenerateImpersonationTokenAction::class)->handle($record))
                     ->openUrlInNewTab()
                     // Impersonation is served by the Auth module's routes, so it's
                     // unavailable when that module is disabled.
-                    ->visible(fn(): bool => ModuleGate::isEnabled('user_auth'))
-                    ->hidden(fn(User $record): bool => $record->id === auth()->id()),
+                    ->visible(fn (): bool => ModuleGate::isEnabled('user_auth'))
+                    ->hidden(fn (User $record): bool => $record->id === auth()->id()),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),
-            ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+            ], position: RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
-            \Filament\Actions\CreateAction::make(),
+                CreateAction::make(),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

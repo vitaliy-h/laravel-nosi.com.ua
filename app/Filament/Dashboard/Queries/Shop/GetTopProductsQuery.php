@@ -29,7 +29,7 @@ class GetTopProductsQuery
 
         if ($ids !== []) {
             // Keep the "best selling first" order of the aggregate.
-            $query->orderByRaw('FIELD(shop_products.id, '.implode(',', $ids).')');
+            $query->orderByRaw('FIELD(shop_products.id, ' . implode(',', $ids) . ')');
         }
 
         return $query;
@@ -61,7 +61,7 @@ class GetTopProductsQuery
                 ])
                 ->mapWithKeys(fn ($row): array => [
                     (int) $row->shop_product_id => [
-                        'sold' => (int) $row->sold,
+                        'sold'    => (int) $row->sold,
                         'revenue' => (float) $row->revenue,
                     ],
                 ])

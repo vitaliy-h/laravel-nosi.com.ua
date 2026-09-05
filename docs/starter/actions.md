@@ -44,7 +44,7 @@ public function handle(string $code, float $subtotal): ActionResult
 A bare `true` / `false` carries no reason for the failure. Every case that
 reaches for one is better served by `ActionResult` (which has a message) or by
 `void` (nothing to report). A genuine two-state question belongs in a **Query**
-class, not an Action.
+class, not an Action — see `docs/starter/queries.md`.
 
 ## Not an exception, for expected outcomes
 

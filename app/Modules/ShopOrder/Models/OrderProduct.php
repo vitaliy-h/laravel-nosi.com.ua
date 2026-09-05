@@ -2,6 +2,7 @@
 
 namespace App\Modules\ShopOrder\Models;
 
+use App\Modules\Shop\Models\Product;
 use Database\Factories\OrderProductFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -25,8 +26,8 @@ class OrderProduct extends Model
 
     protected $casts = [
         'selling_price' => 'decimal:2',
-        'quantity'   => 'integer',
-        'total'      => 'decimal:2',
+        'quantity'      => 'integer',
+        'total'         => 'decimal:2',
     ];
 
     public function order()
@@ -36,7 +37,7 @@ class OrderProduct extends Model
 
     public function product()
     {
-        return $this->belongsTo(\App\Modules\Shop\Models\Product::class, 'shop_product_id');
+        return $this->belongsTo(Product::class, 'shop_product_id');
     }
 
     public function getTotalFormattedAttribute(): string

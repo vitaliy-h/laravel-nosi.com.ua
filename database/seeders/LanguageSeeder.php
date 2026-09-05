@@ -46,10 +46,10 @@ class LanguageSeeder extends Seeder
                     'localization' => $enum,
                 ],
                 [
-                    'title' => $enum->label(),
+                    'title'      => $enum->label(),
                     'dictionary' => $dictionary,
-                    'rank' => $rank--,
-                    'display' => true,
+                    'rank'       => $rank--,
+                    'display'    => true,
                 ]
             );
 

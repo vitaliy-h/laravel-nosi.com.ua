@@ -3,9 +3,9 @@
 namespace Tests\Feature\Filament\Languages;
 
 use App\Filament\Resources\Languages\Pages\ManageLanguages;
-use App\Modules\User\Models\User;
 use App\Modules\Translation\Enums\Localization;
 use App\Modules\Translation\Models\Language;
+use App\Modules\User\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -61,7 +61,7 @@ class LanguageResourceTest extends TestCase
     public function test_list_can_search_by_title(): void
     {
         $target = Language::factory()->forLocalization(Localization::EN)->create(['title' => 'English']);
-        $other  = Language::factory()->forLocalization(Localization::UK)->create(['title' => 'Ukrainian']);
+        $other = Language::factory()->forLocalization(Localization::UK)->create(['title' => 'Ukrainian']);
 
         Livewire::test(ManageLanguages::class)
             ->searchTable('English')

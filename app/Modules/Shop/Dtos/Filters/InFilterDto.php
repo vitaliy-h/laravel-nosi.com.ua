@@ -13,8 +13,7 @@ class InFilterDto extends BaseFilterDto
         public readonly FilterTypeEnum $type,
         public readonly Collection $items,
         public readonly array $selected,
-    ) {
-    }
+    ) {}
 
     public function withItems(Collection $items): self
     {

@@ -4,11 +4,11 @@ namespace App\Modules\UserAuth\Actions;
 
 use App\Modules\Core\Enums\AuthLogActionEnum;
 use App\Modules\Core\Services\AuthLogService;
-use App\Modules\UserAuth\Dtos\PasswordRecoveryData;
-use App\Modules\User\Queries\FindUserByEmailQuery;
 use App\Modules\Notification\Dtos\SendLetterTemplateData;
 use App\Modules\Notification\Enums\LetterEnum;
-use App\Modules\Notification\Facades\LetterTemplateFacade;
+use App\Modules\Notification\Services\LetterTemplateService;
+use App\Modules\User\Queries\FindUserByEmailQuery;
+use App\Modules\UserAuth\Dtos\PasswordRecoveryData;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 
@@ -17,6 +17,7 @@ class SendPasswordResetAction
     public function __construct(
         private readonly FindUserByEmailQuery $findUserByEmail,
         private readonly AuthLogService $authLog,
+        private readonly LetterTemplateService $letters,
     ) {}
 
     public function handle(
@@ -26,7 +27,7 @@ class SendPasswordResetAction
         $user = $this->findUserByEmail
             ->handle($data->email);
 
-        if (! $user) {
+        if (!$user) {
 
             $this->authLog->failure(
                 AuthLogActionEnum::PASSWORD_RESET_REQUEST,
@@ -47,7 +48,7 @@ class SendPasswordResetAction
         ]);
         $resetUrl = str_replace('?', '?password_reset&', $resetUrl);
 
-        LetterTemplateFacade::send(
+        $this->letters->send(
             new SendLetterTemplateData(
                 key: LetterEnum::PASSWORD_RESET,
                 replace: [

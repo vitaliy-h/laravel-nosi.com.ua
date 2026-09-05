@@ -3,10 +3,10 @@
 namespace Tests\Feature\Filament\Logs;
 
 use App\Filament\Resources\LogSms\Pages\ManageLogSms;
-use App\Modules\User\Models\User;
 use App\Modules\Notification\Enums\LogSmsStatusEnum;
 use App\Modules\Notification\Enums\NotificationSourceEnum;
 use App\Modules\Notification\Models\LogSms;
+use App\Modules\User\Models\User;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\Testing\TestAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -37,7 +37,7 @@ class LogSmsResourceTest extends TestCase
     public function test_list_can_search_by_receiver(): void
     {
         $target = LogSms::factory()->create(['receiver' => '+380991234567']);
-        $other  = LogSms::factory()->create(['receiver' => '+380997654321']);
+        $other = LogSms::factory()->create(['receiver' => '+380997654321']);
 
         Livewire::test(ManageLogSms::class)
             ->searchTable('+380991234567')
@@ -48,7 +48,7 @@ class LogSmsResourceTest extends TestCase
     public function test_list_can_search_by_body(): void
     {
         $target = LogSms::factory()->create(['body' => 'Your unique code 99999']);
-        $other  = LogSms::factory()->create(['body' => 'Other message']);
+        $other = LogSms::factory()->create(['body' => 'Other message']);
 
         Livewire::test(ManageLogSms::class)
             ->searchTable('unique code 99999')
@@ -58,7 +58,7 @@ class LogSmsResourceTest extends TestCase
 
     public function test_list_can_filter_by_status(): void
     {
-        $sent   = LogSms::factory()->create(['status' => LogSmsStatusEnum::SENT]);
+        $sent = LogSms::factory()->create(['status' => LogSmsStatusEnum::SENT]);
         $failed = LogSms::factory()->failed()->create();
 
         Livewire::test(ManageLogSms::class)
@@ -70,7 +70,7 @@ class LogSmsResourceTest extends TestCase
     public function test_list_can_filter_by_source(): void
     {
         $system = LogSms::factory()->create(['source' => NotificationSourceEnum::SYSTEM]);
-        $admin  = LogSms::factory()->create(['source' => NotificationSourceEnum::ADMIN]);
+        $admin = LogSms::factory()->create(['source' => NotificationSourceEnum::ADMIN]);
 
         Livewire::test(ManageLogSms::class)
             ->filterTable('source', NotificationSourceEnum::SYSTEM->value)

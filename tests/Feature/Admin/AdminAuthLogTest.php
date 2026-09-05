@@ -34,7 +34,7 @@ class AdminAuthLogTest extends TestCase
     {
         Livewire::test(Login::class)
             ->fillForm([
-                'login' => $this->admin->email,
+                'login'    => $this->admin->email,
                 'password' => 'password',
             ])
             ->call('authenticate');
@@ -51,7 +51,7 @@ class AdminAuthLogTest extends TestCase
     {
         Livewire::test(Login::class)
             ->fillForm([
-                'login' => $this->admin->email,
+                'login'    => $this->admin->email,
                 'password' => 'wrong-password',
             ])
             ->call('authenticate');
@@ -66,14 +66,14 @@ class AdminAuthLogTest extends TestCase
     {
         Livewire::test(Login::class)
             ->fillForm([
-                'login' => $this->admin->email,
+                'login'    => $this->admin->email,
                 'password' => 'wrong-password',
             ])
             ->call('authenticate');
 
         Livewire::test(Login::class)
             ->fillForm([
-                'login' => $this->admin->email,
+                'login'    => $this->admin->email,
                 'password' => 'password',
             ])
             ->call('authenticate')
@@ -91,7 +91,7 @@ class AdminAuthLogTest extends TestCase
     {
         Livewire::test(Login::class)
             ->fillForm([
-                'login' => 'ghost@example.com',
+                'login'    => 'ghost@example.com',
                 'password' => 'password',
             ])
             ->call('authenticate');

@@ -38,6 +38,6 @@ class IndexController extends BaseWebController
             ),
         );
 
-        return $this->render('modules.index.index', $page->toViewData());
+        return $this->render('modules.index.index', $page);
     }
 }

@@ -16,15 +16,12 @@ trait InteractsWithModules
      */
     protected function withModules(array $overrides = []): void
     {
-        foreach (config('modules', []) as $key => $value) {
-            // Skip the `dependencies` sub-array: only the bool flags are toggles.
-            if (is_bool($value)) {
-                config(["modules.{$key}" => true]);
-            }
+        foreach (array_keys(config('modules.list', [])) as $key) {
+            config(["modules.list.{$key}" => true]);
         }
 
         foreach ($overrides as $module => $enabled) {
-            config(["modules.{$module}" => $enabled]);
+            config(["modules.list.{$module}" => $enabled]);
         }
     }
 }

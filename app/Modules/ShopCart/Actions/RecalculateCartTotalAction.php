@@ -42,10 +42,10 @@ class RecalculateCartTotalAction
 
         $cart->withoutEvents(fn () => $cart->update([
             'subtotal_amount' => $subtotal,
-            'promocode_id' => $promocodeId,
-            'promocode_code' => $promocodeCode,
+            'promocode_id'    => $promocodeId,
+            'promocode_code'  => $promocodeCode,
             'discount_amount' => $discount,
-            'total_amount' => max(0, round($subtotal - $discount, 2)),
+            'total_amount'    => max(0, round($subtotal - $discount, 2)),
         ]));
 
         $this->cartService->refreshCount($cart);

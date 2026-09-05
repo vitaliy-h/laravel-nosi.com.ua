@@ -3,10 +3,9 @@
 namespace Tests\Feature\Filament\Shop;
 
 use App\Filament\Resources\Shop\Categories\Pages\ManageCategories;
-use App\Modules\User\Models\User;
-use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
+use App\Modules\User\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -42,7 +41,7 @@ class CategoryResourceTest extends TestCase
     public function test_list_can_search_by_title(): void
     {
         $target = Category::factory()->create(['title' => 'UniqueCategory']);
-        $other  = Category::factory()->create(['title' => 'AnotherCategory']);
+        $other = Category::factory()->create(['title' => 'AnotherCategory']);
 
         Livewire::test(ManageCategories::class)
             ->searchTable('UniqueCategory')
@@ -53,7 +52,7 @@ class CategoryResourceTest extends TestCase
     public function test_list_can_search_by_slug(): void
     {
         $target = Category::factory()->create(['slug' => 'find-this-cat']);
-        $other  = Category::factory()->create(['slug' => 'other-cat']);
+        $other = Category::factory()->create(['slug' => 'other-cat']);
 
         Livewire::test(ManageCategories::class)
             ->searchTable('find-this-cat')

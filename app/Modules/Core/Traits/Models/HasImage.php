@@ -62,7 +62,7 @@ trait HasImage
             return [];
         }
 
-        return array_map(static fn($path) => Storage::url($path), $this->imgs);
+        return array_map(static fn ($path) => Storage::url($path), $this->imgs);
     }
 
     public function imageUrl(string $preset): string
@@ -181,7 +181,7 @@ trait HasImage
         $name = Str::slug(pathinfo($filename, PATHINFO_FILENAME));
 
         if (empty($name)) {
-            $name = (string)Str::uuid();
+            $name = (string) Str::uuid();
         }
 
         return $ext ? "{$name}.{$ext}" : $name;

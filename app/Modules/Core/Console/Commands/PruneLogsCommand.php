@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Modules\Core\Console\Commands;
 
 use App\Modules\Core\Models\AuthLog;
 use App\Modules\Core\Models\Log;
 use App\Modules\Notification\Models\LogLetter;
 use App\Modules\Notification\Models\LogSms;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 
+#[Signature('logs:prune {--dry-run : Only report what would be deleted}')]
+#[Description('Delete journal records older than the configured retention period')]
 class PruneLogsCommand extends Command
 {
-    protected $signature = 'logs:prune {--dry-run : Only report what would be deleted}';
-
-    protected $description = 'Delete journal records older than the configured retention period';
-
     /** @var array<int, class-string<Model>> */
     private const JOURNALS = [
         Log::class,
@@ -25,7 +25,7 @@ class PruneLogsCommand extends Command
 
     public function handle(): int
     {
-        $days = (int)config('log.retention_days', 365);
+        $days = (int) config('log.retention_days', 365);
 
         if ($days <= 0) {
             $this->warn('log.retention_days is not set — nothing pruned.');
@@ -34,7 +34,7 @@ class PruneLogsCommand extends Command
         }
 
         $threshold = now()->subDays($days);
-        $dryRun = (bool)$this->option('dry-run');
+        $dryRun = (bool) $this->option('dry-run');
 
         $this->info("Pruning journal records created before {$threshold->toDateTimeString()}");
 

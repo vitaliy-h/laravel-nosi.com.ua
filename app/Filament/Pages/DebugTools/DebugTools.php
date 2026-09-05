@@ -65,6 +65,9 @@ class DebugTools extends Page
     protected function getArtisanTabSchema(): array
     {
         return collect(ArtisanCommandRunner::COMMANDS)
+            // Destructive actions are staging-only; in production they are not
+            // rendered at all, so the page cannot offer what run() would refuse.
+            ->filter(fn (array $meta, string $key): bool => ArtisanCommandRunner::isAvailable($key))
             ->map(function (array $meta, string $key): Section {
                 $runAction = Action::make("run-$key")
                     ->label(__('admin.actions.run'))
@@ -93,7 +96,7 @@ class DebugTools extends Page
     public function runCommand(string $command): void
     {
         abort_unless(static::canAccess(), 403);
-        abort_unless(ArtisanCommandRunner::isAllowed($command), 422);
+        abort_unless(ArtisanCommandRunner::isAvailable($command), 422);
 
         $this->lastCommand = $command;
         $this->output = app(ArtisanCommandRunner::class)->run($command, auth()->user());

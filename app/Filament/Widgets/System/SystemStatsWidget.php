@@ -2,10 +2,10 @@
 
 namespace App\Filament\Widgets\System;
 
-use App\Filament\Resources\LogLetters\LogLetterResource;
-use App\Filament\Resources\LogSms\LogSmsResource;
 use App\Filament\Dashboard\Concerns\FormatsDashboardStats;
 use App\Filament\Dashboard\Queries\System\GetSystemStatsQuery;
+use App\Filament\Resources\LogLetters\LogLetterResource;
+use App\Filament\Resources\LogSms\LogSmsResource;
 use App\Modules\Notification\Enums\LogLetterStatusEnum;
 use App\Modules\Notification\Enums\LogSmsStatusEnum;
 use Filament\Widgets\StatsOverviewWidget;
@@ -40,8 +40,8 @@ class SystemStatsWidget extends StatsOverviewWidget
                 ->color($stats->isDebugRisky() ? 'danger' : 'gray')
                 ->icon('heroicon-o-server-stack'),
 
-            Stat::make(__('admin.dashboard.stats.versions'), 'PHP '.$stats->phpVersion)
-                ->description('Laravel '.$stats->laravelVersion.' · Filament '.$stats->filamentVersion)
+            Stat::make(__('admin.dashboard.stats.versions'), 'PHP ' . $stats->phpVersion)
+                ->description('Laravel ' . $stats->laravelVersion . ' · Filament ' . $stats->filamentVersion)
                 ->icon('heroicon-o-cube-transparent'),
 
             $stats->mailSent === null ? null : Stat::make(__('admin.dashboard.stats.mail_24h'), $stats->mailSent)

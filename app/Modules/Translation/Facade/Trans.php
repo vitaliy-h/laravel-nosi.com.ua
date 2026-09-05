@@ -3,6 +3,7 @@
 namespace App\Modules\Translation\Facade;
 
 use App\Modules\Translation\Enums\Localization;
+use App\Modules\Translation\Services\TranslationService;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -13,6 +14,6 @@ class Trans extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return 'translation';
+        return TranslationService::class;
     }
 }

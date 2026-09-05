@@ -14,7 +14,7 @@ class NewsViewModelTest extends TestCase
     public function test_it_prepares_the_url_and_the_publication_date(): void
     {
         $news = News::factory()->create([
-            'slug' => 'my-news',
+            'slug'         => 'my-news',
             'published_at' => '2026-03-04 15:30:00',
         ]);
 

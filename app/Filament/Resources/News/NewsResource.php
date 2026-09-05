@@ -10,16 +10,15 @@ use App\Filament\Builder\Blocks\TextBlock;
 use App\Filament\Builder\Blocks\VideoBlock;
 use App\Filament\Resources\News\Pages\ManageNews;
 use App\Filament\Traits\HasSeoFields;
-use App\Modules\Page\Enums\PageModule;
 use App\Modules\News\Models\News;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -28,6 +27,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
 
 class NewsResource extends Resource
@@ -57,7 +57,7 @@ class NewsResource extends Resource
                     ->columnSpan(6)
                     ->visibility('public')
                     ->getUploadedFileNameForStorageUsing(function ($file, $record) {
-                        return ($record ?? new News())->getFilePath(
+                        return ($record ?? new News)->getFilePath(
                             $file->getClientOriginalName(),
                             'img',
                         );
@@ -120,13 +120,13 @@ class NewsResource extends Resource
             ->recordActions([
                 ViewAction::make()
                     ->iconButton()
-                    ->url(fn($record) => save_route('news.show', $record->slug))
+                    ->url(fn ($record) => save_route('news.show', $record->slug))
                     ->openUrlInNewTab(),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),
-            ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+            ], position: RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
-                \Filament\Actions\CreateAction::make(),
+                CreateAction::make(),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

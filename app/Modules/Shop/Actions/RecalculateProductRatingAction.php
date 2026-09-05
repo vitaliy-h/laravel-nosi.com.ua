@@ -24,7 +24,7 @@ class RecalculateProductRatingAction
             ->first();
 
         Product::whereKey($product->id)->toBase()->update([
-            'rating' => round((float) $aggregate->average, 2),
+            'rating'        => round((float) $aggregate->average, 2),
             'reviews_count' => (int) $aggregate->total,
         ]);
     }

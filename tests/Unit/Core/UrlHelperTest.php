@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Core;
 
-use App\Modules\Core\Services\UrlHelper;
+use App\Modules\Core\Support\UrlHelper;
 use Tests\TestCase;
 
 class UrlHelperTest extends TestCase

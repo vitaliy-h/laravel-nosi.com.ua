@@ -21,6 +21,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -54,7 +55,7 @@ class LogResource extends Resource
                     ->badge()
                     ->searchable(),
                 TextColumn::make('model_type')
-                    ->formatStateUsing(fn($state) => class_basename($state))
+                    ->formatStateUsing(fn ($state) => class_basename($state))
                     ->searchable(),
                 TextColumn::make('model_id')
                     ->numeric()
@@ -64,7 +65,7 @@ class LogResource extends Resource
                     ->searchable(),
                 TextColumn::make('changed_fields')
                     ->badge(),
-                    //->listWithLineBreaks(),
+                // ->listWithLineBreaks(),
             ])
             ->filters([
                 //
@@ -86,7 +87,7 @@ class LogResource extends Resource
                             ->select('model_type')
                             ->distinct()
                             ->pluck('model_type', 'model_type')
-                            ->mapWithKeys(fn($item) => [
+                            ->mapWithKeys(fn ($item) => [
                                 $item => class_basename($item),
                             ])
                             ->toArray();
@@ -102,7 +103,7 @@ class LogResource extends Resource
                         return $query
                             ->when(
                                 $data['model_id'] ?? null,
-                                fn($q, $id) => $q->where('model_id', $id)
+                                fn ($q, $id) => $q->where('model_id', $id)
                             );
                     })
                     ->indicateUsing(function (array $data): ?string {
@@ -122,11 +123,11 @@ class LogResource extends Resource
                         return $query
                             ->when(
                                 $data['from'] ?? null,
-                                fn(Builder $query, $date) => $query->whereDate('created_at', '>=', $date),
+                                fn (Builder $query, $date) => $query->whereDate('created_at', '>=', $date),
                             )
                             ->when(
                                 $data['until'] ?? null,
-                                fn(Builder $query, $date) => $query->whereDate('created_at', '<=', $date),
+                                fn (Builder $query, $date) => $query->whereDate('created_at', '<=', $date),
                             );
                     })->indicateUsing(function (array $data): ?string {
                         if (!$data['from'] && !$data['until']) {
@@ -150,7 +151,7 @@ class LogResource extends Resource
                 DeleteAction::make()
                     ->iconButton(),
 
-            ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+            ], position: RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
@@ -183,7 +184,7 @@ class LogResource extends Resource
 
                             TextEntry::make('model_type')
                                 ->label(__('admin.fields.model_type'))
-                                ->formatStateUsing(fn($state) => class_basename($state)),
+                                ->formatStateUsing(fn ($state) => class_basename($state)),
 
                             TextEntry::make('model_id')
                                 ->label(__('admin.fields.model_id')),

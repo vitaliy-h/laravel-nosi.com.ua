@@ -11,31 +11,31 @@ use App\Modules\Profile\Http\Requests\ProfileDeleteUserAccountRequest;
 use App\Modules\Profile\Http\Requests\ProfileUpdateUserDataRequest;
 use App\Modules\Profile\Http\Requests\ProfileUpdateUserPasswordRequest;
 use App\Modules\Profile\Http\Resources\UserResource;
+use Illuminate\Http\JsonResponse;
 
 class ProfileController extends BaseApiController
 {
     public function __construct(
-        private readonly UpdateUserDataAction     $updateUserDataAction,
+        private readonly UpdateUserDataAction $updateUserDataAction,
         private readonly UpdateUserPasswordAction $updateUserPasswordAction,
-        private readonly DeleteUserAccountAction  $deleteUserAccountAction,
-    )
-    {
-    }
+        private readonly DeleteUserAccountAction $deleteUserAccountAction,
+    ) {}
 
-    public function updateUserData(ProfileUpdateUserDataRequest $request): \Illuminate\Http\JsonResponse
+    public function updateUserData(ProfileUpdateUserDataRequest $request): JsonResponse
     {
         $user = $request->user();
         $this->updateUserDataAction->handle(
             $user,
             ProfileUpdateUserDataData::from($request->validated())
         );
+
         return $this->success(
             new UserResource($user),
             t('profile.user_data_updated')
         );
     }
 
-    public function updateUserPassword(ProfileUpdateUserPasswordRequest $request): \Illuminate\Http\JsonResponse
+    public function updateUserPassword(ProfileUpdateUserPasswordRequest $request): JsonResponse
     {
         $user = $request->user();
 
@@ -43,12 +43,13 @@ class ProfileController extends BaseApiController
             $user,
             $request->input('password')
         );
+
         return $this->success(
             message: t('profile.password_updated')
         );
     }
 
-    public function deleteUserAccount(ProfileDeleteUserAccountRequest $request): \Illuminate\Http\JsonResponse
+    public function deleteUserAccount(ProfileDeleteUserAccountRequest $request): JsonResponse
     {
         $user = $request->user();
 

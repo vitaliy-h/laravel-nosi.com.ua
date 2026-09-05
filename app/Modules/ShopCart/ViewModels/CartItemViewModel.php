@@ -30,10 +30,10 @@ class CartItemViewModel extends BaseViewModel
         return new self(
             product_id: (int) $item->shop_product_id,
             name: (string) $item->product_name,
-            has_image: ! empty($product?->img),
+            has_image: !empty($product?->img),
             image: $product?->image ?? asset('/assets/images/no_image.svg'),
             quantity: (int) $item->quantity,
-            selling_price_formatted: t('shop.currency').number_format((float) $item->selling_price, 2),
+            selling_price_formatted: t('shop.currency') . number_format((float) $item->selling_price, 2),
             total_formatted: $item->total_formatted,
         );
     }

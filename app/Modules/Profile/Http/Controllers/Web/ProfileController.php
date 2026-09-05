@@ -38,9 +38,9 @@ class ProfileController extends BaseWebController
             return response()->json([
                 'actions' => [
                     [
-                        'method' => 'replaceWith',
+                        'method'   => 'replaceWith',
                         'selector' => '#form-user-data',
-                        'content' => $this->render('modules.profile.partials.edit_user_data', [
+                        'content'  => $this->render('modules.profile.partials.edit_user_data', [
                             'user' => ProfileUserViewModel::from($request->user()),
                         ])->render(),
                     ],
@@ -66,7 +66,7 @@ class ProfileController extends BaseWebController
             return response()->json([
                 'actions' => [
                     [
-                        'method' => 'replaceWith',
+                        'method'   => 'replaceWith',
                         'selector' => '#form-user-password',
                         // The password form renders nothing about the user.
                         'content' => $this->render('modules.profile.partials.edit_user_password')->render(),

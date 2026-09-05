@@ -60,7 +60,7 @@ class NestedSetFields
                         ])
                         ->toArray();
 
-                    return $siblings + ['end_of_list' => __('admin.fields._position_end_of_list')] ;
+                    return $siblings + ['end_of_list' => __('admin.fields._position_end_of_list')];
                 })
                 ->afterStateHydrated(function ($state, callable $set, $record) {
                     if (!$state) {

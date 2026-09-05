@@ -3,7 +3,7 @@
 namespace App\Modules\Page\ViewModels;
 
 use App\Modules\Core\Abstract\BaseViewModel;
-use App\Modules\Core\Facades\UrlFacade;
+use App\Modules\Core\Support\UrlHelper;
 use App\Modules\Page\Models\Page;
 
 /**
@@ -29,7 +29,7 @@ class PageViewModel extends BaseViewModel
     {
         return new self(
             title: (string) $page->title,
-            url: UrlFacade::normalizeForLink($page->slug),
+            url: UrlHelper::normalizeForLink($page->slug),
             content: $page->content ?? [],
             is_indexable: (bool) $page->is_indexable,
         );

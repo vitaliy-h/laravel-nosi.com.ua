@@ -2,13 +2,13 @@
 
 namespace App\Filament\Widgets\Shop;
 
-use App\Filament\Resources\Shop\Cart\CartResource;
-use App\Filament\Resources\Shop\Orders\OrderResource;
 use App\Filament\Dashboard\Concerns\FormatsDashboardStats;
 use App\Filament\Dashboard\Concerns\InteractsWithDashboardPeriod;
-use App\Modules\Core\Support\ModuleGate;
 use App\Filament\Dashboard\Queries\Shop\GetCartStatsQuery;
 use App\Filament\Dashboard\Queries\Shop\GetOrderStatsQuery;
+use App\Filament\Resources\Shop\Cart\CartResource;
+use App\Filament\Resources\Shop\Orders\OrderResource;
+use App\Modules\Core\Support\ModuleGate;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -56,7 +56,7 @@ class SalesStatsWidget extends StatsOverviewWidget
 
             Stat::make(__('admin.dashboard.stats.payment_status'), $stats->paidCount)
                 ->description(__('admin.dashboard.descriptions.payment_breakdown', [
-                    'unpaid' => $stats->unpaidCount,
+                    'unpaid'     => $stats->unpaidCount,
                     'processing' => $stats->processingCount,
                 ]))
                 ->descriptionColor($this->alertColor($stats->unpaidCount, 'warning'))
@@ -105,7 +105,7 @@ class SalesStatsWidget extends StatsOverviewWidget
                 __('admin.dashboard.stats.cart_conversion'),
                 $stats->conversion === null
                     ? __('admin.dashboard.values.none')
-                    : $stats->conversion.'%',
+                    : $stats->conversion . '%',
             )
                 ->description(__('admin.dashboard.descriptions.carts_in_period', [
                     'carts' => $stats->cartsInPeriod,

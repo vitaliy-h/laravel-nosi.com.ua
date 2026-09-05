@@ -1,6 +1,6 @@
 # Testing Guide
 
-This project uses **PHPUnit** (`phpunit/phpunit ^12.5`). Tests are split into two
+This project uses **PHPUnit** (`phpunit/phpunit ^13.0`). Tests are split into two
 suites defined in `phpunit.xml`:
 
 - **Unit** (`tests/Unit`) — fast, isolated tests for a single class (services, DTOs,
@@ -172,12 +172,20 @@ public function test_logout_with_token_succeeds(): void
 
 ### Shared test helpers (Concerns)
 
-`Tests\TestCase` mixes in two reusable traits — use them instead of re-seeding by hand:
+`tests/Concerns/` holds three reusable traits — use them instead of re-seeding by hand:
 
 - `InteractsWithRolesAndPermissions` — `actingAsAdmin()` returns a user holding the
   `admin` permission; `seedRolesAndPermissions()` creates the base permissions.
 - `InteractsWithPages` — `seedPagesForRouting()` and `seedLetterTemplates()` seed the
   data needed for routing/letters Feature tests.
+- `InteractsWithModules` — `withModules(['shop_brands' => false])` forces every
+  toggleable module on and then applies the overrides, so a module-toggle test does not
+  depend on whatever `config/modules.php` currently ships.
+
+`Tests\TestCase` mixes in the first two automatically; `InteractsWithModules` is
+`use`d by the individual test that needs it. `TestCase` also exposes
+`skipUnlessModules(...)` and applies it to the module named by the test's own
+namespace — see `.claude/testing.md`.
 
 ```php
 public function test_admin_endpoint_requires_admin(): void
@@ -249,7 +257,7 @@ class UrlHelperTest extends TestCase
 
 ### Example — DTO casting and defaults (no database)
 
-From `tests/Unit/Shop/OrderDtoTest.php`:
+From `tests/Unit/ShopOrder/OrderDtoTest.php`:
 
 ```php
 public function test_order_item_data_maps_fields_and_types(): void
@@ -279,7 +287,7 @@ public function test_create_order_data_applies_defaults(): void
 
 ### Example — Action with database side effects
 
-From `tests/Unit/Shop/CreateOrderActionTest.php`. Because the Action persists records,
+From `tests/Unit/ShopOrder/CreateOrderActionTest.php`. Because the Action persists records,
 this test uses `RefreshDatabase` and asserts against the database directly:
 
 ```php

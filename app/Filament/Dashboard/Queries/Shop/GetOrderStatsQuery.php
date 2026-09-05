@@ -58,7 +58,7 @@ class GetOrderStatsQuery
             ->first();
 
         return [
-            'orders_count' => (int) ($row->orders_count ?? 0),
+            'orders_count'   => (int) ($row->orders_count ?? 0),
             'discount_total' => (float) ($row->discount_total ?? 0),
         ];
     }
@@ -94,7 +94,7 @@ class GetOrderStatsQuery
             ->first();
 
         return [
-            'revenue' => (float) ($row->revenue ?? 0),
+            'revenue'    => (float) ($row->revenue ?? 0),
             'paid_count' => (int) ($row->paid_count ?? 0),
         ];
     }

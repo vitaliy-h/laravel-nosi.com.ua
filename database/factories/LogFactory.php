@@ -32,14 +32,14 @@ class LogFactory extends Factory
 
     public function forUser(User $user): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'user_id' => $user->id,
         ]);
     }
 
     public function forEvent(LogEventEnum $event): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'event' => $event,
         ]);
     }

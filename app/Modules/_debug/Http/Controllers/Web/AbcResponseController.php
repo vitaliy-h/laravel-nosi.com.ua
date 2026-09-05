@@ -23,77 +23,77 @@ class AbcResponseController extends BaseWebController
         switch ($action) {
             case 'html':
                 $response['actions'][] = [
-                    'method' => 'html',
+                    'method'   => 'html',
                     'selector' => '#test-html',
-                    'content' => '<strong>HTML replaced successfully</strong>',
+                    'content'  => '<strong>HTML replaced successfully</strong>',
                 ];
                 break;
 
             case 'text':
                 $response['actions'][] = [
-                    'method' => 'text',
+                    'method'   => 'text',
                     'selector' => '#test-text',
-                    'content' => 'Updated text content',
+                    'content'  => 'Updated text content',
                 ];
                 break;
 
             case 'append':
                 $response['actions'][] = [
-                    'method' => 'append',
+                    'method'   => 'append',
                     'selector' => '#test-append',
-                    'content' => '<div>New appended item</div>',
+                    'content'  => '<div>New appended item</div>',
                 ];
                 break;
 
             case 'prepend':
                 $response['actions'][] = [
-                    'method' => 'prepend',
+                    'method'   => 'prepend',
                     'selector' => '#test-append',
-                    'content' => '<div>Prepended item</div>',
+                    'content'  => '<div>Prepended item</div>',
                 ];
                 break;
 
             case 'class':
                 $response['actions'][] = [
-                    'method' => 'addClass',
+                    'method'   => 'addClass',
                     'selector' => '#test-class',
-                    'content' => 'red',
+                    'content'  => 'red',
                 ];
                 break;
 
             case 'removeClass':
                 $response['actions'][] = [
-                    'method' => 'removeClass',
+                    'method'   => 'removeClass',
                     'selector' => '#test-class',
-                    'content' => 'red',
+                    'content'  => 'red',
                 ];
                 break;
 
             case 'hide':
                 $response['actions'][] = [
-                    'method' => 'hide',
+                    'method'   => 'hide',
                     'selector' => '#test-hide',
                 ];
                 break;
 
             case 'show':
                 $response['actions'][] = [
-                    'method' => 'show',
+                    'method'   => 'show',
                     'selector' => '#test-hide',
                 ];
                 break;
 
             case 'replace':
                 $response['actions'][] = [
-                    'method' => 'replaceWith',
+                    'method'   => 'replaceWith',
                     'selector' => '#test-replace',
-                    'content' => '<div id="test-replace">Element replaced</div>',
+                    'content'  => '<div id="test-replace">Element replaced</div>',
                 ];
                 break;
 
             case 'alert':
                 $response['actions'][] = [
-                    'method' => 'alert',
+                    'method'  => 'alert',
                     'content' => 'Alert works',
                 ];
                 break;
@@ -106,14 +106,14 @@ class AbcResponseController extends BaseWebController
 
             case 'location':
                 $response['actions'][] = [
-                    'method' => 'location',
+                    'method'  => 'location',
                     'content' => 'https://google.com',
                 ];
                 break;
 
             case 'script':
                 $response['actions'][] = [
-                    'method' => 'script',
+                    'method'  => 'script',
                     'content' => '<script>alert("Dynamic script executed")</script>',
                 ];
                 break;
@@ -121,13 +121,13 @@ class AbcResponseController extends BaseWebController
             case 'form':
 
                 $response['actions'][] = [
-                    'method' => 'html',
+                    'method'   => 'html',
                     'selector' => '#test-form .abcr-result',
-                    'content' => 'Form submitted successfully',
+                    'content'  => 'Form submitted successfully',
                 ];
 
                 $response['actions'][] = [
-                    'method' => 'clearForm',
+                    'method'   => 'clearForm',
                     'selector' => '#test-form',
                 ];
 

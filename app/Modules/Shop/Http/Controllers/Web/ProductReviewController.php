@@ -45,13 +45,13 @@ class ProductReviewController extends BaseWebController
         if ($request->ajax()) {
             $actions = [
                 [
-                    'method' => 'clearForm',
+                    'method'   => 'clearForm',
                     'selector' => '#review-form',
                 ],
                 [
-                    'method' => 'html',
+                    'method'   => 'html',
                     'selector' => '#review-message',
-                    'content' => $this->render('modules.shop.partials.review_message', [
+                    'content'  => $this->render('modules.shop.partials.review_message', [
                         'message' => $message,
                     ])->render(),
                 ],
@@ -90,14 +90,14 @@ class ProductReviewController extends BaseWebController
         return response()->json([
             'actions' => [
                 [
-                    'method' => 'append',
+                    'method'   => 'append',
                     'selector' => '#reviews-list',
-                    'content' => $items,
+                    'content'  => $items,
                 ],
                 [
-                    'method' => 'replaceWith',
+                    'method'   => 'replaceWith',
                     'selector' => '#reviews-load-more',
-                    'content' => $this->render('modules.shop.partials.reviews_load_more', [
+                    'content'  => $this->render('modules.shop.partials.reviews_load_more', [
                         'product' => ProductViewModel::from($product),
                         'reviews' => $reviews,
                     ])->render(),

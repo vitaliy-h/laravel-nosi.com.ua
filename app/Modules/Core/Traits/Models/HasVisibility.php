@@ -7,9 +7,9 @@ trait HasVisibility
     private function visibility($query, $visible = null)
     {
         if ($visible !== null) {
-            return $query->where('display', (bool)$visible);
+            return $query->where('display', (bool) $visible);
         }
-        //
+
         return $query;
     }
 

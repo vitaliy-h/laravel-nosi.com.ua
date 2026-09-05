@@ -82,25 +82,31 @@ Claude automatically reads these files on every session:
 ```
 .claude/
 ├── skills/
-│   ├── make-api/           # skill: generating API layer
+│   ├── make-api/                # skill: generating the API layer
 │   ├── make-filament-resource/  # skill: generating Filament resources
-│   └── make-model/         # skill: generating models
-├── backend.md              # backend conventions (routing, actions, DTOs)
-├── frontend.md             # frontend stack (Vite, Tailwind, Blade)
+│   ├── make-model/              # skill: generating models + migrations
+│   └── plan-task/               # skill: researching a task and writing its plan
+├── backend.md              # backend conventions (routing, layers, code style)
+├── frontend.md             # frontend stack (Bootstrap 5 theme, Blade)
 └── testing.md              # testing guide (PHPUnit, Sail, Filament tests)
 
-CLAUDE.md                   # root project summary (read first)
+CLAUDE.md                   # entry point (read first)
 ```
 
 ### What each file covers
 
-**`CLAUDE.md`** — project overview, stack, entry point for Claude
+**`CLAUDE.md`** — the entry point: links to the three role guides, a map of `docs/`, and
+the few project-wide rules. It is short by design — the substance lives in the files it
+points at.
 
-**`.claude/backend.md`** — routing conventions, API layer (Actions/Controllers/DTOs/Resources), code style (`pint`)
+**`.claude/backend.md`** — routing conventions, the read layer (`Queries/`), API layer
+(Actions/Controllers/DTOs/Resources), ViewModels, Action return values, code style (`pint`)
 
-**`.claude/frontend.md`** — Vite 8, Tailwind CSS 4, Blade components, `t()` helper, asset references
+**`.claude/frontend.md`** — the frontend stack (Bootstrap 5 demo theme; Vite + Tailwind are
+configured but not wired into the layout), Blade structure rules, `t()` helper
 
-**`.claude/testing.md`** — PHPUnit 12, Sail, Filament resource tests, factories, seeders, auth patterns
+**`.claude/testing.md`** — PHPUnit 13, Sail, Filament resource tests, factories, seeders,
+module skipping, auth patterns
 
 **`.claude/skills/`** — step-by-step generation guides for common tasks
 
@@ -128,9 +134,11 @@ Claude will:
 1. Start Claude Code in project root
 2. Claude reads `.claude/` automatically
 3. Use skills for generation tasks:
-    - `make-model` → migration + model + factory
-    - `make-api` → DTO + Action + Controller + Resource
-    - `make-filament-resource` → Filament Resource + tests
+    - `make-model` → migration + model (+ module scaffolding when it's a new module)
+    - `make-api` → FormRequest + Query/Action + Controller + Resource + route
+    - `make-filament-resource` → Filament resource, navigation item and translations
+      (it does not write tests — see `.claude/testing.md` for those)
+    - `plan-task` → research + `tasks/{id}/plan.md` before a larger change
 
 Recommended generation flow:
 

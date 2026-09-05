@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\ShopCart;
 
+use App\Modules\Shop\Models\Product;
 use App\Modules\ShopCart\Actions\AddOrUpdateCartItemAction;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
-use App\Modules\Shop\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

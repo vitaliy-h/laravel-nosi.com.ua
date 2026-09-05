@@ -2,16 +2,16 @@
 
 namespace Tests\Feature\UserAuth;
 
-use App\Modules\UserAuth\Actions\GenerateImpersonationTokenAction;
 use App\Modules\User\Models\User;
+use App\Modules\UserAuth\Actions\GenerateImpersonationTokenAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Concerns\InteractsWithPages;
 use Tests\TestCase;
 
 class ImpersonationTest extends TestCase
 {
-    use RefreshDatabase;
     use InteractsWithPages;
+    use RefreshDatabase;
 
     protected function setUp(): void
     {

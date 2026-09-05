@@ -22,9 +22,9 @@ class BrandFactory extends Factory
     {
         return [
             'display' => true,
-            'title' => fake()->company(),
-            'slug' => fake()->unique()->slug(),
-            'img' => null,
+            'title'   => fake()->company(),
+            'slug'    => fake()->unique()->slug(),
+            'img'     => null,
         ];
     }
 }

@@ -7,8 +7,8 @@ use Spatie\LaravelData\Data;
 class ProfileUpdateUserDataData extends Data
 {
     public function __construct(
-        public string  $name,
-        public string  $email,
+        public string $name,
+        public string $email,
         public ?string $surname = null,
         public ?string $phone = null,
     ) {}

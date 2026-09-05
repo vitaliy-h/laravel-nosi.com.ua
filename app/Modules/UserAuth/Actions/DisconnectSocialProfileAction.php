@@ -12,7 +12,7 @@ class DisconnectSocialProfileAction
         $profile = $user->socialProfiles()->where('provider', $provider)->firstOrFail();
 
         $hasPassword = !empty($user->password);
-        $hasEmail    = !empty($user->email);
+        $hasEmail = !empty($user->email);
         $otherProviders = $user->socialProfiles()
             ->where('provider', '!=', $provider)
             ->exists();

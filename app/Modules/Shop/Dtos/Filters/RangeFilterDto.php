@@ -14,8 +14,7 @@ class RangeFilterDto extends BaseFilterDto
         public readonly float $max,
         public readonly ?float $from,
         public readonly ?float $to,
-    ) {
-    }
+    ) {}
 
     public function withRange(float $min, float $max): self
     {

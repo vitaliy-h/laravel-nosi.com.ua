@@ -14,10 +14,8 @@ class TemplateMail extends Mailable
     public function __construct(
         public string $subjectValue,
         public string $body,
-        public array  $attachmentsData = [],
-    )
-    {
-    }
+        public array $attachmentsData = [],
+    ) {}
 
     public function build(): static
     {
@@ -41,5 +39,4 @@ class TemplateMail extends Mailable
 
         return $mail;
     }
-
 }

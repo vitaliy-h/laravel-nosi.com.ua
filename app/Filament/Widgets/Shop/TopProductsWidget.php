@@ -2,11 +2,11 @@
 
 namespace App\Filament\Widgets\Shop;
 
-use App\Filament\Resources\Shop\Products\ProductResource;
 use App\Filament\Dashboard\Concerns\InteractsWithDashboardPeriod;
+use App\Filament\Dashboard\Queries\Shop\GetTopProductsQuery;
+use App\Filament\Resources\Shop\Products\ProductResource;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Models\Product;
-use App\Filament\Dashboard\Queries\Shop\GetTopProductsQuery;
 use Filament\Actions\Action;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
@@ -59,7 +59,7 @@ class TopProductsWidget extends TableWidget
                     ->icon(Heroicon::OutlinedPencilSquare)
                     ->iconButton()
                     ->url(fn (Product $record): string => ProductResource::getUrl(parameters: [
-                        'tableAction' => 'edit',
+                        'tableAction'       => 'edit',
                         'tableActionRecord' => $record->getKey(),
                     ])),
             ], position: RecordActionsPosition::BeforeColumns);

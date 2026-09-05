@@ -2,19 +2,17 @@
 
 namespace Tests\Feature\Filament\Geo;
 
-use PHPUnit\Framework\Attributes\Group;
-
 use App\Filament\Resources\Geo\GeoRegions\Pages\ManageGeoRegions;
-use App\Modules\User\Models\User;
-use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Geo\Models\GeoCountry;
 use App\Modules\Geo\Models\GeoRegion;
+use App\Modules\User\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\Testing\TestAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
 #[Group('geo')]
@@ -45,7 +43,7 @@ class GeoRegionResourceTest extends TestCase
     public function test_list_can_search_by_title(): void
     {
         $target = GeoRegion::factory()->create(['title' => 'UniqueRegion']);
-        $other  = GeoRegion::factory()->create(['title' => 'AnotherRegion']);
+        $other = GeoRegion::factory()->create(['title' => 'AnotherRegion']);
 
         Livewire::test(ManageGeoRegions::class)
             ->searchTable('UniqueRegion')
@@ -56,9 +54,9 @@ class GeoRegionResourceTest extends TestCase
     public function test_list_can_filter_by_country(): void
     {
         $country = GeoCountry::factory()->create();
-        $other   = GeoCountry::factory()->create();
+        $other = GeoCountry::factory()->create();
 
-        $inCountry  = GeoRegion::factory()->forCountry($country)->create();
+        $inCountry = GeoRegion::factory()->forCountry($country)->create();
         $outCountry = GeoRegion::factory()->forCountry($other)->create();
 
         Livewire::test(ManageGeoRegions::class)

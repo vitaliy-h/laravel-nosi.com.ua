@@ -23,10 +23,10 @@ class ShopCategoriesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'has_image' => ['nullable', 'boolean'],
+            'has_image'          => ['nullable', 'boolean'],
             'only_with_products' => ['nullable', 'boolean'],
-            'random' => ['nullable', 'boolean'],
-            'limit' => ['nullable', 'integer', 'min:1'],
+            'random'             => ['nullable', 'boolean'],
+            'limit'              => ['nullable', 'integer', 'min:1'],
         ];
     }
 }

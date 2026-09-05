@@ -3,8 +3,8 @@
 namespace App\Modules\ShopCart\Http\Controllers\Web;
 
 use App\Modules\Core\Abstract\BaseWebController;
-use App\Modules\ShopCart\Actions\FindCartAction;
 use App\Modules\ShopCart\Models\Cart;
+use App\Modules\ShopCart\Queries\FindCartQuery;
 use App\Modules\ShopCart\ViewModels\CartViewModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 class IndexController extends BaseWebController
 {
     public function __construct(
-        private readonly FindCartAction $findCart,
+        private readonly FindCartQuery $findCart,
     ) {}
 
     public function index(Request $request)
@@ -39,7 +39,7 @@ class IndexController extends BaseWebController
 
     public function show(Request $request, string $uuid)
     {
-        if (! Str::isUuid($uuid)) {
+        if (!Str::isUuid($uuid)) {
             return $this->index($request);
         }
 

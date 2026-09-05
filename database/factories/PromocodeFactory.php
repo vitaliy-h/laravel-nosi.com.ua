@@ -26,24 +26,24 @@ class PromocodeFactory extends Factory
     public function definition(): array
     {
         return [
-            'code' => Str::upper(fake()->unique()->bothify('SAVE##??')),
-            'type' => PromocodeTypeEnum::PERCENT,
-            'value' => 10,
+            'code'             => Str::upper(fake()->unique()->bothify('SAVE##??')),
+            'type'             => PromocodeTypeEnum::PERCENT,
+            'value'            => 10,
             'min_order_amount' => null,
-            'max_discount' => null,
-            'starts_at' => null,
-            'expires_at' => null,
-            'usage_limit' => null,
-            'used_count' => 0,
-            'display' => true,
-            'comment' => null,
+            'max_discount'     => null,
+            'starts_at'        => null,
+            'expires_at'       => null,
+            'usage_limit'      => null,
+            'used_count'       => 0,
+            'display'          => true,
+            'comment'          => null,
         ];
     }
 
     public function fixed(float $value = 10): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => PromocodeTypeEnum::FIXED,
+            'type'  => PromocodeTypeEnum::FIXED,
             'value' => $value,
         ]);
     }
@@ -51,7 +51,7 @@ class PromocodeFactory extends Factory
     public function percent(float $value = 10): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => PromocodeTypeEnum::PERCENT,
+            'type'  => PromocodeTypeEnum::PERCENT,
             'value' => $value,
         ]);
     }
@@ -59,7 +59,7 @@ class PromocodeFactory extends Factory
     public function expired(): static
     {
         return $this->state(fn (array $attributes) => [
-            'starts_at' => now()->subMonth(),
+            'starts_at'  => now()->subMonth(),
             'expires_at' => now()->subDay(),
         ]);
     }
@@ -67,7 +67,7 @@ class PromocodeFactory extends Factory
     public function notStarted(): static
     {
         return $this->state(fn (array $attributes) => [
-            'starts_at' => now()->addWeek(),
+            'starts_at'  => now()->addWeek(),
             'expires_at' => now()->addMonth(),
         ]);
     }
@@ -76,7 +76,7 @@ class PromocodeFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'usage_limit' => $limit,
-            'used_count' => $limit,
+            'used_count'  => $limit,
         ]);
     }
 

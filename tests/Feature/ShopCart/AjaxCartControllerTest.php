@@ -2,18 +2,18 @@
 
 namespace Tests\Feature\ShopCart;
 
+use App\Modules\Shop\Models\Product;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
 use App\Modules\User\Models\User;
-use App\Modules\Shop\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Concerns\InteractsWithPages;
 use Tests\TestCase;
 
 class AjaxCartControllerTest extends TestCase
 {
-    use RefreshDatabase;
     use InteractsWithPages;
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
@@ -27,8 +27,8 @@ class AjaxCartControllerTest extends TestCase
         $product = Product::factory()->create();
 
         $response = $this->postJson(save_route('change_product_count'), [
-            'id' => $product->id,
-            'count' => 2,
+            'id'     => $product->id,
+            'count'  => 2,
             'action' => 'change_count',
         ]);
 
@@ -36,7 +36,7 @@ class AjaxCartControllerTest extends TestCase
         $response->assertJsonPath('success', true);
         $this->assertDatabaseHas('shop_cart_products', [
             'shop_product_id' => $product->id,
-            'quantity' => 2,
+            'quantity'        => 2,
         ]);
     }
 
@@ -46,8 +46,8 @@ class AjaxCartControllerTest extends TestCase
         $product = Product::factory()->create();
 
         $response = $this->actingAs($user)->postJson(save_route('change_product_count'), [
-            'id' => $product->id,
-            'count' => 1,
+            'id'     => $product->id,
+            'count'  => 1,
             'action' => 'change_count',
         ]);
 
@@ -55,7 +55,7 @@ class AjaxCartControllerTest extends TestCase
         $cart = $user->fresh()->cart;
         $this->assertNotNull($cart);
         $this->assertDatabaseHas('shop_cart_products', [
-            'cart_id' => $cart->id,
+            'cart_id'         => $cart->id,
             'shop_product_id' => $product->id,
         ]);
     }
@@ -68,8 +68,8 @@ class AjaxCartControllerTest extends TestCase
         session(['cart_uuid' => $cart->uuid]);
 
         $response = $this->withSession(['cart_uuid' => $cart->uuid])->postJson(save_route('change_product_count'), [
-            'id' => $product->id,
-            'count' => 1,
+            'id'     => $product->id,
+            'count'  => 1,
             'action' => 'delete_modal',
         ]);
 
@@ -87,8 +87,8 @@ class AjaxCartControllerTest extends TestCase
         CartProduct::factory()->create(['cart_id' => $cart->id, 'shop_product_id' => $other->id, 'total' => 5]);
 
         $response = $this->withSession(['cart_uuid' => $cart->uuid])->postJson(save_route('change_product_count'), [
-            'id' => $product->id,
-            'count' => 1,
+            'id'     => $product->id,
+            'count'  => 1,
             'action' => 'delete_checkout',
         ]);
 
@@ -106,8 +106,8 @@ class AjaxCartControllerTest extends TestCase
         CartProduct::factory()->create(['cart_id' => $cart->id, 'shop_product_id' => $product->id, 'total' => 10]);
 
         $response = $this->withSession(['cart_uuid' => $cart->uuid])->postJson(save_route('change_product_count'), [
-            'id' => $product->id,
-            'count' => 1,
+            'id'     => $product->id,
+            'count'  => 1,
             'action' => 'delete_checkout',
         ]);
 
@@ -120,15 +120,15 @@ class AjaxCartControllerTest extends TestCase
         $product = Product::factory()->create();
 
         $response = $this->postJson(save_route('change_product_count'), [
-            'id' => $product->id,
-            'count' => 0,
+            'id'     => $product->id,
+            'count'  => 0,
             'action' => 'change_count',
         ]);
 
         $response->assertStatus(200);
         $this->assertDatabaseHas('shop_cart_products', [
             'shop_product_id' => $product->id,
-            'quantity' => 1,
+            'quantity'        => 1,
         ]);
     }
 
@@ -138,9 +138,9 @@ class AjaxCartControllerTest extends TestCase
         $product = Product::factory()->create();
 
         $response = $this->withSession(['cart_uuid' => $cart->uuid])->postJson(save_route('change_product_count'), [
-            'id' => $product->id,
-            'count' => 1,
-            'action' => 'change_count',
+            'id'        => $product->id,
+            'count'     => 1,
+            'action'    => 'change_count',
             'cart_uuid' => $cart->uuid,
         ]);
 
@@ -155,9 +155,9 @@ class AjaxCartControllerTest extends TestCase
         CartProduct::factory()->create(['cart_id' => $foreignCart->id]);
 
         $response = $this->postJson(save_route('change_product_count'), [
-            'id' => $product->id,
-            'count' => 1,
-            'action' => 'change_count',
+            'id'        => $product->id,
+            'count'     => 1,
+            'action'    => 'change_count',
             'cart_uuid' => $foreignCart->uuid,
         ]);
 
@@ -172,8 +172,8 @@ class AjaxCartControllerTest extends TestCase
         $product = Product::factory()->create();
 
         $response = $this->postJson(save_route('change_product_count'), [
-            'id' => $product->id,
-            'count' => 1,
+            'id'     => $product->id,
+            'count'  => 1,
             'action' => 'not_a_real_action',
         ]);
 
@@ -184,8 +184,8 @@ class AjaxCartControllerTest extends TestCase
     public function test_nonexistent_product_id_returns_validation_error(): void
     {
         $response = $this->postJson(save_route('change_product_count'), [
-            'id' => 999999,
-            'count' => 1,
+            'id'     => 999999,
+            'count'  => 1,
             'action' => 'change_count',
         ]);
 

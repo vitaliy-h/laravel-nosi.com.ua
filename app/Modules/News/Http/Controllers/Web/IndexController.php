@@ -27,7 +27,7 @@ class IndexController extends BaseWebController
         $newsItem = NewsViewModel::from($this->findNewsBySlug->handle($slug));
 
         view()->share([
-            'meta_title' => $newsItem->meta_title,
+            'meta_title'       => $newsItem->meta_title,
             'meta_description' => $newsItem->meta_description,
         ]);
 

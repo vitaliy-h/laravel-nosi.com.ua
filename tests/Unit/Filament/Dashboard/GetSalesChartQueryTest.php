@@ -3,8 +3,8 @@
 namespace Tests\Unit\Filament\Dashboard;
 
 use App\Filament\Dashboard\Dtos\DashboardPeriodData;
-use App\Modules\ShopOrder\Models\Order;
 use App\Filament\Dashboard\Queries\Shop\GetSalesChartQuery;
+use App\Modules\ShopOrder\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -85,8 +85,8 @@ class GetSalesChartQueryTest extends TestCase
     {
         return Order::factory()->create([
             'total_amount' => $total,
-            'created_at' => $createdAt,
-            'updated_at' => $createdAt,
+            'created_at'   => $createdAt,
+            'updated_at'   => $createdAt,
         ]);
     }
 }

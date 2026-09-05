@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\ShopCart;
 
+use App\Modules\Shop\Models\Product;
 use App\Modules\ShopCart\Actions\MergeCartOnAuthAction;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
 use App\Modules\User\Models\User;
-use App\Modules\Shop\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
@@ -58,16 +58,16 @@ class MergeCartOnAuthActionTest extends TestCase
 
         $sharedProduct = Product::factory()->create();
         CartProduct::factory()->create([
-            'cart_id' => $userCart->id,
+            'cart_id'         => $userCart->id,
             'shop_product_id' => $sharedProduct->id,
-            'quantity' => 1,
-            'total' => 10,
+            'quantity'        => 1,
+            'total'           => 10,
         ]);
         CartProduct::factory()->create([
-            'cart_id' => $sessionCart->id,
+            'cart_id'         => $sessionCart->id,
             'shop_product_id' => $sharedProduct->id,
-            'quantity' => 3,
-            'total' => 30,
+            'quantity'        => 3,
+            'total'           => 30,
         ]);
         $uniqueItem = CartProduct::factory()->create(['cart_id' => $sessionCart->id, 'total' => 5]);
 
@@ -76,13 +76,13 @@ class MergeCartOnAuthActionTest extends TestCase
         $this->assertModelMissing($sessionCart);
         $this->assertSame(2, $userCart->items()->count());
         $this->assertDatabaseHas('shop_cart_products', [
-            'cart_id' => $userCart->id,
+            'cart_id'         => $userCart->id,
             'shop_product_id' => $sharedProduct->id,
-            'quantity' => 3,
-            'total' => 30,
+            'quantity'        => 3,
+            'total'           => 30,
         ]);
         $this->assertDatabaseHas('shop_cart_products', [
-            'cart_id' => $userCart->id,
+            'cart_id'         => $userCart->id,
             'shop_product_id' => $uniqueItem->shop_product_id,
         ]);
 

@@ -40,7 +40,7 @@ class DashboardPeriodDataTest extends TestCase
         foreach ([7 => '2026-08-17', 30 => '2026-07-25', 90 => '2026-05-26'] as $days => $expectedFrom) {
             $period = DashboardPeriodData::fromFilters(['period' => (string) $days]);
 
-            $this->assertSame($expectedFrom.' 00:00:00', $period->from->toDateTimeString());
+            $this->assertSame($expectedFrom . ' 00:00:00', $period->from->toDateTimeString());
             $this->assertSame('2026-08-23 23:59:59', $period->to->toDateTimeString());
             $this->assertSame($days, $period->days());
         }
@@ -59,8 +59,8 @@ class DashboardPeriodDataTest extends TestCase
     {
         $period = DashboardPeriodData::fromFilters([
             'period' => 'custom',
-            'from' => '2026-08-01',
-            'to' => '2026-08-10',
+            'from'   => '2026-08-01',
+            'to'     => '2026-08-10',
         ]);
 
         $this->assertSame('custom', $period->key);
@@ -73,8 +73,8 @@ class DashboardPeriodDataTest extends TestCase
     {
         $period = DashboardPeriodData::fromFilters([
             'period' => 'custom',
-            'from' => '2026-08-10',
-            'to' => '2026-08-01',
+            'from'   => '2026-08-10',
+            'to'     => '2026-08-01',
         ]);
 
         $this->assertSame('2026-08-01 00:00:00', $period->from->toDateTimeString());
@@ -95,12 +95,12 @@ class DashboardPeriodDataTest extends TestCase
     public static function garbageFiltersProvider(): array
     {
         return [
-            'null filters' => [null],
-            'empty filters' => [[]],
-            'empty period' => [['period' => '']],
+            'null filters'   => [null],
+            'empty filters'  => [[]],
+            'empty period'   => [['period' => '']],
             'unknown period' => [['period' => 'last-century']],
-            'array period' => [['period' => ['30']]],
-            'numeric junk' => [['period' => '999']],
+            'array period'   => [['period' => ['30']]],
+            'numeric junk'   => [['period' => '999']],
         ];
     }
 
@@ -122,8 +122,8 @@ class DashboardPeriodDataTest extends TestCase
     {
         $period = DashboardPeriodData::fromFilters([
             'period' => 'custom',
-            'from' => 'not-a-date',
-            'to' => '2026-08-10',
+            'from'   => 'not-a-date',
+            'to'     => '2026-08-10',
         ]);
 
         $this->assertSame('2026-07-25 00:00:00', $period->from->toDateTimeString());

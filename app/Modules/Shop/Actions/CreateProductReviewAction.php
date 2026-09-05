@@ -16,14 +16,14 @@ class CreateProductReviewAction
     public function handle(CreateProductReviewData $data): ProductReview
     {
         return ProductReview::create([
-            'display' => false,
+            'display'    => false,
             'product_id' => $data->productId,
-            'user_id' => $data->userId,
-            'rating' => $data->rating,
-            'name' => $data->name,
-            'email' => $data->email,
-            'text' => $data->text,
-            'ip' => $data->ip,
+            'user_id'    => $data->userId,
+            'rating'     => $data->rating,
+            'name'       => $data->name,
+            'email'      => $data->email,
+            'text'       => $data->text,
+            'ip'         => $data->ip,
         ]);
     }
 }

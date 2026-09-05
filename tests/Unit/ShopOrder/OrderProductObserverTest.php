@@ -65,8 +65,8 @@ class OrderProductObserverTest extends TestCase
         return OrderProduct::factory()->create([
             'shop_order_id' => $order->id,
             'selling_price' => $total,
-            'quantity' => 1,
-            'total' => $total,
+            'quantity'      => 1,
+            'total'         => $total,
         ]);
     }
 }

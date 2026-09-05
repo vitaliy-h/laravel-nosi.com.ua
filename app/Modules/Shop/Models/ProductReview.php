@@ -2,8 +2,8 @@
 
 namespace App\Modules\Shop\Models;
 
-use App\Modules\User\Models\User;
 use App\Modules\Core\Traits\Models\HasVisibility;
+use App\Modules\User\Models\User;
 use Database\Factories\ProductReviewFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -33,7 +33,7 @@ class ProductReview extends Model
 
     protected $casts = [
         'display' => 'boolean',
-        'rating' => 'integer',
+        'rating'  => 'integer',
     ];
 
     public function product(): BelongsTo

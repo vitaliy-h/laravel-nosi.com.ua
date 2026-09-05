@@ -7,10 +7,10 @@ use App\Modules\Shop\Dtos\Filters\InFilterDto;
 use App\Modules\Shop\Dtos\Filters\RangeFilterDto;
 use App\Modules\Shop\Dtos\Filters\SearchFilterDto;
 use App\Modules\Shop\Dtos\Filters\ShopFilterDto;
+use App\Modules\Shop\Dtos\ShopFilterCriteriaDto;
 use App\Modules\Shop\Enums\FilterTypeEnum;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 readonly class PrepareShopFilterQuery
@@ -23,27 +23,27 @@ readonly class PrepareShopFilterQuery
      * Prepare all available filters for the shop page.
      * This includes categories, brands, and price range.
      */
-    public function handle(?Category $category, Request $request): ShopFilterDto
+    public function handle(?Category $category, ShopFilterCriteriaDto $criteria): ShopFilterDto
     {
         $filter = new ShopFilterDto(
             brand: new InFilterDto(
                 key: 'brand',
                 type: FilterTypeEnum::IN,
                 items: collect(),
-                selected: $this->stringToIntArray($request->query('brand')),
+                selected: $criteria->brands,
             ),
             price: new RangeFilterDto(
                 key: 'price',
                 type: FilterTypeEnum::RANGE,
                 min: 0,
                 max: 0,
-                from: $request->query('price_from') !== null ? (float) $request->query('price_from') : null,
-                to: $request->query('price_to') !== null ? (float) $request->query('price_to') : null,
+                from: $criteria->priceFrom,
+                to: $criteria->priceTo,
             ),
             search: new SearchFilterDto(
                 key: 'search',
                 type: FilterTypeEnum::SEARCH,
-                value: $request->query('search'),
+                value: $criteria->search,
             ),
         );
 
@@ -99,29 +99,5 @@ readonly class PrepareShopFilterQuery
             'min' => (float) ((clone $query)->min($currentFilter->key) ?? 0),
             'max' => (float) ((clone $query)->max($currentFilter->key) ?? 0),
         ];
-    }
-
-    /**
-     * Convert a comma-separated string or an array into a clean integer array.
-     */
-    private function stringToIntArray(string|array|null $value): array
-    {
-        if (is_array($value)) {
-            return collect($value)
-                ->map(fn ($item) => (int) $item)
-                ->filter(fn ($item) => $item > 0)
-                ->values()
-                ->toArray();
-        }
-
-        if (! $value) {
-            return [];
-        }
-
-        return collect(explode(',', $value))
-            ->map(fn ($item) => (int) $item)
-            ->filter(fn ($item) => $item > 0)
-            ->values()
-            ->toArray();
     }
 }

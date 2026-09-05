@@ -44,7 +44,7 @@ class ProfileUpdateUserPasswordRequest extends FormRequest
     {
         return [
             'current_password' => t('auth.current_password'),
-            'password' => t('auth.new_password'),
+            'password'         => t('auth.new_password'),
         ];
     }
 }

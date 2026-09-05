@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Core;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
@@ -18,7 +18,7 @@ class ImagesClearCommandTest extends TestCase
         Config::set('image_sizes', [
             'thumb' => [
                 'shop_products' => ['width' => 100, 'height' => 100, 'mode' => 'crop'],
-                'news' => ['width' => 100, 'mode' => 'contain'],
+                'news'          => ['width' => 100, 'mode' => 'contain'],
             ],
             'large' => [
                 'shop_products' => ['width' => 1200, 'height' => 1200, 'mode' => 'contain'],

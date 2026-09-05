@@ -2,8 +2,8 @@
 
 namespace App\Modules\ShopCart\Actions;
 
-use App\Modules\ShopCart\Models\Cart;
 use App\Modules\Shop\Models\Product;
+use App\Modules\ShopCart\Models\Cart;
 
 class RemoveCartItemAction
 {

@@ -16,8 +16,8 @@ class ProfileUserViewModelTest extends TestCase
     {
         $user = User::factory()->create();
         SocialProfile::factory()->create([
-            'user_id' => $user->id,
-            'provider' => 'google',
+            'user_id'    => $user->id,
+            'provider'   => 'google',
             'identifier' => 'ada@example.com',
         ]);
 
@@ -35,8 +35,8 @@ class ProfileUserViewModelTest extends TestCase
     {
         $user = User::factory()->create();
         SocialProfile::factory()->create([
-            'user_id' => $user->id,
-            'provider' => 'google',
+            'user_id'    => $user->id,
+            'provider'   => 'google',
             'identifier' => null,
         ]);
 
@@ -56,7 +56,7 @@ class ProfileUserViewModelTest extends TestCase
         $this->assertStringNotContainsString('secret-token', $payload);
         $this->assertStringNotContainsString($user->password, $payload);
         foreach (['password', 'remember_token', 'token'] as $forbidden) {
-            $this->assertStringNotContainsString('"'.$forbidden.'"', $payload);
+            $this->assertStringNotContainsString('"' . $forbidden . '"', $payload);
         }
     }
 }

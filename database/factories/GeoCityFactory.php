@@ -29,14 +29,14 @@ class GeoCityFactory extends Factory
 
     public function forCountry(GeoCountry $country): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'geo_country_id' => $country->id,
         ]);
     }
 
     public function forRegion(GeoRegion $region): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'geo_country_id' => $region->geo_country_id,
             'geo_region_id'  => $region->id,
         ]);

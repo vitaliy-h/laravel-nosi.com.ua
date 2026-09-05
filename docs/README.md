@@ -195,7 +195,7 @@ cd <project-folder>
 ### 7. Create .env file
 
 ```bash
-copy .env.example .env
+cp .env.example .env
 ```
 
 ---
@@ -267,7 +267,7 @@ docker ps
 
 ## Setup Steps
 
-```bash
+```cmd
 git clone https://github.com/abc-cms/laravel-filament-starter.git
 cd laravel-filament-starter
 copy .env.example .env
@@ -345,6 +345,46 @@ php artisan db:seed
 ./vendor/bin/sail down -v
 ./vendor/bin/sail up -d
 ```
+
+---
+
+# Project environment variables
+
+Beyond the stock Laravel keys, this project reads the following. All of them have working
+defaults — `.env.example` only lists the OAuth ones, because the rest are meant to be
+changed rarely.
+
+## Logging
+
+| Key | Default | What it does |
+|---|---|---|
+| `LOG_ENABLED` | `true` | Master switch for the model-change journal (`logs` table). Off = nothing is recorded — see [Logs](starter/logs.md) |
+| `LOG_RETENTION_DAYS` | `365` | How long journal rows survive `php artisan logs:prune` |
+| `AUTH_LOG_ENABLED` | `true` | Whether sign-in / social sign-in / password events go to `log_auth` |
+| `AUTH_COOLDOWN_SECONDS` | `5` | How long a login is blocked after a failed attempt; `0` disables the cooldown |
+
+## Media and messaging
+
+| Key | Default | What it does |
+|---|---|---|
+| `IMAGE_DRIVER` | GD driver | Intervention Image driver; switch to the Imagick driver class for better quality — see [Images](starter/images.md) |
+| `SMS_PROVIDER` | `log` | Which SMS provider sends messages. `log` writes them to the journal instead of sending — see [SMS](starter/sms.md) |
+
+## OAuth / social login
+
+Listed in `.env.example`. Empty client ids simply leave that provider unavailable; the
+redirect URIs default to `/auth/social/{provider}/callback` under `APP_URL`. Details in
+[OAuth](starter/oauth.md).
+
+| Key | Provider |
+|---|---|
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` | Google |
+| `FACEBOOK_CLIENT_ID`, `FACEBOOK_CLIENT_SECRET`, `FACEBOOK_REDIRECT_URI` | Facebook |
+| `TELEGRAM_BOT_ID`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_REDIRECT_URI` | Telegram |
+
+Module switches are **not** environment variables — a module is turned off in
+`config/modules.php`, so the setting lives in the repository rather than per-server. See
+[Disabling Modules](starter/modules.md).
 
 ---
 

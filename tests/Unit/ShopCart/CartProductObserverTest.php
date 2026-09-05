@@ -48,10 +48,10 @@ class CartProductObserverTest extends TestCase
     private function lineFor(Cart $cart, float $total): CartProduct
     {
         return CartProduct::factory()->create([
-            'cart_id' => $cart->id,
+            'cart_id'       => $cart->id,
             'selling_price' => $total,
-            'quantity' => 1,
-            'total' => $total,
+            'quantity'      => 1,
+            'total'         => $total,
         ]);
     }
 }

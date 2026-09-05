@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Shop;
 
-use App\Modules\User\Models\User;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
 use App\Modules\Shop\Models\ProductReview;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -22,7 +22,7 @@ class ProductReviewsTest extends TestCase
 
     private function productUrl(Product $product, Category $category): string
     {
-        return '/shop/'.$category->slug.'/'.$product->slug.'-'.$product->id;
+        return '/shop/' . $category->slug . '/' . $product->slug . '-' . $product->id;
     }
 
     public function test_product_page_shows_visible_reviews_only(): void
@@ -79,10 +79,10 @@ class ProductReviewsTest extends TestCase
 
         $response = $this->from('/')->post('/shop/product-reviews', [
             'product_id' => $product->id,
-            'rating' => 5,
-            'name' => 'Guest Reviewer',
-            'email' => 'guest@example.com',
-            'text' => 'Works as advertised.',
+            'rating'     => 5,
+            'name'       => 'Guest Reviewer',
+            'email'      => 'guest@example.com',
+            'text'       => 'Works as advertised.',
         ]);
 
         $response->assertRedirect('/');
@@ -90,8 +90,8 @@ class ProductReviewsTest extends TestCase
 
         $this->assertDatabaseHas('shop_product_reviews', [
             'product_id' => $product->id,
-            'name' => 'Guest Reviewer',
-            'display' => false,
+            'name'       => 'Guest Reviewer',
+            'display'    => false,
         ]);
 
         $product->refresh();
@@ -106,8 +106,8 @@ class ProductReviewsTest extends TestCase
 
         $response = $this->from('/')->post('/shop/product-reviews', [
             'product_id' => $product->id,
-            'name' => 'Guest Reviewer',
-            'email' => 'guest@example.com',
+            'name'       => 'Guest Reviewer',
+            'email'      => 'guest@example.com',
         ]);
 
         $response->assertSessionHasErrors(['rating', 'text']);
@@ -122,10 +122,10 @@ class ProductReviewsTest extends TestCase
             ->withHeader('X-Requested-With', 'XMLHttpRequest')
             ->post('/shop/product-reviews', [
                 'product_id' => $product->id,
-                'rating' => 4,
-                'name' => 'Ajax Reviewer',
-                'email' => 'ajax@example.com',
-                'text' => 'Sent over XHR.',
+                'rating'     => 4,
+                'name'       => 'Ajax Reviewer',
+                'email'      => 'ajax@example.com',
+                'text'       => 'Sent over XHR.',
             ]);
 
         $response->assertStatus(200);
@@ -139,25 +139,25 @@ class ProductReviewsTest extends TestCase
     public function test_logged_in_user_review_is_stored_under_the_account_identity(): void
     {
         $user = User::factory()->create([
-            'name' => 'Account Name',
+            'name'  => 'Account Name',
             'email' => 'account@example.com',
         ]);
         $product = Product::factory()->create();
 
         $this->actingAs($user)->from('/')->post('/shop/product-reviews', [
             'product_id' => $product->id,
-            'rating' => 5,
+            'rating'     => 5,
             // Someone else's identity must not survive.
-            'name' => 'Someone Else',
+            'name'  => 'Someone Else',
             'email' => 'someone@example.com',
-            'text' => 'Posted while logged in.',
+            'text'  => 'Posted while logged in.',
         ]);
 
         $this->assertDatabaseHas('shop_product_reviews', [
             'product_id' => $product->id,
-            'user_id' => $user->id,
-            'name' => 'Account Name',
-            'email' => 'account@example.com',
+            'user_id'    => $user->id,
+            'name'       => 'Account Name',
+            'email'      => 'account@example.com',
         ]);
     }
 
@@ -167,7 +167,7 @@ class ProductReviewsTest extends TestCase
         $product = Product::factory()->forCategory($category)->create();
 
         $user = User::factory()->create([
-            'name' => 'Prefilled Name',
+            'name'  => 'Prefilled Name',
             'email' => 'prefilled@example.com',
         ]);
 
@@ -200,7 +200,7 @@ class ProductReviewsTest extends TestCase
 
         $response = $this
             ->withHeader('X-Requested-With', 'XMLHttpRequest')
-            ->get('/shop/product-reviews?product='.$product->id.'&page=2');
+            ->get('/shop/product-reviews?product=' . $product->id . '&page=2');
 
         $response->assertStatus(200);
         $response->assertJsonPath('actions.0.method', 'append');

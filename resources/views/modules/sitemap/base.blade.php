@@ -1,8 +1,8 @@
-@php use App\Modules\Core\Facades\UrlFacade; @endphp
+@php use App\Modules\Core\Support\UrlHelper; @endphp
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     @foreach($pages as $page)
     <url>
-        <loc>{{ url(UrlFacade::normalizeForLink($page->slug)) }}</loc>
+        <loc>{{ url(UrlHelper::normalizeForLink($page->slug)) }}</loc>
         <lastmod>{{ $page->updated_at->toAtomString() }}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>

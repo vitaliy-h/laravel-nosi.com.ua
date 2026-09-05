@@ -25,11 +25,13 @@ class ImagesClearCommand extends Command
             }
 
             $this->info('All image preview caches cleared.');
+
             return self::SUCCESS;
         }
 
         if (!array_key_exists($preset, config('image_sizes', []))) {
             $this->error("Preset [{$preset}] is not defined in config/image_sizes.php");
+
             return self::FAILURE;
         }
 
@@ -37,12 +39,14 @@ class ImagesClearCommand extends Command
             // Clear entire preset
             $this->deleteDir($preset);
             $this->info("Cleared all previews for preset [{$preset}].");
+
             return self::SUCCESS;
         }
 
         // Clear specific entity within preset
         $this->deleteDir("{$preset}/{$entity}");
         $this->info("Cleared previews for preset [{$preset}], entity [{$entity}].");
+
         return self::SUCCESS;
     }
 

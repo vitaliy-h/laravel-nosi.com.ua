@@ -21,7 +21,7 @@ class CartFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => null,
+            'user_id'      => null,
             'total_amount' => 0,
         ];
     }

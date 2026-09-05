@@ -2,7 +2,7 @@
 
 namespace App\Modules\Page\Queries;
 
-use App\Modules\Core\Facades\UrlFacade;
+use App\Modules\Core\Support\UrlHelper;
 use App\Modules\Core\ViewModels\BreadcrumbViewModel;
 use App\Modules\Page\Enums\PageModule;
 use App\Modules\Page\Models\Page;
@@ -23,13 +23,13 @@ readonly class GetPageBreadcrumbsQuery
             ->filter(fn (Page $page) => $page->module === PageModule::INDEX)
             ->map(fn (Page $page) => new BreadcrumbViewModel(
                 title: $page->title,
-                url: UrlFacade::normalizeForLink($page->slug),
+                url: UrlHelper::normalizeForLink($page->slug),
             ));
 
         if ($currentPage !== null && $currentPage->module !== PageModule::INDEX) {
             $breadcrumbs->push(new BreadcrumbViewModel(
                 title: $currentPage->title,
-                url: UrlFacade::normalizeForLink($currentPage->slug),
+                url: UrlHelper::normalizeForLink($currentPage->slug),
             ));
         }
 

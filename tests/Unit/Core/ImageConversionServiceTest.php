@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Core;
 
 use App\Modules\Core\Services\ImageConversionService;
-use App\Modules\Core\Services\ImageResizer;
+use App\Modules\Core\Support\ImageResizer;
 use Illuminate\Support\Facades\Storage;
 use Mockery;
 use Tests\TestCase;
@@ -28,9 +28,9 @@ class ImageConversionServiceTest extends TestCase
         );
 
         $this->assertSame([
-            'width' => 500,
+            'width'  => 500,
             'height' => 500,
-            'mode' => 'contain',
+            'mode'   => 'contain',
         ], $config);
     }
 
@@ -183,13 +183,13 @@ class ImageConversionServiceTest extends TestCase
     {
         $originalPath = 'shop_products/1/img/product.jpg';
 
-        Storage::put('thumb/'.$originalPath, 'thumb-preview');
-        Storage::put('large/'.$originalPath, 'large-preview');
+        Storage::put('thumb/' . $originalPath, 'thumb-preview');
+        Storage::put('large/' . $originalPath, 'large-preview');
 
         $this->service->deleteForPath($originalPath);
 
-        $this->assertFalse(Storage::exists('thumb/'.$originalPath));
-        $this->assertFalse(Storage::exists('large/'.$originalPath));
+        $this->assertFalse(Storage::exists('thumb/' . $originalPath));
+        $this->assertFalse(Storage::exists('large/' . $originalPath));
     }
 
     public function test_delete_for_record_removes_preset_directories(): void

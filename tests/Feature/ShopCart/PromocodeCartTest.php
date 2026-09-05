@@ -26,7 +26,7 @@ class PromocodeCartTest extends TestCase
 
         $response = $this->postJson(route('promocode.apply'), [
             'cart_uuid' => $cart->uuid,
-            'code' => 'MINUS20',
+            'code'      => 'MINUS20',
         ]);
 
         $response->assertOk();
@@ -34,12 +34,12 @@ class PromocodeCartTest extends TestCase
         $this->assertStringContainsString('js_summary_discount', $response->json('actions.1.content'));
 
         $this->assertDatabaseHas('shop_carts', [
-            'id' => $cart->id,
-            'promocode_id' => $promocode->id,
-            'promocode_code' => 'MINUS20',
+            'id'              => $cart->id,
+            'promocode_id'    => $promocode->id,
+            'promocode_code'  => 'MINUS20',
             'subtotal_amount' => 100.00,
             'discount_amount' => 20.00,
-            'total_amount' => 80.00,
+            'total_amount'    => 80.00,
         ]);
     }
 
@@ -50,11 +50,11 @@ class PromocodeCartTest extends TestCase
 
         $this->postJson(route('promocode.apply'), [
             'cart_uuid' => $cart->uuid,
-            'code' => 'minus20',
+            'code'      => 'minus20',
         ])->assertOk();
 
         $this->assertDatabaseHas('shop_carts', [
-            'id' => $cart->id,
+            'id'             => $cart->id,
             'promocode_code' => 'MINUS20',
         ]);
     }
@@ -65,15 +65,15 @@ class PromocodeCartTest extends TestCase
 
         $this->postJson(route('promocode.apply'), [
             'cart_uuid' => $cart->uuid,
-            'code' => 'NOSUCHCODE',
+            'code'      => 'NOSUCHCODE',
         ])->assertOk();
 
         $this->assertDatabaseHas('shop_carts', [
-            'id' => $cart->id,
-            'promocode_id' => null,
-            'promocode_code' => null,
+            'id'              => $cart->id,
+            'promocode_id'    => null,
+            'promocode_code'  => null,
             'discount_amount' => 0.00,
-            'total_amount' => 100.00,
+            'total_amount'    => 100.00,
         ]);
     }
 
@@ -90,10 +90,10 @@ class PromocodeCartTest extends TestCase
     {
         $promocode = Promocode::factory()->fixed(20)->create(['code' => 'MINUS20']);
         $cart = $this->cartWithItemTotal(100, [
-            'promocode_id' => $promocode->id,
-            'promocode_code' => 'MINUS20',
+            'promocode_id'    => $promocode->id,
+            'promocode_code'  => 'MINUS20',
             'discount_amount' => 20,
-            'total_amount' => 80,
+            'total_amount'    => 80,
         ]);
 
         $this->postJson(route('promocode.remove'), [
@@ -101,11 +101,11 @@ class PromocodeCartTest extends TestCase
         ])->assertOk();
 
         $this->assertDatabaseHas('shop_carts', [
-            'id' => $cart->id,
-            'promocode_id' => null,
-            'promocode_code' => null,
+            'id'              => $cart->id,
+            'promocode_id'    => null,
+            'promocode_code'  => null,
             'discount_amount' => 0.00,
-            'total_amount' => 100.00,
+            'total_amount'    => 100.00,
         ]);
     }
 
@@ -113,7 +113,7 @@ class PromocodeCartTest extends TestCase
     {
         $promocode = Promocode::factory()->percent(10)->create(['code' => 'TAKE10']);
         $cart = $this->cartWithItemTotal(100, [
-            'promocode_id' => $promocode->id,
+            'promocode_id'   => $promocode->id,
             'promocode_code' => 'TAKE10',
         ]);
 
@@ -134,10 +134,10 @@ class PromocodeCartTest extends TestCase
         $cart = Cart::factory()->create($cartAttributes);
 
         CartProduct::factory()->create([
-            'cart_id' => $cart->id,
+            'cart_id'       => $cart->id,
             'selling_price' => $total,
-            'quantity' => 1,
-            'total' => $total,
+            'quantity'      => 1,
+            'total'         => $total,
         ]);
 
         return $cart->refresh();

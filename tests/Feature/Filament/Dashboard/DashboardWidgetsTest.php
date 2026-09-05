@@ -39,16 +39,16 @@ class DashboardWidgetsTest extends TestCase
     public static function periodWidgetsProvider(): array
     {
         return [
-            'sales stats' => [SalesStatsWidget::class],
-            'sales chart' => [SalesChartWidget::class],
-            'latest orders' => [LatestOrdersWidget::class],
+            'sales stats'     => [SalesStatsWidget::class],
+            'sales chart'     => [SalesChartWidget::class],
+            'latest orders'   => [LatestOrdersWidget::class],
             'needs attention' => [NeedsAttentionWidget::class],
-            'catalog stats' => [CatalogStatsWidget::class],
-            'top products' => [TopProductsWidget::class],
+            'catalog stats'   => [CatalogStatsWidget::class],
+            'top products'    => [TopProductsWidget::class],
             'promocode stats' => [PromocodeStatsWidget::class],
-            'review stats' => [ProductReviewStatsWidget::class],
-            'user stats' => [UserStatsWidget::class],
-            'system stats' => [SystemStatsWidget::class],
+            'review stats'    => [ProductReviewStatsWidget::class],
+            'user stats'      => [UserStatsWidget::class],
+            'system stats'    => [SystemStatsWidget::class],
             'recent activity' => [RecentActivityWidget::class],
         ];
     }
@@ -62,7 +62,7 @@ class DashboardWidgetsTest extends TestCase
         // A widget whose module is off is never put on the dashboard, and it
         // cannot render on its own either: the resources it links to have no
         // routes then. Mounting it here would test a state that cannot happen.
-        if (! $widget::canView()) {
+        if (!$widget::canView()) {
             $this->markTestSkipped("Widget [{$widget}] is disabled by config/modules.php.");
         }
 

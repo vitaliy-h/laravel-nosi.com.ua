@@ -3,7 +3,6 @@
 namespace Tests\Feature\Filament\Logs;
 
 use App\Filament\Resources\Logs\Pages\ManageLogs;
-use App\Modules\Core\Enums\LogEventEnum;
 use App\Modules\Core\Models\Log;
 use App\Modules\User\Models\User;
 use Filament\Actions\DeleteAction;
@@ -36,7 +35,7 @@ class LogResourceTest extends TestCase
     public function test_list_can_search_by_ip(): void
     {
         $target = Log::factory()->create(['ip_address' => '10.0.0.111']);
-        $other  = Log::factory()->create(['ip_address' => '10.0.0.222']);
+        $other = Log::factory()->create(['ip_address' => '10.0.0.222']);
 
         Livewire::test(ManageLogs::class)
             ->searchTable('10.0.0.111')

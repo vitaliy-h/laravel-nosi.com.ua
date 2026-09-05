@@ -26,15 +26,14 @@ class Log extends Model
         'changed_fields',
         'source',
         'ip_address',
-        'batch_uuid',
     ];
 
     protected $casts = [
-        'old_values' => 'array',
-        'new_values' => 'array',
+        'old_values'     => 'array',
+        'new_values'     => 'array',
         'changed_fields' => 'array',
-        'event' => LogEventEnum::class,
-        'source' => LogSourceEnum::class,
+        'event'          => LogEventEnum::class,
+        'source'         => LogSourceEnum::class,
     ];
 
     public function model(): MorphTo

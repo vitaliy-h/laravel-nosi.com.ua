@@ -2,12 +2,12 @@
 
 namespace App\Filament\Widgets\Shop;
 
+use App\Filament\Dashboard\Concerns\FormatsDashboardStats;
+use App\Filament\Dashboard\Queries\Shop\GetCatalogStatsQuery;
 use App\Filament\Resources\Shop\Brands\BrandResource;
 use App\Filament\Resources\Shop\Categories\CategoryResource;
 use App\Filament\Resources\Shop\Products\ProductResource;
-use App\Filament\Dashboard\Concerns\FormatsDashboardStats;
 use App\Modules\Core\Support\ModuleGate;
-use App\Filament\Dashboard\Queries\Shop\GetCatalogStatsQuery;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 

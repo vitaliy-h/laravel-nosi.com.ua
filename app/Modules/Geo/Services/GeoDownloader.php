@@ -3,7 +3,6 @@
 namespace App\Modules\Geo\Services;
 
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
 
 class GeoDownloader
 {
@@ -36,8 +35,8 @@ class GeoDownloader
     {
         $url = config('geo.sources.cities');
 
-        $gzPath = storage_path("app/public/geo/cities.xml.gz");
-        $xmlPath = storage_path("app/public/geo/cities.xml");
+        $gzPath = storage_path('app/public/geo/cities.xml.gz');
+        $xmlPath = storage_path('app/public/geo/cities.xml');
 
         $this->ensureDir($xmlPath);
 

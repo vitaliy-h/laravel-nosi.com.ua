@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\ShopOrder;
 
-use App\Modules\User\Models\User;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
 use App\Modules\ShopOrder\Actions\PlaceOrderFromCartAction;
 use App\Modules\ShopOrder\Dtos\CustomerData;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -25,12 +25,12 @@ class PlaceOrderFromCartActionTest extends TestCase
     {
         $cart = Cart::factory()->create();
         CartProduct::factory()->create([
-            'cart_id' => $cart->id,
-            'product_name' => 'Test Product',
+            'cart_id'         => $cart->id,
+            'product_name'    => 'Test Product',
             'product_article' => 'SKU-1',
-            'selling_price' => 15,
-            'quantity' => 3,
-            'total' => 45,
+            'selling_price'   => 15,
+            'quantity'        => 3,
+            'total'           => 45,
         ]);
 
         $order = app(PlaceOrderFromCartAction::class)->handle($cart, new CustomerData(

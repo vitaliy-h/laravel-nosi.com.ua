@@ -3,24 +3,30 @@
 namespace App\Modules\UserAuth\Actions;
 
 use App\Modules\User\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Support\Facades\Auth;
 
 class LeaveImpersonationAction
 {
-    public function handle(Request $request): void
+    /**
+     * Restores the admin stored by ImpersonateAction. If that account is gone,
+     * the session is dropped entirely rather than left half-restored.
+     */
+    public function handle(Session $session): void
     {
-        $adminId = $request->session()->pull('impersonating_admin_id');
+        $adminId = $session->pull(ImpersonateAction::SESSION_KEY);
 
         $admin = User::find($adminId);
 
         if ($admin) {
             Auth::login($admin);
-            $request->session()->regenerate();
-        } else {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+            $session->regenerate();
+
+            return;
         }
+
+        Auth::logout();
+        $session->invalidate();
+        $session->regenerateToken();
     }
 }

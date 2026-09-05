@@ -6,6 +6,7 @@ use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Core\ViewModels\BreadcrumbViewModel;
 use App\Modules\Shop\Dtos\ProductSearchDto;
+use App\Modules\Shop\Dtos\ShopFilterCriteriaDto;
 use App\Modules\Shop\Enums\SortOptionEnum;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Queries\Category\FindCategoryBySlugQuery;
@@ -22,7 +23,7 @@ use App\Modules\Shop\ViewModels\ProductReviewViewModel;
 use App\Modules\Shop\ViewModels\ProductViewModel;
 use App\Modules\Shop\ViewModels\ShopCategoryPageViewModel;
 use App\Modules\Shop\ViewModels\ShopProductPageViewModel;
-use App\Modules\ShopCart\Actions\FindCartAction;
+use App\Modules\ShopCart\Queries\FindCartQuery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -36,16 +37,16 @@ class IndexController extends BaseWebController
         private readonly FindCategoryBySlugQuery $findCategoryBySlug,
         private readonly GetCategoryBreadcrumbsQuery $getCategoryBreadcrumbs,
         private readonly FindProductByIdQuery $findProductById,
-        private readonly FindCartAction $findCart,
+        private readonly FindCartQuery $findCart,
         private readonly GetReviewsByProductQuery $getReviewsByProduct,
         private readonly GetProductRatingBreakdownQuery $getProductRatingBreakdown,
     ) {}
 
     public function index(Request $request)
     {
-        $filter = $this->prepareShopFilter->handle(null, $request);
+        $filter = $this->prepareShopFilter->handle(null, $this->filterCriteria($request));
 
-        return $this->render('modules.shop.category', $this->listing(null, $filter, $request)->toViewData());
+        return $this->render('modules.shop.category', $this->listing(null, $filter, $request));
     }
 
     public function category(string $categorySlug, Request $request)
@@ -53,21 +54,21 @@ class IndexController extends BaseWebController
         $category = $this->findCategoryBySlug->handle($categorySlug);
 
         view()->share([
-            'meta_title' => $category->meta_title ?: $category->title,
+            'meta_title'       => $category->meta_title ?: $category->title,
             'meta_description' => $category->meta_description,
-            'breadcrumbs' => $this->getCategoryBreadcrumbs->handle($category),
+            'breadcrumbs'      => $this->getCategoryBreadcrumbs->handle($category),
         ]);
 
-        $filter = $this->prepareShopFilter->handle($category, $request);
+        $filter = $this->prepareShopFilter->handle($category, $this->filterCriteria($request));
 
-        return $this->render('modules.shop.category', $this->listing($category, $filter, $request)->toViewData());
+        return $this->render('modules.shop.category', $this->listing($category, $filter, $request));
     }
 
     public function product(string $categorySlug, string $productSlugId, Request $request)
     {
         $category = $this->findCategoryBySlug->handle($categorySlug);
 
-        if (! preg_match('/^(.+)-(\d+)$/', $productSlugId, $matches)) {
+        if (!preg_match('/^(.+)-(\d+)$/', $productSlugId, $matches)) {
             abort(404);
         }
 
@@ -78,7 +79,7 @@ class IndexController extends BaseWebController
 
         if ($categorySlug !== $category->slug || $productSlug !== $product->slug) {
             return redirect()->to(
-                save_route('shop.product', [$category->slug, $product->slug.'-'.$product->id]),
+                save_route('shop.product', [$category->slug, $product->slug . '-' . $product->id]),
                 301
             );
         }
@@ -92,9 +93,9 @@ class IndexController extends BaseWebController
         );
 
         view()->share([
-            'meta_title' => $product->meta_title ?: $product->title,
+            'meta_title'       => $product->meta_title ?: $product->title,
             'meta_description' => $product->meta_description,
-            'breadcrumbs' => $breadcrumbs,
+            'breadcrumbs'      => $breadcrumbs,
         ]);
 
         $reviews = $this->getReviewsByProduct->handle($product);
@@ -110,7 +111,7 @@ class IndexController extends BaseWebController
             ),
         );
 
-        return $this->render('modules.shop.product', $page->toViewData());
+        return $this->render('modules.shop.product', $page);
     }
 
     private function listing(?Category $category, $filter, Request $request): ShopCategoryPageViewModel
@@ -149,12 +150,25 @@ class IndexController extends BaseWebController
      */
     private function cartQuantityFor(int $productId): ?int
     {
-        if (! ModuleGate::isEnabled('shop_cart')) {
+        if (!ModuleGate::isEnabled('shop_cart')) {
             return null;
         }
 
         $cart = $this->findCart->handle(Auth::user());
 
         return $cart?->items()->where('shop_product_id', $productId)->value('quantity');
+    }
+
+    /**
+     * The HTTP layer stops here: the Query gets values, not a Request.
+     */
+    private function filterCriteria(Request $request): ShopFilterCriteriaDto
+    {
+        return ShopFilterCriteriaDto::fromQuery(
+            brand: $request->query('brand'),
+            priceFrom: $request->query('price_from'),
+            priceTo: $request->query('price_to'),
+            search: $request->query('search'),
+        );
     }
 }

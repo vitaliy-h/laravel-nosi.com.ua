@@ -30,12 +30,12 @@ class SmsTemplateService
 
         $logSms = LogSms::create([
             'template_key' => $template->key,
-            'receiver' => $dto->to,
-            'subject' => $template->subject,
-            'body' => $body,
-            'status' => LogSmsStatusEnum::QUEUED,
-            'provider' => $providerEnum,
-            'source' => $dto->source ?? $this->detectSource(),
+            'receiver'     => $dto->to,
+            'subject'      => $template->subject,
+            'body'         => $body,
+            'status'       => LogSmsStatusEnum::QUEUED,
+            'provider'     => $providerEnum,
+            'source'       => $dto->source ?? $this->detectSource(),
         ]);
 
         try {
@@ -44,7 +44,7 @@ class SmsTemplateService
             $logSms->update(['status' => LogSmsStatusEnum::SENT]);
         } catch (Throwable $e) {
             $logSms->update([
-                'status' => LogSmsStatusEnum::FAILED,
+                'status'        => LogSmsStatusEnum::FAILED,
                 'error_message' => $e->getMessage(),
             ]);
 
@@ -67,7 +67,7 @@ class SmsTemplateService
         $key = config('sms.provider', SmsProviderEnum::LOG->value);
 
         return match (SmsProviderEnum::from($key)) {
-            SmsProviderEnum::LOG => new LogSmsProvider(),
+            SmsProviderEnum::LOG => new LogSmsProvider,
         };
     }
 }

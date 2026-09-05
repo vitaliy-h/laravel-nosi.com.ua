@@ -2,18 +2,26 @@
 
 ## Stack
 
-- **PHPUnit 12 only** — plain PHPUnit test classes extending `Tests\TestCase`
+- **PHPUnit 13 only** (`composer.json` → `phpunit/phpunit ^13.0`) — plain PHPUnit test
+  classes extending `Tests\TestCase`. Metadata goes in attributes
+  (`#[DataProvider]`, `#[Group]`), not in doc-comments — PHPUnit 13 ignores the
+  `@dataProvider` annotation.
 - **Pest is not used** — do not add `pestphp/pest`, `uses()`, or `it()`/`describe()` syntax
 - Test directories:
   - `tests/Feature/` — HTTP, Livewire, full stack
-  - `tests/Unit/` — Actions, DTOs, repositories, helpers (no HTTP)
-  - `tests/Concerns/` — shared traits (`InteractsWithPages`, `InteractsWithRolesAndPermissions`)
+  - `tests/Unit/` — Actions, Queries, DTOs, ViewModels, services, helpers (no HTTP).
+    There are no repositories in this project; reads live in `app/Modules/{Module}/Queries/`
+  - `tests/Concerns/` — shared traits (`InteractsWithPages`,
+    `InteractsWithRolesAndPermissions`, `InteractsWithModules`)
 
 `phpunit.xml` defines two suites: `Unit` and `Feature`.
 
 ## Run tests (Sail)
 
-Tests **must** run inside Laravel Sail (PHP 8.4 in container). Do not run `php artisan test` on the host — local PHP 8.3 will fail on Symfony 8.
+Tests **must** run inside Laravel Sail — the container has the PHP the project requires
+(8.4; `composer.json` → `"php": "^8.4"`, and `phpunit ^13.0` pushes the real floor to
+8.4.1). Do not run `php artisan test` on the host unless the host PHP is ≥ 8.4.1; on this
+machine `php -v` is 7.4, so Sail is the only working path.
 
 ```bash
 # all tests
@@ -43,13 +51,22 @@ docker compose exec laravel.test php artisan test
 |-----------|---------|
 | `Feature/Smoke/` | Key URLs respond without 500 (frontend, admin, API validation) |
 | `Feature/Errors/` | Custom 404 for frontend, admin, and API |
-| `Feature/Auth/` | API (`AuthApiTest`) and web (`AuthWebTest`) authentication |
 | `Feature/Admin/` | Filament login, permissions, panel access |
+| `Feature/Console/` | Scheduled commands and their registration |
 | `Feature/Filament/{Module}/` | Filament resource CRUD tests (list, search, filter, create, edit, delete) |
-| `Feature/Shop/` | Shop catalog API |
-| `Feature/Profile/` | Authenticated profile API |
-| `Feature/Infrastructure/` | Factories, seeders, auth helpers smoke |
-| `Unit/` | `CreateOrderAction`, DTOs, `ShopRepository`, `UrlHelper`, enums |
+| `Feature/Infrastructure/` | Factories, seeders, auth helpers, module wiring smoke |
+| `Feature/{Module}/` | One folder per module, named after the `app/Modules` folder: `UserAuth` (`AuthApiTest`, `AuthWebTest`, `OAuthTest`, `ImpersonationTest`), `Shop`, `ShopCart`, `ShopOrder`, `Profile`, `News`, `Feedback`, `Subscriber`, `Sitemap`, `Index` |
+| `Unit/{Module}/` | Actions, Queries, DTOs, ViewModels, enums per module: `Core`, `Shop`, `ShopCart`, `ShopOrder`, `News`, `Notification`, `Profile`, `UserAuth` |
+| `Unit/Filament/Dashboard/` | Dashboard widget queries (`GetCartStatsQuery`, `GetSalesChartQuery`, …) |
+
+⚠️ The **first namespace segment after `Tests\Feature` / `Tests\Unit` is read as a module
+name**: `TestCase::setUp()` snake_cases it and calls `skipUnlessModules()`, so a test class
+in `Tests\Feature\Shop\…` is skipped automatically when `shop` is off
+(`tests/TestCase.php:36-47`). Segments that name no module (`Smoke`, `Errors`, `Filament`,
+`Admin`, `Console`, `Infrastructure`) always read as enabled. Put a test in the folder of
+the module it actually needs, and for a test that touches another module call
+`$this->skipUnlessModules('shop_cart')` yourself — from `setUp()` for the whole class or
+inside one test method.
 
 Group new tests by module and layer. Name methods: `test_{subject}_{condition}_{expected_result}`.
 
@@ -61,8 +78,20 @@ Group new tests by module and layer. Name methods: `test_{subject}_{condition}_{
 
 - `InteractsWithPages` — `seedPagesForRouting()`, `seedLetterTemplates()`
 - `InteractsWithRolesAndPermissions` — `seedRolesAndPermissions()`, `actingAsAdmin()`
+- `skipUnlessModules(string ...$modules)` — skips the test while any named module is off;
+  `setUp()` already applies it to the module named by the class namespace (see the ⚠️ note
+  under «Test structure»)
 
 Factory resolution is configured in `setUp()` for models under `App\Modules\…`.
+
+`InteractsWithModules` is **not** included by default — `use` it in a test that has to
+pin the module configuration instead of inheriting whatever `config/modules.php` ships:
+
+```php
+use Tests\Concerns\InteractsWithModules;
+
+$this->withModules(['shop_brands' => false]); // everything else forced on
+```
 
 ### Database
 
@@ -99,7 +128,10 @@ Admin panel tests that use the Livewire login form: `Livewire::test(Login::class
 
 ### Mocking
 
-Do not mock internal classes. Mock only external boundaries (e.g. `LetterTemplateFacade::shouldReceive('send')` in password-recovery tests).
+Do not mock internal classes. Mock only external boundaries — the mail/SMS senders:
+`$this->mock(LetterTemplateService::class)->shouldReceive('send')` in password-recovery
+and order tests. Mock the service through the container, not a facade: the Actions take
+it in their constructor.
 
 ## Checklist: adding a new test
 
@@ -158,6 +190,14 @@ Pattern follows existing factories (`NewsFactory`, `UserFactory`): explicit `pro
 | `LogLetterFactory` | `App\Modules\Notification\Models\LogLetter` — states: `failed()` |
 | `LogSmsFactory` | `App\Modules\Notification\Models\LogSms` — states: `failed()` |
 | `LogFactory` | `App\Modules\Core\Models\Log` — states: `forUser(User)`, `forEvent(LogEventEnum)` |
+| `AuthLogFactory` | `App\Modules\Core\Models\AuthLog` — states: `forUser(User)`, `forAction(AuthLogActionEnum)`, `forResult(AuthLogResultEnum)` |
+| `NewsFactory` | `App\Modules\News\Models\News` — states: `invisible()` |
+| `ProductReviewFactory` | `App\Modules\Shop\Models\ProductReview` — states: `invisible()`, `forProduct(Product)`, `forUser(User)`, `withRating(int)` |
+| `CartFactory` | `App\Modules\ShopCart\Models\Cart` |
+| `CartProductFactory` | `App\Modules\ShopCart\Models\CartProduct` |
+| `PromocodeFactory` | `App\Modules\ShopCart\Models\Promocode` — states: `fixed(float)`, `percent(float)`, `expired()`, `notStarted()`, `exhausted(int)`, `withMinOrder(float)`, `invisible()` |
+| `SocialProfileFactory` | `App\Modules\UserAuth\Models\SocialProfile` — states: `forProvider(string)`, `forUser(User)` |
+| `SubscriberFactory` | `App\Modules\Subscriber\Models\Subscriber` — states: `integrated()`, `withError()` |
 
 Models under `App\Modules\…` set `protected $model` on the factory when namespace differs from Laravel defaults.
 
@@ -170,8 +210,14 @@ Default user password from factory: `password`.
 | `PagesTableSeeder` | Full set of module routes (home, news, shop, auth, …) — use via `seedPagesForRouting()` in smoke/routing tests |
 | `Page::factory()` | One-off pages, custom slugs, invisible pages — unit/feature tests that do not need the full site map |
 | `LetterTemplateSeeder` | Password recovery and other letter-sending flows — use via `seedLetterTemplates()` |
+| `RolesAndPermissionsSeeder` | Roles/permissions — normally reached through `seedRolesAndPermissions()` / `actingAsAdmin()` |
+| `LanguageSeeder` | Locales and their dictionaries, for translation-dependent tests |
+| `SmsTemplateSeeder` | SMS-sending flows, the SMS counterpart of `LetterTemplateSeeder` |
+| `{Module}Seeder` | Demo data owned by a module, in `app/Modules/{Module}/database/seeders/` (`ShopSeeder`, `ShopCartSeeder`, `ShopOrderSeeder`, `NewsSeeder`, `GeoSeeder`) — call one directly when a test needs that module's demo rows |
 
-`DatabaseSeeder` calls both in production-like setups; in tests seed only what you need.
+`DatabaseSeeder` runs the four global seeders and then every enabled module's
+`{Module}Seeder` through `ModuleGate` (`database/seeders/DatabaseSeeder.php:20-26,36-57`),
+so a disabled module's seeder never touches its tables. In tests seed only what you need.
 
 ## Filament module tests
 
@@ -181,7 +227,10 @@ Default user password from factory: `password`.
 tests/Feature/Filament/{Module}/
 ```
 
-Each Filament resource gets its own subdirectory. Name the class `{Resource}ResourceTest`.
+`{Module}` is the module the resource belongs to, not one folder per resource:
+`tests/Feature/Filament/Shop/` holds `ProductResourceTest`, `CategoryResourceTest`,
+`BrandResourceTest`, `OrderResourceTest`, … Name the class `{Resource}ResourceTest`.
+Modules with a single resource still get their own folder (`Users/`, `Logs/`, `Geo/`).
 
 ### What to test per resource
 
@@ -323,12 +372,12 @@ class UserResourceTest extends TestCase
 ### Unit: Action
 
 ```php
-namespace Tests\Unit\Shop;
+namespace Tests\Unit\ShopOrder;
 
-use App\Modules\User\Models\User;
-use App\Modules\Shop\Actions\CreateOrderAction;
-use App\Modules\Shop\Dtos\CreateOrderData;
 use App\Modules\Shop\Models\Product;
+use App\Modules\ShopOrder\Actions\CreateOrderAction;
+use App\Modules\ShopOrder\Dtos\CreateOrderData;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

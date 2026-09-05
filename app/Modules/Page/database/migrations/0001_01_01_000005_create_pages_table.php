@@ -1,10 +1,12 @@
 <?php
 
+use App\Modules\Page\Enums\PageModule;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -18,7 +20,7 @@ return new class extends Migration {
             $table->boolean('display_menu_footer')->nullable();
             $table->boolean('is_indexable')->default(true);
             $table->integer('rank')->nullable();
-            $table->string('module')->index()->default(\App\Modules\Page\Enums\PageModule::TEXT);
+            $table->string('module')->index()->default(PageModule::TEXT);
             $table->string('title')->nullable();
             $table->string('slug')->unique()->nullable();
             $table->string('meta_title')->nullable();

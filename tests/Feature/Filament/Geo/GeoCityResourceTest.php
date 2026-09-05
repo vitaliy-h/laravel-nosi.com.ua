@@ -2,19 +2,17 @@
 
 namespace Tests\Feature\Filament\Geo;
 
-use PHPUnit\Framework\Attributes\Group;
-
 use App\Filament\Resources\Geo\GeoCities\Pages\ManageGeoCities;
-use App\Modules\User\Models\User;
-use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Geo\Models\GeoCity;
 use App\Modules\Geo\Models\GeoCountry;
+use App\Modules\User\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\Testing\TestAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
 #[Group('geo')]
@@ -45,7 +43,7 @@ class GeoCityResourceTest extends TestCase
     public function test_list_can_search_by_title(): void
     {
         $target = GeoCity::factory()->create(['title' => 'UniqueCity']);
-        $other  = GeoCity::factory()->create(['title' => 'AnotherCity']);
+        $other = GeoCity::factory()->create(['title' => 'AnotherCity']);
 
         Livewire::test(ManageGeoCities::class)
             ->searchTable('UniqueCity')
@@ -56,9 +54,9 @@ class GeoCityResourceTest extends TestCase
     public function test_list_can_filter_by_country(): void
     {
         $country = GeoCountry::factory()->create();
-        $other   = GeoCountry::factory()->create();
+        $other = GeoCountry::factory()->create();
 
-        $inCountry  = GeoCity::factory()->forCountry($country)->create();
+        $inCountry = GeoCity::factory()->forCountry($country)->create();
         $outCountry = GeoCity::factory()->forCountry($other)->create();
 
         Livewire::test(ManageGeoCities::class)

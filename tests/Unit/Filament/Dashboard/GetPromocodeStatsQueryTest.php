@@ -3,8 +3,8 @@
 namespace Tests\Unit\Filament\Dashboard;
 
 use App\Filament\Dashboard\Dtos\DashboardPeriodData;
-use App\Modules\ShopCart\Models\Promocode;
 use App\Filament\Dashboard\Queries\Shop\GetPromocodeStatsQuery;
+use App\Modules\ShopCart\Models\Promocode;
 use App\Modules\ShopOrder\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -91,10 +91,10 @@ class GetPromocodeStatsQueryTest extends TestCase
     private function orderWithPromocode(string $code, float $discount, string $createdAt): Order
     {
         return Order::factory()->create([
-            'promocode_code' => $code,
+            'promocode_code'  => $code,
             'discount_amount' => $discount,
-            'created_at' => $createdAt,
-            'updated_at' => $createdAt,
+            'created_at'      => $createdAt,
+            'updated_at'      => $createdAt,
         ]);
     }
 }

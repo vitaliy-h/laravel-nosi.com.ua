@@ -2,8 +2,8 @@
 
 namespace App\Modules\UserAuth\Actions;
 
-use App\Modules\UserAuth\Models\SocialProfile;
 use App\Modules\User\Models\User;
+use App\Modules\UserAuth\Models\SocialProfile;
 use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Contracts\User as SocialUser;
 
@@ -33,8 +33,8 @@ class ConnectSocialProfileAction
                 'token_expires_at' => $socialUser->expiresIn
                     ? now()->addSeconds($socialUser->expiresIn)
                     : null,
-                'avatar'           => $socialUser->getAvatar(),
-                'identifier'       => $socialUser->getEmail() ?? $socialUser->getNickname(),
+                'avatar'     => $socialUser->getAvatar(),
+                'identifier' => $socialUser->getEmail() ?? $socialUser->getNickname(),
             ]
         );
     }

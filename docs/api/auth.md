@@ -97,4 +97,45 @@ POST /api/auth/login
 
 ---
 
+## Logout
+
+Revokes **only the token used for this request** (`currentAccessToken()->delete()`), so a
+user's other devices stay logged in.
+
+### Request
+
+```http
+POST /api/auth/logout
+Authorization: Bearer 1|asdasd123
+```
+
+Requires the `auth:sanctum` middleware — no body.
+
+### Success Response
+
+```json
+{
+  "success": true,
+  "message": "Logged out."
+}
+```
+
+### Error Response
+
+Without a valid token the request never reaches the controller — the API exception
+renderer in `bootstrap/app.php` turns the `AuthenticationException` into `401`:
+
+```json
+{
+  "success": false,
+  "message": "Unauthenticated.",
+  "errors": null
+}
+```
+
+Covered by `tests/Feature/UserAuth/AuthApiTest.php`
+(`test_logout_with_token_succeeds`, `test_logout_without_token_is_unauthorized`).
+
+---
+
 [Back to main readme](../api/README.md)

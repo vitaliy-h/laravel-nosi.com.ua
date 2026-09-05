@@ -17,10 +17,10 @@ enum SortOptionEnum: string
     public function label(): string
     {
         return match ($this) {
-            self::NEWEST => t('shop.sort_option_newest'),
-            self::PRICE_ASC => t('shop.sort_option_price_asc'),
+            self::NEWEST     => t('shop.sort_option_newest'),
+            self::PRICE_ASC  => t('shop.sort_option_price_asc'),
             self::PRICE_DESC => t('shop.sort_option_price_desc'),
-            self::TITLE_ASC => t('shop.sort_option_title_asc'),
+            self::TITLE_ASC  => t('shop.sort_option_title_asc'),
             self::TITLE_DESC => t('shop.sort_option_title_desc'),
         };
     }
@@ -33,10 +33,10 @@ enum SortOptionEnum: string
     public function orderBy(): array
     {
         return match ($this) {
-            self::NEWEST => ['id', 'desc'],
-            self::PRICE_ASC => ['price', 'asc'],
+            self::NEWEST     => ['id', 'desc'],
+            self::PRICE_ASC  => ['price', 'asc'],
             self::PRICE_DESC => ['price', 'desc'],
-            self::TITLE_ASC => ['title', 'asc'],
+            self::TITLE_ASC  => ['title', 'asc'],
             self::TITLE_DESC => ['title', 'desc'],
         };
     }

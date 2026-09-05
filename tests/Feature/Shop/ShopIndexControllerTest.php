@@ -41,7 +41,7 @@ class ShopIndexControllerTest extends TestCase
         Product::factory()->count(2)->forCategory($category)->create();
         Product::factory()->forCategory($otherCategory)->create();
 
-        $response = $this->get('/shop/'.$category->slug);
+        $response = $this->get('/shop/' . $category->slug);
 
         $response->assertStatus(200);
         $response->assertViewIs('modules.shop.category');
@@ -96,7 +96,7 @@ class ShopIndexControllerTest extends TestCase
         $fromBrandA = Product::factory()->create(['brand_id' => $brandA->id]);
         Product::factory()->create(['brand_id' => $brandB->id]);
 
-        $response = $this->get('/shop?brand='.$brandA->id);
+        $response = $this->get('/shop?brand=' . $brandA->id);
 
         // The view gets ProductViewModels, which carry no brand_id — the brand is
         // a filter input, not something the listing renders. Identity is enough.
@@ -134,7 +134,7 @@ class ShopIndexControllerTest extends TestCase
         $category = Category::factory()->create();
         $product = Product::factory()->forCategory($category)->create();
 
-        $response = $this->get('/shop/'.$category->slug.'/'.$product->slug_with_id);
+        $response = $this->get('/shop/' . $category->slug . '/' . $product->slug_with_id);
 
         $response->assertStatus(200);
         $response->assertViewIs('modules.shop.product');
@@ -146,9 +146,9 @@ class ShopIndexControllerTest extends TestCase
         $category = Category::factory()->create();
         $product = Product::factory()->forCategory($category)->create();
 
-        $response = $this->get('/shop/'.$category->slug.'/stale-slug-'.$product->id);
+        $response = $this->get('/shop/' . $category->slug . '/stale-slug-' . $product->id);
 
-        $response->assertRedirect('/shop/'.$category->slug.'/'.$product->slug_with_id);
+        $response->assertRedirect('/shop/' . $category->slug . '/' . $product->slug_with_id);
         $response->assertStatus(301);
     }
 
@@ -157,7 +157,7 @@ class ShopIndexControllerTest extends TestCase
         $category = Category::factory()->create();
         $product = Product::factory()->invisible()->forCategory($category)->create();
 
-        $response = $this->get('/shop/'.$category->slug.'/'.$product->slug_with_id);
+        $response = $this->get('/shop/' . $category->slug . '/' . $product->slug_with_id);
 
         $response->assertStatus(404);
     }

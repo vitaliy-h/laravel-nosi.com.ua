@@ -3,7 +3,6 @@
 namespace App\Modules\Core\Traits\Models;
 
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 trait HasBuilderContent
 {
@@ -31,7 +30,7 @@ trait HasBuilderContent
     {
         $content = $this->content;
 
-        if (empty($content) || ! is_array($content)) {
+        if (empty($content) || !is_array($content)) {
             return;
         }
 
@@ -44,7 +43,7 @@ trait HasBuilderContent
         foreach ($content as &$block) {
             $type = $block['type'] ?? null;
 
-            if ($type === 'image' && ! empty($block['data']['image'])) {
+            if ($type === 'image' && !empty($block['data']['image'])) {
                 $oldPath = $block['data']['image'];
                 if ($this->moveBuilderFile($block['data']['image'], $tempPrefix, $realPrefix)) {
                     $movedDirs[] = dirname($oldPath);
@@ -52,7 +51,7 @@ trait HasBuilderContent
                 }
             }
 
-            if ($type === 'gallery' && ! empty($block['data']['images'])) {
+            if ($type === 'gallery' && !empty($block['data']['images'])) {
                 foreach ($block['data']['images'] as &$img) {
                     $oldPath = $img;
                     if ($this->moveBuilderFile($img, $tempPrefix, $realPrefix)) {
@@ -77,7 +76,7 @@ trait HasBuilderContent
 
     protected function cleanRemovedBuilderImages(): void
     {
-        if (! $this->isDirty('content')) {
+        if (!$this->isDirty('content')) {
             return;
         }
 
@@ -86,7 +85,6 @@ trait HasBuilderContent
 
         $oldPaths = $this->extractBuilderImagePaths($oldContent);
         $newPaths = $this->extractBuilderImagePaths($this->content ?? []);
-
 
         $contentRoot = $this->getTable() . '/' . $this->getKey() . '/content';
 
@@ -99,8 +97,8 @@ trait HasBuilderContent
     private function deleteEmptyParentDirs(string $dir, string $stopAt): void
     {
         while ($dir !== $stopAt && str_starts_with($dir, $stopAt)) {
-            if (! empty(Storage::disk('public')->files($dir)) ||
-                ! empty(Storage::disk('public')->directories($dir))) {
+            if (!empty(Storage::disk('public')->files($dir)) ||
+                !empty(Storage::disk('public')->directories($dir))) {
                 break;
             }
 
@@ -118,7 +116,7 @@ trait HasBuilderContent
 
     private function moveBuilderFile(string &$path, string $tempPrefix, string $realPrefix): bool
     {
-        if (! str_starts_with($path, $tempPrefix)) {
+        if (!str_starts_with($path, $tempPrefix)) {
             return false;
         }
 
@@ -142,11 +140,11 @@ trait HasBuilderContent
             $type = $block['type'] ?? null;
             $data = $block['data'] ?? [];
 
-            if ($type === 'image' && ! empty($data['image'])) {
+            if ($type === 'image' && !empty($data['image'])) {
                 $paths[] = $data['image'];
             }
 
-            if ($type === 'gallery' && ! empty($data['images'])) {
+            if ($type === 'gallery' && !empty($data['images'])) {
                 foreach ((array) $data['images'] as $img) {
                     $paths[] = $img;
                 }

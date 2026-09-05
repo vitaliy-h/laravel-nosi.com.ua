@@ -2,9 +2,9 @@
 
 namespace App\Modules\ShopCart\Models;
 
-use App\Modules\User\Models\User;
 use App\Modules\Core\Traits\Models\CascadesDeletes;
 use App\Modules\Core\Traits\Models\HasUuid;
+use App\Modules\User\Models\User;
 use Database\Factories\CartFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +17,7 @@ class Cart extends Model
 
     /** @use HasFactory<CartFactory> */
     use HasFactory;
+
     use HasUuid;
 
     protected array $uuidFields = ['uuid'];
@@ -36,7 +37,7 @@ class Cart extends Model
     ];
 
     protected $casts = [
-        'total_amount' => 'decimal:2',
+        'total_amount'    => 'decimal:2',
         'subtotal_amount' => 'decimal:2',
         'discount_amount' => 'decimal:2',
     ];
@@ -58,17 +59,17 @@ class Cart extends Model
 
     public function getTotalAmountFormattedAttribute(): string
     {
-        return t('shop.currency').number_format($this->total_amount, 2);
+        return t('shop.currency') . number_format($this->total_amount, 2);
     }
 
     public function getSubtotalAmountFormattedAttribute(): string
     {
-        return t('shop.currency').number_format($this->subtotal_amount, 2);
+        return t('shop.currency') . number_format($this->subtotal_amount, 2);
     }
 
     public function getDiscountAmountFormattedAttribute(): string
     {
-        return t('shop.currency').number_format($this->discount_amount, 2);
+        return t('shop.currency') . number_format($this->discount_amount, 2);
     }
 
     protected static function newFactory(): CartFactory

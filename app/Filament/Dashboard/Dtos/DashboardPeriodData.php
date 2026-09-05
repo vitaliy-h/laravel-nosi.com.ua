@@ -40,13 +40,13 @@ class DashboardPeriodData extends Data
         $key = is_string($key) || is_int($key) ? (string) $key : '';
 
         [$from, $to] = match ($key) {
-            'today' => [CarbonImmutable::now()->startOfDay(), CarbonImmutable::now()->endOfDay()],
+            'today'         => [CarbonImmutable::now()->startOfDay(), CarbonImmutable::now()->endOfDay()],
             '7', '30', '90' => [
                 CarbonImmutable::now()->subDays((int) $key - 1)->startOfDay(),
                 CarbonImmutable::now()->endOfDay(),
             ],
             'custom' => self::customRange($filters),
-            default => self::defaultRange(),
+            default  => self::defaultRange(),
         };
 
         return self::between($from, $to, in_array($key, ['today', '7', '30', '90', 'custom'], true) ? $key : self::DEFAULT_KEY);
@@ -75,7 +75,7 @@ class DashboardPeriodData extends Data
      */
     public function cacheKey(): string
     {
-        return $this->key.':'.$this->from->toDateString().':'.$this->to->toDateString();
+        return $this->key . ':' . $this->from->toDateString() . ':' . $this->to->toDateString();
     }
 
     /**
@@ -133,7 +133,7 @@ class DashboardPeriodData extends Data
 
     private static function parseDate(mixed $value): ?CarbonImmutable
     {
-        if (blank($value) || (! is_string($value) && ! $value instanceof \DateTimeInterface)) {
+        if (blank($value) || (!is_string($value) && !$value instanceof \DateTimeInterface)) {
             return null;
         }
 

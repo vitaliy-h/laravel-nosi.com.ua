@@ -14,9 +14,9 @@ class SmsTemplateSeeder extends Seeder
             $data = __("sms_templates.{$case->value}");
             if (!SmsTemplate::where('key', $case)->exists()) {
                 SmsTemplate::create([
-                    'key' => $case->value,
+                    'key'     => $case->value,
                     'subject' => $data['subject'],
-                    'body' => $data['body'],
+                    'body'    => $data['body'],
                 ]);
             }
         }

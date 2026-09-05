@@ -13,9 +13,11 @@ class News extends Model
 {
     /** @use HasFactory<NewsFactory> */
     use HasFactory;
-    use HasVisibility; // for visibility on the website
+
+    // for visibility on the website
     use HasImage; // if there is an image
     use HasSeoFields;
+    use HasVisibility;
 
     protected array $imgArrayFields = ['imgs'];
 
@@ -32,8 +34,8 @@ class News extends Model
     ];
 
     protected $casts = [
-        'display' => 'boolean',
+        'display'      => 'boolean',
         'published_at' => 'datetime',
-        'content' => 'array'
+        'content'      => 'array',
     ];
 }

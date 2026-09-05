@@ -6,19 +6,19 @@ use App\Modules\Core\Abstract\BaseApiController;
 use App\Modules\Core\Http\Resources\BasePaginationResource;
 use App\Modules\Shop\Dtos\CategorySearchDto;
 use App\Modules\Shop\Dtos\ProductSearchDto;
+use App\Modules\Shop\Dtos\ShopFilterCriteriaDto;
 use App\Modules\Shop\Enums\SortOptionEnum;
 use App\Modules\Shop\Http\Requests\ShopCategoriesRequest;
 use App\Modules\Shop\Http\Requests\ShopProductsRequest;
 use App\Modules\Shop\Http\Resources\CategoryResource;
 use App\Modules\Shop\Http\Resources\ProductResource;
-use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Queries\Category\FindCategoryByIdQuery;
 use App\Modules\Shop\Queries\Category\SearchCategoriesQuery;
 use App\Modules\Shop\Queries\Product\FindProductByIdQuery;
 use App\Modules\Shop\Queries\Product\PrepareShopFilterQuery;
 use App\Modules\Shop\Queries\Product\SearchProductsQuery;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Collection;
+use Illuminate\Http\Request;
 
 class ShopController extends BaseApiController
 {
@@ -40,33 +40,12 @@ class ShopController extends BaseApiController
             limit: $request->integer('limit') ?: null,
         ));
 
-        $this->attachVisibleChildren($categories);
+        $categories = $this->searchCategories->withVisibleChildren($categories);
 
         return $this->success(
             ['categories' => CategoryResource::collection($categories)],
             message: t('shop.categories_list')
         );
-    }
-
-    /**
-     * Preload the whole visible category tree in one query and attach each node's
-     * children in memory, instead of letting CategoryResource query children per node.
-     */
-    private function attachVisibleChildren(Collection $categories): void
-    {
-        if ($categories->isEmpty()) {
-            return;
-        }
-
-        $byParent = Category::visible()->defaultOrder()->get()->groupBy('parent_id');
-
-        $assign = function (Category $node) use (&$assign, $byParent) {
-            $children = $byParent->get($node->id, collect());
-            $node->setRelation('children', $children);
-            $children->each($assign);
-        };
-
-        $categories->each($assign);
     }
 
     public function category(int $id): JsonResponse
@@ -84,11 +63,11 @@ class ShopController extends BaseApiController
         $category = $request->integer('category_id')
             ? $this->findCategoryById->handle($request->integer('category_id'))
             : null;
-        $filter = $this->prepareShopFilter->handle($category, $request);
+        $filter = $this->prepareShopFilter->handle($category, $this->filterCriteria($request));
         $products = $this->searchProducts->handle(new ProductSearchDto(category: $category, filter: $filter, sort: SortOptionEnum::tryFrom((string) $request->query('sort')), paginate: true));
 
         return $this->success([
-            'products' => ProductResource::collection($products),
+            'products'   => ProductResource::collection($products),
             'pagination' => new BasePaginationResource($products),
         ],
             message: t('shop.products_list'));
@@ -101,6 +80,19 @@ class ShopController extends BaseApiController
         return $this->success(
             ['product' => new ProductResource($product)],
             message: t('shop.product_info')
+        );
+    }
+
+    /**
+     * The HTTP layer stops here: the Query gets values, not a Request.
+     */
+    private function filterCriteria(Request $request): ShopFilterCriteriaDto
+    {
+        return ShopFilterCriteriaDto::fromQuery(
+            brand: $request->query('brand'),
+            priceFrom: $request->query('price_from'),
+            priceTo: $request->query('price_to'),
+            search: $request->query('search'),
         );
     }
 }

@@ -61,9 +61,9 @@ class OrderViewModelTest extends TestCase
         $product = Product::factory()->forCategory($category)->create();
 
         OrderProduct::factory()->create([
-            'shop_order_id' => $order->id,
+            'shop_order_id'   => $order->id,
             'shop_product_id' => $product->id,
-            'product_name' => 'Name When Ordered',
+            'product_name'    => 'Name When Ordered',
             'product_article' => 'SKU-7',
         ]);
 

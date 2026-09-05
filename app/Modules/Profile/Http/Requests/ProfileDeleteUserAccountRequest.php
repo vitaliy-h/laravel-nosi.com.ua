@@ -4,7 +4,6 @@ namespace App\Modules\Profile\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Password;
 
 class ProfileDeleteUserAccountRequest extends FormRequest
 {
@@ -44,7 +43,7 @@ class ProfileDeleteUserAccountRequest extends FormRequest
     {
         return [
             'delete_email' => t('auth.email'),
-            'email' => t('auth.email'),
+            'email'        => t('auth.email'),
         ];
     }
 

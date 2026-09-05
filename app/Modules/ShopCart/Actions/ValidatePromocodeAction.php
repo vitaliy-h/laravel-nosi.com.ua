@@ -27,7 +27,7 @@ readonly class ValidatePromocodeAction
 
         if ($promocode->min_order_amount !== null && $subtotal < (float) $promocode->min_order_amount) {
             return ActionResult::fail(t('shop.promocode_min_order', [
-                'amount' => t('shop.currency').number_format((float) $promocode->min_order_amount, 2),
+                'amount' => t('shop.currency') . number_format((float) $promocode->min_order_amount, 2),
             ]));
         }
 

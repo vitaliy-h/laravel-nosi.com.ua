@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\UserAuth;
 
-use App\Modules\User\Models\User;
 use App\Modules\Notification\Enums\LetterEnum;
-use App\Modules\Notification\Facades\LetterTemplateFacade;
+use App\Modules\Notification\Services\LetterTemplateService;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -25,43 +25,43 @@ class AuthWebTest extends TestCase
     public function test_register_with_valid_fields_redirects_to_profile_and_authenticates_user(): void
     {
         $response = $this->post('/user_auth/register', [
-            'name' => 'Test User',
-            'email' => 'new@example.com',
-            'password' => 'password123',
+            'name'                  => 'Test User',
+            'email'                 => 'new@example.com',
+            'password'              => 'password123',
             'password_confirmation' => 'password123',
-            'terms' => true,
+            'terms'                 => true,
         ]);
 
         $response->assertRedirect(save_route('profile.edit'));
         $this->assertAuthenticated();
         $this->assertDatabaseHas('users', [
             'email' => 'new@example.com',
-            'name' => 'Test User',
+            'name'  => 'Test User',
         ]);
     }
 
     public function test_register_saves_surname_and_phone(): void
     {
         $this->post('/user_auth/register', [
-            'name' => 'Test User',
-            'surname' => 'Doe',
-            'phone' => '+123456789',
-            'email' => 'new@example.com',
-            'password' => 'password123',
+            'name'                  => 'Test User',
+            'surname'               => 'Doe',
+            'phone'                 => '+123456789',
+            'email'                 => 'new@example.com',
+            'password'              => 'password123',
             'password_confirmation' => 'password123',
-            'terms' => true,
+            'terms'                 => true,
         ]);
 
         $this->assertDatabaseHas('users', [
-            'email' => 'new@example.com',
+            'email'   => 'new@example.com',
             'surname' => 'Doe',
-            'phone' => '+123456789',
+            'phone'   => '+123456789',
         ]);
     }
 
     public function test_register_sends_registration_letter_with_credentials(): void
     {
-        LetterTemplateFacade::shouldReceive('send')
+        $this->mock(LetterTemplateService::class)->shouldReceive('send')
             ->once()
             ->withArgs(function ($data) {
                 return $data->key === LetterEnum::REGISTRATION
@@ -72,11 +72,11 @@ class AuthWebTest extends TestCase
             });
 
         $this->post('/user_auth/register', [
-            'name' => 'Test User',
-            'email' => 'new@example.com',
-            'password' => 'password123',
+            'name'                  => 'Test User',
+            'email'                 => 'new@example.com',
+            'password'              => 'password123',
             'password_confirmation' => 'password123',
-            'terms' => true,
+            'terms'                 => true,
         ]);
     }
 
@@ -85,7 +85,7 @@ class AuthWebTest extends TestCase
         User::factory()->create(['email' => 'user@example.com']);
 
         $response = $this->post('/user_auth/login', [
-            'email' => 'user@example.com',
+            'email'    => 'user@example.com',
             'password' => 'password',
         ]);
 
@@ -101,7 +101,7 @@ class AuthWebTest extends TestCase
 
         $response = $this->from($authUrl)
             ->post('/user_auth/login', [
-                'email' => 'user@example.com',
+                'email'    => 'user@example.com',
                 'password' => 'wrong-password',
             ]);
 
@@ -127,7 +127,7 @@ class AuthWebTest extends TestCase
 
         $user = User::factory()->create(['email' => 'user@example.com']);
 
-        LetterTemplateFacade::shouldReceive('send')
+        $this->mock(LetterTemplateService::class)->shouldReceive('send')
             ->once()
             ->withArgs(function ($data) use ($user) {
                 return $data->key === LetterEnum::PASSWORD_RESET
@@ -168,10 +168,10 @@ class AuthWebTest extends TestCase
         $token = Password::broker()->createToken($user);
 
         $response = $this->post('/user_auth/password-reset', [
-            'email' => $user->email,
-            'password' => 'newpassword123',
+            'email'                 => $user->email,
+            'password'              => 'newpassword123',
             'password_confirmation' => 'newpassword123',
-            'token' => $token,
+            'token'                 => $token,
         ]);
 
         $response->assertRedirect(save_route('auth.index'));
@@ -189,10 +189,10 @@ class AuthWebTest extends TestCase
 
         $response = $this->from($authUrl)
             ->post('/user_auth/password-reset', [
-                'email' => $user->email,
-                'password' => 'newpassword123',
+                'email'                 => $user->email,
+                'password'              => 'newpassword123',
                 'password_confirmation' => 'newpassword123',
-                'token' => 'invalid-token',
+                'token'                 => 'invalid-token',
             ]);
 
         $response->assertRedirect($authUrl);

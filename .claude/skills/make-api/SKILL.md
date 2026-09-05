@@ -9,17 +9,21 @@ description: >
 ## Principles (from Profile module)
 
 1. **Controller** extends `BaseApiController` → gets `$this->success()` / `$this->error()`
-2. **Actions** hold business logic, injectable into both web and API controllers
-3. **DTOs** (`spatie/laravel-data`) carry validated data from request to action
-4. **FormRequest** per method — always has `rules()` + `attributes()` (using `t('module.field')`)
-5. **Resource** extends `JsonResource` — always used for output, never raw model/array.
+2. **Actions** hold write logic (create/update/delete, side effects), injectable into
+   both web and API controllers
+3. **Queries** (`app/Modules/{Module}/Queries/`) hold reads — this project has no
+   repositories. One class per read, `handle()` returns models/collections/paginators.
+   Controllers inject Queries directly; an Action is not created just to wrap a read
+4. **DTOs** (`spatie/laravel-data`) carry validated data from request to action
+5. **FormRequest** per method — always has `rules()` + `attributes()` (using `t('module.field')`)
+6. **Resource** extends `JsonResource` — always used for output, never raw model/array.
    Resources are the **API's** output layer only; the web side has its own —
    a controller rendering a blade hands it a **ViewModel**
    (`app/Modules/{Module}/ViewModels/`, see `docs/starter/view-models.md`).
    Neither one is reused as the other: an API response and a rendered page
    need different fields.
-6. **Routes** in `app/Modules/{Module}/Http/Routes/api.php` — auto-loaded by `ModuleServiceProvider` (wrapped in `Route::prefix('api')->middleware('api')->group(...)`)
-7. **Translations** in `lang/en/dictionary.php` under `'shop' => [...]` key (key = module slug)
+7. **Routes** in `app/Modules/{Module}/Http/Routes/api.php` — auto-loaded by `ModuleServiceProvider` (wrapped in `Route::prefix('api')->middleware('api')->group(...)`)
+8. **Translations** in `lang/en/dictionary.php` under `'shop' => [...]` key (key = module slug)
 
 ---
 
@@ -27,7 +31,7 @@ description: >
 
 ### Step 1 — Module
 
-If not specified by user, read `app/Modules/Core/Enums/PageModule.php` and list existing modules as numbered list.
+If not specified by user, read `app/Modules/Page/Enums/PageModule.php` and list existing modules as numbered list.
 Ask user to pick one.
 
 This skill never creates modules — pick an existing one; if the task needs a new module,
@@ -88,27 +92,67 @@ Before writing, check what already exists:
 - Does `{ResourceName}Resource.php` exist? → reuse, skip creation
 - Does `Http/Routes/api.php` exist? → append route, not overwrite
 - Does `'shop'` key exist in `dictionary.php`? → append keys, not overwrite
+- Does a Query for this read already exist in `app/Modules/{Module}/Queries/`? → reuse it
 - Does the Action exist? → if web controller already does the same logic, extract it; if Action exists reuse it
 
-### Step 7 — Extract Action (if web logic exists)
+### Step 7 — Reuse or create the read/write layer
 
-Check if the web controller for this module (`Web/IndexController.php` or similar) has equivalent logic.
-If yes: extract repeated repository/service calls into `app/Modules/{Module}/Actions/{ActionName}Action.php`.
+**Reads (index, show, search, lists) → a Query class.** There are no repositories in
+this project. Look in `app/Modules/{Module}/Queries/` first — 23 Query classes already
+exist across 9 modules. Small modules keep them flat
+(`News/Queries/GetNewsListQuery.php`); a module with many reads groups them per entity
+(`Shop/Queries/Category/`, `Shop/Queries/Product/`, `Shop/Queries/ProductReview/`),
+so drop the `{Entity}` namespace segment below when the module is flat.
 
-Action signature:
+Query template:
 ```php
-class {ActionName}Action
-{
-    public function __construct(private readonly {Module}Repository $repository) {}
+<?php
 
-    public function handle({params}): {ReturnType}
+namespace App\Modules\{Module}\Queries\{Entity};
+
+use App\Modules\{Module}\Models\{Entity};
+
+class Find{Entity}ByIdQuery
+{
+    public function handle(int $id): {Entity}
     {
-        // logic here
+        return {Entity}::visible()
+            ->where('id', $id)
+            ->firstOrFail();
     }
 }
 ```
 
-Web controller update: inject Action, replace inline logic with `$this->{actionName}->handle(...)`.
+Full rules and layout: `docs/starter/queries.md`.
+
+Rules for a Query:
+- input is scalars or a DTO — **never** a `Request` (real example:
+  `SearchCategoriesQuery::handle(CategorySearchDto $criteria)`)
+- one read per class; no writes, no side effects
+- inject it straight into the controller — do not wrap a read in an Action
+
+**Writes (store, update, delete, anything with side effects) → an Action.** If the web
+controller for this module (`Web/IndexController.php` or similar) already contains the
+same logic, extract it into `app/Modules/{Module}/Actions/{ActionName}Action.php` and
+make the web controller call the Action too.
+
+Action template:
+```php
+class {ActionName}Action
+{
+    public function __construct(
+        private readonly Find{Entity}ByIdQuery $find{Entity}ById,
+    ) {}
+
+    public function handle({Dto} $data): {ReturnType}
+    {
+        // write logic here; reuse Queries for any reads it needs
+    }
+}
+```
+
+Web controller update: inject the Action/Query, replace inline logic with
+`$this->{actionName}->handle(...)`.
 
 ### Step 8 — Create FormRequest
 
@@ -184,19 +228,20 @@ Template (new controller):
 namespace App\Modules\{Module}\Http\Controllers\Api;
 
 use App\Modules\Core\Abstract\BaseApiController;
-use App\Modules\{Module}\Actions\{ActionName}Action;
 use App\Modules\{Module}\Http\Requests\{Module}{MethodName}Request;
 use App\Modules\{Module}\Http\Resources\{ResourceName}Resource;
+use App\Modules\{Module}\Queries\{QueryName}Query;
 
 class {Module}Controller extends BaseApiController
 {
+    // Reads inject Queries, writes inject Actions — see ShopController for a real one.
     public function __construct(
-        private readonly {ActionName}Action $action,
+        private readonly {QueryName}Query ${queryName},
     ) {}
 
     public function {method}({RequestClass} $request): \Illuminate\Http\JsonResponse
     {
-        $result = $this->action->handle(/* params */);
+        $result = $this->{queryName}->handle(/* scalars or a DTO built from $request */);
 
         return $this->success(
             ['{entities}' => {ResourceName}Resource::collection($result)],  // collection
@@ -255,7 +300,7 @@ Print:
 - Files created (with paths)
 - Files modified (with paths)
 - Route: `GET /api/{module-slug}/...` → `{Module}Controller@{method}`
-- Next step suggestion (e.g., run tests, check Postman)
+- Next step suggestion (e.g., run tests, document the endpoint in `docs/api/{module}.md`)
 
 ---
 
@@ -264,8 +309,9 @@ Print:
 | Thing | Convention | Example |
 |---|---|---|
 | Controller | `{Module}Controller` | `ShopController` |
-| Action | `{Verb}{Entity}Action` | `GetCategoriesAction`, `ShowCategoryAction` |
-| Request | `{Module}{MethodName}Request` | `ShopIndexCategoriesRequest` |
+| Action (writes) | `{Verb}{Entity}Action` | `CreateOrderAction`, `AddOrUpdateCartItemAction` |
+| Query (reads) | `Find*Query` / `Get*Query` / `Search*Query` | `FindCategoryByIdQuery`, `SearchCategoriesQuery`, `GetReviewsByProductQuery` |
+| Request | `{Module}{MethodName}Request` | `ShopCategoriesRequest`, `ShopProductsRequest` |
 | Resource | `{Entity}Resource` | `CategoryResource`, `ProductResource` |
 | Route name | `api.{module}.{method}` | `api.shop.categories` |
 | Translation key | `{module}.{key}` | `shop.category` |
@@ -293,6 +339,16 @@ class {ActionName}Data extends Data
 
 ## Reuse checklist
 
-Before creating a new Action, check if `ShopRepository` (or module repository) already has the method.
-If it does: Action just calls `$this->repository->method(...)` and returns result.
-If repository doesn't have the method: add it to the repository, then call from Action.
+Before writing anything, list `app/Modules/{Module}/Queries/` and `app/Modules/{Module}/Actions/`.
+
+- The read already exists as a Query → inject that Query into the controller, write nothing new.
+- The read exists but returns the wrong shape → add a new Query beside it rather than
+  adding a parameter that makes one class serve two callers.
+- No Query yet → create one (see Step 7). Do **not** put the read in an Action, a
+  Service, or the controller.
+- The write already exists as an Action → reuse it; the API and the web controller are
+  meant to call the same Action.
+
+⚠️ There are no repository classes in this project. If a doc or an older example
+mentions `ShopRepository` or `{Module}Repository`, it is stale — the read layer is
+`Queries/`.

@@ -46,7 +46,7 @@ class RecalculateCartTotalActionTest extends TestCase
     {
         $promocode = Promocode::factory()->fixed(20)->create(['code' => 'MINUS20']);
         $cart = $this->cartWithItemTotal(100, [
-            'promocode_id' => $promocode->id,
+            'promocode_id'   => $promocode->id,
             'promocode_code' => 'MINUS20',
         ]);
 
@@ -75,7 +75,7 @@ class RecalculateCartTotalActionTest extends TestCase
     {
         $promocode = Promocode::factory()->fixed(20)->withMinOrder(100)->create(['code' => 'BIG']);
         $cart = $this->cartWithItemTotal(50, [
-            'promocode_id' => $promocode->id,
+            'promocode_id'   => $promocode->id,
             'promocode_code' => 'BIG',
         ]);
 
@@ -93,7 +93,7 @@ class RecalculateCartTotalActionTest extends TestCase
     {
         $promocode = Promocode::factory()->fixed(20)->expired()->create(['code' => 'OLD']);
         $cart = $this->cartWithItemTotal(100, [
-            'promocode_id' => $promocode->id,
+            'promocode_id'   => $promocode->id,
             'promocode_code' => 'OLD',
         ]);
 
@@ -113,10 +113,10 @@ class RecalculateCartTotalActionTest extends TestCase
         $cart = Cart::factory()->create($cartAttributes);
 
         CartProduct::factory()->create([
-            'cart_id' => $cart->id,
+            'cart_id'       => $cart->id,
             'selling_price' => $total,
-            'quantity' => 1,
-            'total' => $total,
+            'quantity'      => 1,
+            'total'         => $total,
         ]);
 
         return $cart->refresh();

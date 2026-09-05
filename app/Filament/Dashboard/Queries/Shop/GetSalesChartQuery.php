@@ -3,8 +3,8 @@
 namespace App\Filament\Dashboard\Queries\Shop;
 
 use App\Filament\Dashboard\Dtos\DashboardPeriodData;
-use App\Filament\Dashboard\Support\DashboardSeries;
 use App\Filament\Dashboard\Dtos\Shop\SalesChartData;
+use App\Filament\Dashboard\Support\DashboardSeries;
 use App\Modules\ShopOrder\Models\Order;
 use Illuminate\Support\Facades\Cache;
 
@@ -38,7 +38,7 @@ class GetSalesChartQuery
             ->whereBetween('created_at', [$period->from, $period->to])
             ->selectRaw(
                 DashboardSeries::bucketExpression($period, 'created_at')
-                .' AS bucket, COUNT(*) AS orders_count, COALESCE(SUM(total_amount), 0) AS revenue'
+                . ' AS bucket, COUNT(*) AS orders_count, COALESCE(SUM(total_amount), 0) AS revenue'
             )
             ->groupBy('bucket')
             ->get()

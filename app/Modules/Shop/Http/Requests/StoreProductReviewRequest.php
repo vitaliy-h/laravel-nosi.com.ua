@@ -26,10 +26,10 @@ class StoreProductReviewRequest extends FormRequest
     {
         return [
             'product_id' => ['required', 'integer', 'exists:shop_products,id'],
-            'rating' => ['required', 'integer', 'between:1,5'],
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-            'text' => ['required', 'string', 'max:5000'],
+            'rating'     => ['required', 'integer', 'between:1,5'],
+            'name'       => ['required', 'string', 'max:255'],
+            'email'      => ['required', 'email', 'max:255'],
+            'text'       => ['required', 'string', 'max:5000'],
         ];
     }
 
@@ -40,9 +40,9 @@ class StoreProductReviewRequest extends FormRequest
     {
         return [
             'rating' => t('shop.your_rating'),
-            'name' => t('shop.your_name'),
-            'email' => t('shop.your_email'),
-            'text' => t('shop.your_product_review'),
+            'name'   => t('shop.your_name'),
+            'email'  => t('shop.your_email'),
+            'text'   => t('shop.your_product_review'),
         ];
     }
 }

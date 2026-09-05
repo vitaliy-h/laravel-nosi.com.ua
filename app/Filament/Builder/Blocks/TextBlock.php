@@ -13,7 +13,7 @@ class TextBlock
     {
         return Block::make('text')
             ->label('Text')
-            //->icon('heroicon-o-bars-3-bottom-left') ??
+            // ->icon('heroicon-o-bars-3-bottom-left') ??
             ->schema([
 
                 TextInput::make('title')
@@ -22,7 +22,7 @@ class TextBlock
                 Select::make('style')
                     ->options([
                         'default' => 'Default',
-                        //'gray' => 'Gray Background',
+                        // 'gray' => 'Gray Background',
                     ])
                     ->default('default')
                     ->selectablePlaceholder(false)
@@ -42,12 +42,12 @@ class TextBlock
 
             ])
             ->columns(12);
-            /* ??
-            ->preview(fn (?array $state): string =>
-                $state['title']
-                ?? str(strip_tags($state['content'] ?? ''))
-                ->limit(40)
-            );
-            */
+        /* ??
+        ->preview(fn (?array $state): string =>
+            $state['title']
+            ?? str(strip_tags($state['content'] ?? ''))
+            ->limit(40)
+        );
+        */
     }
 }

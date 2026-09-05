@@ -34,12 +34,12 @@ Each log entry contains:
 {
   "user_id": 1,
   "event": "created|updated|deleted",
-  "model_type": "App\Models\Post",
+  "model_type": "App\Modules\News\Models\News",
   "model_id": 123,
   "old_values": {},
   "new_values": {},
   "changed_fields": [],
-  "source": "admin|api|console",
+  "source": "admin_panel|api|console|system|client",
   "ip_address": "127.0.0.1"
 }
 ```
@@ -93,22 +93,39 @@ The system supports field-level logging policies via config.
 
 ``` php
 return [
-    'enabled' => true,
+    'enabled' => env('LOG_ENABLED', true),
 
-    'excluded_models' => [],
+    // never logged — logging a log row would recurse
+    'excluded_models' => [
+        Log::class,
+        AuthLog::class,
+    ],
 
-    'excluded_tables' => [],
+    'excluded_tables' => [
+        'cache',
+        'jobs',
+        'job_batches',
+        'failed_jobs',
+        'sessions',
+        'migrations',
+    ],
 
     'ignored_attributes' => [
         'updated_at',
         'created_at',
     ],
 
+    // how long log records are kept before `logs:prune` removes them
+    'retention_days' => env('LOG_RETENTION_DAYS', 365),
+
+    // fields that only track "changed", without values. Use this for big fields.
     'only_track_changes' => [
         'dictionary',
     ],
 ];
 ```
+
+`LOG_ENABLED` and `LOG_RETENTION_DAYS` are the two env knobs.
 
 Additionally, you can exclude specific model fields from log by adding `logExcept` attribute:
 
@@ -154,11 +171,17 @@ class Order extends Model
 
 ### How it works
 
+The trait boots itself (`bootCascadesDeletes()` registers a `deleting` hook on the model),
+so adding the trait is all that is needed — nothing has to be wired in a service provider.
+
 When the parent model is deleted:
 
 1. Each relation listed in `$cascadeDeletes` is iterated
 2. Every child model is deleted via `->delete()` (Eloquent, not DB cascade)
-3. Eloquent fires `deleting` event on each child → LogObserver logs the deletion
+3. Eloquent fires `deleting` event on each child → `Core\Listeners\LogListener`
+   logs the deletion. The whole cascade runs inside `LogService::batch()`, so those
+   journal rows are collected in memory and written with a single `INSERT` instead of
+   one per child
 4. If a child also uses `CascadesDeletes`, the cascade continues recursively
 5. Finally, the parent itself is logged as deleted
 
@@ -190,7 +213,15 @@ created, updated, deleted
 
 ## Sources
 
-admin, api, console, client
+`App\Modules\Core\Enums\LogSourceEnum` — five cases:
+
+| Case | Value |
+|---|---|
+| `ADMIN_PANEL` | `admin_panel` |
+| `API` | `api` |
+| `CONSOLE` | `console` |
+| `SYSTEM` | `system` |
+| `CLIENT` | `client` |
 
 
 ------------------------------------------------------------------------

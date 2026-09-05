@@ -13,6 +13,7 @@ class Language extends Model
 {
     /** @use HasFactory<LanguageFactory> */
     use HasFactory;
+
     use HasVisibility;
 
     protected $fillable = [
@@ -24,8 +25,8 @@ class Language extends Model
     ];
 
     protected $casts = [
-        'dictionary' => 'array',
-        'display' => 'boolean',
+        'dictionary'   => 'array',
+        'display'      => 'boolean',
         'localization' => Localization::class,
     ];
 

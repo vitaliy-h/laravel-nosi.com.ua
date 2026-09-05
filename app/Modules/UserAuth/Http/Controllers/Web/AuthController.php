@@ -2,6 +2,7 @@
 
 namespace App\Modules\UserAuth\Http\Controllers\Web;
 
+use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\ShopCart\Actions\MergeCartOnAuthAction;
 use App\Modules\UserAuth\Actions\LoginAction;
 use App\Modules\UserAuth\Actions\RegisterAction;
@@ -15,7 +16,6 @@ use App\Modules\UserAuth\Http\Requests\LoginRequest;
 use App\Modules\UserAuth\Http\Requests\RegisterRequest;
 use App\Modules\UserAuth\Http\Requests\Web\PasswordRecoveryRequest;
 use App\Modules\UserAuth\Http\Requests\Web\PasswordResetRequest;
-use App\Modules\Core\Abstract\BaseWebController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +24,7 @@ class AuthController extends BaseWebController
 {
     public function login(LoginRequest $request, LoginAction $action, MergeCartOnAuthAction $mergeCart): RedirectResponse
     {
-        $remember = (bool)$request->boolean('remember_me');
+        $remember = (bool) $request->boolean('remember_me');
 
         $user = $action->handle(
             LoginData::from($request->validated())
@@ -78,6 +78,7 @@ class AuthController extends BaseWebController
         $action->handle(
             PasswordResetData::from($request->validated())
         );
+
         return redirect()
             ->to(save_route('auth.index'))
             ->with('success', t('auth.password_reset_success'));

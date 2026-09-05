@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Shop;
 
-use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Models\Category;
 use App\Modules\ShopOrder\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;

@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Shop;
 
+use App\Modules\Shop\Enums\PerPageOptionEnum;
 use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrder\Enums\PaymentTypeEnum;
-use App\Modules\Shop\Enums\PerPageOptionEnum;
 use Tests\TestCase;
 
 class EnumsTest extends TestCase

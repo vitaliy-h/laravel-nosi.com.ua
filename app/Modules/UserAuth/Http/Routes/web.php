@@ -1,34 +1,37 @@
 <?php
 
+use App\Modules\UserAuth\Http\Controllers\Web\AuthController;
+use App\Modules\UserAuth\Http\Controllers\Web\ImpersonationController;
 use App\Modules\UserAuth\Http\Controllers\Web\IndexController;
+use App\Modules\UserAuth\Http\Controllers\Web\OAuthController;
 
 Route::middleware(['guest'])->group(function () {
     Route::get('/', [IndexController::class, 'index'])->name('auth.index');
-    Route::post('/login', [\App\Modules\UserAuth\Http\Controllers\Web\AuthController::class, 'login'])
+    Route::post('/login', [AuthController::class, 'login'])
         ->name('login.store');
-    Route::post('/register', [\App\Modules\UserAuth\Http\Controllers\Web\AuthController::class, 'register'])
+    Route::post('/register', [AuthController::class, 'register'])
         ->name('register.store');
-    Route::post('/password-recovery', [\App\Modules\UserAuth\Http\Controllers\Web\AuthController::class, 'passwordRecovery'])
+    Route::post('/password-recovery', [AuthController::class, 'passwordRecovery'])
         ->middleware('throttle:5,1')
         ->name('password.recovery.store');
-    Route::post('/password-reset', [\App\Modules\UserAuth\Http\Controllers\Web\AuthController::class, 'passwordReset'])
+    Route::post('/password-reset', [AuthController::class, 'passwordReset'])
         ->name('password.reset.store');
 });
-Route::post('/logout', [\App\Modules\UserAuth\Http\Controllers\Web\AuthController::class, 'logout'])
+Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
-Route::get('/impersonate/{user}', [\App\Modules\UserAuth\Http\Controllers\Web\ImpersonationController::class, 'impersonate'])
+Route::get('/impersonate/{user}', [ImpersonationController::class, 'impersonate'])
     ->name('impersonate')
     ->middleware('signed');
 
-Route::post('/impersonation/leave', [\App\Modules\UserAuth\Http\Controllers\Web\ImpersonationController::class, 'leave'])
+Route::post('/impersonation/leave', [ImpersonationController::class, 'leave'])
     ->name('impersonate.leave')
     ->middleware('auth');
 
 Route::prefix('/social')->group(function () {
-    Route::get('/{provider}', [\App\Modules\UserAuth\Http\Controllers\Web\OAuthController::class, 'redirect'])
+    Route::get('/{provider}', [OAuthController::class, 'redirect'])
         ->name('social.redirect');
-    Route::get('/{provider}/callback', [\App\Modules\UserAuth\Http\Controllers\Web\OAuthController::class, 'callback'])
+    Route::get('/{provider}/callback', [OAuthController::class, 'callback'])
         ->name('social.callback');
 });

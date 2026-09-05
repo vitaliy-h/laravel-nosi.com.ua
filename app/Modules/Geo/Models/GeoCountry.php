@@ -11,6 +11,7 @@ class GeoCountry extends Model
 {
     /** @use HasFactory<GeoCountryFactory> */
     use HasFactory;
+
     use HasVisibility;
 
     protected $fillable = [

@@ -60,13 +60,13 @@ class ProfileWebControllerTest extends TestCase
         $order = Order::factory()->create(['user_id' => $user->id]);
         OrderProduct::factory()->create([
             'shop_order_id' => $order->id,
-            'product_name' => 'Ordered Thing',
+            'product_name'  => 'Ordered Thing',
         ]);
 
         $response = $this->actingAs($user)->get('/profile/orders');
 
         $response->assertStatus(200)
-            ->assertSee('#'.$order->order_number)
+            ->assertSee('#' . $order->order_number)
             ->assertSee($order->payment_status->label())
             ->assertSee($order->fresh()->total_amount_formatted, false);
     }
@@ -81,9 +81,9 @@ class ProfileWebControllerTest extends TestCase
         $product = Product::factory()->forCategory($category)->create();
 
         $item = OrderProduct::factory()->create([
-            'shop_order_id' => $order->id,
+            'shop_order_id'   => $order->id,
             'shop_product_id' => $product->id,
-            'product_name' => 'Ordered Thing',
+            'product_name'    => 'Ordered Thing',
             'product_article' => 'SKU-9',
         ]);
 
@@ -110,15 +110,15 @@ class ProfileWebControllerTest extends TestCase
         $response = $this->actingAs($user)
             ->from('/profile/edit')
             ->post('/profile/update-user-data', [
-                'name' => 'Updated Name',
+                'name'  => 'Updated Name',
                 'email' => 'updated@example.com',
             ]);
 
         $response->assertRedirect('/profile/edit');
         $response->assertSessionHas('user_data_success');
         $this->assertDatabaseHas('users', [
-            'id' => $user->id,
-            'name' => 'Updated Name',
+            'id'    => $user->id,
+            'name'  => 'Updated Name',
             'email' => 'updated@example.com',
         ]);
     }
@@ -131,7 +131,7 @@ class ProfileWebControllerTest extends TestCase
         $response = $this->actingAs($user)
             ->from('/profile/edit')
             ->post('/profile/update-user-data', [
-                'name' => 'Updated Name',
+                'name'  => 'Updated Name',
                 'email' => 'taken@example.com',
             ]);
 

@@ -3,8 +3,8 @@
 namespace App\Filament\Widgets\Shop;
 
 use App\Filament\Dashboard\Concerns\InteractsWithDashboardPeriod;
-use App\Modules\Core\Support\ModuleGate;
 use App\Filament\Dashboard\Queries\Shop\GetSalesChartQuery;
+use App\Modules\Core\Support\ModuleGate;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Contracts\Support\Htmlable;
 
@@ -43,22 +43,22 @@ class SalesChartWidget extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => __('admin.dashboard.stats.orders'),
-                    'data' => $chart->orders,
-                    'yAxisID' => 'orders',
-                    'borderColor' => '#0ea5e9',
+                    'label'           => __('admin.dashboard.stats.orders'),
+                    'data'            => $chart->orders,
+                    'yAxisID'         => 'orders',
+                    'borderColor'     => '#0ea5e9',
                     'backgroundColor' => 'rgba(14, 165, 233, 0.1)',
-                    'fill' => true,
-                    'tension' => 0.3,
+                    'fill'            => true,
+                    'tension'         => 0.3,
                 ],
                 [
-                    'label' => __('admin.dashboard.stats.revenue'),
-                    'data' => $chart->revenue,
-                    'yAxisID' => 'revenue',
-                    'borderColor' => '#22c55e',
+                    'label'           => __('admin.dashboard.stats.revenue'),
+                    'data'            => $chart->revenue,
+                    'yAxisID'         => 'revenue',
+                    'borderColor'     => '#22c55e',
                     'backgroundColor' => 'rgba(34, 197, 94, 0.1)',
-                    'fill' => false,
-                    'tension' => 0.3,
+                    'fill'            => false,
+                    'tension'         => 0.3,
                 ],
             ],
             'labels' => $chart->labels,
@@ -76,16 +76,16 @@ class SalesChartWidget extends ChartWidget
         return [
             'scales' => [
                 'orders' => [
-                    'type' => 'linear',
-                    'position' => 'left',
+                    'type'        => 'linear',
+                    'position'    => 'left',
                     'beginAtZero' => true,
-                    'ticks' => ['precision' => 0],
+                    'ticks'       => ['precision' => 0],
                 ],
                 'revenue' => [
-                    'type' => 'linear',
-                    'position' => 'right',
+                    'type'        => 'linear',
+                    'position'    => 'right',
                     'beginAtZero' => true,
-                    'grid' => ['drawOnChartArea' => false],
+                    'grid'        => ['drawOnChartArea' => false],
                 ],
             ],
         ];

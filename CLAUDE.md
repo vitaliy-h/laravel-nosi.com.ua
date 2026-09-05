@@ -8,6 +8,24 @@ Guidance for Claude Code working in this Laravel + Filament repository.
 - Frontend: `@.claude/frontend.md`
 - Testing: `@.claude/testing.md`
 
+## Project documentation
+
+Read the relevant page before changing a subsystem — these describe how this project
+actually works, not generic Laravel:
+
+- `docs/starter/` — architecture and subsystems: `architecture.md`, `modules.md`,
+  `routing.md`, `actions.md`, `view-models.md`, `cart.md`, `images.md`, `logs.md`,
+  `letters.md`, `sms.md`, `sitemap.md`, `translations.md`, `oauth.md`, `uuid.md`,
+  `commands.md`, `testing.md`
+- `docs/api/` — the HTTP API per module (`auth`, `profile`, `shop`, `translation`)
+- `docs/filament/` — admin panel: resource generation, dashboard, nested sets, translations
+- `docs/project/` — this project's own notes (`README.md`, `docs_audit.md`, `todo.md`)
+- `docs/README.md` — server requirements, install and local setup (Sail / WSL2 / OpenServer)
+
+When code and a doc disagree, the code wins — fix the doc in the same change.
+
 ## Base Rules
 
 - Always add newly created test files to git
+- Tests are plain PHPUnit 13 classes — the stack and conventions live in
+  `@.claude/testing.md`; follow that file rather than inventing a setup

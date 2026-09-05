@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\UserAuth;
 
+use App\Modules\User\Models\User;
 use App\Modules\UserAuth\Actions\ConnectSocialProfileAction;
 use App\Modules\UserAuth\Models\SocialProfile;
-use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Two\User as SocialiteUser;
@@ -18,9 +18,9 @@ class ConnectSocialProfileActionTest extends TestCase
     {
         $socialiteUser = new SocialiteUser;
         $socialiteUser->map(['id' => $id, 'name' => 'Test', 'email' => null]);
-        $socialiteUser->token        = 'tok';
+        $socialiteUser->token = 'tok';
         $socialiteUser->refreshToken = null;
-        $socialiteUser->expiresIn    = null;
+        $socialiteUser->expiresIn = null;
 
         return $socialiteUser;
     }

@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Shop\Categories;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Shop\Categories\Pages\ManageCategories;
+use App\Filament\Support\NestedSetFields;
 use App\Filament\Traits\HasSeoFields;
 use App\Modules\Shop\Models\Category;
 use BackedEnum;
@@ -13,7 +14,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
@@ -22,12 +22,13 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
-use App\Filament\Support\NestedSetFields;
 
 class CategoryResource extends Resource
 {
     use HasSeoFields;
+
     protected static ?string $model = Category::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
@@ -58,7 +59,7 @@ class CategoryResource extends Resource
                     ->columnSpan(6)
                     ->visibility('public')
                     ->getUploadedFileNameForStorageUsing(function ($file, $record) {
-                        return ($record ?? new Category())->getFilePath(
+                        return ($record ?? new Category)->getFilePath(
                             $file->getClientOriginalName(),
                             'img',
                         );
@@ -74,15 +75,13 @@ class CategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn ($query) =>
-                $query->withDepth()->defaultOrder()
+            ->modifyQueryUsing(fn ($query) => $query->withDepth()->defaultOrder()
             )
             ->defaultSort('_lft')
             ->columns([
                 ImageColumn::make('img'),
                 TextColumn::make('title')
-                    ->formatStateUsing(fn ($record) =>
-                        str_repeat('— ', $record->depth) . $record->title
+                    ->formatStateUsing(fn ($record) => str_repeat('— ', $record->depth) . $record->title
                     )
                     ->searchable(),
                 TextColumn::make('slug')
@@ -112,16 +111,15 @@ class CategoryResource extends Resource
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()
                     ->iconButton()
-                    ->disabled(fn ($record) =>
-                        $record->children()->exists() ||
+                    ->disabled(fn ($record) => $record->children()->exists() ||
                         $record->products()->exists()
                     )
                     ->tooltip(fn ($record) => match (true) {
                         $record->children()->exists() => __('admin.messages.delete_forbidden_has_children'),
-                        $record->products()->exists()  => __('admin.messages.delete_forbidden_has_products'),
-                        default                        => null,
+                        $record->products()->exists() => __('admin.messages.delete_forbidden_has_products'),
+                        default                       => null,
                     }),
-            ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+            ], position: RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
                 NestedSetFields::createAction(),
                 BulkActionGroup::make([

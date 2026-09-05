@@ -20,6 +20,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -62,18 +63,18 @@ class AuthLogResource extends Resource
                 TextColumn::make('source')
                     ->label(__('admin.fields.source'))
                     ->badge()
-                    ->formatStateUsing(fn(AuthLogSourceEnum $state) => $state->label()),
+                    ->formatStateUsing(fn (AuthLogSourceEnum $state) => $state->label()),
 
                 TextColumn::make('action')
                     ->label(__('admin.fields.action'))
                     ->badge()
-                    ->formatStateUsing(fn(AuthLogActionEnum $state) => $state->label()),
+                    ->formatStateUsing(fn (AuthLogActionEnum $state) => $state->label()),
 
                 TextColumn::make('result')
                     ->label(__('admin.fields.result'))
                     ->badge()
-                    ->color(fn(AuthLogResultEnum $state) => $state->color())
-                    ->formatStateUsing(fn(AuthLogResultEnum $state) => $state->label()),
+                    ->color(fn (AuthLogResultEnum $state) => $state->color())
+                    ->formatStateUsing(fn (AuthLogResultEnum $state) => $state->label()),
 
                 TextColumn::make('ip_address')
                     ->label(__('admin.fields.ip_address'))
@@ -116,11 +117,11 @@ class AuthLogResource extends Resource
                         return $query
                             ->when(
                                 $data['from'] ?? null,
-                                fn(Builder $query, $date) => $query->whereDate('created_at', '>=', $date),
+                                fn (Builder $query, $date) => $query->whereDate('created_at', '>=', $date),
                             )
                             ->when(
                                 $data['until'] ?? null,
-                                fn(Builder $query, $date) => $query->whereDate('created_at', '<=', $date),
+                                fn (Builder $query, $date) => $query->whereDate('created_at', '<=', $date),
                             );
                     })
                     ->indicateUsing(function (array $data): ?string {
@@ -145,7 +146,7 @@ class AuthLogResource extends Resource
                 DeleteAction::make()
                     ->iconButton(),
 
-            ], position: \Filament\Tables\Enums\RecordActionsPosition::BeforeColumns)
+            ], position: RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
@@ -182,18 +183,18 @@ class AuthLogResource extends Resource
                             TextEntry::make('source')
                                 ->label(__('admin.fields.source'))
                                 ->badge()
-                                ->formatStateUsing(fn(AuthLogSourceEnum $state) => $state->label()),
+                                ->formatStateUsing(fn (AuthLogSourceEnum $state) => $state->label()),
 
                             TextEntry::make('action')
                                 ->label(__('admin.fields.action'))
                                 ->badge()
-                                ->formatStateUsing(fn(AuthLogActionEnum $state) => $state->label()),
+                                ->formatStateUsing(fn (AuthLogActionEnum $state) => $state->label()),
 
                             TextEntry::make('result')
                                 ->label(__('admin.fields.result'))
                                 ->badge()
-                                ->color(fn(AuthLogResultEnum $state) => $state->color())
-                                ->formatStateUsing(fn(AuthLogResultEnum $state) => $state->label()),
+                                ->color(fn (AuthLogResultEnum $state) => $state->color())
+                                ->formatStateUsing(fn (AuthLogResultEnum $state) => $state->label()),
 
                             TextEntry::make('ip_address')
                                 ->label(__('admin.fields.ip_address'))

@@ -33,7 +33,7 @@ class IndexController extends BaseWebController
             user: ProfileUserViewModel::from(auth()->user()->load('socialProfiles')),
         );
 
-        return $this->render('modules.profile.edit', $page->toViewData());
+        return $this->render('modules.profile.edit', $page);
     }
 
     public function orders(Request $request)
@@ -51,7 +51,7 @@ class IndexController extends BaseWebController
             filter: $filter,
         );
 
-        return $this->render('modules.profile.orders', $page->toViewData());
+        return $this->render('modules.profile.orders', $page);
     }
 
     public function order(Request $request, string $id)
@@ -63,6 +63,6 @@ class IndexController extends BaseWebController
             order: OrderViewModel::from($this->findUserOrder->handle((int) $id, $user->id)),
         );
 
-        return $this->render('modules.profile.order', $page->toViewData());
+        return $this->render('modules.profile.order', $page);
     }
 }

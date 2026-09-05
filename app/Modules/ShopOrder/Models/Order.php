@@ -2,13 +2,13 @@
 
 namespace App\Modules\ShopOrder\Models;
 
-use App\Modules\User\Models\User;
 use App\Modules\Core\Traits\Models\CascadesDeletes;
 use App\Modules\Core\Traits\Models\HasUuid;
 use App\Modules\ShopCart\Models\Promocode;
 use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrder\Enums\PaymentTypeEnum;
 use App\Modules\ShopOrder\Services\OrderPermissions;
+use App\Modules\User\Models\User;
 use Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -21,6 +21,7 @@ class Order extends Model
 
     /** @use HasFactory<OrderFactory> */
     use HasFactory;
+
     use HasUuid;
 
     protected array $uuidFields = ['uuid'];
@@ -52,12 +53,12 @@ class Order extends Model
     ];
 
     protected $casts = [
-        'total_amount' => 'decimal:2',
+        'total_amount'    => 'decimal:2',
         'subtotal_amount' => 'decimal:2',
         'discount_amount' => 'decimal:2',
-        'payment_status' => PaymentStatusEnum::class,
-        'payment_type' => PaymentTypeEnum::class,
-        'payment_date' => 'datetime',
+        'payment_status'  => PaymentStatusEnum::class,
+        'payment_type'    => PaymentTypeEnum::class,
+        'payment_date'    => 'datetime',
     ];
 
     public function user(): BelongsTo
@@ -77,17 +78,17 @@ class Order extends Model
 
     public function getTotalAmountFormattedAttribute(): string
     {
-        return t('shop.currency').number_format($this->total_amount, 2);
+        return t('shop.currency') . number_format($this->total_amount, 2);
     }
 
     public function getSubtotalAmountFormattedAttribute(): string
     {
-        return t('shop.currency').number_format($this->subtotal_amount, 2);
+        return t('shop.currency') . number_format($this->subtotal_amount, 2);
     }
 
     public function getDiscountAmountFormattedAttribute(): string
     {
-        return t('shop.currency').number_format($this->discount_amount, 2);
+        return t('shop.currency') . number_format($this->discount_amount, 2);
     }
 
     public function getPermissionsAttribute(): OrderPermissions

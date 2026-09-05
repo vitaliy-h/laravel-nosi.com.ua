@@ -3,7 +3,7 @@
 namespace App\Modules\Page\ViewModels;
 
 use App\Modules\Core\Abstract\BaseViewModel;
-use App\Modules\Core\Facades\UrlFacade;
+use App\Modules\Core\Support\UrlHelper;
 use App\Modules\Page\Models\Page;
 
 class MenuItemViewModel extends BaseViewModel
@@ -16,12 +16,12 @@ class MenuItemViewModel extends BaseViewModel
 
     public static function fromPage(Page $page): self
     {
-        $url = UrlFacade::normalizeForLink($page->slug);
+        $url = UrlHelper::normalizeForLink($page->slug);
 
         return new self(
             title: (string) $page->title,
             url: $url,
-            is_active: '/'.request()->path() === $url,
+            is_active: '/' . request()->path() === $url,
         );
     }
 }

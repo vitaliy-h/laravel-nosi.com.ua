@@ -32,7 +32,7 @@ class ManageOrders extends ManageRecords
             $query
                 ->where('order_number', 'like', "%{$search}%")
                 ->orWhereHas('user', function (Builder $query) use ($search) {
-                    $query->where(fn(Builder $query) => $query->where('name', 'like', "%{$search}%")
+                    $query->where(fn (Builder $query) => $query->where('name', 'like', "%{$search}%")
                         ->orWhere('email', 'like', "%{$search}%"));
                 })
                 ->orWhereHas('items', function (Builder $query) use ($search) {

@@ -3,9 +3,8 @@
 namespace Tests\Feature\Filament\Subscriber;
 
 use App\Filament\Resources\Subscribers\Pages\ManageSubscribers;
-use App\Modules\User\Models\User;
-use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Subscriber\Models\Subscriber;
+use App\Modules\User\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -70,7 +69,7 @@ class SubscriberResourceTest extends TestCase
         Livewire::test(ManageSubscribers::class)
             ->callAction(TestAction::make(CreateAction::getDefaultName())->table(), data: [
                 'email' => 'jane@example.com',
-                'ip' => '192.168.1.1',
+                'ip'    => '192.168.1.1',
             ])
             ->assertHasNoFormErrors();
 
@@ -93,13 +92,13 @@ class SubscriberResourceTest extends TestCase
         Livewire::test(ManageSubscribers::class)
             ->callAction(TestAction::make(EditAction::getDefaultName())->table($subscriber), data: [
                 'email' => 'updated@example.com',
-                'ip' => $subscriber->ip,
+                'ip'    => $subscriber->ip,
                 'error' => 'CRM timeout',
             ])
             ->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('subscribers', [
-            'id' => $subscriber->id,
+            'id'    => $subscriber->id,
             'email' => 'updated@example.com',
             'error' => 'CRM timeout',
         ]);

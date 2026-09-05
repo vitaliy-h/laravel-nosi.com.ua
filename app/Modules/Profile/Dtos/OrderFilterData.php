@@ -10,6 +10,5 @@ class OrderFilterData extends Data
     public function __construct(
         public readonly ?string $search,
         public readonly ?PaymentStatusEnum $status,
-    ) {
-    }
+    ) {}
 }

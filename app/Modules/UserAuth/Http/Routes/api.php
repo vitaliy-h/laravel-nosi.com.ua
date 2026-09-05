@@ -12,4 +12,3 @@ Route::prefix('/auth')->group(function () {
         ->middleware('auth:sanctum')
         ->name('api.logout');
 });
-

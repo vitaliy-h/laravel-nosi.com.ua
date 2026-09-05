@@ -2,10 +2,19 @@
 
 ## Stack
 
-- **Bundler:** Vite 8
-- **CSS:** Tailwind CSS 4 (via `@tailwindcss/vite` plugin)
+- **Frontend CSS:** Bootstrap 5 demo theme — `resources/views/layouts/app.blade.php`
+  loads `public/demo/vendors/bootstrap/css/bootstrap.min.css`, the theme's
+  `public/demo/assets/css/main.css`, `public/css/static/static.css` and the
+  project's own `public/assets/css/app.css`, plus bootstrap-icons (`<i class="bi bi-*">`)
 - **Templating:** Laravel Blade
-- **Integration:** `laravel-vite-plugin`
+- **Bundler:** Vite 8 + Tailwind CSS 4 (`@tailwindcss/vite`, `resources/css/app.css`) —
+  **configured but not used by the frontend**: no view calls `@vite`, so nothing
+  built by Vite reaches a page today
+
+⚠️ Write Bootstrap 5 markup and classes (`row`, `col-*`, `btn btn-primary`,
+`bi bi-*`), not Tailwind utilities — a Tailwind class on a page does nothing,
+because the Tailwind build is not linked into the layout. Pagination follows the
+same rule: `Paginator::useBootstrap()` in `AppServiceProvider` is deliberate.
 
 ## Commands
 
@@ -18,7 +27,7 @@ npm run build  # production build
 
 ```
 resources/
-├── css/           # global styles, Tailwind entry point
+├── css/           # Tailwind entry point (Vite build, currently unused by views)
 ├── js/            # JS modules
 └── views/
     ├── layouts/       # base layouts (@extends)
@@ -45,11 +54,32 @@ resources/
    - `partials/` — everything pulled in with `@include`;
    - `layouts/` — the module's own layout (only `profile` has one).
 
-   No `components/`, `forms/` or `blocks/` inside a module.
+   No `components/` or `blocks/` inside a module.
+
+   **One subfolder inside `partials/` is allowed, and only for a set of templates
+   picked dynamically by a key** — the folder is then the key's namespace and is named
+   after it. Real case: `modules/user_auth/partials/forms/{login,register,
+   password_recovery,password_reset}.blade.php`, chosen by
+   `'modules.user_auth.partials.forms.' . $mode` (`AuthPageViewModel.php:36`). A
+   template `@include`d by a literal name goes flat into `partials/` — do not create a
+   folder just to group files.
 4. **A module's main page is always `index.blade.php`.**
 5. **A module's template lives in that module**, even when another module
    includes it — `modules.shop.partials.product_card` is included from
    `modules/index/index.blade.php`, and stays in `shop`.
+
+## Global `resources/views/partials/`
+
+Templates used by more than one module, or by the layout itself: `head`, `navbar`,
+`footer`, `scripts`, `alerts`, `modals`, `hero`, `page_title`, `page_content`.
+
+The same subfolder rule applies here: `partials/builder/` holds one template per CMS
+content block (`text`, `image`, `gallery`, `video`, `teasers`), resolved by
+`partials/builder.blade.php` as `'partials.builder.' . $block['type']`.
+
+⚠️ A template only one module uses belongs to that module, not here — pagination for the
+profile page lives in `modules/profile/partials/pagination.blade.php` (rule 5), even
+though `links()` can reference any view path.
 
 ## `components/` vs `partials/`
 

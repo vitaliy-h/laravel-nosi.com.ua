@@ -41,8 +41,8 @@ class LetterTemplateServiceTest extends TestCase
 
         $this->assertDatabaseHas('log_letters', [
             'template_key' => LetterEnum::PASSWORD_RESET->value,
-            'receiver' => 'user@example.com',
-            'status' => LogLetterStatusEnum::QUEUED->value,
+            'receiver'     => 'user@example.com',
+            'status'       => LogLetterStatusEnum::QUEUED->value,
         ]);
     }
 
@@ -50,7 +50,7 @@ class LetterTemplateServiceTest extends TestCase
     {
         LetterTemplate::query()->where('key', LetterEnum::PASSWORD_RESET)->update([
             'subject' => 'Reset for {{ $user_name }}',
-            'body' => 'Click {{ $reset_url }} to reset.',
+            'body'    => 'Click {{ $reset_url }} to reset.',
         ]);
 
         $dto = new SendLetterTemplateData(
@@ -63,8 +63,8 @@ class LetterTemplateServiceTest extends TestCase
 
         $this->assertDatabaseHas('log_letters', [
             'receiver' => 'john@example.com',
-            'subject' => 'Reset for John',
-            'body' => 'Click https://example.com/reset/abc to reset.',
+            'subject'  => 'Reset for John',
+            'body'     => 'Click https://example.com/reset/abc to reset.',
         ]);
     }
 
@@ -72,7 +72,7 @@ class LetterTemplateServiceTest extends TestCase
     {
         LetterTemplate::query()->where('key', LetterEnum::PASSWORD_RESET)->update([
             'subject' => 'Total {{ $total_amount }}',
-            'body' => 'Total: {{ $total_amount }}, ref {{ $ref }}.',
+            'body'    => 'Total: {{ $total_amount }}, ref {{ $ref }}.',
         ]);
 
         $dto = new SendLetterTemplateData(
@@ -85,8 +85,8 @@ class LetterTemplateServiceTest extends TestCase
 
         $this->assertDatabaseHas('log_letters', [
             'receiver' => 'user@example.com',
-            'subject' => 'Total $170.00',
-            'body' => 'Total: $170.00, ref $1 not a backreference.',
+            'subject'  => 'Total $170.00',
+            'body'     => 'Total: $170.00, ref $1 not a backreference.',
         ]);
     }
 
@@ -134,14 +134,14 @@ class LetterTemplateServiceTest extends TestCase
 
         $this->assertDatabaseHas('log_letters', [
             'receiver' => 'user@example.com',
-            'source' => NotificationSourceEnum::ADMIN->value,
+            'source'   => NotificationSourceEnum::ADMIN->value,
         ]);
     }
 
     public function test_send_stores_sender_from_template(): void
     {
         LetterTemplate::query()->where('key', LetterEnum::PASSWORD_RESET)->update([
-            'sender' => 'noreply@example.com',
+            'sender'      => 'noreply@example.com',
             'sender_name' => 'MyApp',
         ]);
 
@@ -154,8 +154,8 @@ class LetterTemplateServiceTest extends TestCase
         $this->service->send($dto);
 
         $this->assertDatabaseHas('log_letters', [
-            'receiver' => 'user@example.com',
-            'sender' => 'noreply@example.com',
+            'receiver'    => 'user@example.com',
+            'sender'      => 'noreply@example.com',
             'sender_name' => 'MyApp',
         ]);
     }

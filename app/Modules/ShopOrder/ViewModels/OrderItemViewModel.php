@@ -32,7 +32,7 @@ class OrderItemViewModel extends BaseViewModel
             article: $item->product_article,
             quantity: (int) $item->quantity,
             total_formatted: $item->total_formatted,
-            has_image: ! empty($product?->img),
+            has_image: !empty($product?->img),
             image: $product?->image,
             product_url: $product && $category
                 ? save_route('shop.product', [$category->slug, $product->slug_with_id])

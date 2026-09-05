@@ -64,10 +64,15 @@ For each template we store in DB:
 
 ## Step 1: Add enum value
 
+Add the case to `app/Modules/Notification/Enums/LetterEnum.php`. The enum already ships
+with `FEEDBACK`, `PASSWORD_RESET`, `REGISTRATION` and `ORDER_CREATED`, so this walkthrough
+adds a new one — an order-shipped notification:
+
 ```php
 enum LetterEnum: string
 {
-    case ORDER_CREATED = 'order_created';
+    // ... existing cases
+    case ORDER_SHIPPED = 'order_shipped';
 }
 ```
 
@@ -75,15 +80,18 @@ enum LetterEnum: string
 
 ## Step 2: Add translations
 
+The seeder reads the template text from `letter_templates.{key}` via `__()`, so every
+locale directory the project ships needs the key. The starter ships `lang/en` only —
+add the file to any other locale you create:
+
 ```
 lang/en/letter_templates.php
-lang/uk/letter_templates.php
 ```
 
 ```php
-\App\Modules\Notification\Enums\LetterEnum::ORDER_CREATED->value => [
-    'subject' => 'Order created',
-    'body' => 'Hello {{ user_name }}',
+\App\Modules\Notification\Enums\LetterEnum::ORDER_SHIPPED->value => [
+    'subject' => 'Order shipped',
+    'body'    => '<p>Hello {{ $user_name }}, your order is on its way.</p>',
 ],
 ```
 
@@ -104,10 +112,16 @@ php artisan db:seed --class=LetterTemplateSeeder
 
 # 4. Sending emails
 
-Emails are sent using facade:
+Emails are sent through `Notification\Services\LetterTemplateService`. Inject it —
+the facade `LetterTemplateFacade` stays for blade and one-off calls, but application
+code should take the service in its constructor:
 
 ```php
-LetterTemplateFacade::send(
+public function __construct(
+    private readonly LetterTemplateService $letters,
+) {}
+
+$this->letters->send(
     new SendLetterTemplateData(
         key: LetterEnum::FEEDBACK,
         replace: [
@@ -132,10 +146,12 @@ Inside templates you can use variables:
 
 ```
 {{ user_name }}
-{{ order_id }}
+{{ $user_name }}
 ```
 
-They will be replaced automatically using replace array.
+Both forms work — `LetterTemplateService::replace()` matches
+`/{{\s*\$?key\s*}}/` — and the templates shipped in `lang/en/letter_templates.php`
+use the `$`-prefixed one. Keys come from the `replace` array passed to the facade.
 
 ---
 
@@ -196,12 +212,17 @@ Statuses:
 
 # 9. Source tracking
 
-Each email has a source:
+Each email records where it was sent from — `NotificationSourceEnum`
+(`app/Modules/Notification/Enums/NotificationSourceEnum.php`), exactly three cases:
 
-* admin
-* system
-* api
-* custom values
+| Case | Value | Meaning |
+|---|---|---|
+| `CONSOLE` | `console` | an artisan command or a queued job |
+| `ADMIN` | `admin` | triggered from the Filament admin panel |
+| `SYSTEM` | `system` | triggered by the app itself, on a user action |
+
+The value is passed per send (`source:` in `SendLetterTemplateData`) and stored on the
+`log_letters` row.
 
 ---
 

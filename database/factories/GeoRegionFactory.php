@@ -26,7 +26,7 @@ class GeoRegionFactory extends Factory
 
     public function forCountry(GeoCountry $country): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'geo_country_id' => $country->id,
         ]);
     }

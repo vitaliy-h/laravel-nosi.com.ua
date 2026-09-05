@@ -26,8 +26,8 @@ class CartProduct extends Model
 
     protected $casts = [
         'selling_price' => 'decimal:2',
-        'quantity'   => 'integer',
-        'total'      => 'decimal:2',
+        'quantity'      => 'integer',
+        'total'         => 'decimal:2',
     ];
 
     public function cart()

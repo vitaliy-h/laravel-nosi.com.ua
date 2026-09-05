@@ -34,7 +34,7 @@ Read the docs first — the solution may already be described:
 
 Then find everything the task touches: module(s) under `app/Modules/`, models, migrations, Actions, DTOs, ViewModels, Web/Api controllers, Filament resources, routes, configs, seeders, existing tests.
 
-For broad searches delegate to `Explore` or `cavecrew-investigator`. Record files with paths and line numbers.
+For broad searches delegate to `Explore`. Record files with paths and line numbers.
 
 Detect the environment (it changes the commands in the plan): `compose.yaml` + `vendor/bin/sail` → Sail; otherwise ask (Docker / OpenServer / native PHP). Write commands for what actually exists on this machine.
 
@@ -118,7 +118,7 @@ A third file, `report.md`, is written later — after the work is done (see Step
 - **Numbering**: steps are numbered with plain arabic numerals — `1.`, `2.`, `3.` … Never roman numerals, letters or unnumbered bullets.
 - **"Что меняем и как это будет работать" comes first**, before "Подход". It describes the mechanics (what appears, what is touched, how the flow runs end to end), not the architectural justification — that stays in "Подход". No file lists there, they live in the steps.
 - **Track progress**: a finished step becomes `[x]`. If the approach changes mid-work, append to "Изменения плана" instead of silently rewriting history.
-- **Project architecture**: Actions hold business logic (shared by Web and API), controllers stay thin, DTOs (`spatie/laravel-data`) for input, Resources for API output, ViewModels for anything a blade renders (`docs/starter/view-models.md`), tests are PHPUnit 12 (not Pest). Unsure where something belongs → ask.
+- **Project architecture**: Actions hold write logic (shared by Web and API), Queries (`app/Modules/{Module}/Queries/`) hold reads — there are no repositories, controllers stay thin, DTOs (`spatie/laravel-data`) for input, Resources for API output, ViewModels for anything a blade renders (`docs/starter/view-models.md`), tests are PHPUnit 13 (not Pest). Unsure where something belongs → ask.
 - **Design patterns** only where the task justifies them, never for their own sake. State the reason in "Подход".
 - **Dangerous spots** marked inline in the step with `⚠️`:
   - editing existing migrations / dropping columns / data loss

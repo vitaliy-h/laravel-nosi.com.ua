@@ -2,18 +2,16 @@
 
 namespace Tests\Feature\Filament\Geo;
 
-use PHPUnit\Framework\Attributes\Group;
-
 use App\Filament\Resources\Geo\GeoCountries\Pages\ManageGeoCountries;
-use App\Modules\User\Models\User;
-use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Geo\Models\GeoCountry;
+use App\Modules\User\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\Testing\TestAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
 #[Group('geo')]
@@ -44,7 +42,7 @@ class GeoCountryResourceTest extends TestCase
     public function test_list_can_search_by_title(): void
     {
         $target = GeoCountry::factory()->create(['title' => 'UniqueCountry']);
-        $other  = GeoCountry::factory()->create(['title' => 'AnotherLand']);
+        $other = GeoCountry::factory()->create(['title' => 'AnotherLand']);
 
         Livewire::test(ManageGeoCountries::class)
             ->searchTable('UniqueCountry')
@@ -55,7 +53,7 @@ class GeoCountryResourceTest extends TestCase
     public function test_list_can_search_by_iso2(): void
     {
         $target = GeoCountry::factory()->create(['iso2' => 'ZZ']);
-        $other  = GeoCountry::factory()->create(['iso2' => 'YY']);
+        $other = GeoCountry::factory()->create(['iso2' => 'YY']);
 
         Livewire::test(ManageGeoCountries::class)
             ->searchTable('ZZ')

@@ -48,10 +48,10 @@ class AjaxCartController extends BaseWebController
         }
 
         $actions = match ($action) {
-            CartAction::DeleteModal => $this->handleDeleteModal($cart, $product, $remove),
-            CartAction::DeleteCheckout => $this->handleDeleteCheckout($cart, $product, $remove),
-            CartAction::ChangeCount => $this->handleChangeCount($cart, $product, $count, $addOrUpdate),
-            CartAction::ChangeCountModal => $this->handleChangeCountModal($cart, $product, $count, $addOrUpdate),
+            CartAction::DeleteModal         => $this->handleDeleteModal($cart, $product, $remove),
+            CartAction::DeleteCheckout      => $this->handleDeleteCheckout($cart, $product, $remove),
+            CartAction::ChangeCount         => $this->handleChangeCount($cart, $product, $count, $addOrUpdate),
+            CartAction::ChangeCountModal    => $this->handleChangeCountModal($cart, $product, $count, $addOrUpdate),
             CartAction::ChangeCountCheckout => $this->handleChangeCountCheckout($cart, $product, $count, $addOrUpdate),
         };
 
@@ -78,8 +78,8 @@ class AjaxCartController extends BaseWebController
             $this->cartCountAction($cart),
             [
                 'selector' => '.js_cart_modal_content',
-                'method' => 'html',
-                'content' => '',
+                'method'   => 'html',
+                'content'  => '',
             ],
         ];
     }
@@ -98,8 +98,8 @@ class AjaxCartController extends BaseWebController
         return [
             $this->cartCountAction($cart),
             [
-                'selector' => '.checkout_item[data-product="'.$product->id.'"]',
-                'method' => 'remove',
+                'selector' => '.checkout_item[data-product="' . $product->id . '"]',
+                'method'   => 'remove',
             ],
             $this->summaryDiscountAction($cart),
             $this->checkoutTotalAction($cart),
@@ -115,14 +115,14 @@ class AjaxCartController extends BaseWebController
             $this->cartCountAction($cart),
             [
                 'selector' => '.js_cart_modal_content',
-                'method' => 'html',
-                'content' => $this->render('modules.shop_cart.partials.cart_modal_item', [
+                'method'   => 'html',
+                'content'  => $this->render('modules.shop_cart.partials.cart_modal_item', [
                     'item' => CartItemViewModel::from($item->load('product')),
                 ])->render(),
             ],
             [
                 'selector' => '#cartModal',
-                'method' => 'modal',
+                'method'   => 'modal',
             ],
         ];
     }
@@ -135,8 +135,8 @@ class AjaxCartController extends BaseWebController
             $this->cartCountAction($cart->refresh()),
             [
                 'selector' => '.js_product_total',
-                'method' => 'text',
-                'content' => $item->total_formatted,
+                'method'   => 'text',
+                'content'  => $item->total_formatted,
             ],
         ];
     }
@@ -149,9 +149,9 @@ class AjaxCartController extends BaseWebController
         return [
             $this->cartCountAction($cart),
             [
-                'selector' => '.js_product_checkout_total_'.$product->id,
-                'method' => 'text',
-                'content' => $item->total_formatted,
+                'selector' => '.js_product_checkout_total_' . $product->id,
+                'method'   => 'text',
+                'content'  => $item->total_formatted,
             ],
             $this->summaryDiscountAction($cart),
             $this->checkoutTotalAction($cart),
@@ -166,8 +166,8 @@ class AjaxCartController extends BaseWebController
     {
         return [
             'selector' => '.js_summary_discount',
-            'method' => 'replaceWith',
-            'content' => $this->render('modules.shop_cart.partials.summary_discount', [
+            'method'   => 'replaceWith',
+            'content'  => $this->render('modules.shop_cart.partials.summary_discount', [
                 'cart' => CartViewModel::from($cart->load('items.product')),
             ])->render(),
         ];
@@ -177,8 +177,8 @@ class AjaxCartController extends BaseWebController
     {
         return [
             'selector' => '.js_checkout_total',
-            'method' => 'text',
-            'content' => $cart->total_amount_formatted,
+            'method'   => 'text',
+            'content'  => $cart->total_amount_formatted,
         ];
     }
 
@@ -186,8 +186,8 @@ class AjaxCartController extends BaseWebController
     {
         return [
             'selector' => '.js_cart_count',
-            'method' => 'text',
-            'content' => $cart->items()->sum('quantity'),
+            'method'   => 'text',
+            'content'  => $cart->items()->sum('quantity'),
         ];
     }
 

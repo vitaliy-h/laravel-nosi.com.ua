@@ -15,8 +15,8 @@ class OrderDtoTest extends TestCase
         $item = OrderItemData::from([
             'shop_product_id' => 10,
             'product_name'    => 'Widget',
-            'product_article'     => 'SKU-1',
-            'selling_price'      => '19.99',
+            'product_article' => 'SKU-1',
+            'selling_price'   => '19.99',
             'quantity'        => '2',
         ]);
 
@@ -32,8 +32,8 @@ class OrderDtoTest extends TestCase
         $item = OrderItemData::from([
             'shop_product_id' => 1,
             'product_name'    => 'No SKU',
-            'product_article'     => null,
-            'selling_price'      => 5,
+            'product_article' => null,
+            'selling_price'   => 5,
             'quantity'        => 1,
         ]);
 
@@ -58,8 +58,8 @@ class OrderDtoTest extends TestCase
                 [
                     'shop_product_id' => 10,
                     'product_name'    => 'Widget',
-                    'product_article'     => 'SKU-1',
-                    'selling_price'      => 19.99,
+                    'product_article' => 'SKU-1',
+                    'selling_price'   => 19.99,
                     'quantity'        => 2,
                 ],
             ],

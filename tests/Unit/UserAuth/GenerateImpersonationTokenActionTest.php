@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\UserAuth;
 
-use App\Modules\UserAuth\Actions\GenerateImpersonationTokenAction;
 use App\Modules\User\Models\User;
+use App\Modules\UserAuth\Actions\GenerateImpersonationTokenAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

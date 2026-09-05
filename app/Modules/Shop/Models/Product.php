@@ -13,13 +13,14 @@ class Product extends Model
 {
     /** @use HasFactory<ProductFactory> */
     use HasFactory;
-    use HasVisibility;
+
     use HasImage;
     use HasSeoFields;
+    use HasVisibility;
 
     protected array $imgArrayFields = ['imgs'];
 
-protected $table = 'shop_products';
+    protected $table = 'shop_products';
 
     protected $fillable = [
         'display',
@@ -39,11 +40,11 @@ protected $table = 'shop_products';
     ];
 
     protected $casts = [
-        'display' => 'boolean',
-        'price' => 'float',
-        'price2' => 'float',
-        'imgs' => 'array',
-        'rating' => 'float',
+        'display'       => 'boolean',
+        'price'         => 'float',
+        'price2'        => 'float',
+        'imgs'          => 'array',
+        'rating'        => 'float',
         'reviews_count' => 'integer',
     ];
 
@@ -69,7 +70,7 @@ protected $table = 'shop_products';
 
     public function getSlugWithIdAttribute()
     {
-       return $this->slug.'-'.$this->id;
+        return $this->slug . '-' . $this->id;
     }
 
     protected static function newFactory(): ProductFactory

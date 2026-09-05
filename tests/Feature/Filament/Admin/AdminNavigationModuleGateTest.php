@@ -51,7 +51,7 @@ class AdminNavigationModuleGateTest extends TestCase
     private function panelWith(array $modules): Panel
     {
         foreach ($modules as $module => $enabled) {
-            config(["modules.{$module}" => $enabled]);
+            config(["modules.list.{$module}" => $enabled]);
         }
 
         return (new AdminPanelProvider($this->app))->panel(Panel::make());
