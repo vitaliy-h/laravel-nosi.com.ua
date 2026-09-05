@@ -72,6 +72,35 @@ spelled out inside the key itself.
 
 ---
 
+# `pageFilters` is stripped from widgets that cannot take it
+
+`Dashboard::getWidgetsSchemaComponents()` overrides the Filament method to remove
+the `pageFilters` key from the data of every widget that has no such property.
+It is a workaround for an upstream bug, not a design decision.
+
+Filament's `Page::getWidgetsSchemaComponents()` hands `pageFilters` to **every**
+widget of a page that has a filters form, whether or not the widget uses
+`InteractsWithPageFilters`. Since Livewire 4.4, mount params a component has not
+declared as a public property are forwarded into the component's HTML attribute
+bag. The array then reaches `ComponentAttributeBag::__toString()`, which calls
+`trim()` on it:
+
+```text
+trim(): Argument #1 ($string) must be of type string, array given
+```
+
+It blows up while rendering the widget's lazy-loading placeholder
+(`filament::components.loading-section`), and because that happens inside the
+page render, the whole `/admin` dashboard returns 500 — not just the one widget.
+Pinning Livewire back to 4.3 is not an option: that version carries a security
+advisory (`PKSA-bgw4-5zmg-2njg`) and Composer refuses to install it.
+
+Delete the override once Filament stops passing `pageFilters` to widgets without
+the property. `tests/Feature/Filament/Dashboard` covers the page render, so
+removing it too early fails the suite rather than the production dashboard.
+
+---
+
 # Adding a widget
 
 1. **Query** — `app/Filament/Dashboard/Queries/{Domain}/Get…Query.php`, taking
@@ -82,6 +111,8 @@ spelled out inside the key itself.
    `InteractsWithDashboardPeriod` only if the widget really recalculates per
    period: `$pageFilters` is reactive, so pulling it in makes the widget
    re-render on every filter change. Add `FormatsDashboardStats` for stat cards.
+   Leaving the trait out is safe — the page strips `pageFilters` for such widgets,
+   see the section above.
 4. **Module gate** — if the widget belongs to a switchable module, guard it:
 
    ```php

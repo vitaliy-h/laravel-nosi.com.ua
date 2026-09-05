@@ -1308,7 +1308,41 @@
   потрапляє), друга — обхід для головної, яка падала з вимкненим `shop`; після цього
   тестів у сьюті стало 783 замість 788, бо один data-provider на 8 кейсів замінено
   трьома тестами.
-- [ ] **9.A18 P3 -  окремою задачею обновити лару та всі залежності
+- [x] **9.A18 P3 — окремою задачею оновити лару та всі залежності.**
+  **Зроблено:** `composer update` + `npm update`, мажорних оновлень фреймворка не було —
+  Laravel лишається на 13.x, Filament на 5.x. Ключове:
+  `laravel/framework` 13.19.0 → 13.30.1, `filament/*` 5.6.8 → 5.7.8,
+  `livewire/livewire` 4.3.3 → 4.4.3, `phpunit/phpunit` 13.2.4 → 13.3.2,
+  `intervention/image` 4.1.5 → 4.3.2, `laravel/socialite` 5.28 → 5.31,
+  `symfony/*` 8.1.x, а також транзитивні мажори `hamcrest` 2 → 3 і `phpseclib` 3 → 4.
+  По npm: `vite` 8.0.16 → 8.2.2, `tailwindcss` і `@tailwindcss/vite` 4.3.0 → 4.3.3,
+  `laravel-vite-plugin` 3.1 → 3.2, `concurrently` підняли мажорно `^9.0.1` → `^10.0.5`
+  (це лише запускалка `composer dev`, збірка `npm run build` проходить).
+  Перевидані ассети Filament (`artisan filament:upgrade`). Заразом прибрано перекіс у
+  `.gitignore`: `/public/css/filament` і `/public/js/filament` там були, а
+  `/public/fonts/filament` — ні, тож при кожному апдейті в комміт лізли перехешовані
+  шрифти Inter. Тепер шрифти теж ігноруються і прибрані з індексу (`git rm --cached`) —
+  усі три теки однаково генерує `filament:upgrade` на `post-autoload-dump`, тобто на
+  кожному `composer install`.
+  Прогін до оновлення і після — 783 тести, обидва зелені.
+
+  ⚠️ **Оновлення зламало адмінку — довелось лікувати.** Після апдейту `/admin` віддавав
+  500, падало 9 тестів: `trim(): Argument #1 ($string) must be of type string, array given`
+  у `Illuminate\View\ComponentAttributeBag::__toString()` при рендері
+  `filament::components.loading-section`. Причина — стик двох змін:
+  `Filament\Pages\Page::getWidgetsSchemaComponents()` беззастережно передає `pageFilters`
+  **кожному** віджету сторінки з формою фільтрів, а Livewire 4.4 (нова фіча
+  `SupportHtmlAttributeForwarding`) параметри монтування, яких компонент не оголосив
+  публічною властивістю, перекладає в HTML-атрибути. Віджет без
+  `InteractsWithPageFilters` отримував масив `pageFilters` в attribute bag, і плейсхолдер
+  лінивого завантаження падав, тягнучи за собою всю сторінку. Відкотити Livewire на 4.3.3
+  не можна — на цю версію є security advisory (`PKSA-bgw4-5zmg-2njg`), composer її не ставить.
+  **Обхід:** `App\Filament\Pages\Dashboard::getWidgetsSchemaComponents()` прибирає
+  `pageFilters` з даних тих віджетів, у яких немає такої властивості. Метод помічений
+  коментарем — його треба видалити, щойно Filament перестане роздавати `pageFilters`
+  усім підряд. Обхід описаний у `docs/filament/dashboard.md` окремою секцією, і пункт
+  «Adding a widget» там тепер прямо каже, що не брати `InteractsWithDashboardPeriod` —
+  безпечно.
 
 ---
 

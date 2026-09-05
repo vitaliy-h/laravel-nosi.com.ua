@@ -9,10 +9,12 @@ use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Widgets\Widget;
 use Filament\Widgets\WidgetConfiguration;
+use Illuminate\Support\Arr;
 
 /**
  * Admin dashboard with a global period filter.
@@ -57,6 +59,42 @@ class Dashboard extends BaseDashboard
             parent::getWidgets(),
             fn (string|WidgetConfiguration $widget): bool => $widget !== NeedsAttentionWidget::class,
         ));
+    }
+
+    /**
+     * Upstream workaround (Filament 5.7 + Livewire 4.4).
+     *
+     * `Page::getWidgetsSchemaComponents()` hands `pageFilters` to every widget of a
+     * page that has a filters form, including widgets that never declared the
+     * property. Livewire 4.4 forwards mount params a component does not declare as
+     * HTML attributes, so the array lands in the attribute bag and
+     * `ComponentAttributeBag::__toString()` dies with
+     * `trim(): Argument #1 ($string) must be of type string, array given`
+     * while rendering the widget's lazy placeholder — the whole dashboard 500s.
+     *
+     * So the key is dropped for widgets that cannot consume it. Remove this method
+     * once Filament stops passing `pageFilters` to widgets without the property.
+     *
+     * @param  array<class-string<Widget> | WidgetConfiguration>  $widgets
+     * @param  array<string, mixed>  $data
+     * @return array<Component>
+     */
+    public function getWidgetsSchemaComponents(array $widgets, array $data = []): array
+    {
+        return array_map(
+            function (Component $component): Component {
+                if (!$component instanceof Livewire) {
+                    return $component;
+                }
+
+                if (property_exists($component->getComponent(), 'pageFilters')) {
+                    return $component;
+                }
+
+                return $component->data(Arr::except($component->getData(), ['pageFilters']));
+            },
+            parent::getWidgetsSchemaComponents($widgets, $data),
+        );
     }
 
     public function filtersForm(Schema $schema): Schema
