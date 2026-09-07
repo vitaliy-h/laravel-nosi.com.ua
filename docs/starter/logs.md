@@ -53,6 +53,7 @@ Each log entry contains:
 - LogService -- main service responsible for writing logs
 - Log model -- database representation
 - LogSourceResolver -- detects source (admin/api/console)
+- RequestContext -- ip / user agent / user id, `null` outside a request
 - config/log.php -- configuration rules
 
 ------------------------------------------------------------------------
@@ -281,6 +282,11 @@ every record):
 | `UserAuth\Actions\SendPasswordResetAction` | password reset request (failure = unknown email) |
 | `UserAuth\Actions\ResetPasswordAction` | password change through the reset link |
 | `Profile\Actions\UpdateUserPasswordAction` | password change from the profile |
+
+Both journals read the IP, the user agent and the current user through
+`Core\Support\RequestContext` rather than `request()` directly: they are written
+from observers and services that also run from a queue or a command, where it has
+to degrade to `null` (`.claude/backend.md`, «Request-scoped state»).
 
 `AuthLogSourceResolver` resolves the source. Unlike `LogSourceResolver` it
 checks the HTTP request first, because authentication always happens inside a

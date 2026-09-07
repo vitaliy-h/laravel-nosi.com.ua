@@ -7,15 +7,26 @@ use App\Modules\Page\Queries\GetPageBreadcrumbsQuery;
 use App\Modules\Page\ViewModels\LayoutViewModel;
 use App\Modules\Page\ViewModels\MenuItemViewModel;
 use App\Modules\Page\ViewModels\PageViewModel;
-use App\Modules\ShopCart\Services\CartService;
+use App\Modules\ShopCart\Services\CartContext;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
+/**
+ * Builds the layout every screen shares and hands it to the view layer.
+ *
+ * It runs once per request (from the ShareModulePageContext middleware, or from a
+ * controller for screens with no CMS page behind them), which makes it one of the
+ * entry points allowed to read request-scoped state: it injects the Request and
+ * asks CartContext for the cart. Everything below it — ViewModels, Queries — is
+ * handed the values instead. See `.claude/backend.md`, «Request-scoped state».
+ */
 readonly class PageContextSharer
 {
     public function __construct(
         private GetPageBreadcrumbsQuery $breadcrumbs,
         private MenuService $menu,
-        private CartService $cart,
+        private CartContext $cart,
+        private Request $request,
     ) {}
 
     /**
@@ -45,7 +56,7 @@ readonly class PageContextSharer
             meta_description: $page?->meta_description,
             header_menu: $this->menuItems($this->menu->getHeaderMenu()),
             footer_menu: $this->menuItems($this->menu->getFooterMenu()),
-            cart_count: $this->cart->getCount(),
+            cart_count: $this->cart->count(),
         );
     }
 
@@ -55,7 +66,11 @@ readonly class PageContextSharer
      */
     private function menuItems(Collection $pages): Collection
     {
-        return $pages->map(fn (Page $page) => MenuItemViewModel::from($page))->values();
+        $currentPath = '/' . $this->request->path();
+
+        return $pages
+            ->map(fn (Page $page) => MenuItemViewModel::fromPage($page, $currentPath))
+            ->values();
     }
 
     /**

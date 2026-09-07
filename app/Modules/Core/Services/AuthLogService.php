@@ -7,6 +7,7 @@ use App\Modules\Core\Enums\AuthLogResultEnum;
 use App\Modules\Core\Enums\AuthLogSourceEnum;
 use App\Modules\Core\Models\AuthLog;
 use App\Modules\Core\Support\AuthLogSourceResolver;
+use App\Modules\Core\Support\RequestContext;
 use App\Modules\Core\Support\UserAgentParser;
 use App\Modules\User\Models\User;
 
@@ -49,7 +50,7 @@ class AuthLogService
             return;
         }
 
-        $userAgent = request()?->userAgent();
+        $userAgent = RequestContext::userAgent();
         $parsed = UserAgentParser::parse($userAgent);
 
         AuthLog::query()->create([
@@ -58,7 +59,7 @@ class AuthLogService
             'source'     => $source ?? AuthLogSourceResolver::resolve(),
             'action'     => $action,
             'result'     => $result,
-            'ip_address' => request()?->ip(),
+            'ip_address' => RequestContext::ip(),
             'user_agent' => $userAgent,
             'browser'    => $parsed['browser'],
             'platform'   => $parsed['platform'],

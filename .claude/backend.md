@@ -39,6 +39,63 @@ A ViewModel never queries the DB — eager-loading is the caller's job — never
 reaches into a switchable module in place of `ModuleGate`, and never carries a
 field the page does not render. See `docs/starter/view-models.md`.
 
+## Request-scoped state
+
+`Session`, `Auth`, `request()` and `Cookie` are **ambient state**: a class that reads
+them behaves differently depending on who happens to be calling. The rule is about
+layers, not about class names — Services obey it exactly like Actions and Queries do.
+
+- **Entry points** adapt a transport to the domain and may read ambient state:
+  controllers, middleware, FormRequests, per-request view sharers
+  (`Page\Services\PageContextSharer`), Filament pages and resources, console commands,
+  and the place where a Job is constructed.
+- **The domain** takes it as a parameter or a constructor dependency and never reads
+  it: Actions, Queries, Services, Support, ViewModels, DTOs, observers.
+
+The check is not "is this an Action" but: *can this class be called from a queued job
+or an artisan command and still do the same thing?* If not, it is reading ambient
+state and something above it should be passing the value in.
+
+```php
+// no — the Query decides for itself whose cart this is
+public function handle(?User $user): ?Cart
+{
+    $uuid = Session::get('cart_uuid');
+}
+
+// yes — the caller says whose cart it wants
+public function handle(?User $user, ?string $guestCartUuid = null): ?Cart
+```
+
+### Give the state one owner
+
+Reading `Session::get('cart_uuid')` in the controller is correct but does not scale:
+ten controllers repeat the key, and nothing says who may write it. So each kind of
+ambient state gets **one named owner**, injected like any other dependency, and that
+owner is the only class touching the underlying facade:
+
+| Owner | Owns |
+|---|---|
+| `ShopCart\Services\CartContext` | `cart_uuid` / `cart_count` in the session, and `Auth::user()` on the cart's behalf: `current()`, `currentOrCreate()`, `remember()`, `count()`, `clear()` |
+| `Core\Support\RequestContext` | IP, user agent and user id for the journals — `null` outside a request |
+| `Core\Support\LogSourceResolver`, `AuthLogSourceResolver`, `Notification\Support\NotificationSourceResolver` | Which surface the call came from: console / admin / API / site |
+
+An owner is a class, not a trait: a trait mixed into a service smuggles the ambient
+read straight back into it, which is why `DetectsNotificationSource` became
+`NotificationSourceResolver`.
+
+### The exceptions, and there are only two kinds
+
+1. **The ambient state is the effect.** `UserAuth\Actions\ImpersonateAction` and
+   `LeaveImpersonationAction` call `Auth::login()` / `Auth::logout()` — that is what
+   they are for, there is nothing to parametrise. Keep such actions countable.
+2. **Null-safe enrichment of a journal.** `LogService`, `AuthLogService` and
+   `AuthCooldownService` run inside a request as often as from a queue, and threading
+   an IP address through every observer would say nothing about the domain. They read
+   it through `RequestContext`, which degrades to `null` instead of failing.
+
+Anything else that wants the session or the current user takes it as an argument.
+
 ## Container bindings
 
 Bind and inject by **class name**. `AppServiceProvider` registers the shared services
@@ -60,6 +117,9 @@ Both live under `app/Modules/{Module}/`, and the split is by what the class touc
   log. `LogService`, `AuthLogService`, `AuthCooldownService`, `ImageConversionService`.
 - **`Support/`** — pure helpers and resolvers: same input, same output, nothing stored.
   `ModuleGate`, `UrlHelper`, `ImageResizer`, `UserAgentParser`, `LogSourceResolver`.
+  The ambient-state resolvers (`LogSourceResolver`, `RequestContext`) live here too:
+  they store nothing, they only answer «where is this call coming from» — see
+  «Request-scoped state».
 
 If a class needs no dependencies and could be unit-tested without a database, it belongs
 in `Support/`.
@@ -77,7 +137,8 @@ a Query answers a question.
 - **One read per class**, a single public `handle()`. Return the model, `Collection`,
   `LengthAwarePaginator` or array the caller needs — not a builder, unless the class says
   so in its name (`BuildProductsQuery`).
-- **Input is scalars, enums, models or a DTO — never a `Request`.** Several criteria go
+- **Input is scalars, enums, models or a DTO — never a `Request`, and never the
+  session or the current user read from inside** (see «Request-scoped state»). Several criteria go
   into a DTO (`SearchCategoriesQuery::handle(CategorySearchDto $criteria)`,
   `GetUserOrdersQuery::handle(int $userId, OrderFilterData $filter)`), so the same Query
   serves web and API — `PrepareShopFilterQuery` takes `ShopFilterCriteriaDto`, which the

@@ -4,43 +4,32 @@ namespace App\Modules\ShopCart\Actions;
 
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Session;
 
+/**
+ * Returns the cart for the user or guest, creating one if there is none.
+ *
+ * Storing the resulting uuid back into the session is the caller's job —
+ * `CartContext::currentOrCreate()` does it.
+ */
 class GetOrCreateCartAction
 {
-    public function handle(?User $user): Cart
+    public function handle(?User $user, ?string $guestCartUuid = null): Cart
     {
         if ($user) {
-            $cart = $user->cart;
-
-            if (!$cart) {
-                $cart = $this->findSessionCart($user);
-            }
-
-            if (!$cart) {
-                $cart = Cart::create(['user_id' => $user->id]);
-            }
-
-            Session::put('cart_uuid', $cart->uuid);
-
-            return $cart;
+            return $user->cart
+                ?? $this->findGuestCart($guestCartUuid, $user)
+                ?? Cart::create(['user_id' => $user->id]);
         }
 
-        $cart = $this->findSessionCart(null);
-
-        if (!$cart) {
-            $cart = Cart::create();
-        }
-
-        Session::put('cart_uuid', $cart->uuid);
-
-        return $cart;
+        return $this->findGuestCart($guestCartUuid, null) ?? Cart::create();
     }
 
-    private function findSessionCart(?User $user): ?Cart
+    /**
+     * A cart started before signing in: it is only picked up when it is still
+     * unclaimed, or already belongs to this very user.
+     */
+    private function findGuestCart(?string $uuid, ?User $user): ?Cart
     {
-        $uuid = Session::get('cart_uuid');
-
         if (!$uuid) {
             return null;
         }

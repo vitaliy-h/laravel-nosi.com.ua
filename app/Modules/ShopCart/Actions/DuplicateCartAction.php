@@ -5,8 +5,13 @@ namespace App\Modules\ShopCart\Actions;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Queries\FindCartQuery;
 use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Session;
 
+/**
+ * Forks a cart somebody opened by link into a fresh cart of the caller's own,
+ * dropping whatever cart they had before.
+ *
+ * Storing the new uuid in the session is the caller's job — see `CartContext`.
+ */
 class DuplicateCartAction
 {
     public function __construct(
@@ -14,9 +19,9 @@ class DuplicateCartAction
         private FindCartQuery $findCart,
     ) {}
 
-    public function handle(Cart $source, ?User $user): Cart
+    public function handle(Cart $source, ?User $user, ?string $guestCartUuid = null): Cart
     {
-        $this->findCart->handle($user)?->delete();
+        $this->findCart->handle($user, $guestCartUuid)?->delete();
 
         $cart = Cart::create(['user_id' => $user?->id]);
 
@@ -32,8 +37,6 @@ class DuplicateCartAction
         }
 
         $this->recalculate->handle($cart);
-
-        Session::put('cart_uuid', $cart->uuid);
 
         return $cart;
     }

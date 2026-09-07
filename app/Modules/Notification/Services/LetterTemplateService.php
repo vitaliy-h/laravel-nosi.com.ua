@@ -8,13 +8,11 @@ use App\Modules\Notification\Enums\LogLetterStatusEnum;
 use App\Modules\Notification\Jobs\SendLetterTemplateJob;
 use App\Modules\Notification\Models\LetterTemplate;
 use App\Modules\Notification\Models\LogLetter;
-use App\Modules\Notification\Traits\DetectsNotificationSource;
+use App\Modules\Notification\Support\NotificationSourceResolver;
 use Illuminate\Support\Facades\Storage;
 
 class LetterTemplateService
 {
-    use DetectsNotificationSource;
-
     public function send(SendLetterTemplateData $dto): void
     {
         $template = LetterTemplate::query()
@@ -37,7 +35,7 @@ class LetterTemplateService
                 'sender_name'  => $template->sender_name,
                 'body'         => $body,
                 'status'       => LogLetterStatusEnum::QUEUED,
-                'source'       => $dto->source ?? $this->detectSource(),
+                'source'       => $dto->source ?? NotificationSourceResolver::resolve(),
                 'attachments'  => $dto->attachments,
             ]);
 

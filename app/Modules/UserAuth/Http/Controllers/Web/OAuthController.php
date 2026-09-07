@@ -6,6 +6,7 @@ use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Core\Enums\AuthLogActionEnum;
 use App\Modules\Core\Services\AuthLogService;
 use App\Modules\ShopCart\Actions\MergeCartOnAuthAction;
+use App\Modules\ShopCart\Services\CartContext;
 use App\Modules\UserAuth\Actions\ConnectSocialProfileAction;
 use App\Modules\UserAuth\Actions\FindOrCreateSocialUserAction;
 use Illuminate\Http\RedirectResponse;
@@ -17,6 +18,7 @@ class OAuthController extends BaseWebController
         private readonly FindOrCreateSocialUserAction $findOrCreate,
         private readonly ConnectSocialProfileAction $connect,
         private readonly MergeCartOnAuthAction $mergeCart,
+        private readonly CartContext $cart,
         private readonly AuthLogService $authLog,
     ) {}
 
@@ -58,7 +60,8 @@ class OAuthController extends BaseWebController
             $user,
         );
 
-        $this->mergeCart->handle($user);
+        $this->mergeCart->handle($user, $this->cart->uuid());
+        $this->cart->forgetCount();
 
         return redirect()->intended(save_route('profile.edit'));
     }

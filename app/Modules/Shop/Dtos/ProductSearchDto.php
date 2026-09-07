@@ -15,6 +15,8 @@ readonly class ProductSearchDto
         public bool $random = false,
         public ?int $limit = null,
         public bool $paginate = false,
+        /** Requested page size; the Query falls back to the default and rejects anything not offered. */
+        public ?int $perPage = null,
         public array $with = ['brand', 'category'],
     ) {}
 }

@@ -133,7 +133,7 @@ Typical contents:
 * `Dtos`
 * `Enums`
 * `Observers` — auto-registered per module by `ModuleServiceProvider`
-* `Services` — only where neither an Action nor a Query fits (`CartService`, `GeoImporter`)
+* `Services` — only where neither an Action nor a Query fits (`CartContext`, `GeoImporter`)
 * `Console/Commands`
 * `database/migrations`, `database/seeders`
 

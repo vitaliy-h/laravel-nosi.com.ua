@@ -4,21 +4,20 @@ namespace App\Modules\ShopCart\Http\Controllers\Web;
 
 use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\ShopCart\Models\Cart;
-use App\Modules\ShopCart\Queries\FindCartQuery;
+use App\Modules\ShopCart\Services\CartContext;
 use App\Modules\ShopCart\ViewModels\CartViewModel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class IndexController extends BaseWebController
 {
     public function __construct(
-        private readonly FindCartQuery $findCart,
+        private readonly CartContext $cart,
     ) {}
 
     public function index(Request $request)
     {
-        $cart = $this->findCart->handle(Auth::user());
+        $cart = $this->cart->current();
         $cart?->load('items.product');
 
         if ($cart && $cart->items->isNotEmpty()) {

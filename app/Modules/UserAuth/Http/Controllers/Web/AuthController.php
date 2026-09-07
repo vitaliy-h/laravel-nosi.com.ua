@@ -4,6 +4,7 @@ namespace App\Modules\UserAuth\Http\Controllers\Web;
 
 use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\ShopCart\Actions\MergeCartOnAuthAction;
+use App\Modules\ShopCart\Services\CartContext;
 use App\Modules\UserAuth\Actions\LoginAction;
 use App\Modules\UserAuth\Actions\RegisterAction;
 use App\Modules\UserAuth\Actions\ResetPasswordAction;
@@ -22,9 +23,12 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends BaseWebController
 {
-    public function login(LoginRequest $request, LoginAction $action, MergeCartOnAuthAction $mergeCart): RedirectResponse
+    public function login(LoginRequest $request, LoginAction $action, MergeCartOnAuthAction $mergeCart, CartContext $cart): RedirectResponse
     {
         $remember = (bool) $request->boolean('remember_me');
+
+        // Read before the session is regenerated, which drops the guest cart uuid.
+        $guestCartUuid = $cart->uuid();
 
         $user = $action->handle(
             LoginData::from($request->validated())
@@ -33,7 +37,8 @@ class AuthController extends BaseWebController
         Auth::login($user, $remember);
         $request->session()->regenerate();
 
-        $mergeCart->handle($user);
+        $mergeCart->handle($user, $guestCartUuid);
+        $cart->forgetCount();
 
         return redirect()->to(save_route('profile.edit'));
     }
@@ -49,8 +54,10 @@ class AuthController extends BaseWebController
         return redirect(save_route('index.index'));
     }
 
-    public function register(RegisterRequest $request, RegisterAction $action, MergeCartOnAuthAction $mergeCart): RedirectResponse
+    public function register(RegisterRequest $request, RegisterAction $action, MergeCartOnAuthAction $mergeCart, CartContext $cart): RedirectResponse
     {
+        $guestCartUuid = $cart->uuid();
+
         $user = $action->handle(
             RegisterData::from($request->validated())
         );
@@ -59,7 +66,8 @@ class AuthController extends BaseWebController
 
         $request->session()->regenerate();
 
-        $mergeCart->handle($user);
+        $mergeCart->handle($user, $guestCartUuid);
+        $cart->forgetCount();
 
         return redirect(save_route('profile.edit'));
     }

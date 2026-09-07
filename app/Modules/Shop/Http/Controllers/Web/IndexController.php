@@ -23,10 +23,9 @@ use App\Modules\Shop\ViewModels\ProductReviewViewModel;
 use App\Modules\Shop\ViewModels\ProductViewModel;
 use App\Modules\Shop\ViewModels\ShopCategoryPageViewModel;
 use App\Modules\Shop\ViewModels\ShopProductPageViewModel;
-use App\Modules\ShopCart\Queries\FindCartQuery;
+use App\Modules\ShopCart\Services\CartContext;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 
 class IndexController extends BaseWebController
 {
@@ -37,7 +36,7 @@ class IndexController extends BaseWebController
         private readonly FindCategoryBySlugQuery $findCategoryBySlug,
         private readonly GetCategoryBreadcrumbsQuery $getCategoryBreadcrumbs,
         private readonly FindProductByIdQuery $findProductById,
-        private readonly FindCartQuery $findCart,
+        private readonly CartContext $cart,
         private readonly GetReviewsByProductQuery $getReviewsByProduct,
         private readonly GetProductRatingBreakdownQuery $getProductRatingBreakdown,
     ) {}
@@ -121,6 +120,7 @@ class IndexController extends BaseWebController
             filter: $filter,
             sort: SortOptionEnum::tryFrom((string) $request->query('sort')),
             paginate: true,
+            perPage: $request->integer('c') ?: null,
         ));
 
         return new ShopCategoryPageViewModel(
@@ -154,7 +154,7 @@ class IndexController extends BaseWebController
             return null;
         }
 
-        $cart = $this->findCart->handle(Auth::user());
+        $cart = $this->cart->current();
 
         return $cart?->items()->where('shop_product_id', $productId)->value('quantity');
     }

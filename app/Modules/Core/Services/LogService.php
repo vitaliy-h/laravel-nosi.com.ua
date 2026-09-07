@@ -5,6 +5,7 @@ namespace App\Modules\Core\Services;
 use App\Modules\Core\Enums\LogEventEnum;
 use App\Modules\Core\Models\Log;
 use App\Modules\Core\Support\LogSourceResolver;
+use App\Modules\Core\Support\RequestContext;
 use Illuminate\Database\Eloquent\Model;
 
 class LogService
@@ -140,7 +141,7 @@ class LogService
     protected function createLog(LogEventEnum $event, Model $model, ?array $oldValues, ?array $newValues, array $changedFields): void
     {
         $attributes = [
-            'user_id' => request()->user()?->id,
+            'user_id' => RequestContext::userId(),
 
             'event' => $event,
 
@@ -154,7 +155,7 @@ class LogService
 
             'source' => LogSourceResolver::resolve(),
 
-            'ip_address' => request()?->ip(),
+            'ip_address' => RequestContext::ip(),
         ];
 
         if ($this->buffer === null) {

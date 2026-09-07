@@ -10,8 +10,8 @@ shared via a direct link.
 
 A cart is a row in the `shop_carts` table, tied either to `user_id` (logged-in user)
 or only to a `uuid` (guest). Which cart the current browser sees is determined by
-the **Laravel session**: the uuid of the active cart is stored in the session under
-the `cart_uuid` key (`Session::put('cart_uuid', $cart->uuid)`).
+the **Laravel session**: the uuid of the active cart is stored under the `cart_uuid`
+key, with the header badge count cached next to it under `cart_count`.
 
 - **Guest**: the cart is not tied to a user (`user_id = null`), its `uuid` only
   lives in the session. Clearing cookies/session "loses" the cart (the data isn't
@@ -20,12 +20,28 @@ the `cart_uuid` key (`Session::put('cart_uuid', $cart->uuid)`).
   is available from any device/session after login — `FindCartQuery` for a user
   simply takes `$user->cart`, no session lookup needed.
 
+Exactly one class touches those keys — `ShopCart\Services\CartContext`. It is also
+the only place that asks `Auth::user()` on the cart's behalf. The Actions and Queries
+below it take the user and the guest uuid as arguments, so they can be called from a
+command, a job or a test with no session at all; see `.claude/backend.md`,
+«Request-scoped state». Its surface:
+
+| Method | Does |
+|---|---|
+| `uuid()` | the guest cart uuid in the session, if any |
+| `current()` | the cart this browser works with, or `null` — `FindCartQuery` with the user and the uuid filled in |
+| `currentOrCreate()` | same, creating one if needed (`GetOrCreateCartAction`), and storing its uuid |
+| `remember(Cart)` | point the session at a cart — used after a fork |
+| `count()` / `refreshCount(?Cart)` / `forgetCount()` | the cached badge count |
+| `clear()` | the cart is gone (an order was placed): drop both keys |
+
 ### What happens on login / registration
 
 During login or registration (`AuthController::login/register`, `OAuthController`),
 `MergeCartOnAuthAction` is called:
 
-1. The cart `uuid` is read from the session (the guest cart, if any).
+1. The controller reads the guest cart `uuid` (`CartContext::uuid()`) — before
+   `session()->regenerate()`, which would drop it — and passes it to the action.
 2. If the user doesn't have their own cart yet — the guest cart is simply
    "adopted" (its `user_id` is set to the user).
 3. If the user already has their own cart — items from the guest cart are merged
@@ -43,12 +59,12 @@ sends it to someone else:
 - **Modifying** the cart (add/remove item, change quantity) through the AJAX
   controller (`AjaxCartController::change`) — checks whether it's the caller's
   "own" cart (`isOwnCart()`: matching `user_id` with the current user, or matching
-  `uuid` with the one stored in the guest's session). If the cart is **not the
+  `uuid` with `CartContext::uuid()`). If the cart is **not the
   caller's own**, `DuplicateCartAction` is triggered on the first modification attempt:
     - the caller's current (own) cart is deleted,
     - a **new** cart (fork) is created, and all items from the viewed (foreign)
       cart are copied into it,
-    - the new uuid is stored in the session,
+    - the controller points the session at the fork (`CartContext::remember()`),
     - the frontend response contains a `location` redirect to `/cart/{new_uuid}`.
 
   In other words, a foreign cart is never mutated live by another person's action —
@@ -110,18 +126,19 @@ shows the same placeholder.
 
 | Query | Purpose |
 |---|---|
-| `FindCartQuery` | Finds an *existing* cart for the user/guest (user → `$user->cart`, guest → lookup by `cart_uuid` from the session among carts with no `user_id`). Never creates anything — creating is `GetOrCreateCartAction`'s job. |
+| `FindCartQuery` | `handle(?User $user, ?string $guestCartUuid = null)` — finds an *existing* cart (user → `$user->cart`, guest → lookup by that uuid among carts with no `user_id`). The uuid is passed in, not read off the session. Never creates anything — creating is `GetOrCreateCartAction`'s job. |
+| `CountCartItemsQuery` | `handle(?Cart $cart): int` — sums quantities, not rows: the number in the header badge. |
 
 ### Actions
 
 | Action | Purpose |
 |---|---|
-| `GetOrCreateCartAction` | Same, but creates a new cart and stores its `uuid` in the session if none is found. For a logged-in user it additionally tries to pick up a "leftover" guest cart from the session before creating a new one. |
+| `GetOrCreateCartAction` | `handle(?User $user, ?string $guestCartUuid = null)` — same, but creates a cart when none is found. For a logged-in user it first tries to pick up a "leftover" guest cart by that uuid. Storing the uuid back is the caller's job (`CartContext::currentOrCreate()`). |
 | `AddOrUpdateCartItemAction` | `updateOrCreate`s an item in the cart (add / change quantity). |
 | `RemoveCartItemAction` | Removes an item, then recalculates the total. |
-| `RecalculateCartTotalAction` | `sum('total')` over items → `Cart::update(['total_amount' => ...])` without firing events. |
-| `DuplicateCartAction` | Copies items from a foreign/viewed cart (`$source`) into a newly created cart for the current user/guest, deleting their previous own cart; updates `cart_uuid` in the session. |
-| `MergeCartOnAuthAction` | On login/registration, merges the guest cart (from the session) into the user's cart (or "adopts" it if the user had no cart yet). |
+| `RecalculateCartTotalAction` | `sum('total')` over items → `Cart::update(['total_amount' => ...])` without firing events. It runs from an observer, so it fires for *any* cart the process touches (an admin editing a customer's cart, the cleanup command) — which is why it never touches the session-cached badge count. |
+| `DuplicateCartAction` | `handle(Cart $source, ?User $user, ?string $guestCartUuid = null)` — copies items from a foreign/viewed cart into a newly created cart for the caller, deleting their previous own cart. Returns the fork; storing its uuid is the caller's job. |
+| `MergeCartOnAuthAction` | `handle(User $user, ?string $guestCartUuid)` — on login/registration, merges the guest cart into the user's cart (or "adopts" it if the user had no cart yet). The controller reads the uuid *before* `session()->regenerate()` and passes it in. |
 | `ValidatePromocodeAction` | `handle(string $code, float $subtotal): ActionResult` — checks the code exists, is visible, is inside its `starts_at`/`expires_at` window, has usage left and meets `min_order_amount`. Returns `ActionResult` because every failure is an expected business outcome with its own message. |
 | `ApplyPromocodeToCartAction` | `handle(Cart $cart, string $code): ActionResult` — validates, computes the discount and writes `promocode_id`, `promocode_code`, `discount_amount` and the new `total_amount` onto the cart. |
 | `RemovePromocodeFromCartAction` | `handle(Cart $cart): void` — clears those columns and restores the total to the subtotal. |
@@ -152,7 +169,10 @@ shows the same placeholder.
       (`DuplicateCartAction`) and returns a redirect command to the frontend instead of a
       regular response
     - if no `cart_uuid` is passed — gets/creates the caller's own cart
-      (`GetOrCreateCartAction`)
+      (`CartContext::currentOrCreate()`)
+  - every response carrying the `.js_cart_count` badge goes through
+    `CartContext::refreshCount()`, so the number the page is told to show and the one
+    cached in the session cannot drift apart
   - Performs one of 5 actions (`CartAction`) and returns JSON with an `actions`
     array for the frontend's "ABC-response" runner (DOM patches: update text/html,
     remove an element, open a modal) — see `docs/starter/abc-response.md`
@@ -260,5 +280,5 @@ increments promocode usage) and the controller redirects to `order.show`
 - **Shop** (`Product`) — the product being added to the cart
 - **ShopOrder** — turns a cart into an order: `PlaceOrderFromCartAction`,
   `CreateOrderAction`, route `POST /orders/create`
-- **Page** (`ShareModulePageContext` middleware) — shares `cartCount` with all
-  views via `PageContextSharer::share()`, using `FindCartQuery`
+- **Page** (`ShareModulePageContext` middleware) — shares `cart_count` with all
+  views via `PageContextSharer::share()`, which asks `CartContext::count()`

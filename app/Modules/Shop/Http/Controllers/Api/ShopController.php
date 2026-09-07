@@ -64,7 +64,13 @@ class ShopController extends BaseApiController
             ? $this->findCategoryById->handle($request->integer('category_id'))
             : null;
         $filter = $this->prepareShopFilter->handle($category, $this->filterCriteria($request));
-        $products = $this->searchProducts->handle(new ProductSearchDto(category: $category, filter: $filter, sort: SortOptionEnum::tryFrom((string) $request->query('sort')), paginate: true));
+        $products = $this->searchProducts->handle(new ProductSearchDto(
+            category: $category,
+            filter: $filter,
+            sort: SortOptionEnum::tryFrom((string) $request->query('sort')),
+            paginate: true,
+            perPage: $request->integer('c') ?: null,
+        ));
 
         return $this->success([
             'products'   => ProductResource::collection($products),

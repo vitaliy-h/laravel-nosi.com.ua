@@ -6,21 +6,23 @@ use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Shop\Models\Product;
 use App\Modules\ShopCart\Actions\AddOrUpdateCartItemAction;
 use App\Modules\ShopCart\Actions\DuplicateCartAction;
-use App\Modules\ShopCart\Actions\GetOrCreateCartAction;
 use App\Modules\ShopCart\Actions\RemoveCartItemAction;
 use App\Modules\ShopCart\Enums\CartAction;
 use App\Modules\ShopCart\Http\Requests\ChangeCartRequest;
 use App\Modules\ShopCart\Models\Cart;
+use App\Modules\ShopCart\Services\CartContext;
 use App\Modules\ShopCart\ViewModels\CartItemViewModel;
 use App\Modules\ShopCart\ViewModels\CartViewModel;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 
 class AjaxCartController extends BaseWebController
 {
+    public function __construct(
+        private readonly CartContext $cart,
+    ) {}
+
     public function change(
         ChangeCartRequest $request,
-        GetOrCreateCartAction $getOrCreateCart,
         AddOrUpdateCartItemAction $addOrUpdate,
         RemoveCartItemAction $remove,
         DuplicateCartAction $fork,
@@ -40,11 +42,13 @@ class AjaxCartController extends BaseWebController
             if ($this->isOwnCart($viewedCart)) {
                 $cart = $viewedCart;
             } else {
-                $cart = $fork->handle($viewedCart, Auth::user());
+                $cart = $this->cart->remember(
+                    $fork->handle($viewedCart, Auth::user(), $this->cart->uuid())
+                );
                 $forked = true;
             }
         } else {
-            $cart = $getOrCreateCart->handle(Auth::user());
+            $cart = $this->cart->currentOrCreate();
         }
 
         $actions = match ($action) {
@@ -182,12 +186,16 @@ class AjaxCartController extends BaseWebController
         ];
     }
 
+    /**
+     * The badge is re-counted through CartContext rather than summed here, so the
+     * count cached in the session stays in step with what the page is told to show.
+     */
     private function cartCountAction(Cart $cart): array
     {
         return [
             'selector' => '.js_cart_count',
             'method'   => 'text',
-            'content'  => $cart->items()->sum('quantity'),
+            'content'  => $this->cart->refreshCount($cart),
         ];
     }
 
@@ -197,6 +205,6 @@ class AjaxCartController extends BaseWebController
             return $cart->user_id === $user->id;
         }
 
-        return $cart->user_id === null && $cart->uuid === Session::get('cart_uuid');
+        return $cart->user_id === null && $cart->uuid === $this->cart->uuid();
     }
 }

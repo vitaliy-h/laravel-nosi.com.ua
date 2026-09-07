@@ -9,13 +9,11 @@ use App\Modules\Notification\Enums\SmsProviderEnum;
 use App\Modules\Notification\Models\LogSms;
 use App\Modules\Notification\Models\SmsTemplate;
 use App\Modules\Notification\SmsProviders\LogSmsProvider;
-use App\Modules\Notification\Traits\DetectsNotificationSource;
+use App\Modules\Notification\Support\NotificationSourceResolver;
 use Throwable;
 
 class SmsTemplateService
 {
-    use DetectsNotificationSource;
-
     public function send(SendSmsData $dto): void
     {
         $template = SmsTemplate::query()
@@ -35,7 +33,7 @@ class SmsTemplateService
             'body'         => $body,
             'status'       => LogSmsStatusEnum::QUEUED,
             'provider'     => $providerEnum,
-            'source'       => $dto->source ?? $this->detectSource(),
+            'source'       => $dto->source ?? NotificationSourceResolver::resolve(),
         ]);
 
         try {

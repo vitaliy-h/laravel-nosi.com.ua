@@ -121,6 +121,13 @@ Layout variables (`page`, `breadcrumbs`, `header_menu`, `footer_menu`,
 builds once per request and shares — a controller never assembles them itself.
 For a screen with no CMS page behind it there is `shareWithoutPage()`.
 
+`PageContextSharer` runs per request, so it is the one allowed to read the request
+and the cart session; the ViewModels get the values as arguments. That is why
+`MenuItemViewModel::fromPage($page, $currentPath)` is handed the current path
+instead of asking `request()` which page is open — a ViewModel that reads ambient
+state renders differently depending on who calls it. See `.claude/backend.md`,
+«Request-scoped state».
+
 ---
 
 # What a ViewModel must not do

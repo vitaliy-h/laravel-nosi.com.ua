@@ -5,41 +5,44 @@ namespace App\Modules\ShopCart\Actions;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Session;
 
+/**
+ * Folds the cart a guest started into the cart of the user who just signed in.
+ *
+ * The guest cart's uuid comes from the caller (`CartContext::uuid()`), so the
+ * action itself never touches the session and stays callable outside a request.
+ */
 class MergeCartOnAuthAction
 {
     public function __construct(
         private RecalculateCartTotalAction $recalculate,
     ) {}
 
-    public function handle(User $user): void
+    public function handle(User $user, ?string $guestCartUuid): void
     {
         if (!ModuleGate::isEnabled('shop_cart')) {
             return;
         }
 
-        $uuid = Session::get('cart_uuid');
-
-        if (!$uuid) {
+        if (!$guestCartUuid) {
             return;
         }
 
-        $sessionCart = Cart::where('uuid', $uuid)->first();
+        $guestCart = Cart::where('uuid', $guestCartUuid)->first();
 
-        if (!$sessionCart || $sessionCart->user_id !== null) {
+        if (!$guestCart || $guestCart->user_id !== null) {
             return;
         }
 
         $userCart = $user->cart;
 
         if (!$userCart) {
-            $sessionCart->update(['user_id' => $user->id]);
+            $guestCart->update(['user_id' => $user->id]);
 
             return;
         }
 
-        foreach ($sessionCart->items as $item) {
+        foreach ($guestCart->items as $item) {
             $userCart->items()->updateOrCreate(
                 ['shop_product_id' => $item->shop_product_id],
                 [
@@ -54,6 +57,6 @@ class MergeCartOnAuthAction
 
         $this->recalculate->handle($userCart);
 
-        $sessionCart->delete();
+        $guestCart->delete();
     }
 }

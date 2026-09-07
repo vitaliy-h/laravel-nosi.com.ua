@@ -32,6 +32,61 @@ Everything else returns data.
 
 ---
 
+## Why data, not a builder
+
+A tempting alternative is for every Query to assemble criteria and hand back the builder,
+leaving `first()` / `get()` / `count()` to the caller. This project deliberately does not
+work that way, and the reasons are worth writing down because the question keeps coming
+back.
+
+**A builder cannot be cached.** `GetAllPagesQuery` caches the visible pages for 24h and
+`PageObserver` invalidates them — see «Caching» below. Only an executed read has a result
+to store, so «caching belongs inside the Query» and «Queries return builders» cannot both
+be true.
+
+**Eager-loading would move to the caller.** `GetUserOrdersQuery` loads
+`items.product.category` because it knows what its result is for (rule 3 below). That is
+also what makes rule 4 safe: a ViewModel never queries, so it depends on the Query having
+loaded everything the screen touches. Hand out a builder and every caller has to remember
+its own `->with()`; the one that forgets ships an N+1 inside a blade loop.
+
+**A builder is a write surface.** `->delete()`, `->update()`, `->increment()`. «A Query
+never changes state» holds exactly as long as the builder does not leave the class.
+
+**Not every read is a builder.** `GetTranslationsByLocaleQuery` returns a cached `array`,
+`GetProductRatingBreakdownQuery` an aggregate `array`, `GetPageBreadcrumbsQuery` walks a
+nested set, `CountCartItemsQuery` returns an `int`. A builder-only rule would either break
+these or split the family into two incompatible kinds, at which point it stops being a
+rule.
+
+**Web and API would drift.** The DTO input exists so one Query serves both
+(`SearchProductsQuery` ← `ShopController` and `Shop\...\Web\IndexController`). If the
+caller finishes the read, one paginates by 12 and the other by 24 and nobody notices. The
+page size is passed *in* through `ProductSearchDto::$perPage`, while the list of offered
+sizes stays inside the Query — so a made-up `?c=1000` cannot turn a listing into a full
+table scan, whoever the caller is.
+
+**«One read per class» would become «one table per class».** `FindCartQuery` and
+`CountCartItemsQuery` would collapse into a single `BuildCartQuery` everyone finishes
+differently. That is a repository, and this project does not have them.
+
+### When a builder is the right answer
+
+When the code that finishes the read is *code*, not a person reading a controller:
+
+- **Composition inside the read layer.** `BuildProductsQuery` is consumed only by
+  `SearchProductsQuery` and `PrepareShopFilterQuery` — no controller injects it. Facet
+  counts rebuild the same query N times, each time excluding one filter; on materialised
+  data that is impossible.
+- **Filament.** `modifyQueryUsing` takes a builder; a Collection will not do.
+- **`chunk()` / `lazy()`** for an export that must not be materialised.
+
+The discipline: a builder is allowed, the **name has to say so out loud** (`Build*Query`),
+and its consumer is another Query or a framework surface that demands a builder — never a
+controller. A controller gets data.
+
+---
+
 ## Rules
 
 1. **One read per class**, a single public `handle()`.

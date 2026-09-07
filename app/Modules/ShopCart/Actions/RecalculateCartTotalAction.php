@@ -4,12 +4,18 @@ namespace App\Modules\ShopCart\Actions;
 
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\Promocode;
-use App\Modules\ShopCart\Services\CartService;
 
+/**
+ * Recomputes a cart's subtotal, discount and total.
+ *
+ * Runs from CartProductObserver, so it fires for any cart the process touches —
+ * an admin editing a customer's cart in Filament, the abandoned-cart command.
+ * That is why it does not refresh the session-cached badge count: the count
+ * belongs to whoever is browsing, and CartContext owns it.
+ */
 class RecalculateCartTotalAction
 {
     public function __construct(
-        private CartService $cartService,
         private ValidatePromocodeAction $validatePromocode,
     ) {}
 
@@ -47,7 +53,5 @@ class RecalculateCartTotalAction
             'discount_amount' => $discount,
             'total_amount'    => max(0, round($subtotal - $discount, 2)),
         ]));
-
-        $this->cartService->refreshCount($cart);
     }
 }

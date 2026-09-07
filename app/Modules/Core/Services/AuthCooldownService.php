@@ -3,6 +3,7 @@
 namespace App\Modules\Core\Services;
 
 use App\Modules\Core\Exceptions\AuthCooldownException;
+use App\Modules\Core\Support\RequestContext;
 use Illuminate\Support\Facades\RateLimiter;
 
 /**
@@ -47,7 +48,7 @@ class AuthCooldownService
 
     public function key(string $login, ?string $ip = null): string
     {
-        $ip ??= request()?->ip();
+        $ip ??= RequestContext::ip();
 
         return 'auth-cooldown:' . sha1(mb_strtolower(trim($login)) . '|' . $ip);
     }

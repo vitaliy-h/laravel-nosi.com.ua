@@ -4,7 +4,6 @@ namespace App\Modules\ShopOrder\Actions;
 
 use App\Modules\ShopCart\Actions\RecalculateCartTotalAction;
 use App\Modules\ShopCart\Models\Cart;
-use App\Modules\ShopCart\Services\CartService;
 use App\Modules\ShopOrder\Dtos\CreateOrderData;
 use App\Modules\ShopOrder\Dtos\CustomerData;
 use App\Modules\ShopOrder\Dtos\OrderItemData;
@@ -14,7 +13,6 @@ readonly class PlaceOrderFromCartAction
 {
     public function __construct(
         private CreateOrderAction $createOrder,
-        private CartService $cartService,
         private RecalculateCartTotalAction $recalculateCartTotal,
     ) {}
 
@@ -49,8 +47,6 @@ readonly class PlaceOrderFromCartAction
         ));
 
         $cart->delete();
-
-        $this->cartService->refreshCount(null);
 
         return $order;
     }

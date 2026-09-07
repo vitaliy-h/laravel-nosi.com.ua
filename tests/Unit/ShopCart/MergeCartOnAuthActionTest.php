@@ -8,54 +8,47 @@ use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
 
 class MergeCartOnAuthActionTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_does_nothing_without_session_uuid(): void
+    public function test_does_nothing_without_a_guest_cart_uuid(): void
     {
         $user = User::factory()->create();
 
-        app(MergeCartOnAuthAction::class)->handle($user);
+        app(MergeCartOnAuthAction::class)->handle($user, null);
 
         $this->assertNull($user->cart()->first());
     }
 
-    public function test_does_nothing_when_session_cart_already_has_a_user(): void
+    public function test_does_nothing_when_the_guest_cart_already_has_a_user(): void
     {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
         $sessionCart = Cart::factory()->create(['user_id' => $otherUser->id]);
-        Session::put('cart_uuid', $sessionCart->uuid);
-
-        app(MergeCartOnAuthAction::class)->handle($user);
+        app(MergeCartOnAuthAction::class)->handle($user, $sessionCart->uuid);
 
         $sessionCart->refresh();
         $this->assertSame($otherUser->id, $sessionCart->user_id);
     }
 
-    public function test_assigns_session_cart_to_user_without_existing_cart(): void
+    public function test_assigns_guest_cart_to_user_without_existing_cart(): void
     {
         $user = User::factory()->create();
         $sessionCart = Cart::factory()->create();
-        Session::put('cart_uuid', $sessionCart->uuid);
-
-        app(MergeCartOnAuthAction::class)->handle($user);
+        app(MergeCartOnAuthAction::class)->handle($user, $sessionCart->uuid);
 
         $sessionCart->refresh();
         $this->assertSame($user->id, $sessionCart->user_id);
     }
 
-    public function test_merges_items_into_existing_user_cart_and_deletes_session_cart(): void
+    public function test_merges_items_into_existing_user_cart_and_deletes_guest_cart(): void
     {
         $user = User::factory()->create();
         $userCart = Cart::factory()->create(['user_id' => $user->id]);
         $sessionCart = Cart::factory()->create();
-        Session::put('cart_uuid', $sessionCart->uuid);
-
         $sharedProduct = Product::factory()->create();
         CartProduct::factory()->create([
             'cart_id'         => $userCart->id,
@@ -71,7 +64,7 @@ class MergeCartOnAuthActionTest extends TestCase
         ]);
         $uniqueItem = CartProduct::factory()->create(['cart_id' => $sessionCart->id, 'total' => 5]);
 
-        app(MergeCartOnAuthAction::class)->handle($user);
+        app(MergeCartOnAuthAction::class)->handle($user, $sessionCart->uuid);
 
         $this->assertModelMissing($sessionCart);
         $this->assertSame(2, $userCart->items()->count());

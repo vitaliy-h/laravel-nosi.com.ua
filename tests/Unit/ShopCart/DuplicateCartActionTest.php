@@ -7,7 +7,6 @@ use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
 
 class DuplicateCartActionTest extends TestCase
@@ -25,7 +24,6 @@ class DuplicateCartActionTest extends TestCase
         $this->assertNull($result->user_id);
         $this->assertDatabaseCount('shop_cart_products', 4);
         $this->assertSame(2, $result->items()->count());
-        $this->assertSame($result->uuid, Session::get('cart_uuid'));
     }
 
     public function test_forks_items_for_authenticated_user(): void

@@ -30,7 +30,7 @@ readonly class SearchProductsQuery
         }
 
         if ($criteria->paginate) {
-            return $query->paginate($this->resolvePerPage())->withQueryString();
+            return $query->paginate($this->resolvePerPage($criteria->perPage))->withQueryString();
         }
 
         if ($criteria->limit) {
@@ -53,13 +53,15 @@ readonly class SearchProductsQuery
 
     /**
      * Number of products displayed per page.
+     *
+     * The request is the controller's business — it passes the number it read
+     * along in the DTO. Which numbers are on offer stays here, so a made-up `?c=1000`
+     * cannot turn a listing into a full table scan, whoever the caller is.
      */
-    private function resolvePerPage(): int
+    private function resolvePerPage(?int $requested): int
     {
-        $count = (int) request('c', PerPageOptionEnum::default()->value);
-
-        return in_array($count, PerPageOptionEnum::values(), true)
-            ? $count
+        return in_array($requested, PerPageOptionEnum::values(), true)
+            ? $requested
             : PerPageOptionEnum::default()->value;
     }
 }

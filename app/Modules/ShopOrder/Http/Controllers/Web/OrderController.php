@@ -4,6 +4,7 @@ namespace App\Modules\ShopOrder\Http\Controllers\Web;
 
 use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\ShopCart\Models\Cart;
+use App\Modules\ShopCart\Services\CartContext;
 use App\Modules\ShopOrder\Actions\PlaceOrderFromCartAction;
 use App\Modules\ShopOrder\Dtos\CustomerData;
 use App\Modules\ShopOrder\Http\Requests\PlaceOrderRequest;
@@ -13,6 +14,7 @@ class OrderController extends BaseWebController
 {
     public function __construct(
         private readonly PlaceOrderFromCartAction $placeOrder,
+        private readonly CartContext $cart,
     ) {}
 
     public function create(PlaceOrderRequest $request): RedirectResponse
@@ -20,6 +22,8 @@ class OrderController extends BaseWebController
         $cart = Cart::where('uuid', $request->validated('cart_uuid'))->firstOrFail();
 
         $order = $this->placeOrder->handle($cart, CustomerData::from($request->validated()));
+
+        $this->cart->clear();
 
         return redirect()->route('order.show', $order->uuid);
     }
