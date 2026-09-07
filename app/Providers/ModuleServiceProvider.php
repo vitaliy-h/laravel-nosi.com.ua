@@ -181,16 +181,20 @@ class ModuleServiceProvider extends ServiceProvider
      * a singleton, so this costs one cache read per request rather than a query
      * per module.
      *
-     * Only a database failure is swallowed — a missing `pages` table on a fresh
-     * install, or no connection yet. Anything else (a broken query class, a bad
-     * cache driver) must surface instead of silently mounting every module under
-     * its fallback prefix.
+     * Only a database failure and an unknown `pages.module` string are
+     * swallowed — a missing `pages` table on a fresh install, no connection yet,
+     * or a row still holding a module value that predates a PageModule rename.
+     * The latter would otherwise throw out of the enum cast during boot and take
+     * the whole app down, `artisan migrate` included, so the very migration that
+     * repairs the rows could never run. Anything else (a broken query class, a
+     * bad cache driver) must surface instead of silently mounting every module
+     * under its fallback prefix.
      */
     private function resolveModulePage(PageModule $pageModule): ?Page
     {
         try {
             return app(FindPageByModuleQuery::class)->handle($pageModule);
-        } catch (QueryException) {
+        } catch (QueryException|\ValueError) {
             return null;
         }
     }
