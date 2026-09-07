@@ -263,6 +263,25 @@ docker ps
 * Composer
 * Node.js
 
+### OPcache
+
+OpenServer ships `opcache.memory_consumption = 32` (in its own block near the end of
+`modules/PHP-8.4/PHP/php.ini`, overriding the 128 set higher up). 32 MB does not hold
+this app: once the shared cache is full, OPcache falls back to `opcache.file_cache`
+and re-loads every op_array into *process* memory on each include, never freeing it.
+A big Filament form (the Language dictionary builds ~215 components) then costs
+~160 MB of retained memory per render, and `php artisan test` dies with
+`Allowed memory size of 1073741824 bytes exhausted` somewhere in the Filament suite.
+
+Raise it and restart OpenServer:
+
+```ini
+opcache.memory_consumption      = 256
+opcache.interned_strings_buffer = 32
+```
+
+With that the whole suite peaks at ~180 MB instead of blowing through 1 GB.
+
 ---
 
 ## Setup Steps
