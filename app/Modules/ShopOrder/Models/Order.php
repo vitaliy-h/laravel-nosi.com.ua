@@ -10,6 +10,7 @@ use App\Modules\ShopOrder\Enums\PaymentTypeEnum;
 use App\Modules\ShopOrder\Services\OrderPermissions;
 use App\Modules\User\Models\User;
 use Database\Factories\OrderFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,6 +31,13 @@ class Order extends Model
 
     protected $table = 'shop_orders';
 
+    /**
+     * `order_number` is deliberately absent: it is assigned from the order's own
+     * id by GenerateOrderNumberAction once the row exists, and must never arrive
+     * from a request. A non-empty $fillable is the whole guard — Laravel never
+     * looks at $guarded when this list is set, so listing the column there as
+     * well only looked like protection.
+     */
     protected $fillable = [
         'uuid',
         'user_id',
@@ -46,10 +54,6 @@ class Order extends Model
         'user_email',
         'user_phone',
         'comment',
-    ];
-
-    protected $guarded = [
-        'order_number',
     ];
 
     protected $casts = [
@@ -76,23 +80,15 @@ class Order extends Model
         return $this->belongsTo(Promocode::class);
     }
 
-    public function getTotalAmountFormattedAttribute(): string
+    /**
+     * Cached: blade asks an order what it may do inside the loop that renders
+     * it, and every ask used to build another OrderPermissions. The object reads
+     * the model live, so caching it changes nothing about the answers.
+     */
+    protected function permissions(): Attribute
     {
-        return t('shop.currency') . number_format($this->total_amount, 2);
-    }
-
-    public function getSubtotalAmountFormattedAttribute(): string
-    {
-        return t('shop.currency') . number_format($this->subtotal_amount, 2);
-    }
-
-    public function getDiscountAmountFormattedAttribute(): string
-    {
-        return t('shop.currency') . number_format($this->discount_amount, 2);
-    }
-
-    public function getPermissionsAttribute(): OrderPermissions
-    {
-        return new OrderPermissions($this);
+        return Attribute::make(
+            get: fn (): OrderPermissions => new OrderPermissions($this),
+        )->shouldCache();
     }
 }

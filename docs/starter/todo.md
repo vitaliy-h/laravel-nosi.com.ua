@@ -18,7 +18,7 @@ with a pointer, so it does not get re-planned.
 * **`shop_order_products.title`** — the order line currently snapshots `product_name` and
   `product_article`; a separate display title is still open.
 * **Language as the first URL slug**, to support multilingual sites. Touches
-  `App\Providers\ModuleServiceProvider::registerWebRoute()` (prefix resolution) and each
+  `App\Modules\Core\Support\ModuleManifest` (prefix resolution) and each
   module's `Http/Routes/web.php`. The dictionary layer itself already exists —
   `docs/starter/translations.md`.
 

@@ -5,6 +5,7 @@ namespace App\Modules\ShopCart\Actions;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Queries\FindCartQuery;
 use App\Modules\User\Models\User;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Forks a cart somebody opened by link into a fresh cart of the caller's own,
@@ -19,25 +20,31 @@ class DuplicateCartAction
         private FindCartQuery $findCart,
     ) {}
 
+    /**
+     * One transaction: the caller's previous cart is dropped before the new one
+     * is filled, so a failure in between would leave them with nothing.
+     */
     public function handle(Cart $source, ?User $user, ?string $guestCartUuid = null): Cart
     {
-        $this->findCart->handle($user, $guestCartUuid)?->delete();
+        return DB::transaction(function () use ($source, $user, $guestCartUuid): Cart {
+            $this->findCart->handle($user, $guestCartUuid)?->delete();
 
-        $cart = Cart::create(['user_id' => $user?->id]);
+            $cart = Cart::create(['user_id' => $user?->id]);
 
-        foreach ($source->items as $item) {
-            $cart->items()->create([
-                'shop_product_id' => $item->shop_product_id,
-                'product_name'    => $item->product_name,
-                'product_article' => $item->product_article,
-                'selling_price'   => $item->selling_price,
-                'quantity'        => $item->quantity,
-                'total'           => $item->total,
-            ]);
-        }
+            foreach ($source->items as $item) {
+                $cart->items()->create([
+                    'shop_product_id' => $item->shop_product_id,
+                    'product_name'    => $item->product_name,
+                    'product_article' => $item->product_article,
+                    'selling_price'   => $item->selling_price,
+                    'quantity'        => $item->quantity,
+                    'total'           => $item->total,
+                ]);
+            }
 
-        $this->recalculate->handle($cart);
+            $this->recalculate->handle($cart);
 
-        return $cart;
+            return $cart;
+        });
     }
 }

@@ -49,4 +49,24 @@ class OrderPermissionsTest extends TestCase
 
         $this->assertInstanceOf(OrderPermissions::class, $order->permissions);
     }
+
+    /**
+     * Blade asks the same order what it may do several times per render, so the
+     * accessor must hand back the object it already built.
+     */
+    public function test_order_permissions_accessor_is_built_once_per_model(): void
+    {
+        $order = Order::factory()->create();
+
+        $this->assertSame($order->permissions, $order->permissions);
+    }
+
+    public function test_order_number_cannot_be_mass_assigned(): void
+    {
+        $order = Order::factory()->create();
+
+        $order->fill(['order_number' => 999999])->save();
+
+        $this->assertNotSame(999999, $order->refresh()->order_number);
+    }
 }

@@ -40,7 +40,7 @@
   `AddOrUpdateCartItemAction`, `ProductResource` (API), `CreateOrderAction` (через `OrderItemData`),
   `product.blade.php`, `product-card.blade.php`, `GetCatalogStatsQuery::incomplete()`.
 - Ціна також використовується **на рівні SQL** (не просто як PHP-атрибут):
-  - `RangeFilterDto::apply()` (`app/Modules/Shop/Dtos/Filters/RangeFilterDto.php`) —
+  - `RangeFilterData::apply()` (`app/Modules/Shop/Dtos/Filters/RangeFilterData.php`) —
     `$query->where('price', '>=', ...)` / `'<='`.
   - `PrepareShopFilterQuery::prepareRangeFilter()` — `$query->min('price')` / `->max('price')`.
   - `SortOptionEnum::orderBy()` (`app/Modules/Shop/Enums/SortOptionEnum.php`) — сортування
@@ -307,7 +307,7 @@ public function scopeWithCheapestItemPrice($query)
   `->withCheapestItemPrice()` і `cheapestItem` у дефолтний `$with`:
   `$with = ['brand', 'category', 'cheapestItem']`.
   Це автоматично «полагодить» усе, що будується поверх нього:
-  `RangeFilterDto::apply()` (`where('price', ...)`),
+  `RangeFilterData::apply()` (`where('price', ...)`),
   `PrepareShopFilterQuery::prepareRangeFilter()` (`min('price')`/`max('price')`),
   `SearchProductsQuery::applySorting()` (`orderBy('price', ...)` через `SortOptionEnum`).
   Ці три файли **не чіпаємо взагалі**.

@@ -2,13 +2,13 @@
 
 namespace Tests\Unit\Shop\Filters;
 
-use App\Modules\Shop\Dtos\Filters\SearchFilterDto;
+use App\Modules\Shop\Dtos\Filters\SearchFilterData;
 use App\Modules\Shop\Enums\FilterTypeEnum;
 use App\Modules\Shop\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class SearchFilterDtoTest extends TestCase
+class SearchFilterDataTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -17,7 +17,7 @@ class SearchFilterDtoTest extends TestCase
         $matching = Product::factory()->create(['title' => 'Red Widget']);
         $other = Product::factory()->create(['title' => 'Blue Gadget']);
 
-        $dto = new SearchFilterDto('search', FilterTypeEnum::SEARCH, 'widget');
+        $dto = new SearchFilterData('search', FilterTypeEnum::SEARCH, 'widget');
 
         $query = Product::query();
         $dto->apply($query);
@@ -31,7 +31,7 @@ class SearchFilterDtoTest extends TestCase
     {
         Product::factory()->count(2)->create();
 
-        $dto = new SearchFilterDto('search', FilterTypeEnum::SEARCH, null);
+        $dto = new SearchFilterData('search', FilterTypeEnum::SEARCH, null);
 
         $query = Product::query();
         $dto->apply($query);
@@ -43,7 +43,7 @@ class SearchFilterDtoTest extends TestCase
     {
         Product::factory()->count(2)->create();
 
-        $dto = new SearchFilterDto('search', FilterTypeEnum::SEARCH, '   ');
+        $dto = new SearchFilterData('search', FilterTypeEnum::SEARCH, '   ');
 
         $query = Product::query();
         $dto->apply($query);

@@ -150,11 +150,30 @@ fix the test, not the ViewModel.
 
 ---
 
+# Formatting money
+
+The ViewModel formats amounts; the model never did and no longer pretends to.
+`Core\Support\Money` is the value object behind it — it rounds to the two
+decimals the schema stores and owns the currency symbol:
+
+```php
+subtotal_amount_formatted: Money::from($cart->subtotal_amount)->format(),
+has_discount: Money::from($cart->discount_amount)->isPositive(),
+```
+
+`Money` is not an Eloquent cast: `shop_*.total_amount` and friends stay
+`decimal:2`, so Filament, the dashboard queries and the API keep reading plain
+numbers. It is built where an amount is used — here to print it, and in an
+Action (`RecalculateCartTotalAction`, `RecalculateOrderTotalAction`) to add and
+subtract it.
+
+---
+
 # What stays outside the layer
 
-**Input Dtos.** `ShopFilterDto`, `OrderFilterData` and friends are rendered by
+**Input DTOs.** `ShopFilterData`, `OrderFilterData` and friends are rendered by
 the page, but the same objects also build the query — they belong to the input
-side and stay Dtos.
+side and stay DTOs.
 
 **`ActionResult`.** A partial that prints `success` / `message` from an Action's
 result is not rendering an entity; no ViewModel is needed for two strings. See

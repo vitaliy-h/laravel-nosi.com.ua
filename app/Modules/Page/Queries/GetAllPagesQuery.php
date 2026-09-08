@@ -4,7 +4,6 @@ namespace App\Modules\Page\Queries;
 
 use App\Modules\Page\Models\Page;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 
 class GetAllPagesQuery
@@ -26,11 +25,14 @@ class GetAllPagesQuery
         return $this->allPages = Page::hydrate($rows);
     }
 
+    /**
+     * Forget the page rows. Invalidating what was derived from them — the module
+     * manifest and, with it, the route prefixes — is `PageObserver`'s job: a
+     * Query drops its own cache and nothing else.
+     */
     public function clear(): void
     {
         $this->allPages = null;
         Cache::forget(self::CACHE_KEY);
-        Artisan::call('route:clear');
-        Artisan::call('cache:clear');
     }
 }

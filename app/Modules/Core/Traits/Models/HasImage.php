@@ -3,6 +3,7 @@
 namespace App\Modules\Core\Traits\Models;
 
 use App\Modules\Core\Services\ImageConversionService;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -47,22 +48,25 @@ trait HasImage
         });
     }
 
-    public function getImageAttribute(): string
+    protected function image(): Attribute
     {
-        if (!empty($this->img)) {
-            return Storage::url($this->img);
-        }
-
-        return asset('/assets/images/no_image.svg');
+        return Attribute::make(
+            get: fn (): string => !empty($this->img)
+                ? Storage::url($this->img)
+                : asset('/assets/images/no_image.svg'),
+        );
     }
 
-    public function getImagesAttribute(): array
+    /**
+     * @return Attribute<array<int, string>, never>
+     */
+    protected function images(): Attribute
     {
-        if (empty($this->imgs) || !is_array($this->imgs)) {
-            return [];
-        }
-
-        return array_map(static fn ($path) => Storage::url($path), $this->imgs);
+        return Attribute::make(
+            get: fn (): array => empty($this->imgs) || !is_array($this->imgs)
+                ? []
+                : array_map(static fn ($path) => Storage::url($path), $this->imgs),
+        );
     }
 
     public function imageUrl(string $preset): string

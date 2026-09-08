@@ -3,6 +3,7 @@
 namespace App\Modules\ShopCart\Http\Controllers\Web;
 
 use App\Modules\Core\Abstract\BaseWebController;
+use App\Modules\Core\Support\Money;
 use App\Modules\Shop\Models\Product;
 use App\Modules\ShopCart\Actions\AddOrUpdateCartItemAction;
 use App\Modules\ShopCart\Actions\DuplicateCartAction;
@@ -140,7 +141,7 @@ class AjaxCartController extends BaseWebController
             [
                 'selector' => '.js_product_total',
                 'method'   => 'text',
-                'content'  => $item->total_formatted,
+                'content'  => Money::from($item->total)->format(),
             ],
         ];
     }
@@ -155,7 +156,7 @@ class AjaxCartController extends BaseWebController
             [
                 'selector' => '.js_product_checkout_total_' . $product->id,
                 'method'   => 'text',
-                'content'  => $item->total_formatted,
+                'content'  => Money::from($item->total)->format(),
             ],
             $this->summaryDiscountAction($cart),
             $this->checkoutTotalAction($cart),
@@ -182,7 +183,7 @@ class AjaxCartController extends BaseWebController
         return [
             'selector' => '.js_checkout_total',
             'method'   => 'text',
-            'content'  => $cart->total_amount_formatted,
+            'content'  => Money::from($cart->total_amount)->format(),
         ];
     }
 

@@ -2,8 +2,13 @@
 
 namespace App\Modules\Core\Traits\Api;
 
+use App\Modules\Core\Support\ApiEnvelope;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * The controller-side shorthand for `Core\Support\ApiEnvelope`, which defines
+ * the envelope itself. See `docs/api/README.md`.
+ */
 trait ApiResponse
 {
     protected function success(
@@ -11,11 +16,7 @@ trait ApiResponse
         ?string $message = 'OK',
         int $status = 200
     ): JsonResponse {
-        return response()->json([
-            'success' => true,
-            'message' => $message,
-            'data'    => $data,
-        ], $status);
+        return ApiEnvelope::success($data, $message, $status);
     }
 
     protected function error(
@@ -23,10 +24,6 @@ trait ApiResponse
         mixed $errors = null,
         int $status = 400
     ): JsonResponse {
-        return response()->json([
-            'success' => false,
-            'message' => $message,
-            'errors'  => $errors,
-        ], $status);
+        return ApiEnvelope::error($message, $errors, $status);
     }
 }

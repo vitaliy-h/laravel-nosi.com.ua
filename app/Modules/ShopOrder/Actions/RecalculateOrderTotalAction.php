@@ -2,6 +2,7 @@
 
 namespace App\Modules\ShopOrder\Actions;
 
+use App\Modules\Core\Support\Money;
 use App\Modules\ShopOrder\Models\Order;
 
 class RecalculateOrderTotalAction
@@ -13,13 +14,15 @@ class RecalculateOrderTotalAction
      */
     public function handle(Order $order): void
     {
-        $subtotal = (float) $order->items()->sum('total');
-        $discount = max(0, min((float) $order->discount_amount, $subtotal));
+        $subtotal = Money::from($order->items()->sum('total'));
+        $discount = Money::from($order->discount_amount)
+            ->atLeast(Money::zero())
+            ->atMost($subtotal);
 
         $order->withoutEvents(fn () => $order->update([
-            'subtotal_amount' => $subtotal,
-            'discount_amount' => $discount,
-            'total_amount'    => max(0, round($subtotal - $discount, 2)),
+            'subtotal_amount' => $subtotal->value(),
+            'discount_amount' => $discount->value(),
+            'total_amount'    => $subtotal->minus($discount)->atLeast(Money::zero())->value(),
         ]));
     }
 }

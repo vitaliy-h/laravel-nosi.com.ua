@@ -4,9 +4,9 @@ namespace App\Modules\Shop\Http\Controllers\Api;
 
 use App\Modules\Core\Abstract\BaseApiController;
 use App\Modules\Core\Http\Resources\BasePaginationResource;
-use App\Modules\Shop\Dtos\CategorySearchDto;
-use App\Modules\Shop\Dtos\ProductSearchDto;
-use App\Modules\Shop\Dtos\ShopFilterCriteriaDto;
+use App\Modules\Shop\Dtos\CategorySearchData;
+use App\Modules\Shop\Dtos\ProductSearchData;
+use App\Modules\Shop\Dtos\ShopFilterCriteriaData;
 use App\Modules\Shop\Enums\SortOptionEnum;
 use App\Modules\Shop\Http\Requests\ShopCategoriesRequest;
 use App\Modules\Shop\Http\Requests\ShopProductsRequest;
@@ -32,7 +32,7 @@ class ShopController extends BaseApiController
 
     public function categories(ShopCategoriesRequest $request): JsonResponse
     {
-        $categories = $this->searchCategories->handle(new CategorySearchDto(
+        $categories = $this->searchCategories->handle(new CategorySearchData(
             root: true,
             hasImage: $request->boolean('has_image'),
             onlyWithProducts: $request->boolean('only_with_products'),
@@ -64,7 +64,7 @@ class ShopController extends BaseApiController
             ? $this->findCategoryById->handle($request->integer('category_id'))
             : null;
         $filter = $this->prepareShopFilter->handle($category, $this->filterCriteria($request));
-        $products = $this->searchProducts->handle(new ProductSearchDto(
+        $products = $this->searchProducts->handle(new ProductSearchData(
             category: $category,
             filter: $filter,
             sort: SortOptionEnum::tryFrom((string) $request->query('sort')),
@@ -92,9 +92,9 @@ class ShopController extends BaseApiController
     /**
      * The HTTP layer stops here: the Query gets values, not a Request.
      */
-    private function filterCriteria(Request $request): ShopFilterCriteriaDto
+    private function filterCriteria(Request $request): ShopFilterCriteriaData
     {
-        return ShopFilterCriteriaDto::fromQuery(
+        return ShopFilterCriteriaData::fromQuery(
             brand: $request->query('brand'),
             priceFrom: $request->query('price_from'),
             priceTo: $request->query('price_to'),

@@ -6,7 +6,7 @@ XML sitemap split into multiple files for performance and SEO tooling compatibil
 
 All sitemap routes are defined in `app/Modules/Sitemap/Http/Routes/web.php` and handled by
 `App\Modules\Sitemap\Http\Controllers\SitemapController`. The module is mounted at the app
-root rather than under a prefix (`ModuleServiceProvider::ROOT_LEVEL_MODULES`), because
+root rather than under a prefix (`ModuleManifest::ROOT_LEVEL_MODULES`), because
 `/sitemap.xml` is a fixed, SEO-standard path.
 
 ---

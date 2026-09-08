@@ -39,9 +39,4 @@ class OrderProduct extends Model
     {
         return $this->belongsTo(Product::class, 'shop_product_id');
     }
-
-    public function getTotalFormattedAttribute(): string
-    {
-        return t('shop.currency') . number_format($this->total, 2);
-    }
 }

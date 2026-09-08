@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\ShopCart;
 
+use App\Modules\Core\Support\Money;
 use App\Modules\Shop\Models\Product;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
@@ -95,7 +96,7 @@ class AjaxCartControllerTest extends TestCase
         $response->assertStatus(200);
         $actions = $response->json('actions');
         // The total travels the way the page renders it — formatted, currency included.
-        $expected = $cart->fresh()->total_amount_formatted;
+        $expected = Money::from($cart->fresh()->total_amount)->format();
         $this->assertTrue(collect($actions)->contains(fn ($a) => ($a['selector'] ?? null) === '.js_checkout_total' && $a['content'] === $expected));
     }
 

@@ -39,6 +39,36 @@ A ViewModel never queries the DB — eager-loading is the caller's job — never
 reaches into a switchable module in place of `ModuleGate`, and never carries a
 field the page does not render. See `docs/starter/view-models.md`.
 
+### Models do not format
+
+A model holds state; turning it into something a customer reads is the view
+layer's job. No `get*FormattedAttribute` on a model, and no `t()` inside one —
+a model that translates makes the answer depend on the current locale, which is
+request-scoped state by another name.
+
+Money is the case this comes up most, so it has a value object:
+`Core\Support\Money` rounds to the two decimals the schema stores, adds and
+subtracts them, and is the only place that writes the currency symbol.
+
+```php
+// no — the model formats and translates
+public function getTotalAmountFormattedAttribute(): string
+{
+    return t('shop.currency') . number_format($this->total_amount, 2);
+}
+
+// yes — the ViewModel asks for the string it is going to render
+total_amount_formatted: Money::from($order->total_amount)->format(),
+```
+
+`Money` is deliberately **not** an Eloquent cast: the columns stay `decimal:2`,
+so Filament, the dashboard queries and the API keep reading plain numbers. Build
+a `Money` where an amount is used — in a ViewModel to print it, in an Action to
+do arithmetic on it (`RecalculateCartTotalAction`).
+
+Accessors that survive are written the Laravel 13 way, `Attribute::make()` in a
+`protected function name(): Attribute`, not `getNameAttribute()`.
+
 ## Request-scoped state
 
 `Session`, `Auth`, `request()` and `Cookie` are **ambient state**: a class that reads
@@ -139,9 +169,9 @@ a Query answers a question.
   so in its name (`BuildProductsQuery`).
 - **Input is scalars, enums, models or a DTO — never a `Request`, and never the
   session or the current user read from inside** (see «Request-scoped state»). Several criteria go
-  into a DTO (`SearchCategoriesQuery::handle(CategorySearchDto $criteria)`,
+  into a DTO (`SearchCategoriesQuery::handle(CategorySearchData $criteria)`,
   `GetUserOrdersQuery::handle(int $userId, OrderFilterData $filter)`), so the same Query
-  serves web and API — `PrepareShopFilterQuery` takes `ShopFilterCriteriaDto`, which the
+  serves web and API — `PrepareShopFilterQuery` takes `ShopFilterCriteriaData`, which the
   controller builds from the request.
 - **Layout:** flat in `Queries/` for a small module (`News/Queries/GetNewsListQuery.php`);
   grouped per entity once there are many
@@ -158,9 +188,15 @@ a Query answers a question.
 - **Actions** hold write logic — shared between web and API controllers
 - **Queries** hold reads — see «Read layer» above
 - **Controllers** are thin HTTP adapters only
-- **DTOs** (`spatie/laravel-data`) structure input validation
+- **DTOs** (`spatie/laravel-data`) structure input validation, and are named `*Data`
+  — one suffix for the whole project, so `Dto` never appears in a class name
+  (`ProductSearchData`, `ShopFilterCriteriaData`); the `Dtos/` folder keeps its name
 - **Resources** structure API responses
-- Response envelope: `{ success, message?, data }`
+- Response envelope: `{ success, message, data, errors }` — the same four keys on
+  success and on failure, built only by `Core\Support\ApiEnvelope` (controllers
+  reach it through the `ApiResponse` trait, exceptions through the `api/*` renderer
+  in `bootstrap/app.php`). A success nulls `errors`, a failure nulls `data`; neither
+  key is ever omitted, so a client parses one shape. See `docs/api/README.md`.
 
 ## Action return values
 
@@ -176,6 +212,46 @@ module, with **non-nullable** fields; the envelope only carries `success`,
 `message`, `data`. Annotate with `/** @return ActionResult<PromocodeData> */`.
 A genuine two-state query belongs in a `Query` class, not an Action.
 See `docs/starter/actions.md`.
+
+## Transactions
+
+An Action that writes to **more than one table** wraps its writes in
+`DB::transaction()`. Placing an order touches `shop_orders`, `shop_order_products`,
+`shop_promocodes` and `shop_carts`; a failure halfway used to leave a half-written
+order, a promocode already counted as used and a cart still full.
+
+```php
+public function handle(Cart $cart, CustomerData $customer): Order
+{
+    return DB::transaction(fn () => $this->place($cart, $customer));
+}
+```
+
+Keep the closure a one-liner delegating to a private method when the body is long —
+the transaction boundary stays readable and the logic keeps its own name.
+
+Nesting is fine and expected: `PlaceOrderFromCartAction` wraps `CreateOrderAction`,
+which has a transaction of its own. Laravel turns the inner one into a savepoint, so
+each action is still safe when called on its own.
+
+### Side effects go after the commit
+
+Letters, SMS, webhooks and queued jobs must not fire from inside a transaction — a
+rollback would leave the customer holding a letter about an order that no longer
+exists. Use `DB::afterCommit()`, which runs the callback at the **outermost** commit
+and immediately when there is no transaction at all:
+
+```php
+DB::afterCommit(fn () => $this->letters->send(
+    new SendLetterTemplateData(key: LetterEnum::ORDER_CREATED, ...)
+));
+```
+
+Writing the call after the closure instead is not equivalent: the action may itself be
+running inside a caller's transaction, and then "after the closure" is still inside it.
+
+Single-statement atomicity does not need a transaction — `$promocode->increment('used_count')`
+is one SQL statement (`IncrementPromocodeUsageAction`).
 
 ## Code style
 

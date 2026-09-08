@@ -9,7 +9,7 @@ namespace App\Modules\Shop\Dtos;
  * a Query to HTTP and made it unusable from a command, a job or a test without
  * faking a request. Controllers build this DTO; the Query only sees values.
  */
-readonly class ShopFilterCriteriaDto
+readonly class ShopFilterCriteriaData
 {
     /**
      * @param  array<int, int>  $brands  brand ids, already cast to positive integers

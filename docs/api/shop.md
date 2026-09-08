@@ -45,7 +45,8 @@ GET /api/shop/categories
         "children": []
       }
     ]
-  }
+  },
+  "errors": null
 }
 ```
 
@@ -91,7 +92,8 @@ GET /api/shop/categories/{id}
         }
       ]
     }
-  }
+  },
+  "errors": null
 }
 ```
 
@@ -165,7 +167,8 @@ returns `422` in the standard validation-error envelope.
       "from": 1,
       "to": 10
     }
-  }
+  },
+  "errors": null
 }
 ```
 
@@ -220,7 +223,8 @@ GET /api/shop/products/{id}
         "title": "Apple"
       }
     }
-  }
+  },
+  "errors": null
 }
 ```
 

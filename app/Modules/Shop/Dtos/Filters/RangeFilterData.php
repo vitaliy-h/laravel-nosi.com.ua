@@ -5,7 +5,7 @@ namespace App\Modules\Shop\Dtos\Filters;
 use App\Modules\Shop\Enums\FilterTypeEnum;
 use Illuminate\Database\Eloquent\Builder;
 
-class RangeFilterDto extends BaseFilterDto
+class RangeFilterData extends BaseFilterData
 {
     public function __construct(
         public readonly string $key,

@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Shop\Queries\Product;
 
-use App\Modules\Shop\Dtos\ProductSearchDto;
+use App\Modules\Shop\Dtos\ProductSearchData;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
 use App\Modules\Shop\Queries\Product\SearchProductsQuery;
@@ -31,7 +31,7 @@ class SearchProductsQueryTest extends TestCase
         Product::factory()->count(3)->forCategory($category)->create();
         Product::factory()->forCategory($otherCategory)->create();
 
-        $result = $this->query->handle(new ProductSearchDto(category: $category, paginate: true));
+        $result = $this->query->handle(new ProductSearchData(category: $category, paginate: true));
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $result);
         $this->assertSame(3, $result->total());
@@ -47,7 +47,7 @@ class SearchProductsQueryTest extends TestCase
         Product::factory()->count(2)->forCategory($category)->create();
         Product::factory()->invisible()->forCategory($category)->create();
 
-        $result = $this->query->handle(new ProductSearchDto(category: $category, paginate: true));
+        $result = $this->query->handle(new ProductSearchData(category: $category, paginate: true));
 
         $this->assertSame(2, $result->total());
         $this->assertTrue(
@@ -59,7 +59,7 @@ class SearchProductsQueryTest extends TestCase
     {
         Product::factory()->count(5)->create();
 
-        $result = $this->query->handle(new ProductSearchDto(random: true, limit: 3, with: ['category']));
+        $result = $this->query->handle(new ProductSearchData(random: true, limit: 3, with: ['category']));
 
         $this->assertCount(3, $result);
     }

@@ -41,7 +41,8 @@ POST /api/auth/register
       "name": "John Doe",
       "email": "john@example.com"
     }
-  }
+  },
+  "errors": null
 }
 ```
 
@@ -77,7 +78,8 @@ POST /api/auth/login
       "name": "John Doe",
       "email": "john@example.com"
     }
-  }
+  },
+  "errors": null
 }
 ```
 
@@ -87,6 +89,7 @@ POST /api/auth/login
 {
   "success": false,
   "message": "Validation failed",
+  "data": null,
   "errors": {
     "email": [
       "Invalid credentials"
@@ -116,7 +119,8 @@ Requires the `auth:sanctum` middleware — no body.
 ```json
 {
   "success": true,
-  "message": "Logged out."
+  "message": "Logged out.",
+  "errors": null
 }
 ```
 
@@ -129,6 +133,7 @@ renderer in `bootstrap/app.php` turns the `AuthenticationException` into `401`:
 {
   "success": false,
   "message": "Unauthenticated.",
+  "data": null,
   "errors": null
 }
 ```

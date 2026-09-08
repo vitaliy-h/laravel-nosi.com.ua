@@ -2,19 +2,19 @@
 
 namespace Tests\Unit\Shop\Filters;
 
-use App\Modules\Shop\Dtos\Filters\RangeFilterDto;
+use App\Modules\Shop\Dtos\Filters\RangeFilterData;
 use App\Modules\Shop\Enums\FilterTypeEnum;
 use App\Modules\Shop\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class RangeFilterDtoTest extends TestCase
+class RangeFilterDataTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function make(?float $from, ?float $to, float $min = 0, float $max = 100): RangeFilterDto
+    private function make(?float $from, ?float $to, float $min = 0, float $max = 100): RangeFilterData
     {
-        return new RangeFilterDto('price', FilterTypeEnum::RANGE, $min, $max, $from, $to);
+        return new RangeFilterData('price', FilterTypeEnum::RANGE, $min, $max, $from, $to);
     }
 
     public function test_from_value_and_to_value_fall_back_to_min_max(): void

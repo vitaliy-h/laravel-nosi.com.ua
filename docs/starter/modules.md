@@ -263,4 +263,62 @@ through the per-module loop.
 
 ---
 
+## 7. The module manifest
+
+Everything above — which modules are enabled, where each one's `web.php` mounts,
+which migrations and observers it brings, which commands it registers — is
+resolved by `App\Modules\Core\Support\ModuleManifest` and handed to
+`ModuleServiceProvider`, which only registers what it is told.
+
+Without a cached manifest that resolution happens on every boot: a directory
+listing of `app/Modules`, four `File::exists()` per module, a walk of every
+`Console/Commands` folder (even for an HTTP request that will never run one),
+and a database read for each page-driven route prefix. A fresh clone depends on
+this working before anything has been run, so it stays the default.
+
+`php artisan modules:cache` writes the resolved array to
+`bootstrap/cache/modules.php` (git-ignored, like the rest of that folder) and
+boot then reads a plain PHP array — no scan, no database.
+
+### Why the order in the deploy matters
+
+A page-driven module's prefix **is** `pages.slug` (see
+[routing.md](routing.md#2-prefix-resolution-moduleserviceproviderregisterwebroute)),
+so it is data, and `route:cache` freezes it. The deploy therefore runs:
+
+```bash
+php artisan migrate        # page rows are current
+php artisan modules:cache  # prefixes resolved from them
+php artisan route:cache    # route table frozen with those prefixes
+```
+
+Caching routes before the manifest would bake in whatever prefixes the previous
+manifest held — or, on a database with no page rows yet, the fallback prefixes
+(`/user_auth` instead of `/auth`).
+
+`composer install` runs `modules:clear` from `post-autoload-dump`, so a manifest
+never survives a code change that added or removed a module.
+
+### Tests always build their own
+
+A manifest holds prefixes read from a database, so the one cached locally
+describes the *development* database. A test run boots against the test database
+and would otherwise mount every page-driven module behind the wrong URL — so
+under PHPUnit the manifest file on disk is ignored and the array is built fresh
+(`ModuleServiceProvider` passes `useCache: false`). Caching a manifest locally is
+therefore safe: `sail test` keeps working.
+
+### Editing a slug in the admin
+
+`PageObserver` fires on every page create/update/delete and drops everything
+derived from the page rows in one place: the cached rows (`GetAllPagesQuery::clear()`),
+the manifest (rebuilt, but only if one was cached) and the cached route table.
+The app then runs with uncached routes until the next deploy re-caches them —
+correct URLs, one boot slower.
+
+On a multi-server deploy that invalidation only reaches the node that served the
+request, so every node needs its own `modules:cache` + `route:cache`.
+
+---
+
 [Back to main readme](../../README.md)

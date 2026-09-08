@@ -16,6 +16,9 @@ use Spatie\LaravelData\Data;
  *     {{ $product->url }}            not  {{ save_route('shop.product', [$product->category->slug, ...]) }}
  *     {{ $order->total_formatted }}  not  {{ number_format($order->total_amount, 2) }}
  *
+ * Money is formatted through `Core\Support\Money` — `Money::from($order->total_amount)
+ * ->format()` — so the currency symbol is written in one place and never on a model.
+ *
  * Two levels, both living in `app/Modules/{Module}/ViewModels/`:
  *
  * 1. `{Model}ViewModel` — one entity, reusable across screens (a product on the

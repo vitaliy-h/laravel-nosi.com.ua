@@ -62,7 +62,7 @@ rule.
 **Web and API would drift.** The DTO input exists so one Query serves both
 (`SearchProductsQuery` ← `ShopController` and `Shop\...\Web\IndexController`). If the
 caller finishes the read, one paginates by 12 and the other by 24 and nobody notices. The
-page size is passed *in* through `ProductSearchDto::$perPage`, while the list of offered
+page size is passed *in* through `ProductSearchData::$perPage`, while the list of offered
 sizes stays inside the Query — so a made-up `?c=1000` cannot turn a listing into a full
 table scan, whoever the caller is.
 
@@ -93,11 +93,11 @@ controller. A controller gets data.
 2. **Input is scalars, enums, models or a DTO — never a `Request`.** Several criteria go
    into a DTO, so the same Query serves web and API:
    ```php
-   SearchCategoriesQuery::handle(CategorySearchDto $criteria): Collection
+   SearchCategoriesQuery::handle(CategorySearchData $criteria): Collection
    GetUserOrdersQuery::handle(int $userId, OrderFilterData $filter): LengthAwarePaginator
    ```
    No Query in the codebase takes a `Request` — `PrepareShopFilterQuery` was the last one
-   and now takes `ShopFilterCriteriaDto`, built by the controller.
+   and now takes `ShopFilterCriteriaData`, built by the controller.
 3. **Eager-load inside the Query**, not in the caller: the Query knows what its result is
    for. `GetUserOrdersQuery` loads `items.product.category` because the order list links
    each line back to the catalogue.

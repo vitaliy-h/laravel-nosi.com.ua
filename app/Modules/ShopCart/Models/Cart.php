@@ -57,21 +57,6 @@ class Cart extends Model
         return $this->belongsTo(Promocode::class);
     }
 
-    public function getTotalAmountFormattedAttribute(): string
-    {
-        return t('shop.currency') . number_format($this->total_amount, 2);
-    }
-
-    public function getSubtotalAmountFormattedAttribute(): string
-    {
-        return t('shop.currency') . number_format($this->subtotal_amount, 2);
-    }
-
-    public function getDiscountAmountFormattedAttribute(): string
-    {
-        return t('shop.currency') . number_format($this->discount_amount, 2);
-    }
-
     protected static function newFactory(): CartFactory
     {
         return CartFactory::new();

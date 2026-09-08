@@ -5,8 +5,8 @@ namespace App\Modules\Shop\Http\Controllers\Web;
 use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Core\ViewModels\BreadcrumbViewModel;
-use App\Modules\Shop\Dtos\ProductSearchDto;
-use App\Modules\Shop\Dtos\ShopFilterCriteriaDto;
+use App\Modules\Shop\Dtos\ProductSearchData;
+use App\Modules\Shop\Dtos\ShopFilterCriteriaData;
 use App\Modules\Shop\Enums\SortOptionEnum;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Queries\Category\FindCategoryBySlugQuery;
@@ -115,7 +115,7 @@ class IndexController extends BaseWebController
 
     private function listing(?Category $category, $filter, Request $request): ShopCategoryPageViewModel
     {
-        $products = $this->searchProducts->handle(new ProductSearchDto(
+        $products = $this->searchProducts->handle(new ProductSearchData(
             category: $category,
             filter: $filter,
             sort: SortOptionEnum::tryFrom((string) $request->query('sort')),
@@ -162,9 +162,9 @@ class IndexController extends BaseWebController
     /**
      * The HTTP layer stops here: the Query gets values, not a Request.
      */
-    private function filterCriteria(Request $request): ShopFilterCriteriaDto
+    private function filterCriteria(Request $request): ShopFilterCriteriaData
     {
-        return ShopFilterCriteriaDto::fromQuery(
+        return ShopFilterCriteriaData::fromQuery(
             brand: $request->query('brand'),
             priceFrom: $request->query('price_from'),
             priceTo: $request->query('price_to'),

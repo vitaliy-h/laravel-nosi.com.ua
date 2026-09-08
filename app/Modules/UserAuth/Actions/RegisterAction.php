@@ -32,7 +32,7 @@ class RegisterAction
         });
 
         if ($dto->email && $dto->password) {
-            $this->letters->send(
+            DB::afterCommit(fn () => $this->letters->send(
                 new SendLetterTemplateData(
                     key: LetterEnum::REGISTRATION,
                     replace: [
@@ -43,7 +43,7 @@ class RegisterAction
                     ],
                     to: $dto->email,
                 )
-            );
+            ));
         }
 
         return $user;

@@ -5,6 +5,7 @@ namespace App\Modules\ShopCart\Actions;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\User\Models\User;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Folds the cart a guest started into the cart of the user who just signed in.
@@ -42,21 +43,23 @@ class MergeCartOnAuthAction
             return;
         }
 
-        foreach ($guestCart->items as $item) {
-            $userCart->items()->updateOrCreate(
-                ['shop_product_id' => $item->shop_product_id],
-                [
-                    'product_name'    => $item->product_name,
-                    'product_article' => $item->product_article,
-                    'selling_price'   => $item->selling_price,
-                    'quantity'        => $item->quantity,
-                    'total'           => $item->total,
-                ],
-            );
-        }
+        DB::transaction(function () use ($guestCart, $userCart): void {
+            foreach ($guestCart->items as $item) {
+                $userCart->items()->updateOrCreate(
+                    ['shop_product_id' => $item->shop_product_id],
+                    [
+                        'product_name'    => $item->product_name,
+                        'product_article' => $item->product_article,
+                        'selling_price'   => $item->selling_price,
+                        'quantity'        => $item->quantity,
+                        'total'           => $item->total,
+                    ],
+                );
+            }
 
-        $this->recalculate->handle($userCart);
+            $this->recalculate->handle($userCart);
 
-        $guestCart->delete();
+            $guestCart->delete();
+        });
     }
 }

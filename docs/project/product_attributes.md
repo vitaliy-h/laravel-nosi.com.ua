@@ -172,17 +172,17 @@ MariaDB 11.8 підтримує instant `ADD COLUMN` (з 10.3) та instant `DRO
 
 ### 7.1 Інтеграція з наявним механізмом
 
-Поточна конструкція вже майже готова: `ShopFilterDto` → `toApplicable()` → `BuildProductsQuery` викликає `apply()` на кожному фільтрі. Потрібні три зміни.
+Поточна конструкція вже майже готова: `ShopFilterData` → `toApplicable()` → `BuildProductsQuery` викликає `apply()` на кожному фільтрі. Потрібні три зміни.
 
-**1. Явна колонка у фільтр-DTO.** Зараз `InFilterDto::apply()` містить хардкод:
+**1. Явна колонка у фільтр-DTO.** Зараз `InFilterData::apply()` містить хардкод:
 
 ```php
 $column = $this->key === 'brand' ? 'brand_id' : $this->key;
 ```
 
-Замінити на явне поле `column` у `InFilterDto` і `RangeFilterDto` (`brand` → `brand_id`, `ram` → `v.a17`). Той самий DTO обслуговує і статичні, і динамічні фільтри — нові класи не потрібні.
+Замінити на явне поле `column` у `InFilterData` і `RangeFilterData` (`brand` → `brand_id`, `ram` → `v.a17`). Той самий DTO обслуговує і статичні, і динамічні фільтри — нові класи не потрібні.
 
-**2. Динамічні фільтри в `ShopFilterDto`.** Додати `Collection<string, BaseFilterDto> $attributes` (ключ — `code` параметра) і включити її в `toApplicable()`:
+**2. Динамічні фільтри в `ShopFilterData`.** Додати `Collection<string, BaseFilterData> $attributes` (ключ — `code` параметра) і включити її в `toApplicable()`:
 
 ```php
 public function toApplicable(): Collection
@@ -208,9 +208,9 @@ $query->join('shop_product_attribute_values as v', 'v.product_id', '=', 'shop_pr
 
 `PrepareShopFilterQuery` розширюється: для поточної категорії підтягуються прив'язані параметри з `is_filterable = true` і `column_created_at IS NOT NULL`, і для кожного будується DTO:
 
-- `select` → `InFilterDto` з опціями і лічильниками: `GROUP BY v.a17` по запиту, з якого виключено цей самий фільтр (точно як зараз для брендів);
-- `number` → `RangeFilterDto` з `MIN(v.a17)` / `MAX(v.a17)`;
-- `bool` → `InFilterDto` з двома опціями.
+- `select` → `InFilterData` з опціями і лічильниками: `GROUP BY v.a17` по запиту, з якого виключено цей самий фільтр (точно як зараз для брендів);
+- `number` → `RangeFilterData` з `MIN(v.a17)` / `MAX(v.a17)`;
+- `bool` → `InFilterData` з двома опціями.
 
 Значення з URL читаються за `code`: `?ram=8,16&color=12,13&weight_from=1&weight_to=5`.
 
@@ -271,7 +271,7 @@ $attribute = createAttribute(['code' => 'ram', 'type' => 'number', 'is_filterabl
 |---|---|
 | 1 | Міграції (3.1–3.4), моделі, enum типів, `CreateAttributeColumnAction` + джоба, preflight, команди `sync` / `gc`, `AttributeResource` |
 | 2 | Прив'язка до категорій (Relation Manager), динамічна форма в `ProductResource`, вивід характеристик на сторінці товару |
-| 3 | Фільтри: рефакторинг `column` у фільтр-DTO, `attributes` у `ShopFilterDto`, джойн у `BuildProductsQuery`, побудова в `PrepareShopFilterQuery`, рендер у сайдбарі каталогу |
+| 3 | Фільтри: рефакторинг `column` у фільтр-DTO, `attributes` у `ShopFilterData`, джойн у `BuildProductsQuery`, побудова в `PrepareShopFilterQuery`, рендер у сайдбарі каталогу |
 | 4 | Опційно: `multiselect` (3.5), успадкування параметрів по дереву категорій |
 
 ## 11. Відкриті питання

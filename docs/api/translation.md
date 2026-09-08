@@ -78,7 +78,8 @@ GET /api/translations?locale=en
             "menu": "Reset Password",
             "save_changes": "Save Changes"
         }
-    }
+    },
+    "errors": null
 }
 ```
 
@@ -115,7 +116,8 @@ GET /api/translations/auth?locale=en
         "password_reset_email_sent": "Email with password reset link has been sent.",
         "password_reset_success": "Password reset success.",
         "password_reset_error": "Error occurred while resetting password."
-    }
+    },
+    "errors": null
 }
 ```
 

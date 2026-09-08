@@ -3,6 +3,7 @@
 namespace App\Modules\ShopOrder\ViewModels;
 
 use App\Modules\Core\Abstract\BaseViewModel;
+use App\Modules\Core\Support\Money;
 use App\Modules\ShopOrder\Models\OrderProduct;
 
 class OrderItemViewModel extends BaseViewModel
@@ -31,7 +32,7 @@ class OrderItemViewModel extends BaseViewModel
             name: (string) $item->product_name,
             article: $item->product_article,
             quantity: (int) $item->quantity,
-            total_formatted: $item->total_formatted,
+            total_formatted: Money::from($item->total)->format(),
             has_image: !empty($product?->img),
             image: $product?->image,
             product_url: $product && $category

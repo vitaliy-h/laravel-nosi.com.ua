@@ -5,6 +5,7 @@ namespace App\Modules\Shop\Models;
 use App\Modules\Core\Traits\Models\HasVisibility;
 use App\Modules\User\Models\User;
 use Database\Factories\ProductReviewFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,9 +51,11 @@ class ProductReview extends Model
      * Display name of the review author: the account name wins over the name
      * typed into the public form.
      */
-    public function getAuthorNameAttribute(): ?string
+    protected function authorName(): Attribute
     {
-        return $this->user?->name ?: $this->name;
+        return Attribute::make(
+            get: fn (): ?string => $this->user?->name ?: $this->name,
+        );
     }
 
     protected static function newFactory(): ProductReviewFactory

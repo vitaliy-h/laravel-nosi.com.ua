@@ -112,15 +112,14 @@ shows the same placeholder.
   - `total_amount` (decimal, cached total)
   - `items()` → `hasMany(CartProduct::class, 'cart_id')`
   - `CascadesDeletes` — deleting a cart deletes all its `items`
-  - `getTotalAmountFormattedAttribute()` — total with currency prefix
-    (`t('shop.currency')`)
+  - amounts are plain `decimal:2` — the currency prefix is added by the view
+    layer through `Core\Support\Money`, never by the model
 
 - **`CartProduct`** (`shop_cart_products`)
   - `cart_id`, `shop_product_id` (`belongsTo(Product)`)
   - a product "snapshot" taken at the time it was added: `product_name`,
     `product_article`, `selling_price`
   - `quantity`, `total`
-  - `getTotalFormattedAttribute()` — same, with currency
 
 ### Queries
 

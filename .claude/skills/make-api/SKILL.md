@@ -127,7 +127,7 @@ Full rules and layout: `docs/starter/queries.md`.
 
 Rules for a Query:
 - input is scalars or a DTO — **never** a `Request` (real example:
-  `SearchCategoriesQuery::handle(CategorySearchDto $criteria)`)
+  `SearchCategoriesQuery::handle(CategorySearchData $criteria)`)
 - one read per class; no writes, no side effects
 - inject it straight into the controller — do not wrap a read in an Action
 

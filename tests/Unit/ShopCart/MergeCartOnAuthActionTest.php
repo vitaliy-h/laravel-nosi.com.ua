@@ -4,10 +4,12 @@ namespace Tests\Unit\ShopCart;
 
 use App\Modules\Shop\Models\Product;
 use App\Modules\ShopCart\Actions\MergeCartOnAuthAction;
+use App\Modules\ShopCart\Actions\RecalculateCartTotalAction;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use RuntimeException;
 use Tests\TestCase;
 
 class MergeCartOnAuthActionTest extends TestCase
@@ -81,5 +83,33 @@ class MergeCartOnAuthActionTest extends TestCase
 
         $userCart->refresh();
         $this->assertSame('35.00', (string) $userCart->total_amount);
+    }
+
+    /**
+     * Copying the lines over and dropping the guest cart is one transaction: a
+     * failure in between would leave the user holding both carts, with the
+     * shared lines counted twice.
+     */
+    public function test_a_failed_merge_leaves_both_carts_as_they_were(): void
+    {
+        $user = User::factory()->create();
+        $userCart = Cart::factory()->create(['user_id' => $user->id]);
+        $guestCart = Cart::factory()->create();
+        CartProduct::factory()->create(['cart_id' => $guestCart->id, 'total' => 10]);
+
+        $this->mock(RecalculateCartTotalAction::class)
+            ->shouldReceive('handle')
+            ->andThrow(new RuntimeException('recalculation failed'));
+
+        try {
+            app(MergeCartOnAuthAction::class)->handle($user, $guestCart->uuid);
+            $this->fail('Merging the carts was expected to fail.');
+        } catch (RuntimeException) {
+            // The rollback is what the assertions below look at.
+        }
+
+        $this->assertModelExists($guestCart);
+        $this->assertSame(1, $guestCart->items()->count());
+        $this->assertSame(0, $userCart->items()->count());
     }
 }

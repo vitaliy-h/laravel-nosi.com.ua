@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Shop\Promocodes;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Shop\Promocodes\Pages\ManagePromocodes;
+use App\Modules\Core\Support\Money;
 use App\Modules\ShopCart\Enums\PromocodeTypeEnum;
 use App\Modules\ShopCart\Models\Promocode;
 use BackedEnum;
@@ -99,8 +100,13 @@ class PromocodeResource extends Resource
                 TextColumn::make('type')
                     ->badge()
                     ->formatStateUsing(fn ($state) => $state?->label()),
-                TextColumn::make('discount_label')
-                    ->label(__('admin.fields.discount_label')),
+                // A percentage or an amount of money, depending on the type —
+                // built here rather than on the model, which does not format.
+                TextColumn::make('value')
+                    ->label(__('admin.fields.discount_label'))
+                    ->state(fn (Promocode $record): string => $record->type === PromocodeTypeEnum::PERCENT
+                        ? rtrim(rtrim(number_format((float) $record->value, 2, '.', ''), '0'), '.') . '%'
+                        : Money::from($record->value)->format()),
                 TextColumn::make('used_count'),
                 TextColumn::make('usage_limit'),
                 TextColumn::make('expires_at')

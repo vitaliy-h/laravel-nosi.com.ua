@@ -3,10 +3,12 @@
 namespace Tests\Unit\ShopCart;
 
 use App\Modules\ShopCart\Actions\DuplicateCartAction;
+use App\Modules\ShopCart\Actions\RecalculateCartTotalAction;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use RuntimeException;
 use Tests\TestCase;
 
 class DuplicateCartActionTest extends TestCase
@@ -48,5 +50,32 @@ class DuplicateCartActionTest extends TestCase
         app(DuplicateCartAction::class)->handle($source, $user);
 
         $this->assertModelMissing($existing);
+    }
+
+    /**
+     * The caller's own cart is dropped before the fork is filled, so the two
+     * steps have to be one transaction — otherwise a failure in between leaves
+     * them with no cart at all.
+     */
+    public function test_a_failure_while_forking_keeps_the_existing_cart(): void
+    {
+        $user = User::factory()->create();
+        $existing = Cart::factory()->create(['user_id' => $user->id]);
+        $source = Cart::factory()->create();
+        CartProduct::factory()->create(['cart_id' => $source->id]);
+
+        $this->mock(RecalculateCartTotalAction::class)
+            ->shouldReceive('handle')
+            ->andThrow(new RuntimeException('recalculation failed'));
+
+        try {
+            app(DuplicateCartAction::class)->handle($source, $user);
+            $this->fail('Forking the cart was expected to fail.');
+        } catch (RuntimeException) {
+            // The rollback is what the assertions below look at.
+        }
+
+        $this->assertModelExists($existing);
+        $this->assertSame(2, Cart::query()->count());
     }
 }

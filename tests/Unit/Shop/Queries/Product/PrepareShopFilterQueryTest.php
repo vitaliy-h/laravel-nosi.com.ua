@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Shop\Queries\Product;
 
-use App\Modules\Shop\Dtos\ShopFilterCriteriaDto;
+use App\Modules\Shop\Dtos\ShopFilterCriteriaData;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
@@ -26,7 +26,7 @@ class PrepareShopFilterQueryTest extends TestCase
 
         $filter = app(PrepareShopFilterQuery::class)->handle(
             $category,
-            new ShopFilterCriteriaDto(brands: [$brand->id], priceFrom: 50.0, priceTo: 200.0, search: 'shoe'),
+            new ShopFilterCriteriaData(brands: [$brand->id], priceFrom: 50.0, priceTo: 200.0, search: 'shoe'),
         );
 
         $this->assertSame([$brand->id], $filter->brand->selected);
@@ -41,7 +41,7 @@ class PrepareShopFilterQueryTest extends TestCase
         Product::factory()->forCategory($category)->create(['price' => 100]);
         Product::factory()->forCategory($category)->create(['price' => 300]);
 
-        $filter = app(PrepareShopFilterQuery::class)->handle($category, new ShopFilterCriteriaDto);
+        $filter = app(PrepareShopFilterQuery::class)->handle($category, new ShopFilterCriteriaData);
 
         $this->assertSame(100.0, $filter->price->min);
         $this->assertSame(300.0, $filter->price->max);

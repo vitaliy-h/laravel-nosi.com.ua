@@ -28,35 +28,43 @@ Authorization: Bearer <token>
 
 ## Response Format
 
-A **successful** response carries `data` (`Core\Traits\Api\ApiResponse::success()`):
+Every `api/*` response has the **same four keys** — a client parses one shape, not two.
+`Core\Support\ApiEnvelope` is the only place that builds it; controllers reach it through
+`Core\Traits\Api\ApiResponse` (`success()` / `error()`), and failures raised as exceptions
+through the renderer in `bootstrap/app.php`.
+
+A **successful** response fills `data` and leaves `errors` null:
 
 ```json
 {
     "success": true,
     "message": "Optional message",
-    "data": {}
+    "data": {},
+    "errors": null
 }
 ```
 
-A **failed** response carries `errors` instead of `data` — same three keys, never both
-(`ApiResponse::error()`, and the API exception renderer in `bootstrap/app.php`):
+A **failed** response is the mirror image — `data` is null, `errors` carries the detail:
 
 ```json
 {
     "success": false,
     "message": "Validation failed",
+    "data": null,
     "errors": {
         "email": ["Invalid credentials"]
     }
 }
 ```
 
-`errors` is `null` for failures that carry no field-level detail (401, 403, 404, 429):
+`errors` is `null` too for failures that carry no field-level detail (401, 403, 404, 429),
+so the body still has all four keys:
 
 ```json
 {
     "success": false,
     "message": "Unauthenticated.",
+    "data": null,
     "errors": null
 }
 ```

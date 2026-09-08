@@ -2,7 +2,7 @@
 
 namespace App\Modules\Shop\Queries\Product;
 
-use App\Modules\Shop\Dtos\ProductSearchDto;
+use App\Modules\Shop\Dtos\ProductSearchData;
 use App\Modules\Shop\Enums\PerPageOptionEnum;
 use App\Modules\Shop\Enums\SortOptionEnum;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -19,7 +19,7 @@ readonly class SearchProductsQuery
      * Search products by category/filters (paginated shop listing), or
      * pull a random limited set (best sellers, featured products widgets).
      */
-    public function handle(ProductSearchDto $criteria): Collection|LengthAwarePaginator
+    public function handle(ProductSearchData $criteria): Collection|LengthAwarePaginator
     {
         $query = $this->buildProductsQuery->handle($criteria->category, $criteria->filter, with: $criteria->with);
 

@@ -3,199 +3,108 @@
 namespace App\Providers;
 
 use App\Modules\Core\Listeners\LogListener;
-use App\Modules\Core\Support\ModuleGate;
-use App\Modules\Page\Enums\PageModule;
-use App\Modules\Page\Models\Page;
-use App\Modules\Page\Queries\FindPageByModuleQuery;
+use App\Modules\Core\Support\ModuleManifest;
 use Illuminate\Console\Application as Artisan;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 
+/**
+ * Mounts every enabled module: its routes, migrations, observers and commands.
+ *
+ * What belongs to which module — and, for a page-driven module, which URL prefix
+ * it sits behind — is worked out by `ModuleManifest`, not here. This class only
+ * registers what the manifest describes, so booting neither scans the module
+ * folders nor queries the database once the manifest is cached
+ * (`php artisan modules:cache`). See `docs/starter/modules.md`.
+ */
 class ModuleServiceProvider extends ServiceProvider
 {
-    /**
-     * Modules that must stay mounted at the app root instead of getting an
-     * auto-derived folder-name prefix: Core owns `/storage/{preset}/{path}`
-     * (image previews) and Sitemap owns the SEO-standard `/sitemap*.xml` paths.
-     * Prefixing either would break those conventions.
-     */
-    private const array ROOT_LEVEL_MODULES = ['Core', 'Sitemap'];
-
-    /**
-     * Folder-name overrides for the URL prefix of unmapped modules (see
-     * registerUnmappedModuleRoute()), so renaming a module folder doesn't
-     * silently change its public URLs.
-     */
-    private const array MODULE_PREFIX_OVERRIDES = [
-        'ShopOrder' => 'orders',
-    ];
-
-    /**
-     * Register services.
-     */
     public function register(): void
     {
-        //
+        $this->app->singleton(
+            ModuleManifest::class,
+            fn (): ModuleManifest => new ModuleManifest(
+                app_path('Modules'),
+                $this->app->bootstrapPath('cache/modules.php'),
+                useCache: !$this->app->runningUnitTests(),
+            ),
+        );
     }
 
-    /**
-     * Bootstrap services.
-     */
     public function boot(): void
     {
         $this->registerLogListeners();
 
-        $this->loadModuleRoutes();
+        $manifest = $this->app->make(ModuleManifest::class)->load();
 
-        $this->loadModuleCommands();
+        $commands = [];
 
-        $this->loadModuleMigrations();
+        foreach ($manifest as $module) {
+            $this->registerRoutes($module);
+            $this->registerMigrations($module);
+            $this->registerObservers($module);
 
-        $this->loadModuleObservers();
+            $commands = [...$commands, ...$module['commands']];
+        }
+
+        // Only the console will ever run one, and resolving the classes costs an
+        // autoload per command.
+        if ($this->app->runningInConsole()) {
+            $this->registerCommands($commands);
+        }
     }
 
     /**
-     * Absolute paths of the enabled modules, resolved once per request.
-     *
-     * boot() needs this list four times (routes, commands, migrations,
-     * observers); scanning app/Modules and re-asking ModuleGate each time cost
-     * four directory listings on every request for the same answer.
-     *
-     * @var array<int, string>|null
+     * @param  array<string, mixed>  $module
      */
-    private ?array $enabledModules = null;
-
-    /**
-     * @return array<int, string>
-     */
-    private function enabledModules(): array
+    private function registerRoutes(array $module): void
     {
-        if ($this->enabledModules !== null) {
-            return $this->enabledModules;
-        }
+        if ($module['web'] !== null) {
+            $web = $module['web'];
 
-        $modulesPath = app_path('Modules');
+            // One array, never two calls: RouteRegistrar::attribute() replaces
+            // the middleware attribute instead of merging it.
+            $route = Route::middleware(array_filter([
+                'web',
+                $web['page_module'] !== null ? 'share.page:' . $web['page_module'] : null,
+            ]));
 
-        if (!File::exists($modulesPath)) {
-            return $this->enabledModules = [];
-        }
-
-        return $this->enabledModules = array_values(array_filter(
-            File::directories($modulesPath),
-            fn (string $module): bool => ModuleGate::isEnabled(Str::snake(basename($module))),
-        ));
-    }
-
-    /**
-     * Load routes from modules.
-     */
-    private function loadModuleRoutes(): void
-    {
-        foreach ($this->enabledModules() as $module) {
-
-            $webRoute = $module . '/Http/Routes/web.php';
-            $apiRoute = $module . '/Http/Routes/api.php';
-
-            if (File::exists($webRoute)) {
-                $this->registerWebRoute($module, $webRoute);
+            if ($web['prefix'] !== '') {
+                $route = $route->prefix($web['prefix']);
             }
 
-            if (File::exists($apiRoute)) {
-                Route::prefix('api')
-                    ->middleware('api')
-                    ->group($apiRoute);
-            }
+            $route->group($web['path']);
+        }
+
+        if ($module['api'] !== null) {
+            Route::prefix('api')
+                ->middleware('api')
+                ->group($module['api']);
         }
     }
 
     /**
-     * Register a module's web routes, prefixed by the module's page slug (from DB)
-     * when the module directory maps to a PageModule case. Modules that don't map
-     * to a PageModule (ShopOrder, _debug, Translation, Notification, ...) get a
-     * prefix derived from their own folder name instead, so their routes can
-     * never collide with a PageModule's DB-driven prefix or another module's
-     * routes (e.g. `ShopOrder` → `/orders/...`, via MODULE_PREFIX_OVERRIDES).
-     *
-     * When a DB page is found for the module, the CMS page context (page,
-     * breadcrumbs, meta, menus, cart count) is auto-shared to the view via the
-     * `share.page` middleware, so module controllers never need to fetch/share it
-     * themselves.
+     * @param  array<string, mixed>  $module
      */
-    private function registerWebRoute(string $module, string $webRoute): void
+    private function registerMigrations(array $module): void
     {
-        $pageModule = PageModule::tryFrom(Str::snake(basename($module)));
-
-        // PageText has N pages sharing the module (no single DB-driven prefix to
-        // resolve, each page has its own independent slug) so it skips prefix/
-        // share.page resolution and registers its own fallback route instead.
-        if ($pageModule === PageModule::TEXT) {
-            Route::middleware('web')->group($webRoute);
-
-            return;
+        if ($module['migrations'] !== null) {
+            $this->loadMigrationsFrom($module['migrations']);
         }
-
-        if (!$pageModule) {
-            $this->registerUnmappedModuleRoute($module, $webRoute);
-
-            return;
-        }
-
-        $page = $this->resolveModulePage($pageModule);
-
-        $prefix = $page?->slug;
-
-        if ($prefix === null || $prefix === '') {
-            $prefix = $pageModule === PageModule::INDEX ? '' : Str::lower($pageModule->value);
-        }
-
-        $route = Route::middleware(['web', 'share.page:' . $pageModule->value]);
-
-        if ($prefix !== '') {
-            $route = $route->prefix($prefix);
-        }
-
-        $route->group($webRoute);
-    }
-
-    private function registerUnmappedModuleRoute(string $module, string $webRoute): void
-    {
-        $name = basename($module);
-
-        if (in_array($name, self::ROOT_LEVEL_MODULES, true)) {
-            Route::middleware('web')->group($webRoute);
-
-            return;
-        }
-
-        $prefix = self::MODULE_PREFIX_OVERRIDES[$name] ?? Str::kebab($name);
-
-        Route::middleware('web')->prefix($prefix)->group($webRoute);
     }
 
     /**
-     * The page rows come from GetAllPagesQuery, which caches them for 24h and is
-     * a singleton, so this costs one cache read per request rather than a query
-     * per module.
+     * Registering observers here instead of in AppServiceProvider is what makes
+     * a disabled module's folder deletable — nothing outside the module names
+     * its observers or models (see docs/starter/modules.md §4).
      *
-     * Only a database failure and an unknown `pages.module` string are
-     * swallowed — a missing `pages` table on a fresh install, no connection yet,
-     * or a row still holding a module value that predates a PageModule rename.
-     * The latter would otherwise throw out of the enum cast during boot and take
-     * the whole app down, `artisan migrate` included, so the very migration that
-     * repairs the rows could never run. Anything else (a broken query class, a
-     * bad cache driver) must surface instead of silently mounting every module
-     * under its fallback prefix.
+     * @param  array<string, mixed>  $module
      */
-    private function resolveModulePage(PageModule $pageModule): ?Page
+    private function registerObservers(array $module): void
     {
-        try {
-            return app(FindPageByModuleQuery::class)->handle($pageModule);
-        } catch (QueryException|\ValueError) {
-            return null;
+        foreach ($module['observers'] as $observer => $model) {
+            $model::observe($observer);
         }
     }
 
@@ -203,27 +112,11 @@ class ModuleServiceProvider extends ServiceProvider
      * Every module command is handed to Artisan in one `starting` callback:
      * registering a closure per command file meant dozens of callbacks that all
      * ran on every console boot for the same result.
+     *
+     * @param  array<int, class-string>  $classes
      */
-    private function loadModuleCommands(): void
+    private function registerCommands(array $classes): void
     {
-        $classes = [];
-
-        foreach ($this->enabledModules() as $module) {
-            $commandsPath = $module . '/Console/Commands';
-
-            if (!File::exists($commandsPath)) {
-                continue;
-            }
-
-            foreach (File::allFiles($commandsPath) as $file) {
-                $class = $this->getClassFromFile($file->getPathname());
-
-                if (class_exists($class)) {
-                    $classes[] = $class;
-                }
-            }
-        }
-
         if ($classes === []) {
             return;
         }
@@ -231,80 +124,6 @@ class ModuleServiceProvider extends ServiceProvider
         Artisan::starting(static function ($artisan) use ($classes): void {
             $artisan->resolveCommands($classes);
         });
-    }
-
-    private function loadModuleMigrations(): void
-    {
-        foreach ($this->enabledModules() as $module) {
-            $migrationsPath = $module . '/database/migrations';
-
-            if (File::exists($migrationsPath)) {
-                $this->loadMigrationsFrom($migrationsPath);
-            }
-        }
-    }
-
-    /**
-     * Register each enabled module's model observers by convention:
-     * `{Module}/Observers/{Model}Observer.php` is attached to
-     * `App\Modules\{Module}\Models\{Model}`. Registering them here instead of
-     * in AppServiceProvider is what makes a disabled module's folder deletable —
-     * nothing outside the module names its observers or models (see
-     * docs/starter/modules.md §4).
-     *
-     * An observer whose matching model class doesn't exist is skipped, so a
-     * non-model listener must not live in `Observers/`
-     * (Core\Listeners\LogListener is the one such listener, wired globally in
-     * registerLogListeners()).
-     */
-    private function loadModuleObservers(): void
-    {
-        foreach ($this->enabledModules() as $module) {
-            $observersPath = $module . '/Observers';
-
-            if (!File::exists($observersPath)) {
-                continue;
-            }
-
-            foreach (File::files($observersPath) as $file) {
-                $observer = $this->getClassFromFile($file->getPathname());
-                $model = $this->resolveObservedModel($observer);
-
-                if ($model !== null && class_exists($observer)) {
-                    $model::observe($observer);
-                }
-            }
-        }
-    }
-
-    /**
-     * @param  class-string  $observer
-     * @return class-string<Model>|null
-     */
-    private function resolveObservedModel(string $observer): ?string
-    {
-        $model = str($observer)
-            ->replace('\\Observers\\', '\\Models\\')
-            ->replaceMatches('/Observer$/', '')
-            ->toString();
-
-        return class_exists($model) && is_subclass_of($model, Model::class)
-            ? $model
-            : null;
-    }
-
-    private function getClassFromFile(string $path): string
-    {
-        $appPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, app_path());
-        $normalizedPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
-
-        $relative = str($normalizedPath)
-            ->after($appPath . DIRECTORY_SEPARATOR)
-            ->replace(DIRECTORY_SEPARATOR, '\\')
-            ->replace('.php', '')
-            ->toString();
-
-        return 'App\\' . $relative;
     }
 
     private function registerLogListeners(): void

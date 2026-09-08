@@ -28,11 +28,11 @@ Route::get('/{slug}', [IndexController::class, 'show'])->name('news.show');
 ```
 
 All module route files are **automatically loaded** if they exist at that path —
-see `ModuleServiceProvider::loadModuleRoutes()`.
+see `ModuleServiceProvider::registerRoutes()`, fed by `Core\Support\ModuleManifest`.
 
 ---
 
-## 2. Prefix Resolution (`ModuleServiceProvider::registerWebRoute()`)
+## 2. Prefix Resolution (`Core\Support\ModuleManifest`)
 
 For every module folder that maps to a `PageModule` case, its `web.php` is
 wrapped in:
@@ -43,7 +43,8 @@ Route::middleware(['web', 'share.page:'.$pageModule->value])
     ->group($webRoute);
 ```
 
-- `$prefix` is the module's `Page->slug` from the DB (resolved once at boot),
+- `$prefix` is the module's `Page->slug` from the DB (resolved by `ModuleManifest`,
+  once per boot or once per `modules:cache`),
   or `''` for `PageModule::INDEX` (mounted at the root). The slug is **not** the
   `PageModule` value: `user_auth` is served from `/auth`, `shop_cart` from
   `/cart`. With no page row in the DB yet the prefix falls back to the enum
@@ -57,12 +58,12 @@ Route::middleware(['web', 'share.page:'.$pageModule->value])
 - Modules that don't map to a `PageModule` get no page context, and only two of
   them get no prefix either:
   - `Core` and `Sitemap` mount at the app root
-    (`ModuleServiceProvider::ROOT_LEVEL_MODULES`), because `Core` owns
+    (`ModuleManifest::ROOT_LEVEL_MODULES`), because `Core` owns
     `/storage/{preset}/{path}` image previews and `Sitemap` owns the SEO-standard
     `/sitemap*.xml` paths — a prefix would break both;
   - every other unmapped module is prefixed with `Str::kebab()` of its folder name:
     `Subscriber` → `/subscriber`, `_debug` → `/_debug`, or an explicit entry in
-    `ModuleServiceProvider::MODULE_PREFIX_OVERRIDES` — that is how `ShopOrder` becomes
+    `ModuleManifest::MODULE_PREFIX_OVERRIDES` — that is how `ShopOrder` becomes
     `/orders` rather than `/shop-order`.
 
   `Translation` has only `Http/Routes/api.php` and `Notification` has no `Http/`
@@ -70,27 +71,28 @@ Route::middleware(['web', 'share.page:'.$pageModule->value])
 
 ### Prefixes come from the DB, so `route:cache` freezes them
 
-The prefix of every `PageModule` module is `pages.slug`, read from the database while
-`ModuleServiceProvider` boots (`FindPageByModuleQuery` → `GetAllPagesQuery`, which caches
-the page rows for 24h). `php artisan route:cache` serialises the whole route table at that
-moment, and after that the route files are never executed again — so a cached build keeps
-the prefixes that existed when the cache was written.
+The prefix of every `PageModule` module is `pages.slug`, read from the database. That
+read no longer happens on every boot: `ModuleManifest` resolves it, and
+`php artisan modules:cache` freezes the answer in `bootstrap/cache/modules.php` — see
+[modules.md §7](modules.md#7-the-module-manifest). `php artisan route:cache` then
+freezes the route table built from it.
 
-The project handles this: `PageObserver` fires on every page create/update/delete and
-calls `GetAllPagesQuery::clear()`, which forgets the `pages.all` cache entry and runs
-`route:clear` + `cache:clear`. Renaming a page's slug in the admin therefore drops the
-stale route cache by itself.
+Because both are frozen, the order in the deploy is fixed:
+`migrate` → `modules:cache` → `route:cache`. Caching routes first bakes in the previous
+manifest's prefixes, or — against a database with no page rows yet — the fallback ones
+(`/user_auth` instead of `/auth`).
+
+Renaming a slug in the admin still works without a deploy: `PageObserver` drops the page
+row cache, rebuilds the manifest if one is cached, and deletes the cached route table, so
+the next request builds the routes fresh from the new slug.
 
 What that leaves you with:
 
-- after a slug edit the app runs **uncached** until someone runs `route:cache` again —
-  `clear()` only drops the cache, it does not rebuild it;
-- on a multi-server deploy the clear only reaches the node that served the request, so
-  every node needs its own `route:clear`/`route:cache`;
-- a deploy that runs `route:cache` must run it **after** migrations and seeders, or it
-  will freeze prefixes resolved against a database that has no page rows yet — the
-  fallback prefix (the `PageModule` value, e.g. `/user_auth` instead of `/auth`) would
-  then be baked into the cache.
+- after a slug edit the app runs **uncached** until someone runs
+  `modules:cache` + `route:cache` again — the observer only invalidates, it does not
+  rebuild the route cache;
+- on a multi-server deploy the invalidation only reaches the node that served the
+  request, so every node needs its own pair of commands.
 
 **Two gotchas already hit — don't reintroduce them:**
 - Never bind the shared page by DB id at boot time. The DB may not have that

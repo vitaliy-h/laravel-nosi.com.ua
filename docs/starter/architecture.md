@@ -129,8 +129,9 @@ Typical contents:
 * `Models`
 * `Actions` — write logic; what they may return is fixed, see `docs/starter/actions.md`
 * `Queries` — reads, one class per read (`Find*`/`Get*`/`Search*`Query)
-* `ViewModels` — what a controller hands a blade, see `docs/starter/view-models.md`
-* `Dtos`
+* `ViewModels` — what a controller hands a blade, see `docs/starter/view-models.md`;
+  amounts are formatted here through `Core\Support\Money`, never on a model
+* `Dtos` — classes are named `*Data` (`spatie/laravel-data`); the `Dto` suffix is not used
 * `Enums`
 * `Observers` — auto-registered per module by `ModuleServiceProvider`
 * `Services` — only where neither an Action nor a Query fits (`CartContext`, `GeoImporter`)
@@ -153,6 +154,14 @@ Action returns exactly one of three things — `void`, a domain value, or
 `App\Modules\Core\Dtos\ActionResult<T>` for an expected business failure the
 caller must branch on. See `docs/starter/actions.md`.
 
+An Action that writes to more than one table wraps its writes in
+`DB::transaction()`, and sends its letters, SMS and jobs through
+`DB::afterCommit()` so a rollback cannot leave the customer holding a
+notification about something that no longer exists. Nesting is expected —
+`PlaceOrderFromCartAction` wraps `CreateOrderAction`, which has a transaction of
+its own — so each Action stays safe when called on its own. See
+`.claude/backend.md`, «Transactions».
+
 ---
 
 # Disabling Modules
@@ -169,7 +178,8 @@ Routes are declared per module, in `app/Modules/{Module}/Http/Routes/web.php` an
 `api.php`. The root `routes/web.php` and `routes/api.php` stay empty.
 
 Every module has its own explicit, named routes in `app/Modules/{Module}/Http/Routes/web.php`,
-mounted under a DB-driven prefix resolved once at boot by `ModuleServiceProvider`.
+mounted under a DB-driven prefix resolved by `Core\Support\ModuleManifest` — once per
+boot, or once per `php artisan modules:cache`.
 The one exception is `PageText`, which owns the app's single `Route::fallback()`
 (N pages, no fixed prefix). See `docs/starter/routing.md` for the full pattern.
 

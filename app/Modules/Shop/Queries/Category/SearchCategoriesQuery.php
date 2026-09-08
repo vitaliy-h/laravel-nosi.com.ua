@@ -2,7 +2,7 @@
 
 namespace App\Modules\Shop\Queries\Category;
 
-use App\Modules\Shop\Dtos\CategorySearchDto;
+use App\Modules\Shop\Dtos\CategorySearchData;
 use App\Modules\Shop\Models\Category;
 use Illuminate\Support\Collection;
 
@@ -11,7 +11,7 @@ class SearchCategoriesQuery
     /**
      * Search visible categories by simple criteria (homepage widgets: featured, special).
      */
-    public function handle(CategorySearchDto $criteria): Collection
+    public function handle(CategorySearchData $criteria): Collection
     {
         $query = Category::visible();
 

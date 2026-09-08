@@ -2,8 +2,8 @@
 
 namespace App\Modules\Shop\Queries\Product;
 
-use App\Modules\Shop\Dtos\Filters\BaseFilterDto;
-use App\Modules\Shop\Dtos\Filters\ShopFilterDto;
+use App\Modules\Shop\Dtos\Filters\BaseFilterData;
+use App\Modules\Shop\Dtos\Filters\ShopFilterData;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
 
@@ -13,7 +13,7 @@ class BuildProductsQuery
      * Build the base product query.
      * Applies category restriction and all selected filters except the excluded one.
      */
-    public function handle(?Category $category = null, ?ShopFilterDto $filter = null, ?string $except = null, array $with = ['brand', 'category'])
+    public function handle(?Category $category = null, ?ShopFilterData $filter = null, ?string $except = null, array $with = ['brand', 'category'])
     {
         $query = Product::visible()
             ->with($with);
@@ -31,8 +31,8 @@ class BuildProductsQuery
          */
         if ($filter) {
             $filter->toApplicable()
-                ->reject(fn (BaseFilterDto $item) => $item->key === $except)
-                ->each(fn (BaseFilterDto $item) => $item->apply($query));
+                ->reject(fn (BaseFilterData $item) => $item->key === $except)
+                ->each(fn (BaseFilterData $item) => $item->apply($query));
         }
 
         return $query;

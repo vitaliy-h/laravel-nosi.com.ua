@@ -1100,10 +1100,10 @@
   Пропозиція: `ShopFilterRequestData` (spatie/laravel-data) на вході Query; для імперсонації
   передавати те, що реально потрібно (id сесії/гварда), а не весь `Request`. Що робимо: виконуємо як описано
   **Зроблено:**
-  1. **Каталог.** Доданий `Shop\Dtos\ShopFilterCriteriaDto` (`brands`, `priceFrom`,
+  1. **Каталог.** Доданий `Shop\Dtos\ShopFilterCriteriaData` (`brands`, `priceFrom`,
      `priceTo`, `search`) з фабрикою `fromQuery()`, яка розуміє обидві форми `brand`
      (`1,2,3` і масив) — розбір переїхав туди з приватного `stringToIntArray()` Query.
-     `PrepareShopFilterQuery::handle(?Category, ShopFilterCriteriaDto)` більше не знає
+     `PrepareShopFilterQuery::handle(?Category, ShopFilterCriteriaData)` більше не знає
      про `Request`; обидва контролери (`Web\IndexController`, `Api\ShopController`)
      будують DTO приватним `filterCriteria(Request)` — межа HTTP закінчується в контролері.
   2. **Імперсонація.** `ImpersonateAction::handle(Session, User)` і
@@ -1111,7 +1111,7 @@
      `Request` — саме сесія й потрібна. Магічний рядок `'impersonating_admin_id'`
      винесений у `ImpersonateAction::SESSION_KEY` і використовується обома Actions.
   Тести (10 нових):
-  - `tests/Unit/Shop/Dtos/ShopFilterCriteriaDtoTest.php` — обидві форми `brand`,
+  - `tests/Unit/Shop/Dtos/ShopFilterCriteriaDataTest.php` — обидві форми `brand`,
     відсів нулів/від'ємних/нечислових, приведення цін до float, порожній вхід;
   - `tests/Unit/Shop/Queries/Product/PrepareShopFilterQueryTest.php` — Query будує
     фільтр **без жодного HTTP-запиту** (це і є сенс пункту), діапазон цін рахується

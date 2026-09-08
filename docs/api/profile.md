@@ -45,7 +45,8 @@ POST /api/profile/update-user-data
     "id": 1,
     "name": "John Doe",
     "email": "john@example.com"
-  }
+  },
+  "errors": null
 }
 ```
 
@@ -75,7 +76,8 @@ POST /api/profile/update-user-password
 {
   "success": true,
   "message": "Password updated",
-  "data": null
+  "data": null,
+  "errors": null
 }
 ```
 
@@ -95,7 +97,8 @@ POST /api/profile/delete-user-account
 {
   "success": true,
   "message": "Account deleted",
-  "data": null
+  "data": null,
+  "errors": null
 }
 ```
 

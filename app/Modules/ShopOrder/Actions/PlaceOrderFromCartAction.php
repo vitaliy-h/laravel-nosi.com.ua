@@ -8,6 +8,7 @@ use App\Modules\ShopOrder\Dtos\CreateOrderData;
 use App\Modules\ShopOrder\Dtos\CustomerData;
 use App\Modules\ShopOrder\Dtos\OrderItemData;
 use App\Modules\ShopOrder\Models\Order;
+use Illuminate\Support\Facades\DB;
 
 readonly class PlaceOrderFromCartAction
 {
@@ -16,7 +17,17 @@ readonly class PlaceOrderFromCartAction
         private RecalculateCartTotalAction $recalculateCartTotal,
     ) {}
 
+    /**
+     * Recalculation, the order itself and the emptying of the cart are one
+     * transaction: a failure halfway used to leave a half-written order, a
+     * promocode already counted as used and a cart still full.
+     */
     public function handle(Cart $cart, CustomerData $customer): Order
+    {
+        return DB::transaction(fn () => $this->place($cart, $customer));
+    }
+
+    private function place(Cart $cart, CustomerData $customer): Order
     {
         // Re-validates the promocode at checkout time: it may have expired or
         // hit its usage limit since it was applied to the cart.

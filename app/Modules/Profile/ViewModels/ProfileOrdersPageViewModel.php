@@ -8,7 +8,7 @@ use App\Modules\ShopOrder\ViewModels\OrderViewModel;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
- * `filter` stays a Dto: the same object drives the orders query.
+ * `filter` stays a DTO: the same object drives the orders query.
  */
 class ProfileOrdersPageViewModel extends BaseViewModel
 {

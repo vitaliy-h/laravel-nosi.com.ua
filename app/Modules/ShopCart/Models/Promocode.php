@@ -67,13 +67,6 @@ class Promocode extends Model
         return $this->usage_limit !== null && $this->used_count >= $this->usage_limit;
     }
 
-    public function getDiscountLabelAttribute(): string
-    {
-        return $this->type === PromocodeTypeEnum::PERCENT
-            ? rtrim(rtrim(number_format((float) $this->value, 2, '.', ''), '0'), '.') . '%'
-            : t('shop.currency') . number_format((float) $this->value, 2);
-    }
-
     protected static function newFactory(): PromocodeFactory
     {
         return PromocodeFactory::new();

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\ShopCart\ViewModels;
 
+use App\Modules\Core\Support\Money;
 use App\Modules\Shop\Models\Product;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
@@ -21,7 +22,7 @@ class CartViewModelTest extends TestCase
 
         $this->assertTrue($vm->is_empty);
         $this->assertFalse($vm->has_discount);
-        $this->assertSame($cart->total_amount_formatted, $vm->total_amount_formatted);
+        $this->assertSame(Money::from($cart->total_amount)->format(), $vm->total_amount_formatted);
     }
 
     public function test_a_discounted_cart_exposes_the_promocode_and_the_formatted_amounts(): void

@@ -8,7 +8,7 @@ use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrder\Enums\PaymentTypeEnum;
 use Tests\TestCase;
 
-class OrderDtoTest extends TestCase
+class OrderDataTest extends TestCase
 {
     public function test_order_item_data_maps_fields_and_types(): void
     {

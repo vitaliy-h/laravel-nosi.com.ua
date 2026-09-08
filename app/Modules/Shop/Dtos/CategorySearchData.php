@@ -2,7 +2,7 @@
 
 namespace App\Modules\Shop\Dtos;
 
-readonly class CategorySearchDto
+readonly class CategorySearchData
 {
     public function __construct(
         public bool $root = false,

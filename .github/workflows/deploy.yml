@@ -25,3 +25,10 @@ jobs:
             php8.4 /usr/local/bin/composer install
 
             php8.4 artisan migrate
+
+            # Order matters: the manifest resolves every page-driven route
+            # prefix from the database, and route:cache freezes whatever
+            # prefixes it finds. See docs/starter/modules.md.
+            php8.4 artisan modules:cache
+
+            php8.4 artisan route:cache

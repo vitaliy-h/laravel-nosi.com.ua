@@ -6,7 +6,7 @@ use App\Modules\Shop\Enums\FilterTypeEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
-class InFilterDto extends BaseFilterDto
+class InFilterData extends BaseFilterData
 {
     public function __construct(
         public readonly string $key,

@@ -3,6 +3,7 @@
 namespace App\Modules\ShopOrder\ViewModels;
 
 use App\Modules\Core\Abstract\BaseViewModel;
+use App\Modules\Core\Support\Money;
 use App\Modules\ShopOrder\Models\Order;
 use App\Modules\ShopOrder\Models\OrderProduct;
 use Illuminate\Support\Collection;
@@ -61,10 +62,10 @@ class OrderViewModel extends BaseViewModel
             customer_phone: $order->user_phone,
             comment: $order->comment,
             promocode_code: $order->promocode_code,
-            has_discount: (float) $order->discount_amount > 0,
-            subtotal_amount_formatted: $order->subtotal_amount_formatted,
-            discount_amount_formatted: $order->discount_amount_formatted,
-            total_amount_formatted: $order->total_amount_formatted,
+            has_discount: Money::from($order->discount_amount)->isPositive(),
+            subtotal_amount_formatted: Money::from($order->subtotal_amount)->format(),
+            discount_amount_formatted: Money::from($order->discount_amount)->format(),
+            total_amount_formatted: Money::from($order->total_amount)->format(),
         );
     }
 }
