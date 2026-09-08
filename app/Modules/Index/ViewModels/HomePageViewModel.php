@@ -26,4 +26,18 @@ class HomePageViewModel extends BaseViewModel
         public readonly Collection $featured_products,
         public readonly Collection $special_categories,
     ) {}
+
+    /**
+     * What the page holds with the shop switched off: the layout still renders,
+     * every teaser section is simply empty.
+     */
+    public static function withoutShop(): self
+    {
+        return new self(
+            best_sellers: collect(),
+            featured_categories: collect(),
+            featured_products: collect(),
+            special_categories: collect(),
+        );
+    }
 }

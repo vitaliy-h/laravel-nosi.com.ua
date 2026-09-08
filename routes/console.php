@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Core\Support\ModuleGate;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -17,5 +18,9 @@ Artisan::command('inspire', function () {
 // journals keep records for config('log.retention_days') days (one year by default)
 Schedule::command('logs:prune')->dailyAt('03:00');
 
-// guest carts nobody attached to an account are cleared after 30 days
-Schedule::command('cart:clear-abandoned')->daily();
+// guest carts nobody attached to an account are cleared after 30 days.
+// A disabled module never registers its commands, and the scheduler would then
+// fail on this line every night, so the entry goes off with the module.
+if (ModuleGate::isEnabled('shop_cart')) {
+    Schedule::command('cart:clear-abandoned')->daily();
+}

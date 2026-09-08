@@ -24,6 +24,8 @@ class ScheduleTest extends TestCase
 
     public function test_abandoned_carts_cleanup_is_scheduled(): void
     {
+        $this->skipUnlessModules('shop_cart');
+
         $this->assertContains('cart:clear-abandoned', $this->scheduledCommandNames());
     }
 

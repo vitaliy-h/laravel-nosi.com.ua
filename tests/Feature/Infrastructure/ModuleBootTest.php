@@ -49,8 +49,15 @@ class ModuleBootTest extends TestCase
         return new ModuleManifest(app_path('Modules'), $this->cachePath);
     }
 
+    /**
+     * News stands in for an optional module throughout this class: the manifest
+     * is generic, but an assertion has to name something, and a module that is
+     * switched off is genuinely absent from the manifest under test.
+     */
     public function test_it_lists_the_enabled_modules(): void
     {
+        $this->skipUnlessModules('news');
+
         $modules = $this->manifest()->build();
 
         $this->assertArrayHasKey('Page', $modules);
@@ -69,6 +76,8 @@ class ModuleBootTest extends TestCase
 
     public function test_a_page_driven_module_is_mounted_behind_its_page_slug(): void
     {
+        $this->skipUnlessModules('news');
+
         Page::factory()->create(['module' => 'news', 'slug' => 'articles']);
 
         $news = $this->manifest()->build()['News'];
@@ -83,6 +92,8 @@ class ModuleBootTest extends TestCase
      */
     public function test_a_module_without_a_page_row_falls_back_to_its_own_name(): void
     {
+        $this->skipUnlessModules('news');
+
         $news = $this->manifest()->build()['News'];
 
         $this->assertSame('news', $news['web']['prefix']);
@@ -90,6 +101,8 @@ class ModuleBootTest extends TestCase
 
     public function test_an_unmapped_module_is_prefixed_from_its_folder_name(): void
     {
+        $this->skipUnlessModules('shop_order', 'subscriber');
+
         $modules = $this->manifest()->build();
 
         // ShopOrder has an explicit override so its URLs don't read /shop-order.
@@ -108,6 +121,8 @@ class ModuleBootTest extends TestCase
 
     public function test_a_module_knows_its_commands_migrations_and_observers(): void
     {
+        $this->skipUnlessModules('shop_cart');
+
         $cart = $this->manifest()->build()['ShopCart'];
 
         $this->assertContains(
@@ -123,6 +138,8 @@ class ModuleBootTest extends TestCase
 
     public function test_module_commands_are_registered(): void
     {
+        $this->skipUnlessModules('shop_cart');
+
         $this->assertArrayHasKey('cart:clear-abandoned', Artisan::all());
     }
 
@@ -148,6 +165,8 @@ class ModuleBootTest extends TestCase
      */
     public function test_refresh_rewrites_a_cached_manifest_and_leaves_an_uncached_one_alone(): void
     {
+        $this->skipUnlessModules('news');
+
         $page = Page::factory()->create(['module' => 'news', 'slug' => 'articles']);
 
         $manifest = $this->manifest();
@@ -189,6 +208,8 @@ class ModuleBootTest extends TestCase
 
     public function test_a_database_failure_leaves_the_module_without_a_page(): void
     {
+        $this->skipUnlessModules('news');
+
         $this->mock(GetAllPagesQuery::class)
             ->shouldReceive('handle')
             ->andThrow(new QueryException('mysql', 'select 1', [], new PDOException('no connection')));

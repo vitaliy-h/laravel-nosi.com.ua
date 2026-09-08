@@ -20,6 +20,15 @@ class CascadesDeletesTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Every case here cascades from a cart or an order, and neither table is
+        // migrated while the cart is off. ShopOrder rides on shop_cart.
+        $this->skipUnlessModules('shop_cart');
+    }
+
     public function test_deleting_a_cart_deletes_its_items(): void
     {
         $cart = Cart::factory()->create();

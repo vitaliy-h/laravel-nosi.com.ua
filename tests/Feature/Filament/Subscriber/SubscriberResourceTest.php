@@ -23,7 +23,7 @@ class SubscriberResourceTest extends TestCase
     {
         parent::setUp();
 
-        $this->skipUnlessModules('subscribers');
+        $this->skipUnlessModules('subscriber');
 
         $this->admin = $this->actingAsAdmin();
         $this->actingAs($this->admin);
