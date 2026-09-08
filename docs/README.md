@@ -305,7 +305,9 @@ DB_PASSWORD=
 ```
 Update `.osp/project.ini`:
 ```
-web_root = {base_dir}\public
+http_engine       = Apache
+php_engine        = PHP-8.4
+web_root          = {base_dir}\public
 ```
 
 Install dependencies:
