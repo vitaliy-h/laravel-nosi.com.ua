@@ -29,3 +29,5 @@ Thumbs.db
 /public/css/filament
 /public/js/filament
 /public/fonts/filament
+tasks
+.claude/*.local.md
