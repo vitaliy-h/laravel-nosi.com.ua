@@ -19,7 +19,8 @@ actually works, not generic Laravel:
   `commands.md`, `testing.md`
 - `docs/api/` — the HTTP API per module (`auth`, `profile`, `shop`, `translation`)
 - `docs/filament/` — admin panel: resource generation, dashboard, nested sets, translations
-- `docs/project/` — this project's own notes (`README.md`, `docs_audit.md`, `todo.md`)
+- `docs/project/` — this project's functionality (`shop.md`, `news.md`); later — the project description
+- `docs/todo/` — specifications and plans for work not yet done, one file per task
 - `docs/README.md` — server requirements, install and local setup (Sail / WSL2 / OpenServer)
 
 When code and a doc disagree, the code wins — fix the doc in the same change.

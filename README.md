@@ -28,7 +28,7 @@ Admin panel: resource generation, translations, tree structures.
 Base project modules.
 
 * [Quick Commands](docs/starter/commands.md)
-* [TODO](docs/starter/todo.md)
+* [TODO](docs/todo)
 * [Claude Code Setup](docs/starter/claude.md)
 * [Architecture Overview](docs/starter/architecture.md)
     * [Action](docs/starter/actions.md)
@@ -59,8 +59,8 @@ API methods.
 
 ## Project
 
-Notes specific to this project rather than to the starter.
+What this project does: shop and news functionality.
 
 * [Project](docs/project/README.md)
-    * [Product attributes (plan)](docs/project/product_attributes.md)
-    * [Product items / variants (plan)](docs/project/product_items.md)
+    * [Shop](docs/project/shop.md)
+    * [News](docs/project/news.md)

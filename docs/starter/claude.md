@@ -138,7 +138,7 @@ Claude will:
     - `make-api` → FormRequest + Query/Action + Controller + Resource + route
     - `make-filament-resource` → Filament resource, navigation item and translations
       (it does not write tests — see `.claude/testing.md` for those)
-    - `plan-task` → research + `tasks/{id}/plan.md` before a larger change
+    - `plan-task` → research + plan in `docs/todo/{id}.md` before a larger change
 
 Recommended generation flow:
 

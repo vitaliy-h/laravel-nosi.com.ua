@@ -2,18 +2,18 @@
 name: plan-task
 description: >
   Research a task against the codebase, brainstorm the approach, ask the developer what is unclear,
-  then write tasks/{issue|slug}/research.md + plan.md (in Russian) with a step-by-step plan;
-  after the work is done, write the client-facing report.md in the task's own language.
+  then write a single docs/todo/{issue|slug}.md (research + step-by-step plan, in the language the task was set in);
+  after the work is done, append the client-facing report in the same language.
   Use when the user says "plan task", "research task", "brainstorm task", "task plan", "new task #33",
   "нова задача", "зроби план по задачі", "розбери задачу", "новая задача", "сделай план по задаче",
   "разбери задачу", or invokes /plan-task.
 ---
 
-Goal: turn a task description into a researched, checkable plan stored in `tasks/{issue|slug}/`.
+Goal: turn a task description into a researched, checkable plan stored in one file, `docs/todo/{issue|slug}.md`.
 
 **Never guess.** If unsure — ask the developer. Do not change application code at this stage.
 
-Skill instructions are English; **the generated `research.md` and `plan.md` are written in Russian.**
+Skill instructions are English; **the whole task file — research, plan, safety block and report — is written in the language the task was set in** (the language of the task description: Ukrainian → Ukrainian, Russian → Russian, English → English). The templates below are in English; translate their headings, statuses and fixed text into that language. If the language is ambiguous — ask.
 
 ---
 
@@ -21,8 +21,8 @@ Skill instructions are English; **the generated `research.md` and `plan.md` are 
 
 Needed from the user: **issue number** (GitHub), **title** (optional), **task description**.
 
-- No number → ask once. If there is none, use a short kebab-case slug (2-4 words) as the folder name.
-- The title, if given, goes into the file headings.
+- No number → ask once. If there is none, use a short kebab-case slug (2-4 words) as the file name.
+- The title, if given, goes into the file heading.
 
 ## Step 2 — Codebase research
 
@@ -51,60 +51,59 @@ Ask in one batch (AskUserQuestion), only what actually changes the plan. Always 
 
 Do not ask what the code or docs already answer.
 
-## Step 4 — Files
+## Step 4 — Task file
 
-Create `tasks/{issue|slug}/` with `research.md` and `plan.md`, **written in Russian**, short and to the point.
-A third file, `report.md`, is written later — after the work is done (see Step 6).
+Create **one file** `docs/todo/{issue|slug}.md` (no per-task folder), **written in the task's language**, short and to the point.
+It holds the research part, then the plan part. The report is appended later, after the work is done (see Step 6).
+The file is committed to git like any other doc.
 
-### `research.md`
+### Research part
 
 ```markdown
-# {Номер} — {Название}
+# {Number} — {Title}
 
-## Задача
-{суть в 2-4 предложениях, как её сформулировал программист}
+Status: not started | in progress | done
 
-## Как сделано сейчас
-{текущая реализация: поток данных, кто кого вызывает}
+## Task
+{the essence in 2-4 sentences, as the developer phrased it}
 
-## Затронутые файлы
-| Файл | Что там | Роль в задаче |
+## How it works now
+{current implementation: data flow, who calls whom}
+
+## Affected files
+| File | What is there | Role in the task |
 |---|---|---|
 | `app/Modules/Shop/Models/Product.php:42` | ... | ... |
 
-## Ответы программиста
-- Вопрос → ответ
+## Developer's answers
+- Question → answer
 
-## Ограничения и риски
-{опасные места}
+## Constraints and risks
+{dangerous spots}
 ```
 
-### `plan.md`
+### Plan part (same file, right after research)
 
 ```markdown
-# План: {Номер} — {Название}
+## What changes and how it will work
+{plain words, up to 10 lines: which entities/tables appear, which code points are touched,
+how the data flows after the change (step by step), what the user will see.
+Written for a developer who did not research the task — they must grasp the mechanics before reading the steps.}
 
-Статус: не начато | в работе | готово
+## Approach
+{2-5 sentences: the architectural decision, patterns used and why}
 
-## Что меняем и как это будет работать
-{простыми словами, до 10 строк: какие сущности/таблицы появляются, какие точки кода трогаем,
-как проходит поток данных после изменений (шаг за шагом), что увидит пользователь.
-Пишется для программиста, который задачу не исследовал — он должен понять механику до чтения пунктов.}
+## Plan
 
-## Подход
-{2-5 предложений: архитектурное решение, применяемые паттерны и почему}
-
-## Пункты
-
-- [ ] 1. {Шаг} — файлы: `...`
+- [ ] 1. {Step} — files: `...`
 - [ ] 2. ...
-- [ ] N-3. Тесты на новый/изменённый функционал
-- [ ] N-2. Проверить docs: нужно ли добавить/обновить (только по делу)
-- [ ] N-1. Написать ответ по задаче в `tasks/{issue|slug}/report.md` (см. Step 6)
-- [ ] N. (на выбор программиста) Прогнать тесты и сделать коммит
+- [ ] N-3. Tests for the new/changed functionality
+- [ ] N-2. Check docs: whether anything needs adding/updating (only where it matters)
+- [ ] N-1. Append the client report to the end of `docs/todo/{issue|slug}.md` (see Step 6)
+- [ ] N. (developer's choice) Run the tests and commit
 
-## Изменения плана
-{дата — что и почему поменяли по ходу работы}
+## Plan changes
+{date — what changed during the work and why}
 ```
 
 ## Step 5 — Plan rules
@@ -116,10 +115,10 @@ A third file, `report.md`, is written later — after the work is done (see Step
   - Do not split a step just because it touches many files; split when the *purpose* changes.
 - **Executable one step at a time or all at once.** Each step names concrete files.
 - **Numbering**: steps are numbered with plain arabic numerals — `1.`, `2.`, `3.` … Never roman numerals, letters or unnumbered bullets.
-- **"Что меняем и как это будет работать" comes first**, before "Подход". It describes the mechanics (what appears, what is touched, how the flow runs end to end), not the architectural justification — that stays in "Подход". No file lists there, they live in the steps.
-- **Track progress**: a finished step becomes `[x]`. If the approach changes mid-work, append to "Изменения плана" instead of silently rewriting history.
+- **"What changes and how it will work" comes first**, before "Approach". It describes the mechanics (what appears, what is touched, how the flow runs end to end), not the architectural justification — that stays in "Approach". No file lists there, they live in the steps.
+- **Track progress**: a finished step becomes `[x]`. If the approach changes mid-work, append to "Plan changes" instead of silently rewriting history.
 - **Project architecture**: Actions hold write logic (shared by Web and API), Queries (`app/Modules/{Module}/Queries/`) hold reads — there are no repositories, controllers stay thin, DTOs (`spatie/laravel-data`) for input, Resources for API output, ViewModels for anything a blade renders (`docs/starter/view-models.md`), tests are PHPUnit 13 (not Pest). Unsure where something belongs → ask.
-- **Design patterns** only where the task justifies them, never for their own sake. State the reason in "Подход".
+- **Design patterns** only where the task justifies them, never for their own sake. State the reason in "Approach".
 - **Dangerous spots** marked inline in the step with `⚠️`:
   - editing existing migrations / dropping columns / data loss
   - renaming or changing signatures used by several modules
@@ -128,22 +127,22 @@ A third file, `report.md`, is written later — after the work is done (see Step
 - **Tests**: models without a factory get a factory + `HasFactory` first (see `.claude/testing.md`). Add new test files to git.
 - **Docs step**: write only what is needed in `docs/`, no filler.
 
-### Safety block (insert into every `plan.md` verbatim)
+### Safety block (insert into every task file after the plan, translated into the task's language)
 
 ```markdown
-## Безопасность выполнения
+## Execution safety
 
-- Без разрешения программиста не ходить и не отправлять запросы на сторонние API и сервисы.
-- С локалки не должны улетать email, SMS и другие уведомления — следить, какие джобы запускаются и какой код выполняется (проверять `MAIL_MAILER`, драйвер SMS, `QUEUE_CONNECTION`).
-- Не запускать `migrate:fresh` / `migrate:refresh` без явного разрешения.
-- Деструктивные команды и сидеры на реальных данных — только после подтверждения.
+- Do not call or send requests to third-party APIs and services without the developer's permission.
+- No email, SMS or other notifications may leave the local machine — watch which jobs run and what code executes (check `MAIL_MAILER`, the SMS driver, `QUEUE_CONNECTION`).
+- Do not run `migrate:fresh` / `migrate:refresh` without explicit permission.
+- Destructive commands and seeders on real data — only after confirmation.
 ```
 
-## Step 6 — Task reply (`report.md`)
+## Step 6 — Task reply (report section)
 
-Written **after the plan is executed**, not during planning. Goes to `tasks/{issue|slug}/report.md`.
+Written **after the plan is executed**, not during planning. Appended as the last section of `docs/todo/{issue|slug}.md`; set the status at the top to done.
 
-**Language: the language of the original task description** (not necessarily Russian). Task written in English → reply in English; in Ukrainian → Ukrainian.
+**Language: the same as the rest of the file** — the language of the original task description.
 
 This text is for the client, not for a developer. Keep it plain:
 
@@ -157,18 +156,18 @@ Do not: list files, paste code, describe refactoring that changes nothing for th
 Length: 5-15 lines. If the task was purely internal (rename, refactor, tests) — say plainly that behaviour has not changed and name the one or two things worth a glance.
 
 ```markdown
-# {Номер} — {Название}
+## Report
 
-{1-3 предложения: что сделано}
+{1-3 sentences: what was done}
 
-## Что изменилось
+### What changed
 - ...
 
-## Как проверить
+### How to check
 1. ...
 ```
 
-(the headings follow the task's language too)
+(translate the headings into the task's language)
 
 ## Step 7 — Commit (last plan step)
 
@@ -181,4 +180,4 @@ English, lowercase, short. Commit only when the developer asks.
 
 ## Step 8 — Reply to the developer
 
-Report: folder path, the approach in 2-3 lines, the list of steps, any open questions. Do not restate the files in full.
+Report: file path, the approach in 2-3 lines, the list of steps, any open questions. Do not restate the files in full.
