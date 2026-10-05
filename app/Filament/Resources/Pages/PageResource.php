@@ -108,7 +108,8 @@ class PageResource extends Resource
                     ->type('number')
                     ->sortable()
                     ->alignEnd()
-                    ->width('100px'),
+                    ->width('1%')
+                    ->extraAttributes(['style' => 'min-width: 0; width: 7rem']),
                 ToggleColumn::make('display_menu'),
                 ToggleColumn::make('display_menu_footer'),
                 ToggleColumn::make('display'),

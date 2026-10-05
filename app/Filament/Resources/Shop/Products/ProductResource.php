@@ -137,10 +137,12 @@ class ProductResource extends Resource
                     ->label(__('admin.fields.brand_id'))
                     ->visible(ModuleGate::isEnabled('shop_brands')),
                 TextColumn::make('price')
-                    ->money()
+                    ->numeric(decimalPlaces: 2)
+                    ->alignEnd()
                     ->sortable(),
                 TextColumn::make('price2')
-                    ->money()
+                    ->numeric(decimalPlaces: 2)
+                    ->alignEnd()
                     ->sortable(),
                 // Links through to the reviews of this product, filter already
                 // applied — so the column goes away with the shop_product_reviews
