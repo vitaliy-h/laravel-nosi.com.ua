@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Geo\GeoRegions;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Geo\GeoRegions\Pages\ManageGeoRegions;
+use App\Filament\Tables\Columns\InlineEditColumn;
 use App\Modules\Geo\Models\GeoRegion;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -15,7 +16,6 @@ use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Filters\SelectFilter;
@@ -56,17 +56,18 @@ class GeoRegionResource extends Resource
         return $table
             ->defaultSort('rank', 'desc')
             ->columns([
-                TextColumn::make('title')
+                InlineEditColumn::make('title')
+                    ->rules(['required', 'max:255'])
                     ->searchable(),
                 TextColumn::make('country.title')
                     ->label(__('admin.fields.geo_country_id')),
                 TextColumn::make('code')
                     ->searchable(),
-                TextInputColumn::make('rank')
-                    ->type('number')
+                InlineEditColumn::make('rank')
+                    ->editAsNumber()
+                    ->rules(['required', 'integer'])
                     ->sortable()
-                    ->alignEnd()
-                    ->width('100px'),
+                    ->alignEnd(),
                 ToggleColumn::make('display'),
                 TextColumn::make('created_at')
                     ->dateTime()

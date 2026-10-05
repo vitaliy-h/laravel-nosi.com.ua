@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Feedback;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Feedback\Pages\ManageFeedback;
+use App\Filament\Tables\Columns\InlineEditColumn;
 use App\Modules\Feedback\Models\Feedback;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
@@ -61,7 +62,8 @@ class FeedbackResource extends Resource
         return $table
             ->defaultSort('id', 'desc')
             ->columns([
-                TextColumn::make('name')
+                InlineEditColumn::make('name')
+                    ->rules(['required', 'max:255'])
                     ->searchable(),
                 TextColumn::make('email')
                     ->searchable(),

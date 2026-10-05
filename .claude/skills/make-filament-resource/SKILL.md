@@ -126,13 +126,14 @@ Priority (first match wins):
 #### Columns order
 
 1. `ImageColumn::make('img')` — if `img` field exists (no label needed, it's visual)
-2. `TextColumn::make('title')->searchable()` or `TextColumn::make('name')->searchable()` — **nested set mode**: wrap with depth prefix:
+2. `InlineEditColumn::make('title')` (or `name`) with the form's rules, e.g. `->rules(['required', 'max:255'])->searchable()` — **nested set mode**: wrap with depth prefix (the field still edits the raw title):
    ```php
-   TextColumn::make('title')
+   InlineEditColumn::make('title')
+       ->rules(['required', 'max:255'])
        ->formatStateUsing(fn ($record) => str_repeat('— ', $record->depth) . $record->title)
        ->searchable(),
    ```
-3. `TextColumn::make('slug')->searchable()` — if exists
+3. `static::getSlugColumn()` — if `slug` exists (SEO mode: inline-editable, unique per table)
 4. Enum fields (from `$casts` where cast is an Enum class):
    ```php
    TextColumn::make('{field}')
@@ -147,13 +148,13 @@ Priority (first match wins):
    ```
    Detect the related model's title field (`title` vs `name`) by reading the related model.
 6. Other notable scalar fields (article, price, etc.) — `TextColumn::make('{field}')`
-7. `TextInputColumn::make('rank')` — if `rank` field exists:
+7. `InlineEditColumn::make('rank')` — if `rank` field exists (see `docs/filament/inline-edit.md`):
    ```php
-   TextInputColumn::make('rank')
-       ->type('number')
+   InlineEditColumn::make('rank')
+       ->editAsNumber()
+       ->rules(['required', 'integer'])
        ->sortable()
-       ->alignEnd()
-       ->width('100px'),
+       ->alignEnd(),
    ```
 8. `TextColumn::make('{field}')->dateTime()->sortable()` — for non-hidden date fields (e.g. `published_at`)
 9. `ToggleColumn::make('display')` — if `display` field exists (always last before hidden)
@@ -362,7 +363,8 @@ After artisan generates the file, ensure:
     - `use App\Filament\Actions\BaseEditAction;`
     - `use Filament\Actions\{BulkActionGroup, DeleteAction, DeleteBulkAction};`
     - `use Filament\Tables\Filters\SelectFilter;` (if filters used)
-    - `use Filament\Tables\Columns\{ImageColumn, TextColumn, TextInputColumn, ToggleColumn};`
+    - `use Filament\Tables\Columns\{ImageColumn, TextColumn, ToggleColumn};`
+    - `use App\Filament\Tables\Columns\InlineEditColumn;` (rank, title / name, slug)
     - `use Filament\Forms\Components\{FileUpload, RichEditor, Select, Textarea, TextInput, Toggle, DateTimePicker};`
     - All Enum and Model imports used
     - **SEO mode only**: `use App\Filament\Traits\HasSeoFields;`
@@ -434,7 +436,7 @@ Print:
 | string / text (short)  | `TextColumn` with `->searchable()`                                              |
 | enum (in `$casts`)     | `TextColumn` with `->badge()->formatStateUsing(fn($state) => $state?->label())` |
 | boolean                | `ToggleColumn`                                                                  |
-| integer `rank`         | `TextInputColumn` with `->type('number')->sortable()->alignEnd()`               |
+| integer `rank`         | `InlineEditColumn` with `->editAsNumber()->rules(['required', 'integer'])->sortable()->alignEnd()` |
 | timestamp/date         | `TextColumn` with `->dateTime()->sortable()`                                    |
 | relation               | `TextColumn::make('{rel}.{field}')`                                             |
 

@@ -180,4 +180,68 @@ class ProductResourceTest extends TestCase
 
         $this->assertModelMissing($product);
     }
+
+    public function test_inline_edit_saves_prices_and_rank(): void
+    {
+        $product = Product::factory()->create(['price' => 10, 'price2' => null, 'rank' => 1]);
+
+        $table = Livewire::test(ManageProducts::class)->instance();
+        $table->updateTableColumnState('price', (string) $product->id, '12.5');
+        $table->updateTableColumnState('price2', (string) $product->id, '15');
+        $table->updateTableColumnState('rank', (string) $product->id, '7');
+
+        $product->refresh();
+        $this->assertEquals(12.5, $product->price);
+        $this->assertEquals(15, $product->price2);
+        $this->assertSame(7, $product->rank);
+    }
+
+    public function test_inline_edit_rejects_a_negative_price(): void
+    {
+        $product = Product::factory()->create(['price' => 10]);
+
+        $result = Livewire::test(ManageProducts::class)->instance()
+            ->updateTableColumnState('price', (string) $product->id, '-1');
+
+        $this->assertArrayHasKey('error', $result);
+        $this->assertEquals(10, $product->fresh()->price);
+    }
+
+    public function test_inline_edit_moves_the_product_to_another_category(): void
+    {
+        $product = Product::factory()->create();
+        $category = Category::factory()->create();
+
+        Livewire::test(ManageProducts::class)->instance()
+            ->updateTableColumnState('category.title', (string) $product->id, (string) $category->id);
+
+        $this->assertSame($category->id, $product->fresh()->category_id);
+    }
+
+    public function test_inline_edit_rejects_an_unknown_category(): void
+    {
+        $product = Product::factory()->create();
+
+        $result = Livewire::test(ManageProducts::class)->instance()
+            ->updateTableColumnState('category.title', (string) $product->id, '999999');
+
+        $this->assertArrayHasKey('error', $result);
+        $this->assertSame($product->category_id, $product->fresh()->category_id);
+    }
+
+    public function test_inline_edit_sets_and_clears_the_brand(): void
+    {
+        $this->skipUnlessModules('shop_brands');
+
+        $product = Product::factory()->create();
+        $brand = Brand::factory()->create();
+
+        $table = Livewire::test(ManageProducts::class)->instance();
+
+        $table->updateTableColumnState('brand.title', (string) $product->id, (string) $brand->id);
+        $this->assertSame($brand->id, $product->fresh()->brand_id);
+
+        $table->updateTableColumnState('brand.title', (string) $product->id, '');
+        $this->assertNull($product->fresh()->brand_id);
+    }
 }

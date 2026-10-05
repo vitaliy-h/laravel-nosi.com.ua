@@ -250,4 +250,48 @@ class UserResourceTest extends TestCase
 
         $this->assertTrue($target->fresh()->hasRole('super_admin'));
     }
+
+    public function test_inline_edit_saves_the_name(): void
+    {
+        $target = User::factory()->create(['name' => 'Old']);
+
+        Livewire::test(ManageUsers::class)->instance()
+            ->updateTableColumnState('name', (string) $target->id, 'New');
+
+        $this->assertSame('New', $target->fresh()->name);
+    }
+
+    public function test_inline_edit_syncs_roles(): void
+    {
+        $target = User::factory()->create();
+        $editor = Role::firstOrCreate(['name' => 'editor', 'guard_name' => 'web']);
+        $manager = Role::firstOrCreate(['name' => 'manager', 'guard_name' => 'web']);
+
+        $table = Livewire::test(ManageUsers::class)->instance();
+
+        $table->updateTableColumnState('roles.name', (string) $target->id, [(string) $editor->id, (string) $manager->id]);
+        $this->assertEqualsCanonicalizing(['editor', 'manager'], $target->fresh()->roles->pluck('name')->all());
+
+        $table->updateTableColumnState('roles.name', (string) $target->id, []);
+        $this->assertCount(0, $target->fresh()->roles);
+    }
+
+    public function test_inline_edit_does_not_let_an_admin_grant_super_admin(): void
+    {
+        $superAdminRole = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        $target = User::factory()->create();
+
+        $component = Livewire::test(ManageUsers::class);
+
+        $this->assertArrayNotHasKey(
+            $superAdminRole->id,
+            $component->instance()->getTable()->getColumn('roles.name')->record($target)->getOptions(),
+        );
+
+        $result = $component->instance()
+            ->updateTableColumnState('roles.name', (string) $target->id, [(string) $superAdminRole->id]);
+
+        $this->assertArrayHasKey('error', $result);
+        $this->assertFalse($target->fresh()->hasRole('super_admin'));
+    }
 }

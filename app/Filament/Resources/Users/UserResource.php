@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Users;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Users\Pages\ManageUsers;
+use App\Filament\Tables\Columns\InlineEditColumn;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\User\Models\User;
 use App\Modules\UserAuth\Actions\GenerateImpersonationTokenAction;
@@ -24,6 +25,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UserResource extends Resource
 {
@@ -103,7 +105,8 @@ class UserResource extends Resource
         return $table
             ->defaultSort('created_at', 'DESC')
             ->columns([
-                TextColumn::make('name')
+                InlineEditColumn::make('name')
+                    ->rules(['required', 'max:255'])
                     ->searchable(),
                 TextColumn::make('surname')
                     ->searchable(),
@@ -111,7 +114,23 @@ class UserResource extends Resource
                     ->searchable(),
                 TextColumn::make('phone')
                     ->searchable(),
-                TextColumn::make('roles.name')
+                // Same role list as the form: super_admin is offered to super admins only.
+                InlineEditColumn::make('roles.name')
+                    ->editAttribute('roles')
+                    ->multiple()
+                    ->options(fn (): array => Role::query()
+                        ->when(!auth()->user()?->isSuperAdmin(), fn ($query) => $query->where('name', '!=', 'super_admin'))
+                        ->pluck('name', 'id')
+                        ->all())
+                    // Only the offered roles: an admin must not post super_admin's id.
+                    ->rules(fn (InlineEditColumn $column): array => [
+                        'array',
+                        function (string $attribute, mixed $value, \Closure $fail) use ($column): void {
+                            if (array_diff((array) $value, array_keys($column->getOptions()))) {
+                                $fail(__('validation.in', ['attribute' => 'roles']));
+                            }
+                        },
+                    ])
                     ->badge(),
                 TextColumn::make('ip')
                     ->toggleable(isToggledHiddenByDefault: true),

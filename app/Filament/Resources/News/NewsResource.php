@@ -9,6 +9,7 @@ use App\Filament\Builder\Blocks\TeasersBlock;
 use App\Filament\Builder\Blocks\TextBlock;
 use App\Filament\Builder\Blocks\VideoBlock;
 use App\Filament\Resources\News\Pages\ManageNews;
+use App\Filament\Tables\Columns\InlineEditColumn;
 use App\Filament\Traits\HasSeoFields;
 use App\Modules\News\Models\News;
 use Filament\Actions\BulkActionGroup;
@@ -94,11 +95,13 @@ class NewsResource extends Resource
             ->defaultSort('published_at', 'DESC')
             ->columns([
                 ImageColumn::make('img'),
-                TextColumn::make('title')
+                InlineEditColumn::make('title')
+                    ->rules(['required', 'max:255'])
                     ->searchable(),
-                TextColumn::make('slug')
-                    ->searchable(),
-                TextColumn::make('published_at')
+                static::getSlugColumn(),
+                InlineEditColumn::make('published_at')
+                    ->editAsDateTime()
+                    ->rules(['date'])
                     ->dateTime()
                     ->sortable(),
                 ToggleColumn::make('display'),

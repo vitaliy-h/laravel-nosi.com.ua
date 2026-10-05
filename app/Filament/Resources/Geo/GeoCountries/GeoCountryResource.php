@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Geo\GeoCountries;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Geo\GeoCountries\Pages\ManageGeoCountries;
+use App\Filament\Tables\Columns\InlineEditColumn;
 use App\Modules\Geo\Models\GeoCountry;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -14,7 +15,6 @@ use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
@@ -57,7 +57,8 @@ class GeoCountryResource extends Resource
         return $table
             ->defaultSort('rank', 'desc')
             ->columns([
-                TextColumn::make('title')
+                InlineEditColumn::make('title')
+                    ->rules(['required', 'max:255'])
                     ->searchable(),
                 TextColumn::make('iso2')
                     ->searchable(),
@@ -66,11 +67,11 @@ class GeoCountryResource extends Resource
                 TextColumn::make('phone_code'),
                 TextColumn::make('currency_code'),
                 TextColumn::make('timezone'),
-                TextInputColumn::make('rank')
-                    ->type('number')
+                InlineEditColumn::make('rank')
+                    ->editAsNumber()
+                    ->rules(['required', 'integer'])
                     ->sortable()
-                    ->alignEnd()
-                    ->width('100px'),
+                    ->alignEnd(),
                 ToggleColumn::make('display'),
                 TextColumn::make('created_at')
                     ->dateTime()

@@ -16,6 +16,11 @@
 because the Tailwind build is not linked into the layout. Pagination follows the
 same rule: `Paginator::useBootstrap()` in `AppServiceProvider` is deliberate.
 
+Admin panel exception: `resources/js/filament/` and `resources/css/filament/` are plain files
+for Filament (Alpine components, panel CSS), **not** Vite entries. They are registered with
+`FilamentAsset` in `AdminPanelProvider::boot()` and copied to `public/` by
+`php artisan filament:assets` — see `docs/filament/inline-edit.md`.
+
 ## Commands
 
 ```bash

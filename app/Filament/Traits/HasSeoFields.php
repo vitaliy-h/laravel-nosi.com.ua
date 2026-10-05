@@ -2,10 +2,13 @@
 
 namespace App\Filament\Traits;
 
+use App\Filament\Tables\Columns\InlineEditColumn;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 
 trait HasSeoFields
 {
@@ -45,5 +48,19 @@ trait HasSeoFields
             ->collapsed()
             ->collapsible()
             ->columnSpanFull();
+    }
+
+    /**
+     * The table's `slug` column, editable in place with the same rules as the
+     * SEO section's field. Changing it moves the record's public URL.
+     */
+    protected static function getSlugColumn(): InlineEditColumn
+    {
+        return InlineEditColumn::make('slug')
+            ->searchable()
+            ->rules(fn (Model $record): array => [
+                'max:255',
+                Rule::unique($record::class, 'slug')->ignore($record),
+            ]);
     }
 }

@@ -28,6 +28,8 @@ Thumbs.db
 /package-lock.json
 /public/css/filament
 /public/js/filament
+/public/js/app
+/public/css/app
 /public/fonts/filament
 tasks
 .claude/*.local.md

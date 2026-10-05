@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Languages;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Languages\Pages\ManageLanguages;
+use App\Filament\Tables\Columns\InlineEditColumn;
 use App\Modules\Translation\Enums\Localization;
 use App\Modules\Translation\Models\Language;
 use BackedEnum;
@@ -23,7 +24,6 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
@@ -85,16 +85,18 @@ class LanguageResource extends Resource
         return $table
             ->defaultSort('rank', 'DESC')
             ->columns([
-                TextColumn::make('title')
+                InlineEditColumn::make('title')
+                    ->rules(['max:255'])
                     ->searchable(),
                 TextColumn::make('localization')
                     ->searchable()
                     ->badge()
                     ->formatStateUsing(fn ($state) => $state?->label()),
-                TextInputColumn::make('rank')
-                    ->type('number')
+                InlineEditColumn::make('rank')
+                    ->editAsNumber()
+                    ->rules(['required', 'integer'])
                     ->sortable()
-                    ->width('1%'),
+                    ->alignEnd(),
                 ToggleColumn::make('display'),
                 TextColumn::make('created_at')
                     ->dateTime()

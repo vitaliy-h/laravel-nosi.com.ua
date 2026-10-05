@@ -9,6 +9,7 @@ use App\Filament\Builder\Blocks\TeasersBlock;
 use App\Filament\Builder\Blocks\TextBlock;
 use App\Filament\Builder\Blocks\VideoBlock;
 use App\Filament\Resources\Pages\Pages\ManagePages;
+use App\Filament\Tables\Columns\InlineEditColumn;
 use App\Filament\Traits\HasSeoFields;
 use App\Modules\Core\Support\UrlHelper;
 use App\Modules\Page\Enums\PageModule;
@@ -25,7 +26,6 @@ use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
@@ -96,20 +96,19 @@ class PageResource extends Resource
         return $table
             ->defaultSort('rank', 'DESC')
             ->columns([
-                TextColumn::make('title')
+                InlineEditColumn::make('title')
+                    ->rules(['required', 'max:255'])
                     ->searchable(),
-                TextColumn::make('slug')
-                    ->searchable(),
+                static::getSlugColumn(),
                 TextColumn::make('module')
                     ->searchable()
                     ->badge()
                     ->formatStateUsing(fn ($state) => $state?->label()),
-                TextInputColumn::make('rank')
-                    ->type('number')
+                InlineEditColumn::make('rank')
+                    ->editAsNumber()
+                    ->rules(['required', 'integer'])
                     ->sortable()
-                    ->alignEnd()
-                    ->width('1%')
-                    ->extraAttributes(['style' => 'min-width: 0; width: 7rem']),
+                    ->alignEnd(),
                 ToggleColumn::make('display_menu'),
                 ToggleColumn::make('display_menu_footer'),
                 ToggleColumn::make('display'),

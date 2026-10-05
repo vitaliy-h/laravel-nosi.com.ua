@@ -36,13 +36,14 @@ table action or filter.
 | Trait | What it gives you |
 |---|---|
 | `HasDefaultTable` | `applyDefaultTable()` — the standard row actions (`BaseEditAction` + `DeleteAction` before the columns), the `CreateAction` toolbar and the delete bulk action |
-| `HasSeoFields` | `getSeoSection()` — the shared SEO block (`generate_seo` toggle, `slug`, `meta_title`, `meta_description`, optionally `is_indexable`) |
+| `HasSeoFields` | `getSeoSection()` — the shared SEO block (`generate_seo` toggle, `slug`, `meta_title`, `meta_description`, optionally `is_indexable`); `getSlugColumn()` — the matching inline-editable `slug` table column |
 | `CanGenerateGetTitleMethod` | Used by the generators below, not by resources: adds a `getTitle()` stub to a generated page class |
 
 ## Form and table helpers
 
 | Class | What it gives you |
 |---|---|
+| `Tables\Columns\InlineEditColumn::make()` | A `TextColumn` that becomes an input / select / checkbox list on double-click — the default for editable table cells instead of `TextInputColumn` / `SelectColumn`. See [Inline Editing](inline-edit.md) |
 | `Forms\UserSelect::make()` | A user `Select` searchable by name, surname, email and phone, labelled "Surname Name" |
 | `Filters\UserSelectFilter::make()` | The same thing as a table filter — use the pair so a form and its table behave identically |
 | `Support\NestedSetFields::make(Model::class)` | The `parent_id` + `_position_id` pair for any model using `NodeTrait` — see [Nested Sets](nested-sets.md) |
@@ -81,6 +82,7 @@ Detailed documentation is split into separate files:
 * [Translations Guide](translations.md)
 * [Nested Sets (Tree Structures)](nested-sets.md)
 * [Debug Tools (artisan from the panel)](debug-tools.md)
+* [Inline Editing in Tables](inline-edit.md)
 
 ---
 

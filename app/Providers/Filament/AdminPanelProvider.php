@@ -49,7 +49,10 @@ use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Support\Assets\AlpineComponent;
+use Filament\Support\Assets\Css;
 use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentAsset;
 use Filament\Tables\Table;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -61,6 +64,16 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
 {
+    public function boot(): void
+    {
+        // Plain files published by `filament:assets` (run on composer's
+        // post-autoload-dump via `filament:upgrade`), not built by Vite.
+        FilamentAsset::register([
+            AlpineComponent::make('inline-edit-column', resource_path('js/filament/inline-edit-column.js')),
+            Css::make('inline-edit-column', resource_path('css/filament/inline-edit-column.css')),
+        ]);
+    }
+
     public function panel(Panel $panel): Panel
     {
         Table::configureUsing(function (Table $table): void {

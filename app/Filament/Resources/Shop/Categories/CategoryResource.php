@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Shop\Categories;
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Shop\Categories\Pages\ManageCategories;
 use App\Filament\Support\NestedSetFields;
+use App\Filament\Tables\Columns\InlineEditColumn;
 use App\Filament\Traits\HasSeoFields;
 use App\Modules\Shop\Models\Category;
 use BackedEnum;
@@ -80,12 +81,12 @@ class CategoryResource extends Resource
             ->defaultSort('_lft')
             ->columns([
                 ImageColumn::make('img'),
-                TextColumn::make('title')
+                InlineEditColumn::make('title')
+                    ->rules(['required', 'max:255'])
                     ->formatStateUsing(fn ($record) => str_repeat('— ', $record->depth) . $record->title
                     )
                     ->searchable(),
-                TextColumn::make('slug')
-                    ->searchable(),
+                static::getSlugColumn(),
                 ToggleColumn::make('display'),
                 TextColumn::make('created_at')
                     ->dateTime()

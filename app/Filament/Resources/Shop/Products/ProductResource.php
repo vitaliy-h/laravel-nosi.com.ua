@@ -6,6 +6,7 @@ use App\Filament\Actions\BaseEditAction;
 use App\Filament\Dashboard\Queries\Shop\GetCatalogStatsQuery;
 use App\Filament\Resources\Shop\ProductReviews\ProductReviewResource;
 use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
+use App\Filament\Tables\Columns\InlineEditColumn;
 use App\Filament\Traits\HasSeoFields;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Shop\Models\Brand;
@@ -33,6 +34,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Validation\Rule;
 
 class ProductResource extends Resource
 {
@@ -62,15 +64,7 @@ class ProductResource extends Resource
                     ->default(null)
                     ->columnSpan(4),
                 Select::make('category_id')
-                    ->options(
-                        Category::defaultOrder()
-                            ->withDepth()
-                            ->get()
-                            ->toFlatTree()
-                            ->mapWithKeys(fn ($category) => [
-                                $category->id => str_repeat('— ', $category->depth) . $category->title,
-                            ])
-                    )
+                    ->options(fn (): array => static::getCategoryOptions())
                     ->searchable()
                     ->preload()
                     ->required()
@@ -127,20 +121,33 @@ class ProductResource extends Resource
             ->defaultSort('rank', 'DESC')
             ->columns([
                 ImageColumn::make('img'),
-                TextColumn::make('title')
+                InlineEditColumn::make('title')
+                    ->rules(['required', 'max:255'])
                     ->searchable(),
                 TextColumn::make('article')
                     ->searchable(),
-                TextColumn::make('category.title')
-                    ->label(__('admin.fields.category_id')),
-                TextColumn::make('brand.title')
+                // Changing the category moves the product's public URL — the
+                // category slug is part of `shop.product`.
+                InlineEditColumn::make('category.title')
+                    ->label(__('admin.fields.category_id'))
+                    ->editAttribute('category_id')
+                    ->options(fn (): array => static::getCategoryOptions())
+                    ->rules(['required', Rule::exists(Category::class, 'id')]),
+                InlineEditColumn::make('brand.title')
                     ->label(__('admin.fields.brand_id'))
+                    ->editAttribute('brand_id')
+                    ->options(fn (): array => Brand::pluck('title', 'id')->all())
+                    ->rules([Rule::exists(Brand::class, 'id')])
                     ->visible(ModuleGate::isEnabled('shop_brands')),
-                TextColumn::make('price')
+                InlineEditColumn::make('price')
+                    ->editAsNumber()
+                    ->rules(['numeric', 'min:0'])
                     ->numeric(decimalPlaces: 2)
                     ->alignEnd()
                     ->sortable(),
-                TextColumn::make('price2')
+                InlineEditColumn::make('price2')
+                    ->editAsNumber()
+                    ->rules(['numeric', 'min:0'])
                     ->numeric(decimalPlaces: 2)
                     ->alignEnd()
                     ->sortable(),
@@ -156,7 +163,9 @@ class ProductResource extends Resource
                     ->url(fn (Product $record): string => ProductReviewResource::getUrl(parameters: [
                         'filters' => ['product_id' => ['value' => $record->id]],
                     ])),
-                TextColumn::make('rank')
+                InlineEditColumn::make('rank')
+                    ->editAsNumber()
+                    ->rules(['required', 'integer'])
                     ->sortable()
                     ->alignEnd(),
                 ToggleColumn::make('display'),
@@ -174,15 +183,7 @@ class ProductResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('category_id')
-                    ->options(
-                        Category::defaultOrder()
-                            ->withDepth()
-                            ->get()
-                            ->toFlatTree()
-                            ->mapWithKeys(fn ($category) => [
-                                $category->id => str_repeat('— ', $category->depth) . $category->title,
-                            ])
-                    )
+                    ->options(fn (): array => static::getCategoryOptions())
                     ->searchable()
                     ->preload(),
 
@@ -215,6 +216,24 @@ class ProductResource extends Resource
                     DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    /**
+     * Categories as a flat tree, indented by depth — shared by the form,
+     * the filter and the inline category column.
+     *
+     * @return array<int, string>
+     */
+    protected static function getCategoryOptions(): array
+    {
+        return Category::defaultOrder()
+            ->withDepth()
+            ->get()
+            ->toFlatTree()
+            ->mapWithKeys(fn ($category) => [
+                $category->id => str_repeat('— ', $category->depth) . $category->title,
+            ])
+            ->all();
     }
 
     public static function getPages(): array

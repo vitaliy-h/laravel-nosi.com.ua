@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Shop\Brands;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Resources\Shop\Brands\Pages\ManageBrands;
+use App\Filament\Tables\Columns\InlineEditColumn;
 use App\Filament\Traits\HasSeoFields;
 use App\Modules\Shop\Models\Brand;
 use BackedEnum;
@@ -72,11 +73,13 @@ class BrandResource extends Resource
             ->defaultSort('rank', 'DESC')
             ->columns([
                 ImageColumn::make('img'),
-                TextColumn::make('title')
+                InlineEditColumn::make('title')
+                    ->rules(['required', 'max:255'])
                     ->searchable(),
-                TextColumn::make('slug')
-                    ->searchable(),
-                TextColumn::make('rank')
+                static::getSlugColumn(),
+                InlineEditColumn::make('rank')
+                    ->editAsNumber()
+                    ->rules(['required', 'integer'])
                     ->sortable()
                     ->alignEnd(),
                 ToggleColumn::make('display'),

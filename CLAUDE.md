@@ -18,7 +18,8 @@ actually works, not generic Laravel:
   `letters.md`, `sms.md`, `sitemap.md`, `translations.md`, `oauth.md`, `uuid.md`,
   `commands.md`, `testing.md`
 - `docs/api/` — the HTTP API per module (`auth`, `profile`, `shop`, `translation`)
-- `docs/filament/` — admin panel: resource generation, dashboard, nested sets, translations
+- `docs/filament/` — admin panel: resource generation, dashboard, nested sets, translations,
+  inline editing in tables
 - `docs/project/` — this project's functionality (`shop.md`, `news.md`); later — the project description
 - `docs/todo/` — specifications and plans for work not yet done, one file per task
 - `docs/README.md` — server requirements, install and local setup (Sail / WSL2 / OpenServer)
