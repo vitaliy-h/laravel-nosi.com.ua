@@ -56,6 +56,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Admin Panel Path
+    |--------------------------------------------------------------------------
+    |
+    | URL prefix of the Filament admin panel (https://site.com/{admin_path}).
+    | Set a unique, hard-to-guess value per project so the panel does not sit
+    | at the well-known /admin address.
+    |
+    */
+
+    'admin_path' => trim(env('ADMIN_PATH', 'admin'), '/'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

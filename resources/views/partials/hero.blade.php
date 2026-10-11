@@ -8,7 +8,7 @@
                     <h1>{!! $subtitle ?? '' !!}</h1>
                     <p>This is a demo version of a Laravel + Filament project. Visit the admin panel to see how it's built and explore its features.</p>
                     <div class="hero-cta">
-                        <a href="/admin" class="btn btn-shop">Go to Admin Panel <i class="bi bi-arrow-right"></i></a>
+                        <a href="{{ url(config('app.admin_path')) }}" class="btn btn-shop">Go to Admin Panel <i class="bi bi-arrow-right"></i></a>
                     </div>
                     <div class="hero-features">
                         <div class="feature-item">

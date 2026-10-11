@@ -117,7 +117,7 @@ class ImpersonationTest extends TestCase
         $this->actingAs($target)
             ->withSession(['impersonating_admin_id' => $admin->id])
             ->post(route('impersonate.leave'))
-            ->assertRedirect(config('filament.path', '/admin'));
+            ->assertRedirect(filament()->getPanel('admin')->getUrl());
     }
 
     public function test_leave_logs_out_if_original_admin_no_longer_exists(): void

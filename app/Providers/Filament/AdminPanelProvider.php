@@ -90,7 +90,7 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarFullyCollapsibleOnDesktop()
             // ->topNavigation() //navigation on top
             ->id('admin')
-            ->path('admin') // path to admin panel in browser
+            ->path(config('app.admin_path')) // path to admin panel in browser, ADMIN_PATH in .env
             ->login(Login::class)
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
@@ -171,11 +171,11 @@ class AdminPanelProvider extends PanelProvider
                                 NavigationItem::make(__('admin.tables.users'))
                                     ->icon('heroicon-o-users')
                                     ->url(UserResource::getUrl())
-                                    ->isActiveWhen(fn (): bool => Request::is('admin/users') || Request::is('admin/users/create') || Request::is('admin/users/*/edit')),
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.users.*')),
                                 ModuleGate::isEnabled('user_auth') ? NavigationItem::make(__('admin.tables.social_profiles'))
                                     ->icon('heroicon-o-link')
                                     ->url(SocialProfileResource::getUrl())
-                                    ->isActiveWhen(fn (): bool => Request::is('admin/social-profiles*')) : null,
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.social-profiles.*')) : null,
                                 ModuleGate::isEnabled('subscriber') ? NavigationItem::make(__('admin.tables.subscriber'))
                                     ->icon('heroicon-o-envelope-open')
                                     ->url(SubscriberResource::getUrl())

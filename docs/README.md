@@ -35,6 +35,28 @@ Password: password
 
 ---
 
+<a id="admin-path"></a>
+
+## ⚠️ Admin Panel URL — unique for every project
+
+The admin panel URL prefix comes from `ADMIN_PATH` in `.env` (default `admin`, i.e.
+`https://site.com/admin`). **Every time you deploy a new project from this starter, set a
+unique, hard-to-guess value** — do not leave the default `admin` and do not reuse the value
+from another project:
+
+```
+ADMIN_PATH=cp-7f3k9q
+```
+
+The panel then lives at `https://site.com/cp-7f3k9q`. Pick a value that does not clash with a
+frontend page slug. After changing it on a server with cached config, run
+`php artisan optimize:clear` (or `php artisan config:cache` again).
+
+Tests always run with `ADMIN_PATH=admin` (forced in `phpunit.xml`), so the local value does not
+affect them.
+
+---
+
 <a id="linux-macos"></a>
 
 # 1. 🐧 Linux / macOS (Laravel Sail)
@@ -63,6 +85,8 @@ Copy `.env` file:
 ```bash
 cp .env.example .env
 ```
+
+Then set a unique `ADMIN_PATH` in `.env` — see [Admin Panel URL](#admin-path).
 
 ---
 
@@ -198,6 +222,8 @@ cd <project-folder>
 cp .env.example .env
 ```
 
+Then set a unique `ADMIN_PATH` in `.env` — see [Admin Panel URL](#admin-path).
+
 ---
 
 ### 8. Install dependencies (via Docker)
@@ -296,6 +322,7 @@ Update `.env`:
 
 ```
 APP_URL=https://laravel-filament-starter
+ADMIN_PATH=<unique-admin-path>
 DB_CONNECTION=mysql
 DB_HOST="MariaDB-11.8"
 DB_PORT=3306

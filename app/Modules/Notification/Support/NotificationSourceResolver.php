@@ -20,7 +20,7 @@ class NotificationSourceResolver
             return NotificationSourceEnum::CONSOLE;
         }
 
-        if (request()?->is('admin/*')) {
+        if (request()?->is(config('app.admin_path') . '/*')) {
             return NotificationSourceEnum::ADMIN;
         }
 

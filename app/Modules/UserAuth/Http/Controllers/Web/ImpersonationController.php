@@ -22,6 +22,6 @@ class ImpersonationController extends BaseWebController
     {
         $action->handle($request->session());
 
-        return redirect(config('filament.path', '/admin'));
+        return redirect(filament()->getPanel('admin')->getUrl());
     }
 }
