@@ -26,6 +26,11 @@ overrides). Files removed from the repository are listed but not deleted on the 
 Never uploaded: `vendor/`, `.env`, anything untracked, and the prefixes in
 `config('deploy.exclude')` (`tests/`, `docs/`, `design/`, `.github/`, …).
 
+The one untracked exception is `config('deploy.assets')` — the admin panel assets composer
+publishes into `public/css|js|fonts/filament` and `public/css|js/app`. They are compared by
+md5 with the last upload (remembered in `storage/app/.deploy-assets.json` on the server)
+and only the changed ones go up — after `composer update` they change on their own.
+
 Options: `--dry-run` (only list the files), `--full` (every tracked file),
 `--since=<commit>` (changes since that commit), `--skip-post` (no `/api/deploy`).
 
@@ -57,8 +62,8 @@ DEPLOY_REMOTE_TOKEN=
 FTP uploads file by file, and `vendor/` is tens of thousands of files. It is not in git,
 so `deploy:ftp` never uploads it; it goes up as one archive:
 
-1. Locally, in the project root, pack `vendor/`, `public/js/filament/`,
-   `public/css/filament/`, `public/fonts/filament/` into `vendor.zip`.
+1. Locally, in the project root, pack `vendor/` into `vendor.zip` (the Filament assets in
+   `public/` are uploaded by `deploy:ftp` itself).
 2. Upload `vendor.zip` over FTP into the project folder (next to `artisan`).
 3. cPanel → File Manager → right click on `vendor.zip` → Extract, then delete the archive.
 

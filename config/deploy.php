@@ -46,4 +46,17 @@ return [
     // Where on the server the deployed commit is remembered, relative to the root.
     'revision_file' => 'storage/app/.deploy-revision',
 
+    // Not in git, but the site needs them: the admin panel assets that composer
+    // publishes (filament:upgrade). Uploaded whenever a file's hash differs from
+    // the last upload, remembered in `assets_file`.
+    'assets' => [
+        'public/css/filament',
+        'public/js/filament',
+        'public/fonts/filament',
+        'public/css/app',
+        'public/js/app',
+    ],
+
+    'assets_file' => 'storage/app/.deploy-assets.json',
+
 ];

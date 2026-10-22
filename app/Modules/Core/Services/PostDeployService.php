@@ -2,6 +2,7 @@
 
 namespace App\Modules\Core\Services;
 
+use App\Modules\Core\Support\ModuleManifest;
 use Illuminate\Support\Facades\Artisan;
 use Throwable;
 
@@ -16,6 +17,10 @@ use Throwable;
  */
 class PostDeployService
 {
+    public function __construct(
+        private readonly ModuleManifest $manifest,
+    ) {}
+
     /**
      * @var array<int, array{0: string, 1: array<string, mixed>, 2: bool}> command, arguments, may fail
      */
@@ -50,8 +55,16 @@ class PostDeployService
             }
 
             try {
-                $ok = Artisan::call($command, $arguments) === 0;
-                $output = trim(Artisan::output());
+                if ($command === 'modules:cache') {
+                    // Module commands are registered for the console only, so
+                    // over HTTP this does what CacheModulesCommand does.
+                    $this->manifest->clear();
+                    $ok = true;
+                    $output = 'Cached the manifest for ' . count($this->manifest->write()) . ' module(s).';
+                } else {
+                    $ok = Artisan::call($command, $arguments) === 0;
+                    $output = trim(Artisan::output());
+                }
             } catch (Throwable $e) {
                 $ok = false;
                 $output = $e->getMessage();

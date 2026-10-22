@@ -6,6 +6,7 @@ use App\Modules\Core\Services\FtpClient;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Str;
@@ -70,7 +71,7 @@ class DeployFtpCommand extends Command
         $base = $this->resolveBase($ftp, $config['revision_file']);
 
         if ($base === $head) {
-            $this->info('The server already has ' . Str::limit($head, 8, '') . ' — nothing to upload.');
+            $this->info('The server already has ' . Str::limit($head, 8, '') . ' — no code changes.');
         }
 
         [$files, $deleted] = $this->changedFiles($base, $head, $config['exclude']);
@@ -85,6 +86,16 @@ class DeployFtpCommand extends Command
 
         foreach ($deleted as $file) {
             $this->warn("Removed from the repository, still on the server: {$file}");
+        }
+
+        // Generated, untracked assets: compared by hash with the last upload.
+        $assetHashes = $this->assetHashes($config['assets']);
+        $uploadedHashes = json_decode((string) $ftp->get($config['assets_file']), true) ?: [];
+        $assets = array_keys(array_filter($assetHashes, fn (string $hash, string $file) => ($uploadedHashes[$file] ?? null) !== $hash, ARRAY_FILTER_USE_BOTH));
+
+        if ($assets !== []) {
+            $this->line('Admin panel assets: ' . count($assets) . ' files to upload.');
+            $files = [...$files, ...$assets];
         }
 
         if ($this->option('dry-run')) {
@@ -113,6 +124,11 @@ class DeployFtpCommand extends Command
         // Remembered only after every file went up: an interrupted deploy is
         // simply repeated from the same base.
         $ftp->putContents($head, $config['revision_file']);
+
+        if ($assets !== []) {
+            $ftp->putContents(json_encode($assetHashes, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), $config['assets_file']);
+        }
+
         $this->info('Uploaded. Server revision: ' . Str::limit($head, 8, ''));
 
         return $this->option('skip-post') ? self::SUCCESS : $this->runPostDeploy($config);
@@ -157,6 +173,30 @@ class DeployFtpCommand extends Command
             array_values(array_filter($files, fn (string $file) => $keep($file) && is_file(base_path($file)))),
             array_values(array_filter($deleted, $keep)),
         ];
+    }
+
+    /**
+     * @param  array<int, string>  $folders
+     * @return array<string, string> repository-relative path => md5
+     */
+    private function assetHashes(array $folders): array
+    {
+        $hashes = [];
+
+        foreach ($folders as $folder) {
+            if (!is_dir(base_path($folder))) {
+                continue;
+            }
+
+            foreach (File::allFiles(base_path($folder)) as $file) {
+                $path = $folder . '/' . str_replace('\\', '/', $file->getRelativePathname());
+                $hashes[$path] = md5_file($file->getPathname());
+            }
+        }
+
+        ksort($hashes);
+
+        return $hashes;
     }
 
     private function runPostDeploy(array $config): int
