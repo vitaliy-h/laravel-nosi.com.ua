@@ -48,8 +48,8 @@ Settings → Secrets and variables → Actions → New repository secret:
 | `DEPLOY_URL` | Site address without a trailing slash: `https://nosi.com.ua` |
 | `DEPLOY_TOKEN` | Long random string, the same as `DEPLOY_TOKEN` in the server `.env` |
 
-lftp uses FTPS when the server offers it (`ftp:ssl-allow true`). If the upload fails on
-TLS, set `ftp:ssl-allow false` in `deploy.yml`.
+The upload is plain FTP (`ftp:ssl-allow false`): this hosting dropped FTPS connections
+mid-upload. To try FTPS again, set `ftp:ssl-allow true` in `deploy.yml`.
 
 ---
 

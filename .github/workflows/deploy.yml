@@ -37,6 +37,7 @@ jobs:
       - name: Install lftp
         run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
 
+      # Plain FTP, as the hosting's FTPS dropped the connection mid-upload.
       # lftp reconnects by itself when the hosting drops the connection, and a
       # rerun continues where the previous one stopped. Nothing is ever deleted
       # on the server: its .env, vendor/, logs and uploaded images stay.
@@ -50,15 +51,16 @@ jobs:
           printf 'machine %s login %s password %s\n' "$FTP_SERVER" "$FTP_USERNAME" "$FTP_PASSWORD" > ~/.netrc
           chmod 600 ~/.netrc
           lftp -c "
-            set ftp:ssl-allow true;
-            set ssl:verify-certificate false;
-            set net:timeout 30;
-            set net:max-retries 20;
+            debug -t 2;
+            set ftp:ssl-allow false;
+            set ftp:passive-mode true;
+            set net:timeout 20;
+            set net:max-retries 10;
             set net:reconnect-interval-base 5;
             set net:reconnect-interval-max 30;
-            set net:persist-retries 20;
+            set net:persist-retries 10;
             open ftp://$FTP_SERVER;
-            mirror --reverse --only-newer --no-perms --parallel=3 --verbose=1 \
+            mirror --reverse --only-newer --no-perms --parallel=3 --verbose=3 \
               -x '^\.git/' -x '^\.github/' -x '^node_modules/' -x '^vendor/' \
               -x '^public/(js|css|fonts)/filament/' \
               -x '^\.env$' -x '^\.osp/' -x '^\.claude/' \
