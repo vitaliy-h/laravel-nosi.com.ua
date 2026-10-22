@@ -12,7 +12,7 @@ A general project description will be added here later.
 |---|---|
 | [shop.md](shop.md) | Shop: catalog, filters, reviews, cart, promo codes, orders, admin panel |
 | [news.md](news.md) | News: feed, block content, admin panel |
-| [deploy.md](deploy.md) | Deploy to FTP-only hosting: GitHub Actions, secrets, first deploy |
+| [deploy.md](deploy.md) | Deploy to FTP-only hosting: `php artisan deploy:ftp`, settings, first deploy |
 
 ---
 

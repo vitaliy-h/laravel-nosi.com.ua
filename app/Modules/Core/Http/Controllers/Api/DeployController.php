@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 /**
  * POST /api/deploy — post-deploy commands for FTP-only hosting, called by
- * .github/workflows/deploy.yml with the `X-Deploy-Token` header.
+ * `php artisan deploy:ftp` with the `X-Deploy-Token` header.
  */
 class DeployController extends BaseApiController
 {

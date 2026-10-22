@@ -85,7 +85,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Secret for POST /api/deploy — the post-deploy commands (migrate, caches)
-    | for hosting with FTP only, called by .github/workflows/deploy.yml.
+    | for hosting with FTP only, called by `php artisan deploy:ftp`.
     | Empty disables the endpoint (it answers 404).
     |
     */

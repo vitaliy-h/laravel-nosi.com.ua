@@ -1,59 +1,68 @@
 # Deploy (FTP-only hosting)
 
-The hosting gives FTP but no SSH, so nothing can be run on the server by hand.
-`.github/workflows/deploy.yml` does the work instead, on every push to `main` / `master`
-(or by hand: Actions → Deploy → Run workflow):
+The hosting gives FTP but no SSH, and its network blocks FTP from GitHub's runners, so
+the deploy runs **from the developer's machine** with one command:
 
-1. uploads the project with `lftp mirror --reverse --only-newer`: file times are restored
-   from git, so only files changed since the last upload go up. lftp reconnects when the
-   hosting drops the connection, and a rerun continues where the previous one stopped.
-   Nothing is deleted on the server (the server `.env`, `vendor/`, logs, images uploaded
-   through the admin panel stay); files removed from the repository just stay unused;
-2. calls `POST /api/deploy` with the `X-Deploy-Token` header, which runs on the server
+```bash
+php artisan deploy:ftp
+```
+
+`Core\Console\Commands\DeployFtpCommand`:
+
+1. reads on the server (`storage/app/.deploy-revision`) which commit was deployed last;
+2. uploads the files changed between that commit and `HEAD` (`git diff`), one FTP
+   connection at a time — the hosting allows at most **5 connections per IP** and silently
+   drops the rest. A dropped connection is reopened and the file retried;
+3. writes `HEAD` into `.deploy-revision` — only after every file went up, so an
+   interrupted deploy is just run again;
+4. calls `POST /api/deploy` with the `X-Deploy-Token` header, which runs on the server
    (`Core\Services\PostDeployService`): `optimize:clear`, `migrate --force`,
    `storage:link` (if `public/storage` is missing), `modules:cache`, `route:cache`,
-   `view:cache`. The response lists every command with its output; a failed step fails
-   the workflow.
+   `view:cache`, and prints every step.
 
-`DEPLOY_TOKEN` empty in `.env` — the endpoint answers 404.
+Only committed files are deployed: with uncommitted changes the command stops (`--force`
+overrides). Files removed from the repository are listed but not deleted on the server.
+Never uploaded: `vendor/`, `.env`, anything untracked, and the prefixes in
+`config('deploy.exclude')` (`tests/`, `docs/`, `design/`, `.github/`, …).
+
+Options: `--dry-run` (only list the files), `--full` (every tracked file),
+`--since=<commit>` (changes since that commit), `--skip-post` (no `/api/deploy`).
+
+`DEPLOY_TOKEN` empty in the server `.env` — `/api/deploy` answers 404.
+
+---
+
+## Local `.env`
+
+```
+DEPLOY_FTP_HOST=46.4.4.3
+DEPLOY_FTP_PORT=21
+DEPLOY_FTP_USERNAME=noziAuto@nosi.com.ua
+DEPLOY_FTP_PASSWORD=
+DEPLOY_FTP_ROOT=/
+DEPLOY_URL=https://nosi.com.ua
+DEPLOY_REMOTE_TOKEN=
+```
+
+`DEPLOY_FTP_ROOT` — the project folder relative to the FTP login (the one holding
+`artisan`); for an FTP user whose home is `public_html` it is `/`.
+`DEPLOY_REMOTE_TOKEN` — the `DEPLOY_TOKEN` of the **server** `.env`. The local
+`DEPLOY_TOKEN` stays empty, so the local site has no deploy endpoint.
 
 ---
 
 ## vendor/ — uploaded by hand
 
-FTP uploads file by file, and `vendor/` is tens of thousands of files — hours per deploy.
-So the workflow skips it (and the Filament assets `composer` publishes into `public/`),
-and they go up by hand as one archive:
+FTP uploads file by file, and `vendor/` is tens of thousands of files. It is not in git,
+so `deploy:ftp` never uploads it; it goes up as one archive:
 
 1. Locally, in the project root, pack `vendor/`, `public/js/filament/`,
    `public/css/filament/`, `public/fonts/filament/` into `vendor.zip`.
 2. Upload `vendor.zip` over FTP into the project folder (next to `artisan`).
 3. cPanel → File Manager → right click on `vendor.zip` → Extract, then delete the archive.
 
-Do it once on the first deploy, and again **whenever `composer.lock` changes**
-(`composer require` / `composer update`) — otherwise the server runs the old packages.
-
----
-
-## GitHub secrets
-
-Settings → Secrets and variables → Actions → New repository secret:
-
-| Secret | Value |
-|---|---|
-| `FTP_SERVER` | FTP host, e.g. `46.4.4.3` |
-| `FTP_USERNAME` | FTP login, e.g. `noziAuto@nosi.com.ua` |
-| `FTP_PASSWORD` | FTP password |
-| `FTP_SERVER_DIR` | Folder of the project relative to the FTP login, ending with `/` — the one that will hold `artisan`. For an FTP user whose home is `public_html` — `/` |
-| `DEPLOY_URL` | Site address without a trailing slash: `https://nosi.com.ua` |
-| `DEPLOY_TOKEN` | Long random string, the same as `DEPLOY_TOKEN` in the server `.env` |
-
-The upload is plain FTP (`ftp:ssl-allow false`): this hosting dropped FTPS connections
-mid-upload. To try FTPS again, set `ftp:ssl-allow true` in `deploy.yml`.
-
-The hosting allows at most **5 FTP connections per IP** and silently drops the rest — the
-upload runs one transfer at a time (`--parallel=1`, `net:connection-limit 1`). Do not raise
-it, and avoid uploading over FTP from the same place while a deploy runs.
+Do it once on the first deploy, and again **whenever `composer.lock` changes** —
+`deploy:ftp` warns about it.
 
 ---
 
@@ -69,10 +78,10 @@ it, and avoid uploading over FTP from the same place while a deploy runs.
    project into `public_html` itself — the root `.htaccess` then sends every request into
    `public/`.
 4. **vendor/** — upload the archive by hand (see above).
-5. **Push** (or Run workflow).
-6. **Demo data** — the seeders are not part of the deploy (they truncate tables). Either
-   import a dump of the local database, or seed once: temporarily add `db:seed` to
-   `PostDeployService::COMMANDS`, deploy, and remove it again.
+5. `php artisan deploy:ftp` — the server has no revision yet, so everything is uploaded.
+6. **Demo data** — import a dump of the local database through phpMyAdmin, upload
+   `storage/app/public/` (the images the seeders created), then run `deploy:ftp` again:
+   the route cache has to be rebuilt once the `pages` table is filled.
 
 If `storage:link` reports a failure (the hosting forbids symlinks), images uploaded through
 the admin panel will not open — ask the hosting support to create the link

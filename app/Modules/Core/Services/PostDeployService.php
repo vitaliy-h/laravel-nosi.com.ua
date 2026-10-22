@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Artisan;
 use Throwable;
 
 /**
- * What `.github/workflows/deploy.yml` would run over SSH after the files land,
- * for hosting reachable over FTP only: the workflow uploads the code, then
+ * What a deploy would run over SSH after the files land,
+ * for hosting reachable over FTP only: `php artisan deploy:ftp` uploads the code, then
  * calls POST /api/deploy, which runs these commands.
  *
  * Order matters: the module manifest resolves page-driven route prefixes from
