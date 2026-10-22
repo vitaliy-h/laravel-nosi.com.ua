@@ -85,7 +85,7 @@ class FrontendPagesSmokeTest extends TestCase
      */
     public function test_a_cms_text_page_renders_through_the_fallback_route(): void
     {
-        $this->get('/text-page-1')->assertOk();
+        $this->get('/dostavka-ta-oplata')->assertOk();
     }
 
     /**

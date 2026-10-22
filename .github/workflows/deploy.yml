@@ -1,8 +1,11 @@
 name: Deploy
 
-# FTP-only hosting: dependencies are installed here, the files are uploaded
-# over FTP, then POST /api/deploy runs migrate and the caches on the server.
-# Server setup and the secrets: docs/project/deploy.md.
+# FTP-only hosting: the code is uploaded over FTP, then POST /api/deploy runs
+# migrate and the caches on the server.
+#
+# vendor/ and the published Filament assets are NOT uploaded — file-by-file FTP
+# of vendor/ takes hours. They are uploaded by hand as an archive, once and again
+# whenever composer.lock changes. Server setup and the secrets: docs/project/deploy.md.
 
 on:
   push:
@@ -23,26 +26,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-          extensions: mbstring, intl, gd, zip, pdo_mysql, bcmath, exif
-          tools: composer:v2
-
-      # composer's post-autoload-dump boots artisan (package discovery,
-      # filament:upgrade publishes the admin assets into public/).
-      - name: Prepare .env for the build
-        run: |
-          cp .env.example .env
-          php -r "file_put_contents('.env', preg_replace('/^APP_KEY=.*/m', 'APP_KEY=base64:'.base64_encode(random_bytes(32)), file_get_contents('.env')));"
-
-      - name: Install dependencies
-        run: composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
-
       # Only the changed files are uploaded: the action keeps its state file
       # (.ftp-deploy-sync-state.json) on the server. It never touches files it
-      # did not upload itself — the server .env, logs, uploaded images stay.
+      # did not upload itself — the server .env, vendor/, logs, uploaded images stay.
       - name: Upload over FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -56,6 +42,10 @@ jobs:
             **/.git/**
             .github/**
             **/node_modules/**
+            vendor/**
+            public/js/filament/**
+            public/css/filament/**
+            public/fonts/filament/**
             .env
             .osp/**
             .claude/**
@@ -68,7 +58,7 @@ jobs:
 
       - name: Run migrations and caches
         run: |
-          curl --fail-with-body -sS -X POST \
+          curl --fail-with-body -sS -X POST --max-time 600 \
             -H "X-Deploy-Token: ${{ secrets.DEPLOY_TOKEN }}" \
             -H "Accept: application/json" \
             "${{ secrets.DEPLOY_URL }}/api/deploy"
