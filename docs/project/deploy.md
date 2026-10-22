@@ -4,10 +4,11 @@ The hosting gives FTP but no SSH, so nothing can be run on the server by hand.
 `.github/workflows/deploy.yml` does the work instead, on every push to `main` / `master`
 (or by hand: Actions → Deploy → Run workflow):
 
-1. uploads the project over FTPS — only changed files, the state is kept in
-   `.ftp-deploy-sync-state.json` on the server. Files the action did not upload itself
-   (the server `.env`, `vendor/`, logs, images uploaded through the admin panel) are never
-   touched;
+1. uploads the project with `lftp mirror --reverse --only-newer`: file times are restored
+   from git, so only files changed since the last upload go up. lftp reconnects when the
+   hosting drops the connection, and a rerun continues where the previous one stopped.
+   Nothing is deleted on the server (the server `.env`, `vendor/`, logs, images uploaded
+   through the admin panel stay); files removed from the repository just stay unused;
 2. calls `POST /api/deploy` with the `X-Deploy-Token` header, which runs on the server
    (`Core\Services\PostDeployService`): `optimize:clear`, `migrate --force`,
    `storage:link` (if `public/storage` is missing), `modules:cache`, `route:cache`,
@@ -47,8 +48,8 @@ Settings → Secrets and variables → Actions → New repository secret:
 | `DEPLOY_URL` | Site address without a trailing slash: `https://nosi.com.ua` |
 | `DEPLOY_TOKEN` | Long random string, the same as `DEPLOY_TOKEN` in the server `.env` |
 
-The upload uses FTPS (`protocol: ftps`). If the hosting has no FTPS, change it to `ftp`
-in `deploy.yml`.
+lftp uses FTPS when the server offers it (`ftp:ssl-allow true`). If the upload fails on
+TLS, set `ftp:ssl-allow false` in `deploy.yml`.
 
 ---
 

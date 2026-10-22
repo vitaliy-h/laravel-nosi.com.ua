@@ -23,38 +23,50 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Full history so every file gets the time of the commit that last
+      # changed it — `mirror --only-newer` below compares those times with the
+      # server, so only files changed since the last upload go up.
       - name: Checkout
         uses: actions/checkout@v4
-
-      # Only the changed files are uploaded: the action keeps its state file
-      # (.ftp-deploy-sync-state.json) on the server. It never touches files it
-      # did not upload itself — the server .env, vendor/, logs, uploaded images stay.
-      - name: Upload over FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_SERVER_DIR }}
-          protocol: ftps
-          security: loose
-          exclude: |
-            **/.git/**
-            .github/**
-            **/node_modules/**
-            vendor/**
-            public/js/filament/**
-            public/css/filament/**
-            public/fonts/filament/**
-            .env
-            .osp/**
-            .claude/**
-            tests/**
-            docs/**
-            design/**
-            storage/logs/*.log
-            phpunit.xml
-            compose.yaml
+          fetch-depth: 0
+
+      - name: Restore file times from git
+        uses: chetan/git-restore-mtime-action@v2
+
+      - name: Install lftp
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+
+      # lftp reconnects by itself when the hosting drops the connection, and a
+      # rerun continues where the previous one stopped. Nothing is ever deleted
+      # on the server: its .env, vendor/, logs and uploaded images stay.
+      - name: Upload over FTP
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_SERVER_DIR: ${{ secrets.FTP_SERVER_DIR }}
+        run: |
+          printf 'machine %s login %s password %s\n' "$FTP_SERVER" "$FTP_USERNAME" "$FTP_PASSWORD" > ~/.netrc
+          chmod 600 ~/.netrc
+          lftp -c "
+            set ftp:ssl-allow true;
+            set ssl:verify-certificate false;
+            set net:timeout 30;
+            set net:max-retries 20;
+            set net:reconnect-interval-base 5;
+            set net:reconnect-interval-max 30;
+            set net:persist-retries 20;
+            open ftp://$FTP_SERVER;
+            mirror --reverse --only-newer --no-perms --parallel=3 --verbose=1 \
+              -x '^\.git/' -x '^\.github/' -x '^node_modules/' -x '^vendor/' \
+              -x '^public/(js|css|fonts)/filament/' \
+              -x '^\.env$' -x '^\.osp/' -x '^\.claude/' \
+              -x '^tests/' -x '^docs/' -x '^design/' \
+              -x '^storage/logs/.*\.log$' \
+              -x '^(phpunit\.xml|compose\.yaml|\.ftp-deploy-sync-state\.json)$' \
+              ./ $FTP_SERVER_DIR
+          "
 
       - name: Run migrations and caches
         run: |
