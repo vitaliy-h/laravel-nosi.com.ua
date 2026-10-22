@@ -1,84 +1,337 @@
-@extends('layouts.app')
+@extends('layouts.nosi')
 
 @section('body-class', 'index-page')
 
 @section('content')
-    <main class="main">
 
-        @include('partials.hero', [
-                    'title' => t('index.hero_title'),
-                    'subtitle' => t('index.hero_subtitle')
-                ])
-
-        @include('partials.page_content')
-
-        @include('modules.shop.partials.category_cards', ['special_categories' => $special_categories])
-
-        <!-- Best Sellers Section -->
-        <section id="best-sellers" class="best-sellers section">
-
-            <!-- Section Title -->
-            <div class="container section-title" data-aos="fade-up">
-                <h2>Best Sellers</h2>
-                <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-            </div><!-- End Section Title -->
-
-            <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-                <div class="row gy-4">
-                    @foreach($best_sellers as $product)
-                        @include('modules.shop.partials.product_card', ['product' => $product, 'dataAttrs' => ['data-aos' => 'fade-up', 'data-aos-delay' => '100']])
+    {{-- Hero slider (admin → Home page → Slider) --}}
+    @if($slides->isNotEmpty())
+        <section class="hero">
+            <div class="container">
+                <div class="hero-slides" id="hero">
+                    @foreach($slides as $slide)
+                        <div class="hero-slide{{ $loop->first ? ' is-active' : '' }}">
+                            <img src="{{ $slide->image }}" alt="{{ $slide->title }}" @unless($loop->first) loading="lazy" @endunless>
+                            <div class="hero-text">
+                                @if($slide->kicker)
+                                    <span class="kicker">{{ $slide->kicker }}</span>
+                                @endif
+                                @if($slide->title)
+                                    @if($loop->first)
+                                        <h1>{{ $slide->title }}</h1>
+                                    @else
+                                        <h2 class="h1">{{ $slide->title }}</h2>
+                                    @endif
+                                @endif
+                                @if($slide->text)
+                                    <p>{{ $slide->text }}</p>
+                                @endif
+                                @if($slide->button_text && $slide->url)
+                                    <a href="{{ $slide->url }}" class="btn btn-lime">{{ $slide->button_text }} <i class="bi bi-arrow-right"></i></a>
+                                @endif
+                            </div>
+                        </div>
                     @endforeach
+
+                    @if($slides->count() > 1)
+                        <div class="hero-dots" id="hero-dots" data-label="Слайд"></div>
+
+                        <div class="hero-arrows">
+                            <button class="round-btn" type="button" data-hero="prev" aria-label="{{ t('home.slide_prev') }}"><i class="bi bi-arrow-left"></i></button>
+                            <button class="round-btn" type="button" data-hero="next" aria-label="{{ t('home.slide_next') }}"><i class="bi bi-arrow-right"></i></button>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </section>
+    @endif
+
+    {{-- Benefits strip (dictionary → benefits): a benefit with an empty title or text is skipped --}}
+    @php
+        $benefits = collect(range(1, 4))
+            ->map(fn (int $i) => [
+                'icon'  => t("benefits.benefit_{$i}_icon"),
+                'title' => t("benefits.benefit_{$i}_title"),
+                'text'  => t("benefits.benefit_{$i}_text"),
+            ])
+            ->filter(fn (array $b) => $b['title'] !== '' && $b['text'] !== '');
+    @endphp
+    @if($benefits->isNotEmpty())
+        <section class="benefits">
+            <div class="container">
+                @foreach($benefits as $benefit)
+                    <div class="benefit"><i class="bi {{ $benefit['icon'] ?: 'bi-check2-circle' }}"></i><div><b>{{ $benefit['title'] }}</b><span>{{ $benefit['text'] }}</span></div></div>
+                @endforeach
+            </div>
+        </section>
+    @endif
+
+    {{-- Top sales / New: tabs + carousel --}}
+    @if($top_products->isNotEmpty() || $new_products->isNotEmpty())
+        @php $firstTab = $top_products->isNotEmpty() ? 'top' : 'new'; @endphp
+        <section class="section" id="top">
+            <div class="container">
+                <div class="section-head tabs-head">
+                    <h2 class="title">{{ t('home.top_title') }}</h2>
+                    @if($top_products->isNotEmpty() && $new_products->isNotEmpty())
+                        <div class="tabs" role="tablist">
+                            <button type="button" class="is-active" role="tab" data-tab="top">{{ t('home.tab_top') }}</button>
+                            <button type="button" role="tab" data-tab="new">{{ t('home.tab_new') }}</button>
+                        </div>
+                    @endif
                 </div>
 
-            </div>
-
-        </section><!-- /Best Sellers Section -->
-
-        <!-- Product List Section -->
-        <section id="product-list" class="product-list section">
-
-            <div class="container isotope-layout" data-aos="fade-up" data-aos-delay="100" data-default-filter="*"
-                 data-layout="masonry" data-sort="original-order">
-
-                <div class="row">
-                    <div class="col-12">
-                        <div class="product-filters isotope-filters mb-5 d-flex justify-content-center"
-                             data-aos="fade-up">
-                            <ul class="d-flex flex-wrap gap-2 list-unstyled">
-                                <li class="filter-active" data-filter="*">All</li>
-                                @foreach($featured_categories as $category)
-                                    <li data-filter=".filter_category_{{ $category->id }}">{{ $category->title }}</li>
-                                @endforeach
-                            </ul>
+                <div class="carousel" data-carousel>
+                    @if($top_products->isNotEmpty())
+                        <div class="carousel-track" data-pane="top">
+                            @foreach($top_products as $product)
+                                <x-product-tile :product="$product" />
+                            @endforeach
                         </div>
+                    @endif
+                    @if($new_products->isNotEmpty())
+                        <div class="carousel-track" data-pane="new" @if($firstTab !== 'new') hidden @endif>
+                            @foreach($new_products as $product)
+                                <x-product-tile :product="$product" :new="true" />
+                            @endforeach
+                        </div>
+                    @endif
+                    @include('modules.index.partials.carousel_nav')
+                </div>
+
+                @if(t('home.catalog_link') !== '')
+                    <div class="section-cta">
+                        <a href="{{ t('home.catalog_url') ?: save_route('shop.index') }}" class="link-arrow">{{ t('home.catalog_link') }} <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                @endif
+            </div>
+        </section>
+    @endif
+
+    {{-- Categories: 2 rows × 4 --}}
+    @if($categories->isNotEmpty())
+        <section class="section categories" id="categories">
+            <div class="container">
+                <div class="section-head">
+                    <h2 class="title">{{ t('home.categories_title') }}</h2>
+                    @if(t('home.categories_subtitle') !== '')
+                        <p class="subtitle">{{ t('home.categories_subtitle') }}</p>
+                    @endif
+                </div>
+
+                <div class="cat-grid">
+                    @foreach($categories as $category)
+                        <a href="{{ $category->url }}" class="cat-tile">
+                            <img src="{{ $category->image }}" alt="{{ $category->title }}" loading="lazy">
+                            <div class="cat-label"><h3>{{ $category->title }}</h3><span><i class="bi bi-arrow-right"></i></span></div>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
+    {{-- Promo banners (admin → Home page → Promo banners): the grid follows how many there are --}}
+    @if($promos->isNotEmpty())
+        <section class="section" style="padding-bottom: 0;">
+            <div class="container">
+                <div class="promo-grid">
+                    @foreach($promos as $promo)
+                        <a href="{{ $promo->url ?? '#' }}" class="promo{{ $promo->style !== 'plum' ? ' ' . $promo->style : '' }}">
+                            @if($promo->has_image)
+                                <img src="{{ $promo->image }}" alt="{{ $promo->title }}" loading="lazy">
+                            @endif
+                            <div class="promo-body">
+                                @if($promo->kicker)
+                                    <span class="kicker">{{ $promo->kicker }}</span>
+                                @endif
+                                @if($promo->big_text)
+                                    <div class="promo-big">{{ $promo->big_text }}</div>
+                                @endif
+                                @if($promo->title)
+                                    <h2>{{ $promo->title }}</h2>
+                                @endif
+                                @if($promo->text)
+                                    <p @if($promo->big_text && !$promo->title) style="margin-top: 14px;" @endif>{{ $promo->text }}</p>
+                                @endif
+                                @if($promo->button_text)
+                                    <span class="btn {{ $promo->style === 'lime' ? 'btn-dark' : 'btn-white' }}">{{ $promo->button_text }} <i class="bi bi-arrow-right"></i></span>
+                                @endif
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
+    {{-- Sale: products whose second price differs from the regular one --}}
+    @if($sale_products->isNotEmpty())
+        <section class="section" id="sale">
+            <div class="container">
+                <div class="section-head left">
+                    @if(t('home.sale_kicker') !== '')
+                        <span class="kicker">{{ t('home.sale_kicker') }}</span>
+                    @endif
+                    <h2 class="title">{{ t('home.sale_title') }}</h2>
+                    @if(t('home.sale_subtitle') !== '')
+                        <p class="subtitle">{{ t('home.sale_subtitle') }}</p>
+                    @endif
+                </div>
+
+                <div class="carousel" data-carousel>
+                    <div class="carousel-track">
+                        @foreach($sale_products as $product)
+                            <x-product-tile :product="$product" />
+                        @endforeach
+                    </div>
+                    @include('modules.index.partials.carousel_nav')
+                </div>
+
+                @if(t('home.sale_link') !== '')
+                    <div class="section-cta">
+                        <a href="{{ t('home.sale_url') ?: save_route('shop.index') }}" class="link-arrow">{{ t('home.sale_link') }} <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                @endif
+            </div>
+        </section>
+    @endif
+
+    {{-- Reviews (admin → Catalog → Reviews) --}}
+    @if($reviews->isNotEmpty())
+        <section class="section" id="reviews">
+            <div class="container">
+                <div class="reviews-head">
+                    <div>
+                        <h2 class="title">{{ t('home.reviews_title') }}</h2>
+                        @if(t('home.reviews_subtitle') !== '')
+                            <p class="subtitle">{{ t('home.reviews_subtitle') }}</p>
+                        @endif
+                    </div>
+                    @if($rating_stars > 0)
+                        <div class="rating-sum">
+                            <strong>{{ $rating_value }}</strong>
+                            <div>
+                                <div class="stars"><x-rating-stars :value="$rating_stars" /></div>
+                                <small>{{ t('home.reviews_count', ['count' => $reviews_total]) }}</small>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
+                <div class="carousel" data-carousel>
+                    <div class="carousel-track review-track">
+                        @foreach($reviews as $review)
+                            <article class="review">
+                                <div class="stars"><x-rating-stars :value="$review->rating" /></div>
+                                <p>{{ $review->text }}</p>
+                                <a class="review-product" href="{{ $review->product_url ?? '#' }}">
+                                    <img src="{{ $review->product_image }}" alt="" loading="lazy">
+                                    <div><b>{{ $review->author }}</b><small><i class="bi bi-patch-check-fill"></i> {{ $review->product_title }}</small></div>
+                                </a>
+                            </article>
+                        @endforeach
+                    </div>
+                    @include('modules.index.partials.carousel_nav')
+                </div>
+            </div>
+        </section>
+    @endif
+
+    {{-- Contacts: messenger cards (dictionary → contacts); a card with an empty value is skipped --}}
+    @php
+        $contactCards = collect([
+            ['key' => 'telegram',  'class' => 'ca-tg', 'icon' => 'bi-telegram',        'go' => t('contacts.write')],
+            ['key' => 'viber',     'class' => 'ca-vb', 'icon' => 'bi-chat-dots-fill',  'go' => t('contacts.write')],
+            ['key' => 'instagram', 'class' => 'ca-ig', 'icon' => 'bi-instagram',       'go' => t('contacts.write')],
+            ['key' => 'phone',     'class' => 'ca-ph', 'icon' => 'bi-telephone-fill',  'go' => t('contacts.call')],
+        ])->filter(fn (array $card) => t("contacts.{$card['key']}") !== '');
+        $contactInfo = collect([
+            ['icon' => 'bi-clock', 'text' => t('contacts.hours')],
+            ['icon' => 'bi-envelope', 'text' => t('contacts.email')],
+            ['icon' => 'bi-geo-alt', 'text' => t('contacts.address')],
+        ])->filter(fn (array $info) => $info['text'] !== '');
+    @endphp
+    @if($contactCards->isNotEmpty())
+        <section class="section" id="contacts" style="padding-top: 0;">
+            <div class="container">
+                <div class="section-head">
+                    <h2 class="title">{{ t('home.contacts_title') }}</h2>
+                    @if(t('home.contacts_subtitle') !== '')
+                        <p class="subtitle">{{ t('home.contacts_subtitle') }}</p>
+                    @endif
+                </div>
+                <div class="ca-grid">
+                    @foreach($contactCards as $card)
+                        <a href="{{ t("contacts.{$card['key']}_url") ?: '#' }}" class="ca-card {{ $card['class'] }}" @if(str_starts_with(t("contacts.{$card['key']}_url"), 'http')) target="_blank" rel="noopener" @endif>
+                            <span class="ico"><i class="bi {{ $card['icon'] }}"></i></span>
+                            <small>{{ t("contacts.{$card['key']}_title") }}</small>
+                            <strong>{{ t("contacts.{$card['key']}") }}</strong>
+                            <span class="go">{{ $card['go'] }} <i class="bi bi-arrow-right"></i></span>
+                        </a>
+                    @endforeach
+                </div>
+                @if($contactInfo->isNotEmpty())
+                    <div class="ca-info">
+                        @foreach($contactInfo as $info)
+                            <span><i class="bi {{ $info['icon'] }}"></i> {{ $info['text'] }}</span>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        </section>
+    @endif
+
+    {{-- FAQ «Корисно знати» (admin → Home page → Good to know) --}}
+    @if($faqs->isNotEmpty())
+        <section class="section categories" id="faq">
+            <div class="container">
+                <div class="faq-grid">
+                    <div class="faq-aside">
+                        <h2 class="title">{{ t('home.faq_title') }}</h2>
+                        @if(t('home.faq_text') !== '')
+                            <p>{{ t('home.faq_text') }}</p>
+                        @endif
+                        @if(t('home.faq_button') !== '')
+                            <a href="{{ t('home.faq_button_url') ?: '#contacts' }}" class="btn btn-dark">{{ t('home.faq_button') }}</a>
+                        @endif
+                    </div>
+
+                    <div class="faq-list">
+                        @foreach($faqs as $faq)
+                            <details class="faq-item" @if($loop->first) open @endif>
+                                <summary>{{ $faq->title }} <span class="faq-sign"></span></summary>
+                                <div class="faq-answer">{!! $faq->text !!}</div>
+                            </details>
+                        @endforeach
                     </div>
                 </div>
-
-                <div class="row product-container isotope-container best-sellers" data-aos="fade-up"
-                     data-aos-delay="200">
-
-                    @foreach($featured_products as $product)
-                        @php
-                            $filterClass = $product->root_category_id ? 'filter_category_' . $product->root_category_id : '';
-                        @endphp
-                        @include('modules.shop.partials.product_card', [
-                            'product'   => $product,
-                            'colClass'  => ' product-item isotope-item ' . ($filterClass ? ' ' . $filterClass : ''),
-                            'dataAttrs' => ['data-aos' => 'fade-up', 'data-aos-delay' => '100'],
-                        ])
-                    @endforeach
-
-                </div>
-
-                <div class="text-center mt-5" data-aos="fade-up">
-                    <a href="{{save_route('shop.index')}}" class="view-all-btn">View All Products <i
-                            class="bi bi-arrow-right"></i></a>
-                </div>
-
             </div>
+        </section>
+    @endif
 
-        </section><!-- /Product List Section -->
+    {{-- SEO text: text blocks of the home page (admin → Pages → Головна) --}}
+    @php
+        $seoBlocks = collect($page?->content ?? [])
+            ->filter(fn ($block) => ($block['type'] ?? null) === 'text'
+                && (!empty($block['data']['title']) || !empty($block['data']['content'])));
+    @endphp
+    @if($seoBlocks->isNotEmpty())
+        <section class="section">
+            <div class="container">
+                <div class="seo-box" id="seo-box">
+                    <div class="seo-cols">
+                        @foreach($seoBlocks as $block)
+                            @if(!empty($block['data']['title']))
+                                <h2>{{ $block['data']['title'] }}</h2>
+                            @endif
+                            {!! str($block['data']['content'] ?? '')->sanitizeHtml() !!}
+                        @endforeach
+                    </div>
+                </div>
+                <button class="link-arrow seo-toggle" type="button" id="seo-toggle" data-more="{{ t('home.seo_more') }}" data-less="{{ t('home.seo_less') }}">{{ t('home.seo_more') }} <i class="bi bi-chevron-down"></i></button>
+            </div>
+        </section>
+    @endif
 
-    </main>
 @endsection

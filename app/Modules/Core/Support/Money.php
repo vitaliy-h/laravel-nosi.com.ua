@@ -45,6 +45,17 @@ final class Money
         return t('shop.currency') . number_format($this->amount, 2);
     }
 
+    /**
+     * The storefront variant: whole hryvnias, thousands split by a space and the
+     * symbol after the number — «1 399 ₴». Kopecks are kept only when there are any.
+     */
+    public function formatShort(): string
+    {
+        $decimals = fmod($this->amount, 1.0) == 0.0 ? 0 : 2;
+
+        return number_format($this->amount, $decimals, ',', ' ') . ' ' . t('shop.currency');
+    }
+
     public function minus(self $other): self
     {
         return self::from($this->amount - $other->amount);

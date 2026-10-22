@@ -10,6 +10,10 @@ use App\Filament\Resources\Feedback\FeedbackResource;
 use App\Filament\Resources\Geo\GeoCities\GeoCityResource;
 use App\Filament\Resources\Geo\GeoCountries\GeoCountryResource;
 use App\Filament\Resources\Geo\GeoRegions\GeoRegionResource;
+use App\Filament\Resources\Home\Announces\AnnounceResource;
+use App\Filament\Resources\Home\Faqs\FaqResource;
+use App\Filament\Resources\Home\Promos\PromoResource;
+use App\Filament\Resources\Home\Sliders\SliderResource;
 use App\Filament\Resources\Languages\LanguageResource;
 use App\Filament\Resources\LetterTemplates\LetterTemplateResource;
 use App\Filament\Resources\LogLetters\LogLetterResource;
@@ -129,6 +133,26 @@ class AdminPanelProvider extends PanelProvider
                             ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.pages.debug-tools')) : null,
                     ]))
                     ->groups(array_filter([
+                        // home page blocks
+                        NavigationGroup::make(__('admin.tables.home'))
+                            ->items([
+                                NavigationItem::make(__('admin.tables.announces'))
+                                    ->icon('heroicon-o-megaphone')
+                                    ->url(AnnounceResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.home.announces*')),
+                                NavigationItem::make(__('admin.tables.sliders'))
+                                    ->icon('heroicon-o-photo')
+                                    ->url(SliderResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.home.sliders*')),
+                                NavigationItem::make(__('admin.tables.promos'))
+                                    ->icon('heroicon-o-rectangle-group')
+                                    ->url(PromoResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.home.promos*')),
+                                NavigationItem::make(__('admin.tables.faqs'))
+                                    ->icon('heroicon-o-question-mark-circle')
+                                    ->url(FaqResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.home.faqs*')),
+                            ]),
                         // catalog
                         ModuleGate::isEnabled('shop') ? NavigationGroup::make(__('admin.tables.catalog'))
                             ->items(array_filter([
@@ -226,6 +250,10 @@ class AdminPanelProvider extends PanelProvider
             ->resources(array_filter([
                 PageResource::class,
                 LanguageResource::class,
+                AnnounceResource::class,
+                SliderResource::class,
+                PromoResource::class,
+                FaqResource::class,
                 ModuleGate::isEnabled('letter_templates') ? LetterTemplateResource::class : null,
                 ModuleGate::isEnabled('letter_templates') ? LogLetterResource::class : null,
                 LogResource::class,

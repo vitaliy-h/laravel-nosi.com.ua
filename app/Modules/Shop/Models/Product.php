@@ -25,6 +25,7 @@ class Product extends Model
 
     protected $fillable = [
         'display',
+        'is_hit',
         'rank',
         'category_id',
         'brand_id',
@@ -42,6 +43,7 @@ class Product extends Model
 
     protected $casts = [
         'display'       => 'boolean',
+        'is_hit'        => 'boolean',
         'price'         => 'float',
         'price2'        => 'float',
         'imgs'          => 'array',

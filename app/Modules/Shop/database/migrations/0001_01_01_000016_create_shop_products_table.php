@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->boolean('display')->default(true);
+            // «Хіт»: the home page «Топ продажів» tab and the card badge.
+            $table->boolean('is_hit')->default(false)->index();
             $table->integer('rank')->nullable();
             $table->foreignId('category_id')->constrained('shop_categories')->nullable();
             $table->foreignId('brand_id')->nullable()->constrained('shop_brands')->nullable();

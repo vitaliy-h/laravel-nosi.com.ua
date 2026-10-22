@@ -6,94 +6,46 @@ use App\Modules\Shop\Models\Category;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class ShopCategorySeeder extends Seeder
 {
+    /**
+     * Ids are fixed by the order below (the table is truncated first) —
+     * ShopProductSeeder refers to them.
+     */
+    public const array CATEGORIES = [
+        1 => ['Жіночі шкарпетки', 'zhinochi-shkarpetky'],
+        2 => ['Чоловічі шкарпетки', 'cholovichi-shkarpetky'],
+        3 => ['Дитячі', 'dytiachi'],
+        4 => ['Колготки', 'kolgotky'],
+        5 => ['Панчохи та гольфи', 'panchokhy-ta-golfy'],
+        6 => ['Білизна', 'bilyzna'],
+        7 => ['Домашній одяг', 'domashnii-odiag'],
+        8 => ['Подарункові набори', 'podarunkovi-nabory'],
+    ];
+
     public function run(): void
     {
         Category::truncate();
         Storage::disk('public')->deleteDirectory('shop_categories');
 
-        $imgIndex = 1;
-        $makeImg = function () use (&$imgIndex): string {
-            $sourceFile = public_path("demo/assets/img/product/product-{$imgIndex}.webp");
-            $filename = Str::uuid() . '.webp';
-            $dir = 'shop_categories/' . $imgIndex . '/img/';
-            Storage::disk('public')->makeDirectory($dir);
-            Storage::disk('public')->put($dir . $filename, File::get($sourceFile));
-            $imgIndex++;
+        $tree = [];
+        $rank = count(self::CATEGORIES);
 
-            return $dir . $filename;
-        };
+        foreach (self::CATEGORIES as $id => [$title, $slug]) {
+            $dir = "shop_categories/{$id}/img/";
+            Storage::disk('public')->put($dir . "{$slug}.jpg", File::get(public_path("demo/nosi/categories/{$id}.jpg")));
 
-        $tree = [
-            [
-                'title'    => 'Clothing',
-                'slug'     => 'clothing',
-                'display'  => true,
-                'img'      => $makeImg(),
-                'children' => [
-                    [
-                        'title'   => "Men's Wear",
-                        'slug'    => 'mens-wear',
-                        'display' => true,
-                        'img'     => $makeImg(),
-                    ],
-                    [
-                        'title'   => "Women's Wear",
-                        'slug'    => 'womens-wear',
-                        'display' => true,
-                        'img'     => $makeImg(),
-                    ],
-                    [
-                        'title'   => "Kids' Clothing",
-                        'slug'    => 'kids-clothing',
-                        'display' => true,
-                        'img'     => $makeImg(),
-                    ],
-                    [
-                        'title'   => 'Accessories',
-                        'slug'    => 'clothing-accessories',
-                        'display' => true,
-                        'img'     => $makeImg(),
-                    ],
-                ],
-            ],
-
-            [
-                'title'    => 'Electronics',
-                'slug'     => 'electronics',
-                'display'  => true,
-                'img'      => $makeImg(),
-                'children' => [
-                    [
-                        'title'   => 'Smartphones',
-                        'slug'    => 'smartphones',
-                        'display' => true,
-                        'img'     => $makeImg(),
-                    ],
-                    [
-                        'title'   => 'Laptops',
-                        'slug'    => 'laptops',
-                        'display' => true,
-                        'img'     => $makeImg(),
-                    ],
-                    [
-                        'title'   => 'Tablets',
-                        'slug'    => 'tablets',
-                        'display' => true,
-                        'img'     => $makeImg(),
-                    ],
-                    [
-                        'title'   => 'Accessories',
-                        'slug'    => 'electronics-accessories',
-                        'display' => true,
-                        'img'     => $makeImg(),
-                    ],
-                ],
-            ],
-        ];
+            $tree[] = [
+                'title'            => $title,
+                'slug'             => $slug,
+                'display'          => true,
+                'rank'             => $rank--,
+                'img'              => $dir . "{$slug}.jpg",
+                'meta_title'       => $title,
+                'meta_description' => $title . ' — купити в інтернет-магазині Nosi з доставкою по Україні.',
+            ];
+        }
 
         Category::rebuildTree($tree);
     }

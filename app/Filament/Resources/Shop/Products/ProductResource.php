@@ -32,6 +32,7 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\Rule;
@@ -50,12 +51,17 @@ class ProductResource extends Resource
             ->columns(12)
             ->components([
                 TextInput::make('title')
-                    ->columnSpan(8)
+                    ->columnSpan(6)
                     ->required(),
                 TextInput::make('rank')
                     ->numeric()
                     ->columnSpan(2)
                     ->default(0),
+                Toggle::make('is_hit')
+                    ->label(__('admin.fields.is_hit'))
+                    ->inline(false)
+                    ->default(false)
+                    ->columnSpan(2),
                 Toggle::make('display')
                     ->inline(false)
                     ->default(true),
@@ -168,6 +174,9 @@ class ProductResource extends Resource
                     ->rules(['required', 'integer'])
                     ->sortable()
                     ->alignEnd(),
+                ToggleColumn::make('is_hit')
+                    ->label(__('admin.fields.is_hit'))
+                    ->sortable(),
                 ToggleColumn::make('display'),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -192,6 +201,9 @@ class ProductResource extends Resource
                     ->searchable()
                     ->preload()
                     ->visible(ModuleGate::isEnabled('shop_brands')),
+
+                TernaryFilter::make('is_hit')
+                    ->label(__('admin.fields.is_hit')),
 
                 // Products that cannot be sold as they are: linked to from the
                 // dashboard Catalog widget.

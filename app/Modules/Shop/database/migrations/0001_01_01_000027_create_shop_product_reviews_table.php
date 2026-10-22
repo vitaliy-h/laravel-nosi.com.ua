@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->unsignedTinyInteger('rating');
             $table->string('name')->nullable();
+            $table->string('city')->nullable();
             $table->string('email')->nullable();
             $table->text('text')->nullable();
             $table->ipAddress('ip')->nullable();

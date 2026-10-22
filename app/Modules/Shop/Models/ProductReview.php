@@ -25,6 +25,7 @@ class ProductReview extends Model
         'user_id',
         'rating',
         'name',
+        'city',
         'email',
         'text',
         'ip',

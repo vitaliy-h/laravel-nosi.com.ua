@@ -3,6 +3,7 @@
 namespace App\Modules\Shop\ViewModels;
 
 use App\Modules\Core\Abstract\BaseViewModel;
+use App\Modules\Core\Support\Money;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
 
@@ -15,9 +16,17 @@ class ProductViewModel extends BaseViewModel
         public readonly bool $has_image,
         public readonly string $image,
         public readonly string $thumb_url,
+        public readonly ?string $hover_image,
+        public readonly ?string $brand_title,
+        public readonly bool $is_hit,
         public readonly ?float $price,
         public readonly ?float $price2,
         public readonly bool $has_discount,
+        /** What the customer pays: `price2` when it is a discount, otherwise `price`. */
+        public readonly ?string $price_formatted,
+        /** The crossed-out regular price, only with a discount. */
+        public readonly ?string $old_price_formatted,
+        public readonly ?int $discount_percent,
         public readonly ?string $text,
         public readonly ?string $article,
         public readonly float $rating,
@@ -35,6 +44,11 @@ class ProductViewModel extends BaseViewModel
     public static function fromProduct(Product $product): self
     {
         $category = $product->relationLoaded('category') ? $product->category : null;
+        $brand = $product->relationLoaded('brand') ? $product->brand : null;
+
+        // A second price is a discount only when it differs from the regular one.
+        $hasDiscount = $product->price2 !== null && $product->price2 > 0 && $product->price2 != $product->price;
+        $current = $hasDiscount ? $product->price2 : $product->price;
 
         return new self(
             id: $product->id,
@@ -45,9 +59,17 @@ class ProductViewModel extends BaseViewModel
             has_image: !empty($product->img),
             image: $product->image,
             thumb_url: $product->imageUrl('thumb'),
+            hover_image: $product->images[0] ?? null,
+            brand_title: $brand?->title,
+            is_hit: (bool) $product->is_hit,
             price: $product->price,
             price2: $product->price2,
-            has_discount: (bool) $product->price2,
+            has_discount: $hasDiscount,
+            price_formatted: $current !== null ? Money::from($current)->formatShort() : null,
+            old_price_formatted: $hasDiscount && $product->price ? Money::from($product->price)->formatShort() : null,
+            discount_percent: $hasDiscount && $product->price > $product->price2
+                ? (int) round(100 - $product->price2 / $product->price * 100)
+                : null,
             text: $product->text,
             article: $product->article,
             rating: (float) $product->rating,

@@ -53,10 +53,13 @@ class ProductReviewResource extends Resource
                     ->default(false)
                     ->columnSpan(2),
                 TextInput::make('name')
-                    ->columnSpan(4),
+                    ->columnSpan(3),
+                TextInput::make('city')
+                    ->label(__('admin.fields.city'))
+                    ->columnSpan(2),
                 TextInput::make('email')
                     ->email()
-                    ->columnSpan(4),
+                    ->columnSpan(3),
                 Select::make('rating')
                     ->options(static::ratingOptions())
                     ->required()
@@ -85,6 +88,9 @@ class ProductReviewResource extends Resource
                     ->searchable(query: fn (Builder $query, string $search): Builder => $query
                         ->where('name', 'like', "%{$search}%")
                         ->orWhereHas('user', fn (Builder $q) => $q->where('name', 'like', "%{$search}%"))),
+                TextColumn::make('city')
+                    ->label(__('admin.fields.city'))
+                    ->searchable(),
                 TextColumn::make('rating')
                     ->badge()
                     ->sortable(),
