@@ -16,7 +16,8 @@ php artisan deploy:ftp
 3. writes `HEAD` into `.deploy-revision` — only after every file went up, so an
    interrupted deploy is just run again;
 4. calls `POST /api/deploy` with the `X-Deploy-Token` header, which runs on the server
-   (`Core\Services\PostDeployService`): `optimize:clear`, `migrate --force`,
+   (`Core\Services\PostDeployService`): `config:clear`, `route:clear`, `view:clear`,
+   `event:clear`, `migrate --force`, `cache:clear`,
    `storage:link` (if `public/storage` is missing), `modules:cache`, `route:cache`,
    `view:cache`, and prints every step.
 

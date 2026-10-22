@@ -20,8 +20,14 @@ class PostDeployService
      * @var array<int, array{0: string, 1: array<string, mixed>, 2: bool}> command, arguments, may fail
      */
     private const array COMMANDS = [
-        ['optimize:clear', [], false],
+        // Not optimize:clear — its cache:clear needs the `cache` table, which a
+        // fresh database gets only from migrate; the cache is cleared after it.
+        ['config:clear', [], false],
+        ['route:clear', [], false],
+        ['view:clear', [], false],
+        ['event:clear', [], false],
         ['migrate', ['--force' => true], false],
+        ['cache:clear', [], false],
         // Shared hosting may forbid symlink(): the failure is reported in the
         // response (public/storage then has to be set up by hand) but does not
         // stop the deploy.
