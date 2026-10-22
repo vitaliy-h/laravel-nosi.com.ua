@@ -1,0 +1,12 @@
+# Only for hosting where the domain's document root cannot point at public/
+# (the whole project uploaded into public_html): every request goes into public/,
+# so nothing outside it (.env, storage, vendor) is reachable from the web.
+# Where the document root is public/ this file is never read.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+<Files .env>
+    Require all denied
+</Files>

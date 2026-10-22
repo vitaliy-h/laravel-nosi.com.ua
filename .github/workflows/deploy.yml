@@ -1,34 +1,74 @@
 name: Deploy
 
+# FTP-only hosting: dependencies are installed here, the files are uploaded
+# over FTP, then POST /api/deploy runs migrate and the caches on the server.
+# Server setup and the secrets: docs/project/deploy.md.
+
 on:
   push:
     branches:
+      - main
       - master
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to server
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASS }}
-          port: 22
-          script: |
-            cd /home/abc-cms/web/abc-cms.com/public_html
+          php-version: '8.4'
+          extensions: mbstring, intl, gd, zip, pdo_mysql, bcmath, exif
+          tools: composer:v2
 
-            git pull origin master
+      # composer's post-autoload-dump boots artisan (package discovery,
+      # filament:upgrade publishes the admin assets into public/).
+      - name: Prepare .env for the build
+        run: |
+          cp .env.example .env
+          php -r "file_put_contents('.env', preg_replace('/^APP_KEY=.*/m', 'APP_KEY=base64:'.base64_encode(random_bytes(32)), file_get_contents('.env')));"
 
-            php8.4 /usr/local/bin/composer install
+      - name: Install dependencies
+        run: composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
 
-            php8.4 artisan migrate
+      # Only the changed files are uploaded: the action keeps its state file
+      # (.ftp-deploy-sync-state.json) on the server. It never touches files it
+      # did not upload itself — the server .env, logs, uploaded images stay.
+      - name: Upload over FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_SERVER_DIR }}
+          protocol: ftps
+          security: loose
+          exclude: |
+            **/.git/**
+            .github/**
+            **/node_modules/**
+            .env
+            .osp/**
+            .claude/**
+            tests/**
+            docs/**
+            design/**
+            storage/logs/*.log
+            phpunit.xml
+            compose.yaml
 
-            # Order matters: the manifest resolves every page-driven route
-            # prefix from the database, and route:cache freezes whatever
-            # prefixes it finds. See docs/starter/modules.md.
-            php8.4 artisan modules:cache
-
-            php8.4 artisan route:cache
+      - name: Run migrations and caches
+        run: |
+          curl --fail-with-body -sS -X POST \
+            -H "X-Deploy-Token: ${{ secrets.DEPLOY_TOKEN }}" \
+            -H "Accept: application/json" \
+            "${{ secrets.DEPLOY_URL }}/api/deploy"

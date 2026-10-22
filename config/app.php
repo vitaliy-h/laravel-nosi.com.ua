@@ -69,6 +69,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Deploy token
+    |--------------------------------------------------------------------------
+    |
+    | Secret for POST /api/deploy — the post-deploy commands (migrate, caches)
+    | for hosting with FTP only, called by .github/workflows/deploy.yml.
+    | Empty disables the endpoint (it answers 404).
+    |
+    */
+
+    'deploy_token' => env('DEPLOY_TOKEN'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
