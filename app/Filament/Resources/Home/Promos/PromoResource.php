@@ -33,6 +33,16 @@ class PromoResource extends Resource
 {
     protected static ?string $model = Promo::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.promo');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.promos');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

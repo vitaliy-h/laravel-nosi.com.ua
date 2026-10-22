@@ -14,7 +14,7 @@ class GalleryBlock
     {
         return Block::make('gallery')
 
-            ->label('Gallery')
+            ->label(__('admin.blocks.gallery'))
 
             ->schema([
 
@@ -23,7 +23,7 @@ class GalleryBlock
 
                 Select::make('style')
                     ->options([
-                        'default' => 'Default',
+                        'default' => __('admin.blocks.style_default'),
                     ])
                     ->default('default')
                     ->selectablePlaceholder(false)

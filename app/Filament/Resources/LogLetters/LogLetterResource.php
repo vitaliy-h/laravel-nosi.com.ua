@@ -34,6 +34,16 @@ class LogLetterResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.log_letter');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.log_letters');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

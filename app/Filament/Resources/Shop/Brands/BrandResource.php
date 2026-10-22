@@ -33,6 +33,16 @@ class BrandResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.shop_brand');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.shop_brands');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

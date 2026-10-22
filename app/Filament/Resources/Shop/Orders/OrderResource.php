@@ -37,6 +37,16 @@ class OrderResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShoppingCart;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.shop_order');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.shop_order');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -192,7 +202,8 @@ class OrderResource extends Resource
                     ->icon(Heroicon::OutlinedGlobeAlt)
                     ->iconButton()
                     ->url(fn (Order $record) => route('order.show', $record->uuid))
-                    ->openUrlInNewTab(),
+                    ->openUrlInNewTab()
+                    ->label(__('admin.actions.view_public')),
                 BaseEditAction::make()->iconButton(),
                 DeleteAction::make()->iconButton(),
             ], position: RecordActionsPosition::BeforeColumns)

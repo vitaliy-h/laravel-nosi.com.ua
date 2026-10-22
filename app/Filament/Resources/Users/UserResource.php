@@ -31,6 +31,16 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.user');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.users');
+    }
+
     /**
      * Super Admin accounts must be completely hidden from every other admin user
      * (list, search, filters, relation managers all reuse this query).

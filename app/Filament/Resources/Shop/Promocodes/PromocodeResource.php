@@ -35,6 +35,16 @@ class PromocodeResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTicket;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.shop_promocode');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.shop_promocodes');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

@@ -10,7 +10,7 @@ class VideoBlock
     public static function make(): Block
     {
         return Block::make('video')
-            ->label('Video')
+            ->label(__('admin.blocks.video'))
             ->schema([
                 TextInput::make('url')
                     ->url()

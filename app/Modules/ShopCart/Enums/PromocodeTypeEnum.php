@@ -13,9 +13,6 @@ enum PromocodeTypeEnum: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::FIXED   => 'Fixed amount',
-            self::PERCENT => 'Percent',
-        };
+        return __("enums.promocode_type.{$this->value}");
     }
 }

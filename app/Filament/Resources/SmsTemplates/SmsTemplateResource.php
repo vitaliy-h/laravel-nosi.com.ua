@@ -27,6 +27,16 @@ class SmsTemplateResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleLeftRight;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.sms_template');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.sms_templates');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

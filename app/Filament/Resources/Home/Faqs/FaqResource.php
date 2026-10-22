@@ -24,6 +24,16 @@ class FaqResource extends Resource
 {
     protected static ?string $model = Faq::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.faq');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.faqs');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

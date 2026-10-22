@@ -13,7 +13,7 @@ class TeasersBlock
     public static function make(): Block
     {
         return Block::make('teasers')
-            ->label('Teasers')
+            ->label(__('admin.blocks.teasers'))
             ->schema([
 
                 TextInput::make('title')
@@ -21,7 +21,7 @@ class TeasersBlock
 
                 Select::make('style')
                     ->options([
-                        'default' => 'Default',
+                        'default' => __('admin.blocks.style_default'),
                     ])
                     ->default('default')
                     ->selectablePlaceholder(false)
@@ -32,7 +32,7 @@ class TeasersBlock
                     ->schema([
 
                         TextInput::make('icon')
-                            ->helperText('heroicon name')
+                            ->helperText(__('admin.blocks.icon_helper'))
                             ->columnSpan(4),
 
                         TextInput::make('title')

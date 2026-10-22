@@ -69,6 +69,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Admin Panel Locale
+    |--------------------------------------------------------------------------
+    |
+    | Locale of the Filament admin panel interface (lang/{admin_locale}/).
+    | Independent of APP_LOCALE, which drives the public site.
+    |
+    */
+
+    'admin_locale' => env('ADMIN_LOCALE', 'uk'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Deploy token
     |--------------------------------------------------------------------------
     |

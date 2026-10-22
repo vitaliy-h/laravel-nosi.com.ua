@@ -12,9 +12,6 @@ enum Localization: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::EN => 'English',
-            self::UK => 'Ukrainian',
-        };
+        return __("enums.localization.{$this->value}");
     }
 }

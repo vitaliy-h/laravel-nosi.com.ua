@@ -45,6 +45,16 @@ class ProductResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.shop_product');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.shop_products');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

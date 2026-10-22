@@ -38,16 +38,6 @@ enum PageModule: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::INDEX     => 'Main Page',
-            self::TEXT      => 'Text Page',
-            self::NEWS      => 'News',
-            self::FEEDBACK  => 'Feedback',
-            self::SHOP      => 'Shop',
-            self::SHOP_CART => 'Shop cart',
-            self::AUTH      => 'Auth',
-            self::PROFILE   => 'Profile',
-            self::GEO       => 'Geo',
-        };
+        return __("enums.page_module.{$this->value}");
     }
 }

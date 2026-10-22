@@ -18,10 +18,6 @@ enum PromoStyleEnum: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::PLUM   => 'Plum',
-            self::ACCENT => 'Accent (pink)',
-            self::LIME   => 'Lime',
-        };
+        return __("enums.promo_style.{$this->value}");
     }
 }

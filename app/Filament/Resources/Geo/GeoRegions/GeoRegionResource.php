@@ -25,6 +25,16 @@ class GeoRegionResource extends Resource
 {
     protected static ?string $model = GeoRegion::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.geo_region');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.geo_regions');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

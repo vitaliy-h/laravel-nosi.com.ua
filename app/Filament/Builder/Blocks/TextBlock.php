@@ -12,7 +12,7 @@ class TextBlock
     public static function make(): Block
     {
         return Block::make('text')
-            ->label('Text')
+            ->label(__('admin.blocks.text'))
             // ->icon('heroicon-o-bars-3-bottom-left') ??
             ->schema([
 
@@ -21,7 +21,7 @@ class TextBlock
 
                 Select::make('style')
                     ->options([
-                        'default' => 'Default',
+                        'default' => __('admin.blocks.style_default'),
                         // 'gray' => 'Gray Background',
                     ])
                     ->default('default')

@@ -36,6 +36,16 @@ class PageResource extends Resource
 
     protected static ?string $model = Page::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.page');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.pages');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

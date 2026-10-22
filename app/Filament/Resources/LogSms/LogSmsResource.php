@@ -35,6 +35,16 @@ class LogSmsResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleBottomCenterText;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.log_sms');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.log_sms');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

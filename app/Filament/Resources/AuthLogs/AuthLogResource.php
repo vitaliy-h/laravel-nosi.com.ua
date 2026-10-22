@@ -37,6 +37,11 @@ class AuthLogResource extends Resource
         return __('admin.tables.log_auth');
     }
 
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.log_auth');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

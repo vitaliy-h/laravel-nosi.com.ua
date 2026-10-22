@@ -33,6 +33,16 @@ class LogResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.log');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.logs');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

@@ -14,10 +14,6 @@ enum PaymentTypeEnum: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::NONE           => 'None',
-            self::ONLINE_PAYMENT => 'Online payment',
-            self::MANUAL_PAYMENT => 'Manual payment',
-        };
+        return __("enums.payment_type.{$this->value}");
     }
 }

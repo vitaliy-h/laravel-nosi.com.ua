@@ -19,6 +19,16 @@ class SocialProfileResource extends Resource
 {
     protected static ?string $model = SocialProfile::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.social_profile');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.social_profiles');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([]);

@@ -55,6 +55,10 @@ frontend page slug. After changing it on a server with cached config, run
 Tests always run with `ADMIN_PATH=admin` (forced in `phpunit.xml`), so the local value does not
 affect them.
 
+The admin panel interface language comes from `ADMIN_LOCALE` (default `uk`; `en` is also
+available) and does not affect the public site — see
+[Filament translations](filament/translations.md).
+
 ---
 
 <a id="linux-macos"></a>

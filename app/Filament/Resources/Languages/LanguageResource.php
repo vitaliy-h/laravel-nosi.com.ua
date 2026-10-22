@@ -27,12 +27,23 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Enums\RecordActionsPosition;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Lang;
 
 class LanguageResource extends Resource
 {
     protected static ?string $model = Language::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.language');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.languages');
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -173,7 +184,9 @@ class LanguageResource extends Resource
                     ->schema($currentRow);
             }
 
-            $sections[] = Section::make(str($module)->title())
+            $sectionKey = "admin.dictionary_sections.{$module}";
+
+            $sections[] = Section::make(Lang::has($sectionKey) ? __($sectionKey) : str($module)->title())
                 ->schema($schema)
                 ->collapsible()
                 ->collapsed(!$first)

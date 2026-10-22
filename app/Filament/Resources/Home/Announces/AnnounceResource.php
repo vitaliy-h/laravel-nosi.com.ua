@@ -23,6 +23,16 @@ class AnnounceResource extends Resource
 {
     protected static ?string $model = Announce::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.announce');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.announces');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

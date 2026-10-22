@@ -37,6 +37,16 @@ class NewsResource extends Resource
 
     protected static ?string $model = News::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.news');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.news');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

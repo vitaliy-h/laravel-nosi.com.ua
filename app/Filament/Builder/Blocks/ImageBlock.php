@@ -14,7 +14,7 @@ class ImageBlock
     {
         return Block::make('image')
 
-            ->label('Image')
+            ->label(__('admin.blocks.image'))
 
             ->schema([
 
@@ -31,7 +31,7 @@ class ImageBlock
 
                 Select::make('style')
                     ->options([
-                        'default' => 'Default',
+                        'default' => __('admin.blocks.style_default'),
                     ])
                     ->default('default')
                     ->selectablePlaceholder(false)

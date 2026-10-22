@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Http\Middleware\SetAdminLocale;
 use App\Filament\Pages\Auth\Login;
 use App\Filament\Pages\Dashboard;
 use App\Filament\Pages\DebugTools\DebugTools;
@@ -53,6 +54,7 @@ use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Resources\Pages\Page as ResourcePage;
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Css;
 use Filament\Support\Colors\Color;
@@ -85,7 +87,15 @@ class AdminPanelProvider extends PanelProvider
                 ->recordUrl(fn () => null)// Do not open view page when clicking a table row
                 // ->striped()
                 ->defaultPaginationPageOption(25)
-                ->paginationPageOptions([25, 50, 100]);
+                ->paginationPageOptions([25, 50, 100])
+                // Table actions (Create/Edit/Delete modals) read the model label from the table,
+                // which otherwise falls back to the English model class name
+                ->modelLabel(fn ($livewire): ?string => $livewire instanceof ResourcePage
+                    ? $livewire::getResource()::getModelLabel()
+                    : null)
+                ->pluralModelLabel(fn ($livewire): ?string => $livewire instanceof ResourcePage
+                    ? $livewire::getResource()::getPluralModelLabel()
+                    : null);
         });
 
         return $panel
@@ -306,6 +316,10 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            // persistent: Livewire update requests get the admin locale too
+            ->middleware([
+                SetAdminLocale::class,
+            ], isPersistent: true)
             ->authMiddleware([
                 Authenticate::class,
             ])

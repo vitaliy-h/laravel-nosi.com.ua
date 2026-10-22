@@ -34,6 +34,16 @@ class CategoryResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.shop_category');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.shop_categories');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

@@ -26,6 +26,16 @@ class SliderResource extends Resource
 {
     protected static ?string $model = Slider::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.slider');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.sliders');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

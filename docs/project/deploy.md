@@ -51,6 +51,10 @@ Settings → Secrets and variables → Actions → New repository secret:
 The upload is plain FTP (`ftp:ssl-allow false`): this hosting dropped FTPS connections
 mid-upload. To try FTPS again, set `ftp:ssl-allow true` in `deploy.yml`.
 
+The hosting allows at most **5 FTP connections per IP** and silently drops the rest — the
+upload runs one transfer at a time (`--parallel=1`, `net:connection-limit 1`). Do not raise
+it, and avoid uploading over FTP from the same place while a deploy runs.
+
 ---
 
 ## First deploy, once

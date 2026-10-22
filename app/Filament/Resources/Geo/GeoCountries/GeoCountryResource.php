@@ -23,6 +23,16 @@ class GeoCountryResource extends Resource
 {
     protected static ?string $model = GeoCountry::class;
 
+    public static function getModelLabel(): string
+    {
+        return __('admin.models.geo_country');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.tables.geo_countries');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema

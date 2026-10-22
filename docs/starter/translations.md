@@ -87,6 +87,12 @@ Translations are grouped by modules/pages.
 
 Stored in database as nested arrays without suffixes.
 
+The order of the groups in the file is the order of the sections in the admin form; only the
+first one is expanded. The home page groups (`header`, `home`, `benefits`, `contacts`,
+`footer`) go first. A section title comes from `admin.dictionary_sections.{group}` — add the
+key to `lang/en/admin.php` and `lang/uk/admin.php` with a new group, otherwise the raw group
+name is shown.
+
 ---
 
 # 🏗 Supported field suffixes

@@ -48,7 +48,7 @@ Model:     App\Modules\{Module}\Models\{ModelName}
 Resource:  app/Filament/Resources/{Module}/{ModelNamePlural}/{ModelName}Resource.php
 Pages dir: app/Filament/Resources/{Module}/{ModelNamePlural}/Pages/
 Nav:       AdminPanelProvider → NavigationItem for {ModelName}
-Lang keys: lang/en/admin.php (+ lang/uk/admin.php only if that locale file already exists)
+Lang keys: lang/en/admin.php + lang/uk/admin.php (same keys in both)
 ```
 
 `{ModelNamePlural}` is the artisan generator's auto-pluralized form of `{ModelName}` (e.g.
@@ -335,18 +335,18 @@ static::getSeoSection(),
 
 #### Translation labels
 
-No resource in this codebase sets a `$translationNamespace` property or relies on Filament's
-automatic translation-file label resolution. Plain fields (`title`, `display`, `slug`, ...) are
-simply left without an explicit `->label()` call and fall back to Filament's default humanized
-label (e.g. `title` → "Title"). Add `->label(__('admin.fields.{field_name}'))` explicitly only
+No resource in this codebase sets a `$translationNamespace` property. Plain fields (`title`,
+`display`, `slug`, ...) are left without an explicit `->label()` call: `FilamentServiceProvider`
+labels every field/column/entry/filter from `admin.fields.{name}` when that key exists, so the
+key **must** exist (in both `en` and `uk`), otherwise the admin shows Filament's humanized English
+name. Add `->label(__('admin.fields.{field_name}'))` explicitly only
 where the field/column name doesn't already read as a good label on its own — most commonly
 relation columns in the table (e.g. `category.title` needs a label because the translation key
 is `category_id`, not `category.title`) and relation selects in the form.
 
 **Before adding any field, check `lang/en/admin.php['fields']` for an existing key.** Field
 keys are flat (not nested per-resource) and shared across resources. If missing, add the key
-to `lang/en/admin.php`; also add it to `lang/uk/admin.php` only if that file already exists in
-the project (Step 8) — as of now it does not.
+to `lang/en/admin.php` and `lang/uk/admin.php` (Step 8).
 
 ### Step 6 — Fix resource namespace and model reference
 
@@ -370,6 +370,19 @@ After artisan generates the file, ensure:
     - **SEO mode only**: `use App\Filament\Traits\HasSeoFields;`
     - **Nested set mode only**: `use App\Filament\Support\NestedSetFields;`
 5. **SEO mode only**: add `use HasSeoFields;` inside the resource class body (after the opening brace, before `$model`)
+6. Resource labels, as the first methods of the class (otherwise the admin shows the English
+   class name, e.g. "Create product"):
+   ```php
+   public static function getModelLabel(): string
+   {
+       return __('admin.models.{model_key}');
+   }
+
+   public static function getPluralModelLabel(): string
+   {
+       return __('admin.tables.{table_key}');
+   }
+   ```
 
 ### Step 7 — Add navigation to AdminPanelProvider
 
@@ -400,9 +413,8 @@ Ask the user what icon and navigation group (if unsure).
 
 ### Step 8 — Add missing translation keys
 
-Check `lang/en/admin.php`. Only `en` is populated in this project as of now — `lang/uk/admin.php`
-does not currently exist; only touch it if the project has since added Ukrainian support (check
-for `lang/uk/` before assuming it exists).
+Check `lang/en/admin.php` and `lang/uk/admin.php` — both must get the same keys. The admin panel
+is shown in Ukrainian by default (`ADMIN_LOCALE=uk`).
 
 **In `['tables']`** — add the navigation label key used in Step 7:
 
@@ -410,8 +422,15 @@ for `lang/uk/` before assuming it exists).
 '{table_key}' => '{Human Label}',
 ```
 
+**In `['models']`** — the singular label used in Step 6 (in `uk` — accusative case, lowercase,
+because Filament renders "Створити :label" / "Редагувати :label"):
+
+```php
+'{model_key}' => '{singular label}',   // uk: 'товар', 'сторінку', 'категорію'
+```
+
 **In `['fields']`** — add keys for any fields not already present.
-If `lang/uk/admin.php` exists, ask the user for Ukrainian translations and add the same keys there.
+Add the same keys to `lang/uk/admin.php` with Ukrainian translations (ask the user if unsure).
 
 ### Step 9 — Summary
 
@@ -467,7 +486,7 @@ Print:
 | Pages      | `app/Filament/Resources/{Module}/{ModelNamePlural}/Pages/Manage{ModelName}s.php` |
 | Navigation | `app/Providers/Filament/AdminPanelProvider.php`                |
 | Lang EN    | `lang/en/admin.php`                                            |
-| Lang UK    | `lang/uk/admin.php` (only if this file already exists in the project)         |
+| Lang UK    | `lang/uk/admin.php`                                            |
 
 ### Namespace pattern
 

@@ -26,12 +26,7 @@ GET /api/translations?locale=en
     "message": "OK",
     "data": {
         "index": {
-            "hero_title": "Welcome",
-            "hero_subtitle": "Starter project on Laravel",
-            "first_block_title": "Fast",
-            "first_block_subtitle": "Laravel + Filament starter",
-            "second_block_title": "Flexible",
-            "second_block_subtitle": "Modular architecture"
+            "project_name": "eStore"
         },
         "feedback": {
             "name": "Name",
