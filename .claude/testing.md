@@ -55,7 +55,7 @@ docker compose exec laravel.test php artisan test
 | `Feature/Console/` | Scheduled commands and their registration |
 | `Feature/Filament/{Module}/` | Filament resource CRUD tests (list, search, filter, create, edit, delete) |
 | `Feature/Infrastructure/` | Factories, seeders, auth helpers, module wiring smoke |
-| `Feature/{Module}/` | One folder per module, named after the `app/Modules` folder: `UserAuth` (`AuthApiTest`, `AuthWebTest`, `OAuthTest`, `ImpersonationTest`), `Shop`, `ShopCart`, `ShopOrder`, `Profile`, `News`, `Feedback`, `Subscriber`, `Sitemap`, `Index` |
+| `Feature/{Module}/` | One folder per module, named after the `app/Modules` folder: `UserAuth` (`AuthApiTest`, `AuthWebTest`, `OAuthTest`, `ImpersonationTest`), `Shop`, `ShopCart`, `ShopOrder`, `Profile`, `News`, `Feedback`, `Review`, `Subscriber`, `Sitemap`, `Index` |
 | `Unit/{Module}/` | Actions, Queries, DTOs, ViewModels, enums per module: `Core`, `Shop`, `ShopCart`, `ShopOrder`, `News`, `Notification`, `Profile`, `UserAuth` |
 | `Unit/Filament/Dashboard/` | Dashboard widget queries (`GetCartStatsQuery`, `GetSalesChartQuery`, …) |
 
@@ -192,7 +192,7 @@ Pattern follows existing factories (`NewsFactory`, `UserFactory`): explicit `pro
 | `LogFactory` | `App\Modules\Core\Models\Log` — states: `forUser(User)`, `forEvent(LogEventEnum)` |
 | `AuthLogFactory` | `App\Modules\Core\Models\AuthLog` — states: `forUser(User)`, `forAction(AuthLogActionEnum)`, `forResult(AuthLogResultEnum)` |
 | `NewsFactory` | `App\Modules\News\Models\News` — states: `invisible()` |
-| `ProductReviewFactory` | `App\Modules\Shop\Models\ProductReview` — states: `invisible()`, `forProduct(Product)`, `forUser(User)`, `withRating(int)` |
+| `ReviewFactory` | `App\Modules\Review\Models\Review` — states: `invisible()`, `forUser(User)`, `withRating(int)` |
 | `CartFactory` | `App\Modules\ShopCart\Models\Cart` |
 | `CartProductFactory` | `App\Modules\ShopCart\Models\CartProduct` |
 | `PromocodeFactory` | `App\Modules\ShopCart\Models\Promocode` — states: `fixed(float)`, `percent(float)`, `expired()`, `notStarted()`, `exhausted(int)`, `withMinOrder(float)`, `invisible()` |

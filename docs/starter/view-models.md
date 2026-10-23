@@ -107,8 +107,6 @@ $page = new ShopProductPageViewModel(
     product: ProductViewModel::from($product),
     category: CategoryViewModel::from($category),
     cart_quantity: $quantity,
-    reviews: ProductReviewViewModel::collect($reviews),
-    rating: ProductRatingViewModel::forProduct($product, $breakdown),
 );
 
 return $this->render('modules.shop.product', $page->toViewData());

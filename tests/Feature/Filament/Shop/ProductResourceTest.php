@@ -2,18 +2,15 @@
 
 namespace Tests\Feature\Filament\Shop;
 
-use App\Filament\Resources\Shop\ProductReviews\ProductReviewResource;
 use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
-use App\Modules\Shop\Models\ProductReview;
 use App\Modules\User\Models\User;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\Testing\TestAction;
-use Filament\Tables\Columns\TextColumn;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -144,30 +141,6 @@ class ProductResourceTest extends TestCase
             ->assertHasNoFormErrors();
 
         $this->assertDatabaseHas('shop_products', ['id' => $product->id, 'title' => 'Updated Product']);
-    }
-
-    public function test_rating_column_shows_aggregates_and_links_to_filtered_reviews(): void
-    {
-        // The rating column links into ReviewResource and is hidden with the
-        // shop_product_reviews module, whose resource then has no route to link to.
-        $this->skipUnlessModules('shop_product_reviews');
-
-        $product = Product::factory()->create();
-
-        ProductReview::factory()->count(2)->forProduct($product)->withRating(4)->create();
-
-        $product->refresh();
-
-        Livewire::test(ManageProducts::class)
-            ->assertTableColumnStateSet('rating', 4.0, $product)
-            ->assertTableColumnFormattedStateSet('rating', '4.00 (2)', $product)
-            ->assertTableColumnExists(
-                'rating',
-                fn (TextColumn $column): bool => $column->getUrl() === ProductReviewResource::getUrl(parameters: [
-                    'filters' => ['product_id' => ['value' => $product->id]],
-                ]),
-                $product,
-            );
     }
 
     public function test_delete_product(): void

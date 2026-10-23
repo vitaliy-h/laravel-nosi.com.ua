@@ -3,9 +3,9 @@
 namespace Tests\Feature\Filament\Dashboard;
 
 use App\Filament\Widgets\NeedsAttentionWidget;
+use App\Filament\Widgets\Review\ReviewStatsWidget;
 use App\Filament\Widgets\Shop\CatalogStatsWidget;
 use App\Filament\Widgets\Shop\LatestOrdersWidget;
-use App\Filament\Widgets\Shop\ProductReviewStatsWidget;
 use App\Filament\Widgets\Shop\PromocodeStatsWidget;
 use App\Filament\Widgets\Shop\SalesChartWidget;
 use App\Filament\Widgets\Shop\SalesStatsWidget;
@@ -46,7 +46,7 @@ class DashboardWidgetsTest extends TestCase
             'catalog stats'   => [CatalogStatsWidget::class],
             'top products'    => [TopProductsWidget::class],
             'promocode stats' => [PromocodeStatsWidget::class],
-            'review stats'    => [ProductReviewStatsWidget::class],
+            'review stats'    => [ReviewStatsWidget::class],
             'user stats'      => [UserStatsWidget::class],
             'system stats'    => [SystemStatsWidget::class],
             'recent activity' => [RecentActivityWidget::class],

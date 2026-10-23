@@ -175,7 +175,7 @@ a Query answers a question.
   controller builds from the request.
 - **Layout:** flat in `Queries/` for a small module (`News/Queries/GetNewsListQuery.php`);
   grouped per entity once there are many
-  (`Shop/Queries/{Category,Product,ProductReview}/`).
+  (`Shop/Queries/{Category,Product}/`).
 - **Who calls it:** controllers inject Queries directly, and so do Actions that need to
   read before they write. A ViewModel never queries — it is fed what a Query returned.
 - Dashboard widgets have their own family under `app/Filament/Dashboard/Queries/`,

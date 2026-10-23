@@ -33,9 +33,7 @@ class FrontendPagesSmokeTest extends TestCase
      * Named routes that answer AJAX rather than render a page, so they need
      * query parameters and legitimately 404 without them.
      */
-    private const array SKIPPED_ROUTE_NAMES = [
-        'shop.product.review.list',
-    ];
+    private const array SKIPPED_ROUTE_NAMES = [];
 
     protected function setUp(): void
     {

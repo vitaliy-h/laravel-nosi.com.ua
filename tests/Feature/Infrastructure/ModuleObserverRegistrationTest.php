@@ -5,8 +5,6 @@ namespace Tests\Feature\Infrastructure;
 use App\Modules\Core\Listeners\LogListener;
 use App\Modules\Page\Models\Page;
 use App\Modules\Page\Observers\PageObserver;
-use App\Modules\Shop\Models\ProductReview;
-use App\Modules\Shop\Observers\ProductReviewObserver;
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
 use App\Modules\ShopCart\Observers\CartObserver;
@@ -31,7 +29,6 @@ class ModuleObserverRegistrationTest extends TestCase
             [OrderProduct::class, OrderProductObserver::class],
             [Cart::class, CartObserver::class],
             [CartProduct::class, CartProductObserver::class],
-            [ProductReview::class, ProductReviewObserver::class],
         ];
     }
 

@@ -15,11 +15,7 @@ use App\Modules\Shop\Queries\Category\GetCategoryBreadcrumbsQuery;
 use App\Modules\Shop\Queries\Product\FindProductByIdQuery;
 use App\Modules\Shop\Queries\Product\PrepareShopFilterQuery;
 use App\Modules\Shop\Queries\Product\SearchProductsQuery;
-use App\Modules\Shop\Queries\ProductReview\GetProductRatingBreakdownQuery;
-use App\Modules\Shop\Queries\ProductReview\GetReviewsByProductQuery;
 use App\Modules\Shop\ViewModels\CategoryViewModel;
-use App\Modules\Shop\ViewModels\ProductRatingViewModel;
-use App\Modules\Shop\ViewModels\ProductReviewViewModel;
 use App\Modules\Shop\ViewModels\ProductViewModel;
 use App\Modules\Shop\ViewModels\ShopCategoryPageViewModel;
 use App\Modules\Shop\ViewModels\ShopProductPageViewModel;
@@ -37,8 +33,6 @@ class IndexController extends BaseWebController
         private readonly GetCategoryBreadcrumbsQuery $getCategoryBreadcrumbs,
         private readonly FindProductByIdQuery $findProductById,
         private readonly CartContext $cart,
-        private readonly GetReviewsByProductQuery $getReviewsByProduct,
-        private readonly GetProductRatingBreakdownQuery $getProductRatingBreakdown,
     ) {}
 
     public function index(Request $request)
@@ -97,17 +91,10 @@ class IndexController extends BaseWebController
             'breadcrumbs'      => $breadcrumbs,
         ]);
 
-        $reviews = $this->getReviewsByProduct->handle($product);
-
         $page = new ShopProductPageViewModel(
             product: ProductViewModel::from($product),
             category: CategoryViewModel::from($category),
             cart_quantity: $this->cartQuantityFor($product->id) ?? 1,
-            reviews: ProductReviewViewModel::collect($reviews),
-            rating: ProductRatingViewModel::forProduct(
-                $product,
-                $this->getProductRatingBreakdown->handle($product),
-            ),
         );
 
         return $this->render('modules.shop.product', $page);

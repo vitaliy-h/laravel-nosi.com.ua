@@ -37,7 +37,7 @@ return [
         // 'shop_cart'            => false,
         // 'shop_brands'          => false,
         // 'shop_promocodes'      => false,
-        // 'shop_product_reviews' => false,
+        // 'review'               => false,
         // 'subscriber'           => false,
         // 'sms'                  => false,
         // 'letter_templates'     => false,
@@ -46,7 +46,6 @@ return [
     'dependencies' => [
         'shop_cart'            => 'shop',      // no cart without the shop
         'shop_brands'          => 'shop',
-        'shop_product_reviews' => 'shop',
         'shop_order'           => 'shop_cart', // no orders without the cart
         'shop_promocodes'      => 'shop_cart',
         'profile'              => 'user_auth', // no profile without auth
@@ -62,7 +61,7 @@ dependants, so the only way to switch them off is to switch off the cart or
 `user_auth`.
 
 Not every key matches an `app/Modules` folder: `shop_brands`,
-`shop_product_reviews`, `shop_promocodes`, `sms` and `letter_templates` are
+`shop_promocodes`, `sms` and `letter_templates` are
 feature toggles for code living inside Shop / ShopCart / Notification —
 switching one off hides its admin surfaces (navigation item, resource,
 dashboard card), the tables stay.

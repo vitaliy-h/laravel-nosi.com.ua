@@ -13,7 +13,6 @@ class ShopSeeder extends Seeder
         $this->call(ShopCategorySeeder::class);
         $this->call(ShopBrandSeeder::class);
         $this->call(ShopProductSeeder::class);
-        $this->call(ShopProductReviewSeeder::class);
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

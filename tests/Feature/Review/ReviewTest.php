@@ -1,0 +1,155 @@
+<?php
+
+namespace Tests\Feature\Review;
+
+use App\Modules\Review\Models\Review;
+use App\Modules\User\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class ReviewTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seedPagesForRouting();
+    }
+
+    public function test_home_page_shows_visible_reviews_only(): void
+    {
+        $visible = Review::factory()->create(['text' => 'Visible review text']);
+        $hidden = Review::factory()->invisible()->create(['text' => 'Hidden review text']);
+
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+        $response->assertSee('review-author');
+        $response->assertSee($visible->text);
+        $response->assertDontSee($hidden->text);
+    }
+
+    public function test_home_page_rating_summary_counts_visible_reviews(): void
+    {
+        Review::factory()->withRating(5)->create();
+        Review::factory()->withRating(4)->create();
+        Review::factory()->withRating(1)->invisible()->create();
+
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+        $response->assertViewHas('rating_value', '4.5');
+        $response->assertViewHas('reviews_total', '2');
+    }
+
+    public function test_home_page_offers_the_review_form_before_any_review_is_published(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+        $response->assertSee('id="review-dialog"', false);
+        $response->assertSee('id="review-form"', false);
+        $response->assertDontSee('review-track');
+    }
+
+    public function test_review_line_breaks_are_rendered_without_unescaping_markup(): void
+    {
+        Review::factory()->create([
+            'text' => "First line\nSecond line <b>bold</b>",
+        ]);
+
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+        $response->assertSee('First line<br />', false);
+        // The text is escaped before nl2br, so posted markup stays inert.
+        $response->assertSee('&lt;b&gt;bold&lt;/b&gt;', false);
+    }
+
+    public function test_store_creates_hidden_review(): void
+    {
+        $response = $this->from('/')->post('/review', [
+            'rating' => 5,
+            'name'   => 'Guest Reviewer',
+            'city'   => 'Kyiv',
+            'email'  => 'guest@example.com',
+            'text'   => 'Fast delivery, great service.',
+        ]);
+
+        $response->assertRedirect('/');
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseHas('reviews', [
+            'name'    => 'Guest Reviewer',
+            'city'    => 'Kyiv',
+            'rating'  => 5,
+            'display' => false,
+        ]);
+    }
+
+    public function test_store_requires_rating_and_text(): void
+    {
+        $response = $this->from('/')->post('/review', [
+            'name'  => 'Guest Reviewer',
+            'email' => 'guest@example.com',
+        ]);
+
+        $response->assertSessionHasErrors(['rating', 'text']);
+        $this->assertSame(0, Review::count());
+    }
+
+    public function test_store_via_ajax_replaces_the_dialog_body(): void
+    {
+        $response = $this
+            ->withHeader('X-Requested-With', 'XMLHttpRequest')
+            ->post('/review', [
+                'rating' => 4,
+                'name'   => 'Ajax Reviewer',
+                'email'  => 'ajax@example.com',
+                'text'   => 'Sent over XHR.',
+            ]);
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('actions.0.method', 'html');
+        $response->assertJsonPath('actions.0.selector', '#review-dialog-body');
+        $this->assertDatabaseHas('reviews', ['name' => 'Ajax Reviewer']);
+    }
+
+    public function test_logged_in_user_review_is_stored_under_the_account_identity(): void
+    {
+        $user = User::factory()->create([
+            'name'  => 'Account Name',
+            'email' => 'account@example.com',
+        ]);
+
+        $this->actingAs($user)->from('/')->post('/review', [
+            'rating' => 5,
+            // Someone else's identity must not survive.
+            'name'  => 'Someone Else',
+            'email' => 'someone@example.com',
+            'text'  => 'Posted while logged in.',
+        ]);
+
+        $this->assertDatabaseHas('reviews', [
+            'user_id' => $user->id,
+            'name'    => 'Account Name',
+            'email'   => 'account@example.com',
+        ]);
+    }
+
+    public function test_review_form_is_prefilled_for_logged_in_user(): void
+    {
+        $user = User::factory()->create([
+            'name'  => 'Prefilled Name',
+            'email' => 'prefilled@example.com',
+        ]);
+
+        $response = $this->actingAs($user)->get('/');
+
+        $response->assertStatus(200);
+        $response->assertSee('value="Prefilled Name"', false);
+        $response->assertSee('value="prefilled@example.com"', false);
+    }
+}

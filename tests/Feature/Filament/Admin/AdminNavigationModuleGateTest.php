@@ -2,14 +2,14 @@
 
 namespace Tests\Feature\Filament\Admin;
 
+use App\Filament\Resources\Home\Reviews\ReviewResource;
 use App\Filament\Resources\LetterTemplates\LetterTemplateResource;
 use App\Filament\Resources\LogLetters\LogLetterResource;
 use App\Filament\Resources\LogSms\LogSmsResource;
 use App\Filament\Resources\Shop\Brands\BrandResource;
-use App\Filament\Resources\Shop\ProductReviews\ProductReviewResource;
 use App\Filament\Resources\Shop\Promocodes\PromocodeResource;
 use App\Filament\Resources\SmsTemplates\SmsTemplateResource;
-use App\Filament\Widgets\Shop\ProductReviewStatsWidget;
+use App\Filament\Widgets\Review\ReviewStatsWidget;
 use App\Modules\User\Models\User;
 use App\Providers\Filament\AdminPanelProvider;
 use Filament\Panel;
@@ -89,18 +89,18 @@ class AdminNavigationModuleGateTest extends TestCase
         $this->assertContains(__('admin.tables.shop_categories'), $this->navigationLabels($panel));
     }
 
-    public function test_shop_product_reviews_disabled_hides_reviews_from_navigation_and_resources(): void
+    public function test_review_disabled_hides_reviews_from_navigation_and_resources(): void
     {
-        $this->skipUnlessModules('shop', 'shop_product_reviews');
+        $this->skipUnlessModules('review');
 
-        $panel = $this->panelWith(['shop_product_reviews' => false]);
+        $panel = $this->panelWith(['review' => false]);
 
-        $this->assertNotContains(__('admin.tables.shop_product_reviews'), $this->navigationLabels($panel));
-        $this->assertNotContains(ProductReviewResource::class, $panel->getResources());
-        $this->assertNotContains(ProductReviewStatsWidget::class, $panel->getWidgets());
+        $this->assertNotContains(__('admin.tables.reviews'), $this->navigationLabels($panel));
+        $this->assertNotContains(ReviewResource::class, $panel->getResources());
+        $this->assertNotContains(ReviewStatsWidget::class, $panel->getWidgets());
 
-        // The rest of the catalog group survives.
-        $this->assertContains(__('admin.tables.shop_products'), $this->navigationLabels($panel));
+        // The rest of the home page group survives.
+        $this->assertContains(__('admin.tables.faqs'), $this->navigationLabels($panel));
     }
 
     public function test_shop_promocodes_disabled_hides_promocodes_from_navigation_and_resources(): void
@@ -153,7 +153,7 @@ class AdminNavigationModuleGateTest extends TestCase
         $this->assertContains(__('admin.tables.log_sms'), $labels);
     }
 
-    public function test_shop_disabled_also_hides_its_dependent_brands_reviews_and_promocodes(): void
+    public function test_shop_disabled_also_hides_its_dependent_brands_and_promocodes(): void
     {
         $this->skipUnlessModules('shop');
 
@@ -162,16 +162,25 @@ class AdminNavigationModuleGateTest extends TestCase
         $labels = $this->navigationLabels($panel);
 
         $this->assertNotContains(__('admin.tables.shop_brands'), $labels);
-        $this->assertNotContains(__('admin.tables.shop_product_reviews'), $labels);
         $this->assertNotContains(__('admin.tables.shop_promocodes'), $labels);
         $this->assertNotContains(BrandResource::class, $panel->getResources());
-        $this->assertNotContains(ProductReviewResource::class, $panel->getResources());
         $this->assertNotContains(PromocodeResource::class, $panel->getResources());
+    }
+
+    public function test_shop_disabled_keeps_the_shop_reviews(): void
+    {
+        $this->skipUnlessModules('shop', 'review');
+
+        $panel = $this->panelWith(['shop' => false]);
+
+        // Reviews are about the shop as a whole, not its catalog.
+        $this->assertContains(__('admin.tables.reviews'), $this->navigationLabels($panel));
+        $this->assertContains(ReviewResource::class, $panel->getResources());
     }
 
     public function test_every_module_enabled_shows_every_gated_item(): void
     {
-        $this->skipUnlessModules('shop', 'shop_cart', 'shop_brands', 'shop_product_reviews', 'shop_promocodes', 'sms', 'letter_templates');
+        $this->skipUnlessModules('shop', 'shop_cart', 'shop_brands', 'review', 'shop_promocodes', 'sms', 'letter_templates');
 
         $panel = $this->panelWith([]);
 
@@ -179,7 +188,7 @@ class AdminNavigationModuleGateTest extends TestCase
 
         foreach ([
             __('admin.tables.shop_brands'),
-            __('admin.tables.shop_product_reviews'),
+            __('admin.tables.reviews'),
             __('admin.tables.shop_promocodes'),
             __('admin.tables.sms_templates'),
             __('admin.tables.log_sms'),
@@ -191,7 +200,7 @@ class AdminNavigationModuleGateTest extends TestCase
 
         foreach ([
             BrandResource::class,
-            ProductReviewResource::class,
+            ReviewResource::class,
             PromocodeResource::class,
             SmsTemplateResource::class,
             LogSmsResource::class,

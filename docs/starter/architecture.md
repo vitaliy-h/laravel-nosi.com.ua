@@ -22,7 +22,8 @@ app/Modules/
 ├── PageText/       # free-form text pages (owns the fallback route)
 ├── News/
 ├── Feedback/
-├── Shop/           # catalog: products, categories, brands, reviews
+├── Shop/           # catalog: products, categories, brands
+├── Review/         # reviews of the shop (home page block)
 ├── ShopCart/       # cart + promocodes
 ├── ShopOrder/      # orders and payment state
 ├── Subscriber/
@@ -47,7 +48,8 @@ page and its URL prefix follows — see `docs/starter/routing.md`):
 | `PageText` | Free-form CMS pages. It owns the app's single `Route::fallback()`, because each of its N pages has its own slug |
 | `News` | News list and item, with the CMS content builder |
 | `Feedback` | The contact page (`GET /`) and its form handler (`POST /`), which stores a `Feedback` row and sends a letter |
-| `Shop` | Catalog: products, categories, brands, reviews, filters |
+| `Shop` | Catalog: products, categories, brands, filters |
+| `Review` | Reviews of the shop as a whole: the home page form handler (`POST /review`) and the reads behind the home page block — `docs/project/reviews.md` |
 | `ShopCart` | Cart and promocodes — `docs/starter/cart.md` |
 | `Profile` | The signed-in user's own pages: profile, edit, orders list and one order, plus the update/delete/social-disconnect endpoints. Everything behind `auth` |
 | `UserAuth` | Login, registration, password recovery, OAuth (`docs/starter/oauth.md`) and impersonation (`docs/starter/impersonation.md`) |

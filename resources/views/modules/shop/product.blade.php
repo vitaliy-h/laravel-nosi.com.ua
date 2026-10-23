@@ -36,13 +36,6 @@
                 <div class="pd-brand">{{ $product->brand_title ?? $category->title }}</div>
                 <h1>{{ $product->title }}</h1>
 
-                @if($product->reviews_count > 0)
-                    <div class="pd-rating">
-                        <x-rating-stars :value="$product->rating" />
-                        <a href="#reviews">{{ t('shop.product_reviews_tab', ['count' => $product->reviews_count]) }}</a>
-                    </div>
-                @endif
-
                 <div class="pd-price">
                     @if($product->has_discount)
                         <ins>{{ $product->price_formatted }}</ins><del>{{ $product->old_price_formatted }}</del>
@@ -83,9 +76,6 @@
             <div class="tabs" role="tablist">
                 <button type="button" class="is-active" role="tab" data-tab-target="description">{{ t('shop.description') }}</button>
                 <button type="button" role="tab" data-tab-target="specifications">{{ t('shop.specifications') }}</button>
-                @if(\App\Modules\Core\Support\ModuleGate::isEnabled('shop_product_reviews'))
-                    <button type="button" role="tab" data-tab-target="reviews">{{ t('shop.product_reviews_tab', ['count' => $rating->total]) }}</button>
-                @endif
             </div>
 
             <div data-tab-panel="description">
@@ -112,12 +102,6 @@
                     <dd>{{ $product->price_formatted ?? '—' }}</dd>
                 </dl>
             </div>
-
-            @if(\App\Modules\Core\Support\ModuleGate::isEnabled('shop_product_reviews'))
-                <div data-tab-panel="reviews" id="reviews" hidden>
-                    @include('modules.shop.partials.reviews')
-                </div>
-            @endif
         </div>
     </div>
 @endsection

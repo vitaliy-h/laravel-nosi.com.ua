@@ -14,6 +14,7 @@ use App\Filament\Resources\Geo\GeoRegions\GeoRegionResource;
 use App\Filament\Resources\Home\Announces\AnnounceResource;
 use App\Filament\Resources\Home\Faqs\FaqResource;
 use App\Filament\Resources\Home\Promos\PromoResource;
+use App\Filament\Resources\Home\Reviews\ReviewResource;
 use App\Filament\Resources\Home\Sliders\SliderResource;
 use App\Filament\Resources\Languages\LanguageResource;
 use App\Filament\Resources\LetterTemplates\LetterTemplateResource;
@@ -26,7 +27,6 @@ use App\Filament\Resources\Shop\Brands\BrandResource;
 use App\Filament\Resources\Shop\Cart\CartResource;
 use App\Filament\Resources\Shop\Categories\CategoryResource;
 use App\Filament\Resources\Shop\Orders\OrderResource;
-use App\Filament\Resources\Shop\ProductReviews\ProductReviewResource;
 use App\Filament\Resources\Shop\Products\ProductResource;
 use App\Filament\Resources\Shop\Promocodes\PromocodeResource;
 use App\Filament\Resources\SmsTemplates\SmsTemplateResource;
@@ -34,9 +34,9 @@ use App\Filament\Resources\SocialProfiles\SocialProfileResource;
 use App\Filament\Resources\Subscribers\SubscriberResource;
 use App\Filament\Resources\Users\UserResource;
 use App\Filament\Widgets\NeedsAttentionWidget;
+use App\Filament\Widgets\Review\ReviewStatsWidget;
 use App\Filament\Widgets\Shop\CatalogStatsWidget;
 use App\Filament\Widgets\Shop\LatestOrdersWidget;
-use App\Filament\Widgets\Shop\ProductReviewStatsWidget;
 use App\Filament\Widgets\Shop\PromocodeStatsWidget;
 use App\Filament\Widgets\Shop\SalesChartWidget;
 use App\Filament\Widgets\Shop\SalesStatsWidget;
@@ -145,7 +145,7 @@ class AdminPanelProvider extends PanelProvider
                     ->groups(array_filter([
                         // home page blocks
                         NavigationGroup::make(__('admin.tables.home'))
-                            ->items([
+                            ->items(array_filter([
                                 NavigationItem::make(__('admin.tables.announces'))
                                     ->icon('heroicon-o-megaphone')
                                     ->url(AnnounceResource::getUrl())
@@ -162,7 +162,11 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-question-mark-circle')
                                     ->url(FaqResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.home.faqs*')),
-                            ]),
+                                ModuleGate::isEnabled('review') ? NavigationItem::make(__('admin.tables.reviews'))
+                                    ->icon('heroicon-o-star')
+                                    ->url(ReviewResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.home.reviews*')) : null,
+                            ])),
                         // catalog
                         ModuleGate::isEnabled('shop') ? NavigationGroup::make(__('admin.tables.catalog'))
                             ->items(array_filter([
@@ -178,10 +182,6 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-tag')
                                     ->url(BrandResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.shop.brands*')) : null,
-                                ModuleGate::isEnabled('shop_product_reviews') ? NavigationItem::make(__('admin.tables.shop_product_reviews'))
-                                    ->icon('heroicon-o-star')
-                                    ->url(ProductReviewResource::getUrl())
-                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.shop.product-reviews*')) : null,
                             ])) : null,
                         // shop
                         ModuleGate::isEnabled('shop_cart') ? NavigationGroup::make(__('admin.tables.shop'))
@@ -264,6 +264,7 @@ class AdminPanelProvider extends PanelProvider
                 SliderResource::class,
                 PromoResource::class,
                 FaqResource::class,
+                ModuleGate::isEnabled('review') ? ReviewResource::class : null,
                 ModuleGate::isEnabled('letter_templates') ? LetterTemplateResource::class : null,
                 ModuleGate::isEnabled('letter_templates') ? LogLetterResource::class : null,
                 LogResource::class,
@@ -281,7 +282,6 @@ class AdminPanelProvider extends PanelProvider
                 ModuleGate::isEnabled('shop') ? ProductResource::class : null,
                 ModuleGate::isEnabled('shop') ? CategoryResource::class : null,
                 ModuleGate::isEnabled('shop_brands') ? BrandResource::class : null,
-                ModuleGate::isEnabled('shop_product_reviews') ? ProductReviewResource::class : null,
                 ModuleGate::isEnabled('shop') ? OrderResource::class : null,
                 ModuleGate::isEnabled('shop_cart') ? CartResource::class : null,
                 ModuleGate::isEnabled('shop_promocodes') ? PromocodeResource::class : null,
@@ -300,7 +300,7 @@ class AdminPanelProvider extends PanelProvider
                 ModuleGate::isEnabled('shop') ? CatalogStatsWidget::class : null,
                 ModuleGate::isEnabled('shop_cart') ? TopProductsWidget::class : null,
                 ModuleGate::isEnabled('shop_promocodes') ? PromocodeStatsWidget::class : null,
-                ModuleGate::isEnabled('shop_product_reviews') ? ProductReviewStatsWidget::class : null,
+                ModuleGate::isEnabled('review') ? ReviewStatsWidget::class : null,
                 UserStatsWidget::class,
                 SystemStatsWidget::class,
                 RecentActivityWidget::class,

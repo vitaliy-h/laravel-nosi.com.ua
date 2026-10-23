@@ -1,6 +1,7 @@
 # Shop
 
-Product catalog, cart with promo codes, checkout, reviews and the customer account.
+Product catalog, cart with promo codes, checkout and the customer account. Reviews are
+about the shop as a whole, not its products — [reviews.md](reviews.md).
 Code — the `Shop`, `ShopCart`, `ShopOrder` modules (`app/Modules/`) and the admin resources
 `app/Filament/Resources/Shop/`. How it works technically — `docs/starter/cart.md`,
 `docs/api/shop.md`.
@@ -17,7 +18,7 @@ SEO fields, sort order, "show" toggle.
 
 **Product** — category, brand, SKU, price (`price`) and a second price (`price2`, old /
 struck-through), main photo + gallery, text, SEO, sort order, "show" toggle.
-Rating and review count are calculated automatically.
+Products have no reviews or rating.
 
 ### Pages
 
@@ -25,7 +26,7 @@ Rating and review count are calculated automatically.
 |---|---|
 | `/{shop}` | shop home page |
 | `/{shop}/{category}` | products of the category **including all its subcategories** |
-| `/{shop}/{category}/{slug-id}` | product page: photos, description, rating, reviews |
+| `/{shop}/{category}/{slug-id}` | product page: photos, description, specifications |
 
 `{shop}` — the slug of the page with the "Shop" module in the admin panel; it is changed there too.
 
@@ -46,19 +47,7 @@ data for a mobile client or frontend. Described in `docs/api/shop.md`.
 
 ---
 
-## 2. Reviews
-
-- Anyone can leave a review (a guest — with name and email): a 1–5 rating and text.
-  Limit — 10 reviews per minute from one address.
-- A new review is **hidden** until a manager publishes it in the admin panel.
-- The product rating and review count are recalculated automatically when a review is
-  published, changed or deleted; only published reviews count towards the rating.
-- The product page shows the rating distribution and a review list with load-more.
-- Enabled separately (`shop_product_reviews`).
-
----
-
-## 3. Cart
+## 2. Cart
 
 - Add a product, change quantity, remove — without reloading the page;
   the counter in the header updates.
@@ -81,7 +70,7 @@ data for a mobile client or frontend. Described in `docs/api/shop.md`.
 
 ---
 
-## 4. Orders
+## 3. Orders
 
 **Checkout** — `/{cart}/checkout`: email (required), first name, last name, phone,
 comment. No registration required.
@@ -106,40 +95,38 @@ its code string are kept in the order even if the promo code is later deleted.
 
 ---
 
-## 5. Admin panel
+## 4. Admin panel
 
 | Section | What you can do |
 |---|---|
 | Categories | tree (parent category, order), CRUD |
 | Brands | CRUD |
 | Products | CRUD, photos, gallery |
-| Reviews | moderation (publishing), editing |
 | Promo codes | CRUD, usage counter |
 | Carts | CRUD, filter by user |
 | Orders | CRUD, filters by payment status, payment type and user; changing the discount or promo code recalculates the total |
 
-**Dashboard**: catalog, order, cart, review and promo code statistics, sales chart,
+**Dashboard**: catalog, order, cart and promo code statistics, sales chart,
 latest orders, top products.
 
 ---
 
-## 6. Enabling / disabling
+## 5. Enabling / disabling
 
 `config/modules.php`, the `list` section:
 
 | Key | What it disables | Along with it |
 |---|---|---|
-| `shop` | the whole shop | cart, brands, reviews, orders, promo codes |
+| `shop` | the whole shop | cart, brands, orders, promo codes |
 | `shop_cart` | cart | orders, promo codes |
 | `shop_brands` | brands in the admin panel and filter | — |
-| `shop_product_reviews` | reviews | — |
 | `shop_promocodes` | promo codes | — |
 
 Before disabling `shop`, remove product blocks from page content.
 
 ---
 
-## 7. Not implemented yet
+## 6. Not implemented yet
 
 - Product variants (size, color) — [`docs/todo/product_items.md`](../todo/product_items.md).
 - Product attributes and filtering by them — [`docs/todo/product_attributes.md`](../todo/product_attributes.md).

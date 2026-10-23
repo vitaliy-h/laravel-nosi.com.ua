@@ -101,7 +101,7 @@ Before writing, check what already exists:
 this project. Look in `app/Modules/{Module}/Queries/` first — 23 Query classes already
 exist across 9 modules. Small modules keep them flat
 (`News/Queries/GetNewsListQuery.php`); a module with many reads groups them per entity
-(`Shop/Queries/Category/`, `Shop/Queries/Product/`, `Shop/Queries/ProductReview/`),
+(`Shop/Queries/Category/`, `Shop/Queries/Product/`),
 so drop the `{Entity}` namespace segment below when the module is flat.
 
 Query template:
@@ -310,7 +310,7 @@ Print:
 |---|---|---|
 | Controller | `{Module}Controller` | `ShopController` |
 | Action (writes) | `{Verb}{Entity}Action` | `CreateOrderAction`, `AddOrUpdateCartItemAction` |
-| Query (reads) | `Find*Query` / `Get*Query` / `Search*Query` | `FindCategoryByIdQuery`, `SearchCategoriesQuery`, `GetReviewsByProductQuery` |
+| Query (reads) | `Find*Query` / `Get*Query` / `Search*Query` | `FindCategoryByIdQuery`, `SearchCategoriesQuery`, `GetLatestReviewsQuery` |
 | Request | `{Module}{MethodName}Request` | `ShopCategoriesRequest`, `ShopProductsRequest` |
 | Resource | `{Entity}Resource` | `CategoryResource`, `ProductResource` |
 | Route name | `api.{module}.{method}` | `api.shop.categories` |

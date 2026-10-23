@@ -1,5 +1,5 @@
 {{-- Product card of the Nosi design: two photos (second on hover), badges, wishlist,
-     add-to-cart through abc-response, brand, rating and price (old price crossed out
+     add-to-cart through abc-response, brand and price (old price crossed out
      when the second price differs). `$new` adds the «Новинка» badge. --}}
 @props(['product', 'new' => false])
 
@@ -37,9 +37,6 @@
             <div class="card-brand">{{ $product->brand_title }}</div>
         @endif
         <h3 class="card-title"><a href="{{ $product->url ?? '#' }}">{{ $product->title }}</a></h3>
-        @if($product->reviews_count > 0)
-            <div class="card-rating"><x-rating-stars :value="$product->rating" /><span>{{ $product->reviews_count }}</span></div>
-        @endif
         <div class="card-meta">
             <div class="card-price">
                 @if($product->has_discount)

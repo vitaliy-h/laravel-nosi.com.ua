@@ -42,13 +42,11 @@ class Product extends Model
     ];
 
     protected $casts = [
-        'display'       => 'boolean',
-        'is_hit'        => 'boolean',
-        'price'         => 'float',
-        'price2'        => 'float',
-        'imgs'          => 'array',
-        'rating'        => 'float',
-        'reviews_count' => 'integer',
+        'display' => 'boolean',
+        'is_hit'  => 'boolean',
+        'price'   => 'float',
+        'price2'  => 'float',
+        'imgs'    => 'array',
     ];
 
     public function category()
@@ -59,16 +57,6 @@ class Product extends Model
     public function brand()
     {
         return $this->belongsTo(Brand::class);
-    }
-
-    public function reviews()
-    {
-        return $this->hasMany(ProductReview::class);
-    }
-
-    public function visibleReviews()
-    {
-        return $this->hasMany(ProductReview::class)->visible();
     }
 
     /**

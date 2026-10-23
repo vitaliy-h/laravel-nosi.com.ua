@@ -5,9 +5,9 @@ namespace App\Modules\Index\ViewModels;
 use App\Modules\Core\Abstract\BaseViewModel;
 use App\Modules\Faq\ViewModels\FaqViewModel;
 use App\Modules\Promo\ViewModels\PromoViewModel;
+use App\Modules\Review\ViewModels\ReviewViewModel;
 use App\Modules\Shop\ViewModels\CategoryViewModel;
 use App\Modules\Shop\ViewModels\ProductViewModel;
-use App\Modules\Shop\ViewModels\ReviewCardViewModel;
 use App\Modules\Slider\ViewModels\SlideViewModel;
 use Illuminate\Support\Collection;
 
@@ -26,7 +26,8 @@ class HomePageViewModel extends BaseViewModel
      * @param  Collection<int, ProductViewModel>  $sale_products
      * @param  Collection<int, CategoryViewModel>  $categories
      * @param  Collection<int, PromoViewModel>  $promos
-     * @param  Collection<int, ReviewCardViewModel>  $reviews
+     * @param  bool  $reviews_enabled  the block (and its «leave a review» button) shows even before the first review is published
+     * @param  Collection<int, ReviewViewModel>  $reviews
      * @param  Collection<int, FaqViewModel>  $faqs
      */
     public function __construct(
@@ -36,6 +37,7 @@ class HomePageViewModel extends BaseViewModel
         public readonly Collection $sale_products,
         public readonly Collection $categories,
         public readonly Collection $promos,
+        public readonly bool $reviews_enabled,
         public readonly Collection $reviews,
         public readonly string $rating_value,
         public readonly float $rating_stars,

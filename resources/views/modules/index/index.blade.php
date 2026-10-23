@@ -197,8 +197,9 @@
         </section>
     @endif
 
-    {{-- Reviews (admin → Catalog → Reviews) --}}
-    @if($reviews->isNotEmpty())
+    {{-- Reviews of the shop (admin → Home page → Reviews). Shown with no reviews yet
+         too, so the first customer can leave one through the button. --}}
+    @if($reviews_enabled)
         <section class="section" id="reviews">
             <div class="container">
                 <div class="reviews-head">
@@ -208,34 +209,41 @@
                             <p class="subtitle">{{ t('home.reviews_subtitle') }}</p>
                         @endif
                     </div>
-                    @if($rating_stars > 0)
-                        <div class="rating-sum">
-                            <strong>{{ $rating_value }}</strong>
-                            <div>
-                                <div class="stars"><x-rating-stars :value="$rating_stars" /></div>
-                                <small>{{ t('home.reviews_count', ['count' => $reviews_total]) }}</small>
+                    <div class="reviews-side">
+                        @if($rating_stars > 0)
+                            <div class="rating-sum">
+                                <strong>{{ $rating_value }}</strong>
+                                <div>
+                                    <div class="stars"><x-rating-stars :value="$rating_stars" /></div>
+                                    <small>{{ t('home.reviews_count', ['count' => $reviews_total]) }}</small>
+                                </div>
                             </div>
-                        </div>
-                    @endif
+                        @endif
+                        <button type="button" class="btn btn-dark" data-dialog-open="review-dialog"><i class="bi bi-pencil-square"></i> {{ t('home.review_button') }}</button>
+                    </div>
                 </div>
 
-                <div class="carousel" data-carousel>
-                    <div class="carousel-track review-track">
-                        @foreach($reviews as $review)
-                            <article class="review">
-                                <div class="stars"><x-rating-stars :value="$review->rating" /></div>
-                                <p>{{ $review->text }}</p>
-                                <a class="review-product" href="{{ $review->product_url ?? '#' }}">
-                                    <img src="{{ $review->product_image }}" alt="" loading="lazy">
-                                    <div><b>{{ $review->author }}</b><small><i class="bi bi-patch-check-fill"></i> {{ $review->product_title }}</small></div>
-                                </a>
-                            </article>
-                        @endforeach
+                @if($reviews->isNotEmpty())
+                    <div class="carousel" data-carousel>
+                        <div class="carousel-track review-track">
+                            @foreach($reviews as $review)
+                                <article class="review">
+                                    <div class="stars"><x-rating-stars :value="$review->rating" /></div>
+                                    <p>{!! nl2br(e($review->text)) !!}</p>
+                                    <div class="review-author">
+                                        <span class="review-avatar">{{ $review->initial }}</span>
+                                        <div><b>{{ $review->author }}</b>@if($review->city)<small>{{ $review->city }}</small>@endif</div>
+                                    </div>
+                                </article>
+                            @endforeach
+                        </div>
+                        @include('modules.index.partials.carousel_nav')
                     </div>
-                    @include('modules.index.partials.carousel_nav')
-                </div>
+                @endif
             </div>
         </section>
+
+        @include('modules.index.partials.review_dialog')
     @endif
 
     {{-- Contacts: messenger cards (dictionary → contacts); a card with an empty value is skipped --}}

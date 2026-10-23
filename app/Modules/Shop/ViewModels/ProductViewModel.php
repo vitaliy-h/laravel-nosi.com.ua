@@ -31,8 +31,6 @@ class ProductViewModel extends BaseViewModel
         public readonly ?int $discount_percent,
         public readonly ?string $text,
         public readonly ?string $article,
-        public readonly float $rating,
-        public readonly int $reviews_count,
         public readonly ?CategoryViewModel $category,
         public readonly ?int $root_category_id,
     ) {}
@@ -75,8 +73,6 @@ class ProductViewModel extends BaseViewModel
                 : null,
             text: $product->text,
             article: $product->article,
-            rating: (float) $product->rating,
-            reviews_count: (int) $product->reviews_count,
             category: $category ? CategoryViewModel::from($category) : null,
             root_category_id: self::rootCategoryId($category),
         );

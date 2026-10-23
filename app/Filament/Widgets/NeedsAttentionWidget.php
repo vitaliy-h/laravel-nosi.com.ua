@@ -5,9 +5,9 @@ namespace App\Filament\Widgets;
 use App\Filament\Dashboard\Concerns\FormatsDashboardStats;
 use App\Filament\Dashboard\Queries\System\GetNeedsAttentionQuery;
 use App\Filament\Resources\Feedback\FeedbackResource;
+use App\Filament\Resources\Home\Reviews\ReviewResource;
 use App\Filament\Resources\LogLetters\LogLetterResource;
 use App\Filament\Resources\Shop\Orders\OrderResource;
-use App\Filament\Resources\Shop\ProductReviews\ProductReviewResource;
 use App\Filament\Resources\Subscribers\SubscriberResource;
 use App\Modules\Notification\Enums\LogLetterStatusEnum;
 use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
@@ -72,9 +72,9 @@ class NeedsAttentionWidget extends StatsOverviewWidget
         return array_values(array_filter([
             $this->card(
                 $counters['pendingReviews'],
-                __('admin.dashboard.stats.pending_product_reviews'),
+                __('admin.dashboard.stats.pending_reviews'),
                 'heroicon-o-star',
-                fn (): string => ProductReviewResource::getUrl(parameters: [
+                fn (): string => ReviewResource::getUrl(parameters: [
                     'filters' => ['display' => ['value' => '0']],
                 ]),
             ),

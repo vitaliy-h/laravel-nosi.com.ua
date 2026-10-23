@@ -5,7 +5,7 @@ namespace Tests\Unit\Filament\Dashboard;
 use App\Filament\Dashboard\Queries\System\GetNeedsAttentionQuery;
 use App\Modules\Feedback\Models\Feedback;
 use App\Modules\Notification\Models\LogLetter;
-use App\Modules\Shop\Models\ProductReview;
+use App\Modules\Review\Models\Review;
 use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrder\Models\Order;
 use App\Modules\Subscriber\Models\Subscriber;
@@ -38,10 +38,10 @@ class GetNeedsAttentionQueryTest extends TestCase
     public function test_counts_everything_waiting_for_an_admin(): void
     {
         // Every counter here belongs to a module that can be switched off.
-        $this->skipUnlessModules('shop_product_reviews', 'shop_cart', 'feedback', 'subscriber', 'letter_templates');
+        $this->skipUnlessModules('review', 'shop_cart', 'feedback', 'subscriber', 'letter_templates');
 
-        ProductReview::factory()->invisible()->count(2)->create();
-        ProductReview::factory()->create();
+        Review::factory()->invisible()->count(2)->create();
+        Review::factory()->create();
 
         Feedback::factory()->count(3)->create();
         Feedback::factory()->processed()->create();
@@ -84,7 +84,7 @@ class GetNeedsAttentionQueryTest extends TestCase
     public function test_empty_database_returns_zeros_not_nulls(): void
     {
         // Every counter here belongs to a module that can be switched off.
-        $this->skipUnlessModules('shop_product_reviews', 'shop_cart', 'feedback', 'subscriber', 'letter_templates');
+        $this->skipUnlessModules('review', 'shop_cart', 'feedback', 'subscriber', 'letter_templates');
 
         $counters = $this->query->handle();
 
@@ -94,12 +94,11 @@ class GetNeedsAttentionQueryTest extends TestCase
     }
 
     /**
-     * `shop_product_reviews` gates the reviews counter on its own, without taking the
-     * whole shop down with it.
+     * `review` gates the reviews counter on its own.
      */
-    public function test_disabling_only_shop_product_reviews_nulls_the_reviews_counter(): void
+    public function test_disabling_only_review_nulls_the_reviews_counter(): void
     {
-        config(['modules.list.shop_product_reviews' => false]);
+        config(['modules.list.review' => false]);
 
         $this->assertNull($this->query->handle()['pendingReviews']);
     }
@@ -107,11 +106,11 @@ class GetNeedsAttentionQueryTest extends TestCase
     public function test_disabled_module_yields_null_instead_of_zero(): void
     {
         config([
-            'modules.list.shop_product_reviews' => false,
-            'modules.list.shop_cart'            => false,
-            'modules.list.feedback'             => false,
-            'modules.list.subscriber'           => false,
-            'modules.list.letter_templates'     => false,
+            'modules.list.review'           => false,
+            'modules.list.shop_cart'        => false,
+            'modules.list.feedback'         => false,
+            'modules.list.subscriber'       => false,
+            'modules.list.letter_templates' => false,
         ]);
 
         $counters = $this->query->handle();

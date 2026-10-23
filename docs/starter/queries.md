@@ -54,7 +54,7 @@ its own `->with()`; the one that forgets ships an N+1 inside a blade loop.
 never changes state» holds exactly as long as the builder does not leave the class.
 
 **Not every read is a builder.** `GetTranslationsByLocaleQuery` returns a cached `array`,
-`GetProductRatingBreakdownQuery` an aggregate `array`, `GetPageBreadcrumbsQuery` walks a
+`GetReviewRatingQuery` an aggregate `array`, `GetPageBreadcrumbsQuery` walks a
 nested set, `CountCartItemsQuery` returns an `int`. A builder-only rule would either break
 these or split the family into two incompatible kinds, at which point it stops being a
 rule.
@@ -125,11 +125,11 @@ Grouped per entity once a module has many reads:
 app/Modules/Shop/Queries/
 ├── Category/     # FindCategoryById, FindCategoryBySlug, GetAllCategories,
 │                 # GetCategoryBreadcrumbs, SearchCategories
-├── Product/      # BuildProducts, FindProductById, PrepareShopFilter, SearchProducts
-└── ProductReview/# GetProductRatingBreakdown, GetReviewsByProduct
+└── Product/      # BuildProducts, FindProductById, PrepareShopFilter, SearchProducts
 ```
 
-24 Query classes currently live in 9 modules: `News`, `Page`, `PageText`, `Profile`,
+32 Query classes currently live in 14 modules: `Announce`, `Faq`, `News`, `Page`,
+`PageText`, `Profile`, `Promo`, `Review`, `Slider`,
 `Shop`, `ShopCart`, `ShopOrder`, `Translation`, `User`.
 
 Admin dashboard reads are a separate family under `app/Filament/Dashboard/Queries/`

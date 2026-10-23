@@ -10,7 +10,8 @@ A general project description will be added here later.
 
 | Document | What it is |
 |---|---|
-| [shop.md](shop.md) | Shop: catalog, filters, reviews, cart, promo codes, orders, admin panel |
+| [shop.md](shop.md) | Shop: catalog, filters, cart, promo codes, orders, admin panel |
+| [reviews.md](reviews.md) | Reviews of the shop: home page block, the review form, moderation |
 | [news.md](news.md) | News: feed, block content, admin panel |
 | [deploy.md](deploy.md) | Deploy to FTP-only hosting: `php artisan deploy:ftp`, settings, first deploy |
 

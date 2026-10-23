@@ -18,7 +18,6 @@ readonly class GetHitProductsQuery
         return $this->buildProductsQuery->handle()
             ->where('is_hit', true)
             ->orderByDesc('rank')
-            ->orderByDesc('reviews_count')
             ->limit($limit)
             ->get();
     }

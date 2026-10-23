@@ -4,7 +4,6 @@ namespace App\Filament\Resources\Shop\Products;
 
 use App\Filament\Actions\BaseEditAction;
 use App\Filament\Dashboard\Queries\Shop\GetCatalogStatsQuery;
-use App\Filament\Resources\Shop\ProductReviews\ProductReviewResource;
 use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
 use App\Filament\Tables\Columns\InlineEditColumn;
 use App\Filament\Traits\HasSeoFields;
@@ -167,18 +166,6 @@ class ProductResource extends Resource
                     ->numeric(decimalPlaces: 2)
                     ->alignEnd()
                     ->sortable(),
-                // Links through to the reviews of this product, filter already
-                // applied — so the column goes away with the shop_product_reviews
-                // module, whose resource has no route left to link to.
-                TextColumn::make('rating')
-                    ->sortable()
-                    ->alignEnd()
-                    ->color('primary')
-                    ->visible(ModuleGate::isEnabled('shop_product_reviews'))
-                    ->formatStateUsing(fn (Product $record): string => number_format($record->rating, 2) . ' (' . $record->reviews_count . ')')
-                    ->url(fn (Product $record): string => ProductReviewResource::getUrl(parameters: [
-                        'filters' => ['product_id' => ['value' => $record->id]],
-                    ])),
                 InlineEditColumn::make('rank')
                     ->editAsNumber()
                     ->rules(['required', 'integer'])

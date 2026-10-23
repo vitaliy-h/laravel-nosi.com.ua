@@ -291,11 +291,12 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.12; l
 .review { display: flex; flex-direction: column; gap: 16px; padding: 28px; border-radius: 24px; background: var(--cream); }
 .review .stars { color: var(--gold); font-size: 14px; }
 .review p { margin: 0; color: var(--ink-soft); flex: 1; }
-.review-product { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 16px; background: #fff; }
-.review-product img { width: 46px; height: 46px; object-fit: cover; border-radius: 12px; }
-.review-product b { display: block; font-weight: 600; font-size: 14px; }
-.review-product small { color: var(--muted); font-size: 12px; }
-.review-product small i { color: #2f9e57; }
+.reviews-side { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.review-author { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 16px; background: #fff; }
+.review-avatar { flex: none; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: var(--pink); color: var(--accent-dark); font-family: var(--display); font-weight: 600; font-size: 18px; }
+.review-author b { display: block; font-weight: 600; font-size: 14px; }
+.review-author small { color: var(--muted); font-size: 12px; }
+dialog.modal.review-dialog { max-width: 560px; }
 
 /* ---------- Contacts: messenger cards ---------- */
 .ca-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }

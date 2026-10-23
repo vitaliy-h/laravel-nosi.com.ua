@@ -5,9 +5,9 @@ namespace Tests\Feature\Filament\Dashboard;
 use App\Filament\Dashboard\Queries\Shop\GetCatalogStatsQuery;
 use App\Filament\Dashboard\Queries\System\GetSystemStatsQuery;
 use App\Filament\Widgets\NeedsAttentionWidget;
+use App\Filament\Widgets\Review\ReviewStatsWidget;
 use App\Filament\Widgets\Shop\CatalogStatsWidget;
 use App\Filament\Widgets\Shop\LatestOrdersWidget;
-use App\Filament\Widgets\Shop\ProductReviewStatsWidget;
 use App\Filament\Widgets\Shop\PromocodeStatsWidget;
 use App\Filament\Widgets\Shop\SalesChartWidget;
 use App\Filament\Widgets\Shop\SalesStatsWidget;
@@ -75,14 +75,15 @@ class DashboardModuleGateTest extends TestCase
             CatalogStatsWidget::class,
             TopProductsWidget::class,
             PromocodeStatsWidget::class,
-            ProductReviewStatsWidget::class,
         ] as $widget) {
             $this->assertNotContains($widget, $widgets, "{$widget} should not be registered when shop is disabled.");
         }
 
-        // Module-independent widgets stay registered.
+        // Module-independent widgets stay registered — shop reviews included,
+        // they are about the shop as a whole, not its catalog.
         $this->assertContains(NeedsAttentionWidget::class, $widgets);
         $this->assertContains(UserStatsWidget::class, $widgets);
+        $this->assertContains(ReviewStatsWidget::class, $widgets);
     }
 
     public function test_shop_cart_disabled_drops_only_cart_and_order_widgets(): void
@@ -99,9 +100,8 @@ class DashboardModuleGateTest extends TestCase
             $this->assertNotContains($widget, $widgets, "{$widget} should not be registered when shop_cart is disabled.");
         }
 
-        // Catalog and reviews only depend on `shop`, which is still enabled.
+        // Catalog only depends on `shop`, which is still enabled.
         $this->assertContains(CatalogStatsWidget::class, $widgets);
-        $this->assertContains(ProductReviewStatsWidget::class, $widgets);
     }
 
     public function test_shop_promocodes_disabled_drops_only_the_promocode_widget(): void
@@ -116,13 +116,13 @@ class DashboardModuleGateTest extends TestCase
         $this->assertContains(CatalogStatsWidget::class, $widgets);
     }
 
-    public function test_shop_product_reviews_disabled_drops_only_the_review_widget(): void
+    public function test_review_disabled_drops_only_the_review_widget(): void
     {
-        $widgets = $this->widgetsWith(['shop_product_reviews' => false]);
+        $widgets = $this->widgetsWith(['review' => false]);
 
-        $this->assertNotContains(ProductReviewStatsWidget::class, $widgets);
+        $this->assertNotContains(ReviewStatsWidget::class, $widgets);
 
-        // The rest of the catalog dashboard is untouched. NeedsAttentionWidget
+        // The rest of the dashboard is untouched. NeedsAttentionWidget
         // stays too — it is its "pending reviews" card that drops out, which
         // GetNeedsAttentionQueryTest covers.
         $this->assertContains(CatalogStatsWidget::class, $widgets);
@@ -183,7 +183,7 @@ class DashboardModuleGateTest extends TestCase
             CatalogStatsWidget::class,
             TopProductsWidget::class,
             PromocodeStatsWidget::class,
-            ProductReviewStatsWidget::class,
+            ReviewStatsWidget::class,
             UserStatsWidget::class,
         ] as $widget) {
             $this->assertContains($widget, $widgets);
