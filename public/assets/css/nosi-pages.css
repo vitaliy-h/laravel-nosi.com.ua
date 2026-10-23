@@ -3,9 +3,9 @@
 
 /* ---------- Page head ---------- */
 .page-head { padding: 28px 0 8px; }
-.crumbs { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0 0 14px; padding: 0; font-size: 14px; color: var(--muted); }
+.crumbs { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0 0 14px; padding: 18px 20px; border-radius: var(--r); background: var(--cream); font-size: 14px; color: var(--ink-soft); }
 .crumbs li { display: inline-flex; align-items: center; gap: 6px; }
-.crumbs li + li::before { content: "/"; color: var(--line); }
+.crumbs li + li::before { content: "/"; color: var(--muted); }
 .crumbs a:hover { color: var(--accent); }
 .page-head h1 { font-size: clamp(26px, 3vw, 40px); }
 .page-head .lead { color: var(--muted); margin: 10px 0 0; }
