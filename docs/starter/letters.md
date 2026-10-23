@@ -83,8 +83,8 @@ enum LetterEnum: string
 ## Step 2: Add translations
 
 The seeder reads the template text from `letter_templates.{key}` via `__()`, so every
-locale directory the project ships needs the key. The starter ships `lang/en` only —
-add the file to any other locale you create:
+locale directory the project ships needs the key — this project has `lang/en` and
+`lang/uk` (the seeder takes the file of `APP_LOCALE`):
 
 ```
 lang/en/letter_templates.php
