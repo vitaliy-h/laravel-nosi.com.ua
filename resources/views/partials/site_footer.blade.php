@@ -1,5 +1,6 @@
 {{-- Site footer of the Nosi design. Texts and contacts — dictionary (footer.*, contacts.*),
-     «Каталог» — root categories (SiteChromeComposer), «Покупцям» — CMS pages marked for the footer menu. --}}
+     «Каталог» — categories marked for the footer menu (SiteChromeComposer), «Покупцям» — CMS pages
+     marked for the footer menu. --}}
 @php
     $socials = [
         'instagram' => 'Instagram',

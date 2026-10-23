@@ -50,7 +50,7 @@ class IndexController extends BaseWebController
             new_products: $shop ? ProductViewModel::collect($this->newProducts->handle()) : collect(),
             sale_products: $shop ? ProductViewModel::collect($this->discountedProducts->handle()) : collect(),
             categories: $shop
-                ? CategoryViewModel::collect($this->searchCategories->handle(new CategorySearchData(root: true, limit: 8)))
+                ? CategoryViewModel::collect($this->searchCategories->handle(new CategorySearchData(root: true, withProductsInTree: true, limit: 8)))
                 : collect(),
             promos: PromoViewModel::collect($this->promos->handle()),
             reviews_enabled: $reviews,

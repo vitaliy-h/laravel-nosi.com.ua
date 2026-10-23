@@ -1,16 +1,16 @@
-{{-- Site header of the Nosi design. Menu items come from the dictionary (header.*):
-     an item with an empty title is hidden. --}}
+{{-- Site header of the Nosi design. Menu — categories, then CMS pages marked for the header
+     menu (PageContextSharer); the highlighted «Розпродаж» item comes from the dictionary
+     (header.menu_sale) and is hidden when its title is empty or nothing is on sale
+     (has_sale, SiteChromeComposer). --}}
 <header class="header">
     <div class="container">
         <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="{{ t('header.menu') }}" aria-expanded="false"><i class="bi bi-list"></i></button>
 
         <nav class="nav" id="nav">
-            @foreach(['menu_1', 'menu_2', 'menu_3'] as $item)
-                @if(t("header.{$item}") !== '')
-                    <a href="{{ t("header.{$item}_url") ?: '#' }}">{{ t("header.{$item}") }}</a>
-                @endif
+            @foreach($header_menu ?? [] as $item)
+                <a href="{{ $item->url }}" @class(['is-active' => $item->is_active])>{{ $item->title }}</a>
             @endforeach
-            @if(t('header.menu_sale') !== '')
+            @if(($has_sale ?? false) && t('header.menu_sale') !== '')
                 <a href="{{ t('header.menu_sale_url') ?: '#' }}" class="is-sale">{{ t('header.menu_sale') }}</a>
             @endif
         </nav>

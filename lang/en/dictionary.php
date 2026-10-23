@@ -11,12 +11,6 @@ return [
     // Site header (home page design). An empty menu title hides the item.
     'header' => [
         'logo:input6:br'       => 'nosi',
-        'menu_1:input6:br'     => 'Socks',
-        'menu_1_url:input6'    => '/shop/zhinochi-shkarpetky',
-        'menu_2:input6:br'     => 'Tights',
-        'menu_2_url:input6'    => '/shop/kolgotky',
-        'menu_3:input6:br'     => 'Underwear',
-        'menu_3_url:input6'    => '/shop/bilyzna',
         'menu_sale:input6:br'  => 'Sale %',
         'menu_sale_url:input6' => '/#sale',
         'menu:input4:br'       => 'Menu',

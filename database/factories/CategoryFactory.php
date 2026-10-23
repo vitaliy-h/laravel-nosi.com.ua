@@ -21,11 +21,13 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'display' => true,
-            'title'   => fake()->words(2, true),
-            'slug'    => fake()->unique()->slug(),
-            'img'     => null,
-            'text'    => null,
+            'display'             => true,
+            'display_menu'        => false,
+            'display_menu_footer' => false,
+            'title'               => fake()->words(2, true),
+            'slug'                => fake()->unique()->slug(),
+            'img'                 => null,
+            'text'                => null,
         ];
     }
 
