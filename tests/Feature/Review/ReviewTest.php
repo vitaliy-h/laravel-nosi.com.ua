@@ -117,7 +117,7 @@ class ReviewTest extends TestCase
         $this->assertDatabaseHas('reviews', ['name' => 'Ajax Reviewer']);
     }
 
-    public function test_logged_in_user_review_is_stored_under_the_account_identity(): void
+    public function test_logged_in_user_review_keeps_what_was_typed_and_links_the_account(): void
     {
         $user = User::factory()->create([
             'name'  => 'Account Name',
@@ -126,17 +126,39 @@ class ReviewTest extends TestCase
 
         $this->actingAs($user)->from('/')->post('/review', [
             'rating' => 5,
-            // Someone else's identity must not survive.
-            'name'  => 'Someone Else',
-            'email' => 'someone@example.com',
-            'text'  => 'Posted while logged in.',
+            'name'   => 'Олена',
+            'email'  => 'olena@example.com',
+            'text'   => 'Posted while logged in.',
         ]);
 
         $this->assertDatabaseHas('reviews', [
             'user_id' => $user->id,
-            'name'    => 'Account Name',
-            'email'   => 'account@example.com',
+            'name'    => 'Олена',
+            'email'   => 'olena@example.com',
         ]);
+    }
+
+    public function test_logged_in_user_still_needs_a_valid_email(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->from('/')->post('/review', [
+            'rating' => 5,
+            'name'   => 'Олена',
+            'email'  => 'not-an-email',
+            'text'   => 'Posted while logged in.',
+        ])->assertSessionHasErrors('email');
+
+        $this->assertDatabaseMissing('reviews', ['user_id' => $user->id]);
+    }
+
+    public function test_review_form_fields_are_editable_for_logged_in_user(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->get('/')
+            ->assertStatus(200)
+            ->assertDontSee('readonly', false);
     }
 
     public function test_review_form_is_prefilled_for_logged_in_user(): void

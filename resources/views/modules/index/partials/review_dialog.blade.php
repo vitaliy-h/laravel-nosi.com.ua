@@ -30,11 +30,11 @@
             </div>
 
             <div class="form-grid">
-                {{-- Readonly (not disabled) for logged-in users: disabled fields are not
-                     submitted. The server overwrites both from the account anyway. --}}
+                {{-- A logged-in user gets the account's name and email prefilled and may
+                     change them — the review is still linked to the account. --}}
                 <div class="field">
                     <label for="review-name">{{ t('home.review_name') }}</label>
-                    <input type="text" class="input" id="review-name" name="name" value="{{ old('name', $authUser?->name) }}" @readonly($authUser !== null) required>
+                    <input type="text" class="input" id="review-name" name="name" value="{{ old('name', $authUser?->name) }}" required>
                 </div>
                 <div class="field">
                     <label for="review-city">{{ t('home.review_city') }}</label>
@@ -44,7 +44,7 @@
 
             <div class="field">
                 <label for="review-email">{{ t('home.review_email') }}</label>
-                <input type="email" class="input" id="review-email" name="email" value="{{ old('email', $authUser?->email) }}" @readonly($authUser !== null) required>
+                <input type="email" class="input" id="review-email" name="email" value="{{ old('email', $authUser?->email) }}" required>
             </div>
 
             <div class="field">

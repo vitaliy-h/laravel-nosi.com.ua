@@ -44,13 +44,13 @@ class Review extends Model
     }
 
     /**
-     * Display name of the review author: the account name wins over the name
-     * typed into the public form.
+     * Display name of the review author: the name typed into the form; the
+     * account name only fills in for a review saved without one.
      */
     protected function authorName(): Attribute
     {
         return Attribute::make(
-            get: fn (): ?string => $this->user?->name ?: $this->name,
+            get: fn (): ?string => $this->name ?: $this->user?->name,
         );
     }
 

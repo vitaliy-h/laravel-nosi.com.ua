@@ -22,10 +22,10 @@ class ReviewController extends BaseWebController
 
         $this->createReview->handle(new CreateReviewData(
             rating: (int) $request->validated('rating'),
-            // A logged-in user always reviews under their own account identity,
-            // whatever the form posted.
-            name: $user?->name ?: $request->validated('name'),
-            email: $user?->email ?: $request->validated('email'),
+            // What the customer typed wins (the form prefills it from the account);
+            // a logged-in review stays linked to the account through userId.
+            name: $request->validated('name'),
+            email: $request->validated('email'),
             text: $request->validated('text'),
             city: $request->validated('city'),
             ip: $request->ip(),
