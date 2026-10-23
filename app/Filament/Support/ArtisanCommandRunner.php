@@ -66,6 +66,13 @@ class ArtisanCommandRunner
             'params'      => [],
             'destructive' => false,
         ],
+        // Sends what waits in the queue (letters, SMS) and exits — for a host where
+        // the cron worker is not running yet, and to see a mailer error right away.
+        'queue:work --stop-when-empty' => [
+            'command'     => 'queue:work',
+            'params'      => ['--stop-when-empty' => true, '--tries' => 3, '--max-time' => 50],
+            'destructive' => false,
+        ],
         'optimize:clear' => [
             'params'      => [],
             'destructive' => false,

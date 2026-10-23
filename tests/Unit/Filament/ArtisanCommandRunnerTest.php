@@ -30,6 +30,7 @@ class ArtisanCommandRunnerTest extends TestCase
             ['route:clear'],
             ['view:clear'],
             ['queue:restart'],
+            ['queue:work --stop-when-empty'],
             ['optimize:clear'],
         ];
     }

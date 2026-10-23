@@ -428,6 +428,7 @@ return [
             'route:clear'          => 'Remove the cached routes file.',
             'view:clear'           => 'Clear all compiled Blade view files.',
             'queue:restart'        => 'Restart queue worker daemons after their current job finishes.',
+            'queue:work --stop-when-empty' => 'Send everything waiting in the queue (letters, SMS) now and stop.',
             'optimize:clear'       => 'Remove all cached bootstrap files (config, routes, views, events).',
         ],
     ],
