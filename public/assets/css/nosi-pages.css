@@ -145,9 +145,8 @@ select.input { appearance: none; padding-right: 42px; background: #fff url("data
 .pd-perks { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .pd-perks li { display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--ink-soft); }
 .pd-perks i { flex: 0 0 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: var(--cream); color: var(--accent); font-size: 17px; }
-.pd-tabs { margin-top: 72px; }
-.pd-tabs .tabs { margin-bottom: 28px; }
-.pd-tabs [data-tab-panel][hidden] { display: none; }
+.pd-section { margin-top: 40px; }
+.pd-section h2 { font-size: 22px; margin: 0 0 16px; }
 .specs { display: grid; grid-template-columns: max-content 1fr; gap: 0; margin: 0; max-width: 640px; }
 .specs dt, .specs dd { margin: 0; padding: 14px 0; border-bottom: 1px solid var(--line); }
 .specs dt { padding-right: 40px; color: var(--muted); }
@@ -304,7 +303,6 @@ dialog.modal p { color: var(--ink-soft); margin: 0 0 16px; }
     .shop-aside, .pd-info, .summary, .account-menu { position: static; }
     .filter-toggle { display: flex; width: 100%; }
     .shop-aside.is-collapsed .filter-block { display: none; }
-    .pd-tabs { margin-top: 48px; }
     .rv-summary { gap: 24px; }
     .block-gallery { grid-template-columns: repeat(3, 1fr); }
 }

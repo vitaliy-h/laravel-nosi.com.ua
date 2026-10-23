@@ -13,7 +13,9 @@
     @endif
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link href="{{ asset('favicon.svg') }}" rel="icon">
+    <link href="{{ asset('favicon.ico') }}?v=2" rel="icon" sizes="48x48">
+    <link href="{{ asset('favicon.svg') }}?v=2" rel="icon" type="image/svg+xml">
+    <link href="{{ asset('apple-touch-icon.png') }}?v=2" rel="apple-touch-icon">
 
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>

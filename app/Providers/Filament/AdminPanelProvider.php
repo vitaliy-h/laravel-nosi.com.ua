@@ -256,7 +256,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Sky,
             ])
-            ->favicon(asset('favicon.svg'))
+            ->favicon(asset('favicon.svg').'?v=2')
             ->resources(array_filter([
                 PageResource::class,
                 LanguageResource::class,

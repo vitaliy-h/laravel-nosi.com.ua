@@ -68,40 +68,33 @@
                         @endif
                     @endforeach
                 </ul>
-            </div>
 
-        </div>
+                <div class="pd-section">
+                    <h2>{{ t('shop.description') }}</h2>
+                    <div class="content">
+                        @if($product->text)
+                            {!! $product->text !!}
+                        @else
+                            <p class="muted">{{ $product->title }}</p>
+                        @endif
+                    </div>
+                </div>
 
-        <div class="pd-tabs" data-tabs>
-            <div class="tabs" role="tablist">
-                <button type="button" class="is-active" role="tab" data-tab-target="description">{{ t('shop.description') }}</button>
-                <button type="button" role="tab" data-tab-target="specifications">{{ t('shop.specifications') }}</button>
-            </div>
-
-            <div data-tab-panel="description">
-                <div class="content page-narrow">
-                    @if($product->text)
-                        {!! $product->text !!}
-                    @else
-                        <p class="muted">{{ $product->title }}</p>
-                    @endif
+                <div class="pd-section">
+                    <h2>{{ t('shop.specifications') }}</h2>
+                    <dl class="specs">
+                        <dt>{{ t('shop.article') }}</dt>
+                        <dd>{{ $product->article ?? '—' }}</dd>
+                        <dt>{{ t('shop.category') }}</dt>
+                        <dd><a class="link" href="{{ $category->url }}">{{ $category->title }}</a></dd>
+                        @if($product->brand_title)
+                            <dt>{{ t('shop.brand') }}</dt>
+                            <dd>{{ $product->brand_title }}</dd>
+                        @endif
+                    </dl>
                 </div>
             </div>
 
-            <div data-tab-panel="specifications" hidden>
-                <dl class="specs">
-                    <dt>{{ t('shop.article') }}</dt>
-                    <dd>{{ $product->article ?? '—' }}</dd>
-                    <dt>{{ t('shop.category') }}</dt>
-                    <dd><a class="link" href="{{ $category->url }}">{{ $category->title }}</a></dd>
-                    @if($product->brand_title)
-                        <dt>{{ t('shop.brand') }}</dt>
-                        <dd>{{ $product->brand_title }}</dd>
-                    @endif
-                    <dt>{{ t('shop.price') }}</dt>
-                    <dd>{{ $product->price_formatted ?? '—' }}</dd>
-                </dl>
-            </div>
         </div>
     </div>
 @endsection
