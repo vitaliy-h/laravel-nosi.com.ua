@@ -111,7 +111,7 @@ button.link-arrow { background: none; cursor: pointer; }
 .header .container { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 80px; }
 .nav { display: flex; gap: 2px; }
 .nav a { padding: 9px 15px; border-radius: 999px; font-size: 15px; font-weight: 500; white-space: nowrap; transition: background .2s; }
-.nav a:hover { background: var(--cream); }
+.nav a:hover, .nav a.is-active { background: var(--cream); }
 .nav a.is-sale { background: var(--lime); }
 .logo { font-family: var(--display); font-size: 30px; font-weight: 700; letter-spacing: -.04em; line-height: 1; white-space: nowrap; }
 .logo b { color: var(--accent); }
@@ -366,7 +366,7 @@ dialog.modal.review-dialog { max-width: 560px; }
 .fa .logo { color: #fff; font-size: 34px; }
 .fa-about p { margin: 16px 0 24px; max-width: 300px; }
 .fa .f-h { color: #fff; }
-.fa .f-links a:hover { color: var(--lime); }
+.fa .f-links a:hover, .fa .f-links a.is-active { color: var(--lime); }
 .fa .socials a { background: rgba(255, 255, 255, .08); color: #fff; }
 .fa .socials a:hover { background: var(--lime); color: var(--ink); }
 .fa-bottom { border-top: 1px solid rgba(255, 255, 255, .1); }

@@ -11,6 +11,9 @@
     @if(($page ?? null) && !$page->is_indexable)
         <meta name="robots" content="noindex, nofollow">
     @endif
+    {{-- A page sets its own with @section('canonical', ...); otherwise the current URL
+         without the query string, keeping only ?page=N of a paginated list. --}}
+    <link rel="canonical" href="@hasSection('canonical')@yield('canonical')@else{{ url()->current() . (request()->integer('page') > 1 ? '?page=' . request()->integer('page') : '') }}@endif">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link href="{{ asset('favicon.ico') }}?v=2" rel="icon" sizes="48x48">
@@ -27,9 +30,16 @@
 
     @include('partials.head')
 
+    @include('partials.schema')
+    @stack('schema')
+
     @stack('styles')
+
+    {!! t('counters.head') !!}
 </head>
 <body class="@yield('body-class', 'default-page')">
+
+{!! t('counters.body') !!}
 
 @include('partials.announce')
 

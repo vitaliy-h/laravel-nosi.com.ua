@@ -126,6 +126,13 @@ return [
         'developer:input6:br'     => 'Розробка',
     ],
 
+    // Counters and analytics (GA, GTM, Meta Pixel…) — raw HTML printed as is:
+    // `head` at the end of <head>, `body` right after <body>.
+    'counters' => [
+        'head:textarea' => '',
+        'body:textarea' => '',
+    ],
+
     // Legacy starter layout (layouts.app navbar).
     'index' => [
         'project_name' => 'Nosi',

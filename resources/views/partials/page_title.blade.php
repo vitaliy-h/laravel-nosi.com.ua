@@ -4,6 +4,21 @@
 <section class="page-head">
     <div class="container">
         @if(($breadcrumbs ?? collect())->count() > 1)
+            @php
+                $breadcrumbsSchema = [
+                    '@context'        => 'https://schema.org',
+                    '@type'           => 'BreadcrumbList',
+                    'itemListElement' => $breadcrumbs->values()->map(fn ($item, $i) => [
+                        '@type'    => 'ListItem',
+                        'position' => $i + 1,
+                        'name'     => $item->title,
+                        'item'     => url($item->url),
+                    ])->all(),
+                ];
+            @endphp
+            @push('schema')
+                <script type="application/ld+json">@json($breadcrumbsSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG)</script>
+            @endpush
             <ol class="crumbs">
                 @foreach($breadcrumbs as $item)
                     @if($loop->last)

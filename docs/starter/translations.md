@@ -93,6 +93,10 @@ first one is expanded. The home page groups (`header`, `home`, `benefits`, `cont
 key to `lang/en/admin.php` and `lang/uk/admin.php` with a new group, otherwise the raw group
 name is shown.
 
+The `counters` group (`counters.head`, `counters.body`) holds analytics code (GA, GTM, Meta
+Pixel…). `layouts/app.blade.php` prints it **unescaped**: `head` at the end of `<head>`,
+`body` right after `<body>`.
+
 ---
 
 # 🏗 Supported field suffixes

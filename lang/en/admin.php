@@ -360,6 +360,7 @@ return [
         'benefits'      => 'Benefits (strip under the slider)',
         'contacts'      => 'Contacts and socials',
         'footer'        => 'Site footer',
+        'counters'      => 'Counters and analytics',
         'index'         => 'Project',
         'feedback'      => 'Feedback form',
         'news'          => 'News',

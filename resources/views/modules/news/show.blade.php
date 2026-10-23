@@ -2,6 +2,25 @@
 
 @section('body-class', 'news-item-page')
 
+@section('canonical', url($newsItem->url))
+
+@php
+    $newsSchema = array_filter([
+        '@context'         => 'https://schema.org',
+        '@type'            => 'NewsArticle',
+        'headline'         => Str::limit($newsItem->title, 110),
+        'description'      => $newsItem->meta_description ?: $newsItem->short_text,
+        'image'            => $newsItem->has_image ? [url($newsItem->image)] : null,
+        'url'              => url($newsItem->url),
+        'mainEntityOfPage' => url($newsItem->url),
+        'publisher'        => ['@id' => url('/') . '#organization'],
+    ]);
+@endphp
+
+@push('schema')
+    <script type="application/ld+json">@json($newsSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG)</script>
+@endpush
+
 @section('content')
     @include('partials.page_title', ['title' => $newsItem->title, 'lead' => $newsItem->published_at_formatted])
 

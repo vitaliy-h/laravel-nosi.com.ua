@@ -2,6 +2,36 @@
 
 @section('body-class', 'product-page')
 
+@if($product->url)
+    @section('canonical', url($product->url))
+@endif
+
+@php
+    $productPrice = $product->has_discount ? $product->price2 : $product->price;
+
+    $productSchema = array_filter([
+        '@context'    => 'https://schema.org',
+        '@type'       => 'Product',
+        'name'        => $product->title,
+        'image'       => array_map(fn (string $src) => url($src), $product->gallery ?: [$product->image]),
+        'description' => $product->text ? Str::limit(trim(strip_tags($product->text)), 500) : null,
+        'sku'         => $product->article,
+        'category'    => $category->title ?? null,
+        'brand'       => $product->brand_title ? ['@type' => 'Brand', 'name' => $product->brand_title] : null,
+        'offers'      => $productPrice ? [
+            '@type'         => 'Offer',
+            'url'           => url($product->url ?? request()->url()),
+            'price'         => number_format($productPrice, 2, '.', ''),
+            'priceCurrency' => 'UAH',
+            'availability'  => 'https://schema.org/InStock',
+        ] : null,
+    ]);
+@endphp
+
+@push('schema')
+    <script type="application/ld+json">@json($productSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG)</script>
+@endpush
+
 @section('content')
     @include('partials.page_title', ['hideTitle' => true])
 

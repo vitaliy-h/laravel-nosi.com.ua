@@ -30,7 +30,7 @@
                     <h4 class="f-h">{{ t('footer.catalog_title') }}</h4>
                     <ul class="f-links">
                         @foreach($footer_categories as $category)
-                            <li><a href="{{ $category->url }}">{{ $category->title }}</a></li>
+                            <li><a href="{{ $category->url }}" @class(['is-active' => is_active_url($category->url)])>{{ $category->title }}</a></li>
                         @endforeach
                     </ul>
                 </div>
@@ -40,7 +40,7 @@
                 <h4 class="f-h">{{ t('footer.buyers_title') }}</h4>
                 <ul class="f-links">
                     @foreach($footer_menu ?? [] as $item)
-                        <li><a href="{{ $item->url }}">{{ $item->title }}</a></li>
+                        <li><a href="{{ $item->url }}" @class(['is-active' => is_active_url($item->url)])>{{ $item->title }}</a></li>
                     @endforeach
                     @if(t('footer.faq_link') !== '')
                         <li><a href="{{ save_route('index.index') }}#faq">{{ t('footer.faq_link') }}</a></li>
