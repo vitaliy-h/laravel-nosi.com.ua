@@ -3,6 +3,7 @@
 namespace App\Modules\Page\Services;
 
 use App\Modules\Core\Support\ModuleGate;
+use App\Modules\Page\Enums\PageModule;
 use App\Modules\Page\Models\Page;
 use App\Modules\Shop\Dtos\CategorySearchData;
 use App\Modules\Shop\Queries\Category\SearchCategoriesQuery;
@@ -16,18 +17,24 @@ class MenuService
 
     public function getHeaderMenu()
     {
-        return Page::query()
-            ->visible()
-            ->where('display_menu', true)
-            ->orderBy('rank', 'DESC')
-            ->get();
+        return $this->menuPages('display_menu');
     }
 
     public function getFooterMenu()
     {
+        return $this->menuPages('display_menu_footer');
+    }
+
+    /**
+     * Pages marked for a menu, skipping those of a switched-off module
+     * (config/modules.php) — their URL answers 404.
+     */
+    private function menuPages(string $flag): Collection
+    {
         return Page::query()
             ->visible()
-            ->where('display_menu_footer', true)
+            ->where($flag, true)
+            ->whereIn('module', array_map(fn (PageModule $module) => $module->value, PageModule::active()))
             ->orderBy('rank', 'DESC')
             ->get();
     }
