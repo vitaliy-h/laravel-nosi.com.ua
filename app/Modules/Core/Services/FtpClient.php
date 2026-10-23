@@ -62,6 +62,14 @@ class FtpClient
         }
     }
 
+    /**
+     * False when there was nothing to delete.
+     */
+    public function delete(string $remotePath): bool
+    {
+        return @ftp_delete($this->connection(), $this->path($remotePath));
+    }
+
     public function close(): void
     {
         if ($this->connection !== null) {

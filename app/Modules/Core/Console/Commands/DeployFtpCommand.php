@@ -24,6 +24,7 @@ use Throwable;
     {--since= : Upload the changes since this commit instead of the one deployed last}
     {--dry-run : Only list what would be uploaded}
     {--skip-post : Do not call /api/deploy after the upload}
+    {--keep-removed : Do not delete on the server the files removed or renamed in the repository}
     {--force : Deploy even with uncommitted changes}')]
 #[Description('Upload the changed files over FTP and run migrations and caches on the server')]
 class DeployFtpCommand extends Command
@@ -84,8 +85,9 @@ class DeployFtpCommand extends Command
             $this->warn('composer.lock changed — upload vendor/ by hand (see docs/project/deploy.md).');
         }
 
-        foreach ($deleted as $file) {
-            $this->warn("Removed from the repository, still on the server: {$file}");
+        if ($deleted !== []) {
+            $this->line(count($deleted) . ' files removed or renamed in the repository'
+                . ($this->option('keep-removed') ? ' — kept on the server (--keep-removed).' : ' — will be deleted on the server.'));
         }
 
         // Generated, untracked assets: compared by hash with the last upload.
@@ -101,6 +103,9 @@ class DeployFtpCommand extends Command
         if ($this->option('dry-run')) {
             foreach ($files as $file) {
                 $this->line("  {$file}");
+            }
+            foreach ($deleted as $file) {
+                $this->line("  <fg=red>− {$file}</>");
             }
 
             return self::SUCCESS;
@@ -119,6 +124,13 @@ class DeployFtpCommand extends Command
             $bar->setMessage('');
             $bar->finish();
             $this->newLine();
+        }
+
+        // After the upload, so the new code is in place before the old goes.
+        if (!$this->option('keep-removed')) {
+            foreach ($deleted as $file) {
+                $this->line(($ftp->delete($file) ? '  − ' : '  · already gone: ') . $file);
+            }
         }
 
         // Remembered only after every file went up: an interrupted deploy is
@@ -165,13 +177,22 @@ class DeployFtpCommand extends Command
             ? $this->lines($this->git('ls-files'))
             : $this->lines($this->git("diff --name-only --diff-filter=ACMRT {$base} {$head}"));
 
-        $deleted = $base === null ? [] : $this->lines($this->git("diff --name-only --diff-filter=D {$base} {$head}"));
+        // Removed files and the old paths of renamed ones (`R100\told\tnew`): both
+        // are left behind on the server unless deleted there.
+        $deleted = [];
 
-        $keep = fn (string $file): bool => !Str::startsWith($file, $exclude);
+        if ($base !== null) {
+            foreach ($this->lines($this->git("diff --name-status -M --diff-filter=DR {$base} {$head}")) as $line) {
+                $deleted[] = explode("\t", $line)[1] ?? '';
+            }
+        }
+
+        $keep = fn (string $file): bool => $file !== '' && !Str::startsWith($file, $exclude);
 
         return [
             array_values(array_filter($files, fn (string $file) => $keep($file) && is_file(base_path($file)))),
-            array_values(array_filter($deleted, $keep)),
+            // A path that exists again in HEAD (removed, then re-added) stays.
+            array_values(array_filter(array_unique($deleted), fn (string $file) => $keep($file) && !is_file(base_path($file)))),
         ];
     }
 
