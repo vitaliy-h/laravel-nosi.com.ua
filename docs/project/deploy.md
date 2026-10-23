@@ -17,12 +17,17 @@ php artisan deploy:ftp
    interrupted deploy is just run again;
 4. calls `POST /api/deploy` with the `X-Deploy-Token` header, which runs on the server
    (`Core\Services\PostDeployService`): `config:clear`, `route:clear`, `view:clear`,
-   `event:clear`, `migrate --force`, `cache:clear`,
-   `storage:link` (if `public/storage` is missing), `modules:cache`, `route:cache`,
-   `view:cache`, and prints every step.
+   `event:clear`, `migrate --force`, `cache:clear`, `storage:link` (if `public/storage`
+   is missing), `modules:cache`, `route:cache`, `view:cache`, and prints every step.
+
+`migrate` needs the database user to have the structure privileges: cPanel → MySQL
+Databases → the user's privileges → CREATE, ALTER, DROP, INDEX, REFERENCES (and LOCK
+TABLES for importing dumps through phpMyAdmin). Without them a migration fails with
+`1142 CREATE command denied`.
 
 Only committed files are deployed: with uncommitted changes the command stops (`--force`
-overrides). Files removed from the repository are listed but not deleted on the server.
+overrides). Files removed or renamed in the repository are deleted on the server after
+the upload (`--keep-removed` keeps them).
 Never uploaded: `vendor/`, `.env`, anything untracked, and the prefixes in
 `config('deploy.exclude')` (`tests/`, `docs/`, `design/`, `.github/`, …).
 

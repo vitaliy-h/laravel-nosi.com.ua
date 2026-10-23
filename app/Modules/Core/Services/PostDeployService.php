@@ -11,6 +11,9 @@ use Throwable;
  * for hosting reachable over FTP only: `php artisan deploy:ftp` uploads the code, then
  * calls POST /api/deploy, which runs these commands.
  *
+ * The hosting's database user needs the structure privileges (CREATE, ALTER,
+ * DROP, INDEX, REFERENCES) for `migrate` — see docs/project/deploy.md.
+ *
  * Order matters: the module manifest resolves page-driven route prefixes from
  * the database, so it is built after migrating, and route:cache freezes
  * whatever prefixes it finds. See docs/starter/modules.md.
