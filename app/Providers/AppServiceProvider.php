@@ -46,7 +46,7 @@ class AppServiceProvider extends ServiceProvider
         Paginator::defaultView('partials.pagination');
         Paginator::defaultSimpleView('partials.pagination');
 
-        View::composer(['partials.announce', 'partials.site_footer'], SiteChromeComposer::class);
+        View::composer(['partials.announce', 'partials.site_header', 'partials.site_footer'], SiteChromeComposer::class);
 
         // Super Admin bypasses every Gate/Policy check in the app.
         Gate::before(fn ($user, string $ability) => $user->hasRole('super_admin') ? true : null);

@@ -5,6 +5,7 @@ namespace App\Modules\Page\ViewModels;
 use App\Modules\Core\Abstract\BaseViewModel;
 use App\Modules\Core\Support\UrlHelper;
 use App\Modules\Page\Models\Page;
+use App\Modules\Shop\Models\Category;
 
 class MenuItemViewModel extends BaseViewModel
 {
@@ -25,6 +26,17 @@ class MenuItemViewModel extends BaseViewModel
 
         return new self(
             title: (string) $page->title,
+            url: $url,
+            is_active: $currentPath === $url,
+        );
+    }
+
+    public static function fromCategory(Category $category, string $currentPath): self
+    {
+        $url = save_route('shop.category', $category->slug, false);
+
+        return new self(
+            title: (string) $category->title,
             url: $url,
             is_active: $currentPath === $url,
         );

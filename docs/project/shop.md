@@ -11,7 +11,9 @@ Code — the `Shop`, `ShopCart`, `ShopOrder` modules (`app/Modules/`) and the ad
 ## 1. Catalog
 
 **Categories** — a tree of arbitrary depth (nested set): name, slug, image, text,
-SEO fields, sort order, "show" toggle.
+SEO fields, sort order, "show" toggle, and the "header menu" / "footer menu" toggles (as on
+pages): the header lists the marked categories first, then the pages; the footer has the
+«Каталог» column (categories) next to «Покупцям» (pages).
 
 **Brands** — name, slug, logo, text, SEO. Optional: enabled separately
 (`shop_brands`).

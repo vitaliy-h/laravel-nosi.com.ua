@@ -7,6 +7,7 @@ use App\Modules\Page\Queries\GetPageBreadcrumbsQuery;
 use App\Modules\Page\ViewModels\LayoutViewModel;
 use App\Modules\Page\ViewModels\MenuItemViewModel;
 use App\Modules\Page\ViewModels\PageViewModel;
+use App\Modules\Shop\Models\Category;
 use App\Modules\ShopCart\Services\CartContext;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -54,7 +55,9 @@ readonly class PageContextSharer
             breadcrumbs: $page ? $this->breadcrumbs->handle($page) : collect(),
             meta_title: $page?->meta_title,
             meta_description: $page?->meta_description,
-            header_menu: $this->menuItems($this->menu->getHeaderMenu()),
+            header_menu: $this->categoryItems($this->menu->getHeaderCategories())
+                ->concat($this->menuItems($this->menu->getHeaderMenu()))
+                ->values(),
             footer_menu: $this->menuItems($this->menu->getFooterMenu()),
             cart_count: $this->cart->count(),
         );
@@ -66,11 +69,29 @@ readonly class PageContextSharer
      */
     private function menuItems(Collection $pages): Collection
     {
-        $currentPath = '/' . $this->request->path();
+        $currentPath = $this->currentPath();
 
         return $pages
             ->map(fn (Page $page) => MenuItemViewModel::fromPage($page, $currentPath))
             ->values();
+    }
+
+    /**
+     * @param  Collection<int, Category>  $categories
+     * @return Collection<int, MenuItemViewModel>
+     */
+    private function categoryItems(Collection $categories): Collection
+    {
+        $currentPath = $this->currentPath();
+
+        return $categories
+            ->map(fn (Category $category) => MenuItemViewModel::fromCategory($category, $currentPath))
+            ->values();
+    }
+
+    private function currentPath(): string
+    {
+        return '/' . ltrim($this->request->path(), '/');
     }
 
     /**

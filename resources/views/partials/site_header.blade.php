@@ -1,17 +1,16 @@
-{{-- Site header of the Nosi design. Menu items come from the dictionary (header.*):
-     an item with an empty title is hidden; the item of the current page gets `.is-active`. --}}
+{{-- Site header of the Nosi design. Menu — categories, then CMS pages marked for the header
+     menu (PageContextSharer); the highlighted «Розпродаж» item comes from the dictionary
+     (header.menu_sale) and is hidden when its title is empty or nothing is on sale
+     (has_sale, SiteChromeComposer). The item of the current page gets `.is-active`. --}}
 <header class="header">
     <div class="container">
         <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-label="{{ t('header.menu') }}" aria-expanded="false"><i class="bi bi-list"></i></button>
 
         <nav class="nav" id="nav">
-            @foreach(['menu_1', 'menu_2', 'menu_3'] as $item)
-                @if(t("header.{$item}") !== '')
-                    @php($url = t("header.{$item}_url") ?: '#')
-                    <a href="{{ $url }}" @class(['is-active' => is_active_url($url)]) @if(is_active_url($url)) aria-current="page" @endif>{{ t("header.{$item}") }}</a>
-                @endif
+            @foreach($header_menu ?? [] as $item)
+                <a href="{{ $item->url }}" @class(['is-active' => $item->is_active]) @if($item->is_active) aria-current="page" @endif>{{ $item->title }}</a>
             @endforeach
-            @if(t('header.menu_sale') !== '')
+            @if(($has_sale ?? false) && t('header.menu_sale') !== '')
                 @php($url = t('header.menu_sale_url') ?: '#')
                 <a href="{{ $url }}" @class(['is-sale', 'is-active' => is_active_url($url)]) @if(is_active_url($url)) aria-current="page" @endif>{{ t('header.menu_sale') }}</a>
             @endif

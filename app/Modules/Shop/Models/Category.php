@@ -29,6 +29,8 @@ class Category extends Model
         '_rgt',
         'rank',
         'display',
+        'display_menu',
+        'display_menu_footer',
         'title',
         'slug',
         'img',
@@ -38,7 +40,9 @@ class Category extends Model
     ];
 
     protected $casts = [
-        'display' => 'boolean',
+        'display'             => 'boolean',
+        'display_menu'        => 'boolean',
+        'display_menu_footer' => 'boolean',
     ];
 
     public function products(): HasMany

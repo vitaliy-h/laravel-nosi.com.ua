@@ -62,7 +62,13 @@ class CategoryResource extends Resource
                 Toggle::make('display')
                     ->default(true)
                     ->inline(false)
-                    ->columnSpan(6),
+                    ->columnSpan(2),
+                Toggle::make('display_menu')
+                    ->inline(false)
+                    ->columnSpan(2),
+                Toggle::make('display_menu_footer')
+                    ->inline(false)
+                    ->columnSpan(2),
                 ...NestedSetFields::make(Category::class),
 
                 FileUpload::make('img')
@@ -97,6 +103,8 @@ class CategoryResource extends Resource
                     )
                     ->searchable(),
                 static::getSlugColumn(),
+                ToggleColumn::make('display_menu'),
+                ToggleColumn::make('display_menu_footer'),
                 ToggleColumn::make('display'),
                 TextColumn::make('created_at')
                     ->dateTime()

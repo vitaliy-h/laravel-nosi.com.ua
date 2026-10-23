@@ -6,6 +6,7 @@ use App\Modules\Announce\Models\Announce;
 use App\Modules\Faq\Models\Faq;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
+use Database\Seeders\LanguageSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -64,6 +65,42 @@ class IndexControllerTest extends TestCase
         $response = $this->get('/');
 
         $this->assertSame([$discounted->id], $response->viewData('sale_products')->pluck('id')->all());
+    }
+
+    public function test_sale_menu_item_shows_while_products_are_on_sale(): void
+    {
+        $this->seed(LanguageSeeder::class);
+        Product::factory()->forCategory(Category::factory()->create())->create(['price' => 100, 'price2' => 70]);
+
+        $this->get('/')->assertSee('class="is-sale"', false);
+    }
+
+    public function test_sale_menu_item_is_hidden_without_products_on_sale(): void
+    {
+        $this->seed(LanguageSeeder::class);
+        Product::factory()->forCategory(Category::factory()->create())->create(['price' => 100, 'price2' => 100]);
+
+        $this->get('/')->assertDontSee('class="is-sale"', false);
+    }
+
+    public function test_categories_block_skips_categories_without_products(): void
+    {
+        $withOwn = Category::factory()->create();
+        Product::factory()->forCategory($withOwn)->create();
+
+        $withChild = Category::factory()->create();
+        $child = Category::factory()->create(['parent_id' => $withChild->id]);
+        Product::factory()->forCategory($child)->create();
+
+        $empty = Category::factory()->create();
+        Category::factory()->create(['parent_id' => $empty->id]);
+
+        $withHiddenOnly = Category::factory()->create();
+        Product::factory()->forCategory($withHiddenOnly)->invisible()->create();
+
+        $ids = $this->get('/')->viewData('categories')->pluck('id')->sort()->values()->all();
+
+        $this->assertSame([$withOwn->id, $withChild->id], $ids);
     }
 
     public function test_hidden_announces_and_faqs_are_not_shown(): void

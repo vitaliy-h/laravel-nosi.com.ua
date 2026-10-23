@@ -9,14 +9,26 @@ use Illuminate\Support\Collection;
 class SearchCategoriesQuery
 {
     /**
-     * Search visible categories by simple criteria (homepage widgets: featured, special).
+     * Search visible categories by simple criteria (homepage widgets, header and footer menus).
      */
     public function handle(CategorySearchData $criteria): Collection
     {
         $query = Category::visible();
 
         if ($criteria->root) {
-            $query->whereIsRoot()->orderBy('_lft');
+            $query->whereIsRoot();
+        }
+
+        if ($criteria->headerMenu) {
+            $query->where('display_menu', true);
+        }
+
+        if ($criteria->footerMenu) {
+            $query->where('display_menu_footer', true);
+        }
+
+        if ($criteria->root || $criteria->headerMenu || $criteria->footerMenu) {
+            $query->orderBy('_lft');
         }
 
         if ($criteria->hasImage) {
@@ -25,6 +37,18 @@ class SearchCategoriesQuery
 
         if ($criteria->onlyWithProducts) {
             $query->withCount('products')->having('products_count', '>', 0);
+        }
+
+        // A visible product in the category itself or any of its subcategories —
+        // the category page lists the whole subtree, so it is not empty.
+        if ($criteria->withProductsInTree) {
+            $query->whereExists(fn ($products) => $products
+                ->selectRaw('1')
+                ->from('shop_products')
+                ->join('shop_categories as product_category', 'product_category.id', '=', 'shop_products.category_id')
+                ->where('shop_products.display', true)
+                ->whereColumn('product_category._lft', '>=', 'shop_categories._lft')
+                ->whereColumn('product_category._rgt', '<=', 'shop_categories._rgt'));
         }
 
         if ($criteria->random) {
