@@ -84,6 +84,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.12; l
     transition: gap .3s var(--ease), border-color .25s, background .25s;
 }
 .link-arrow:hover { gap: 16px; border-color: var(--ink); }
+button.link-arrow { background: none; cursor: pointer; }
 .cart-pill {
     display: inline-flex;
     align-items: center;
@@ -291,7 +292,6 @@ h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.12; l
 .review { display: flex; flex-direction: column; gap: 16px; padding: 28px; border-radius: 24px; background: var(--cream); }
 .review .stars { color: var(--gold); font-size: 14px; }
 .review p { margin: 0; color: var(--ink-soft); flex: 1; }
-.reviews-side { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .review-author { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 16px; background: #fff; }
 .review-avatar { flex: none; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: var(--pink); color: var(--accent-dark); font-family: var(--display); font-weight: 600; font-size: 18px; }
 .review-author b { display: block; font-weight: 600; font-size: 14px; }

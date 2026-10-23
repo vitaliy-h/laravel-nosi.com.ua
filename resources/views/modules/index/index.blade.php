@@ -209,18 +209,15 @@
                             <p class="subtitle">{{ t('home.reviews_subtitle') }}</p>
                         @endif
                     </div>
-                    <div class="reviews-side">
-                        @if($rating_stars > 0)
-                            <div class="rating-sum">
-                                <strong>{{ $rating_value }}</strong>
-                                <div>
-                                    <div class="stars"><x-rating-stars :value="$rating_stars" /></div>
-                                    <small>{{ t('home.reviews_count', ['count' => $reviews_total]) }}</small>
-                                </div>
+                    @if($rating_stars > 0)
+                        <div class="rating-sum">
+                            <strong>{{ $rating_value }}</strong>
+                            <div>
+                                <div class="stars"><x-rating-stars :value="$rating_stars" /></div>
+                                <small>{{ t('home.reviews_count', ['count' => $reviews_total]) }}</small>
                             </div>
-                        @endif
-                        <button type="button" class="btn btn-dark" data-dialog-open="review-dialog"><i class="bi bi-pencil-square"></i> {{ t('home.review_button') }}</button>
-                    </div>
+                        </div>
+                    @endif
                 </div>
 
                 @if($reviews->isNotEmpty())
@@ -240,6 +237,10 @@
                         @include('modules.index.partials.carousel_nav')
                     </div>
                 @endif
+
+                <div class="section-cta">
+                    <button type="button" class="link-arrow" data-dialog-open="review-dialog">{{ t('home.review_button') }} <i class="bi bi-arrow-right"></i></button>
+                </div>
             </div>
         </section>
 
