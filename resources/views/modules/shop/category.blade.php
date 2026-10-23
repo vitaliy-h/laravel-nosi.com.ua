@@ -5,265 +5,132 @@
 @section('content')
     @include('partials.page_title')
 
-    <div class="container mt-4">
-        <div class="row">
+    <div class="container page">
+        <div class="shop-layout">
 
-            <div class="col-lg-4 sidebar">
-                <div class="widgets-container">
-                    <form method="GET" action="{{ url()->current() }}">
-                        <input type="hidden" name="search" value="{{ request('search') }}">
-                        <input type="hidden" name="sort" value="{{ request('sort') }}">
-                        <input type="hidden" name="items" value="{{ request('items') }}">
+            <aside class="shop-aside is-collapsed">
+                <button type="button" class="btn btn-line filter-toggle"><i class="bi bi-sliders"></i> {{ t('shop.categories') }} / {{ t('shop.apply_filter') }}</button>
 
-
-                        <div class="product-categories-widget widget-item">
-                            <h3 class="widget-title">{{ t('shop.categories') }}</h3>
-                            @include('modules.shop.partials.category_tree', [
-                                'categories' => $categories,
-                                'level' => 0,
-                            ])
-                        </div>
-                        <div class="pricing-range-widget widget-item">
-                            <h3 class="widget-title">{{ t('shop.price_range') }}</h3>
-
-                            <div class="price-range-container">
-                                <div class="current-range mb-3">
-                                    <span class="min-price">{{ $filter->price->fromSlider() }}</span>
-                                    <span class="max-price float-end">{{ $filter->price->toSlider() }}</span>
-                                </div>
-
-                                <div class="range-slider">
-                                    <div class="slider-track"></div>
-                                    <div class="slider-progress"></div>
-
-                                    <input
-                                        type="range"
-                                        name=""
-                                        class="min-range"
-                                        min="{{ $filter->price->min }}"
-                                        max="{{ $filter->price->max }}"
-                                        value="{{ $filter->price->fromSlider() }}"
-                                        step="1"
-                                    >
-
-                                    <input
-                                        type="range"
-                                        name=""
-                                        class="max-range"
-                                        min="{{ $filter->price->min }}"
-                                        max="{{ $filter->price->max }}"
-                                        value="{{ $filter->price->toSlider() }}"
-                                        step="1"
-                                    >
-                                </div>
-
-                                <div class="price-inputs mt-3">
-                                    <div class="row g-2">
-                                        <div class="col-6">
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text">{{ t('shop.currency') }}</span>
-                                                <input
-                                                    type="number"
-                                                    data-name="price_from"
-                                                    class="form-control min-price-input"
-                                                    value="{{ $filter->price->fromValue() }}"
-                                                    {{ request()->has('price_from') ? 'name=price_from' : '' }}
-                                                >
-                                            </div>
-                                        </div>
-
-                                        <div class="col-6">
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text">{{ t('shop.currency') }}</span>
-                                                <input
-                                                    type="number"
-                                                    data-name="price_to"
-                                                    class="form-control max-price-input"
-                                                    value="{{ $filter->price->toValue() }}"
-                                                    {{ request()->has('price_to') ? 'name=price_to' : '' }}
-                                                >
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        {{-- The apply/clear buttons live inside this widget, so only the
-                             brand heading and list go away when there are no brands. --}}
-                        <div class="brand-filter-widget widget-item">
-                            @if($filter->brand->items->isNotEmpty())
-                                <h3 class="widget-title">{{ t('shop.filter_by_brand') }}</h3>
-                            @endif
-
-                            <div class="brand-filter-content">
-                                {{--
-                                <div class="brand-search">
-                                    <input type="text" class="form-control" placeholder="Search brands...">
-                                    <i class="bi bi-search"></i>
-                                </div>
-                                --}}
-                                @if($filter->brand->items->isNotEmpty())
-                                <div class="brand-list">
-                                    @foreach($filter->brand->items as $brand)
-                                        <div class="brand-item">
-                                            <div class="form-check">
-                                                <input
-                                                    class="form-check-input"
-                                                    type="checkbox"
-                                                    name="brand[]"
-                                                    value="{{ $brand->id }}"
-                                                    id="brand{{ $brand->id }}"
-                                                    {{ in_array($brand->id, $filter->brand->selected, true) ? 'checked' : '' }}
-                                                >
-
-                                                <label class="form-check-label" for="brand{{ $brand->id }}">
-                                                    {{ $brand->title }}
-                                                    <span class="brand-count">({{ $brand->products_count }})</span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                                @endif
-                                {{--
-                                --}}
-                                <div class="brand-actions">
-                                    {{--
-                                    <button type="submit" class="btn btn-sm btn-outline-primary">Apply Filter</button>
-                                    --}}
-                                    <div class="filter-actions mt-3" style="width: 70% !important">
-                                        <button type="submit" class="btn btn-sm btn-primary w-100">{{ t('shop.apply_filter') }}</button>
-                                    </div>
-
-                                    <a href="{{ url()->current() }}" class="btn btn-sm btn-link">{{ t('shop.clear_all') }}</a>
-                                </div>
-                            </div>
-                        </div>
-
-                    </form>
-
-
-
-
-
-
-
+                <div class="filter-block">
+                    <h3 class="filter-title">{{ t('shop.categories') }}</h3>
+                    @include('modules.shop.partials.category_tree', ['categories' => $categories, 'level' => 0])
                 </div>
-            </div>
 
-            <div class="col-lg-8">
+                <form method="GET" action="{{ url()->current() }}" class="filter-block">
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                    <input type="hidden" name="sort" value="{{ request('sort') }}">
+                    <input type="hidden" name="c" value="{{ request('c') }}">
 
+                    <div class="price-filter">
+                        <h3 class="filter-title">{{ t('shop.price_range') }}</h3>
+                        <div class="range">
+                            <input type="range" class="min-range" min="{{ $filter->price->min }}" max="{{ $filter->price->max }}" value="{{ $filter->price->fromSlider() }}" step="1" aria-label="Min">
+                            <input type="range" class="max-range" min="{{ $filter->price->min }}" max="{{ $filter->price->max }}" value="{{ $filter->price->toSlider() }}" step="1" aria-label="Max">
+                        </div>
+                        {{-- The price inputs get their name only once the customer touches the
+                             filter, so an untouched range stays out of the URL. --}}
+                        <div class="price-fields">
+                            <input type="number" class="input min-price-input" data-name="price_from" value="{{ $filter->price->fromValue() }}" @if(request()->has('price_from')) name="price_from" @endif aria-label="{{ t('shop.price_range') }} min">
+                            <input type="number" class="input max-price-input" data-name="price_to" value="{{ $filter->price->toValue() }}" @if(request()->has('price_to')) name="price_to" @endif aria-label="{{ t('shop.price_range') }} max">
+                        </div>
+                    </div>
+
+                    @if($filter->brand->items->isNotEmpty())
+                        <h3 class="filter-title" style="margin-top: 22px;">{{ t('shop.filter_by_brand') }}</h3>
+                        <div class="brand-list">
+                            @foreach($filter->brand->items as $brand)
+                                <label class="check">
+                                    <input type="checkbox" name="brand[]" value="{{ $brand->id }}" @checked(in_array($brand->id, $filter->brand->selected, true))>
+                                    <span>{{ $brand->title }} <span class="muted">({{ $brand->products_count }})</span></span>
+                                </label>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <div class="filter-actions" style="margin-top: 22px;">
+                        <button type="submit" class="btn btn-dark btn-sm">{{ t('shop.apply_filter') }}</button>
+                        <a href="{{ url()->current() }}" class="btn btn-line btn-sm">{{ t('shop.clear_all') }}</a>
+                    </div>
+                </form>
+            </aside>
+
+            <div class="shop-main">
                 @if($category?->text)
-                    <div class="mb-4">
-                        {!! $category->text !!}
+                    <div class="content category-text">{!! $category->text !!}</div>
+                @endif
+
+                <div class="shop-toolbar filter-container">
+                    <div class="field">
+                        <label for="productSearch">{{ t('shop.search_products') }}</label>
+                        <div class="search-input">
+                            <input type="text" class="input" id="productSearch" name="search" value="{{ request('search') }}" placeholder="{{ t('shop.search_placeholder') }}">
+                            <button type="button" aria-label="{{ t('shop.search_products') }}"><i class="bi bi-search"></i></button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="sortBy">{{ t('shop.sort_by') }}</label>
+                        <select class="input" id="sortBy" name="sort">
+                            @foreach(\App\Modules\Shop\Enums\SortOptionEnum::cases() as $option)
+                                <option value="{{ $option->value }}" @selected(request('sort') === $option->value)>{{ $option->label() }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="itemsPerPage">{{ t('shop.items') }}</label>
+                        <select class="input" id="itemsPerPage" name="c">
+                            @foreach(\App\Modules\Shop\Enums\PerPageOptionEnum::cases() as $option)
+                                <option value="{{ $option->value }}" @selected((int) request('c') === $option->value)>{{ $option->label() }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                @if($products->isEmpty())
+                    <div class="empty-state">
+                        <i class="bi bi-search"></i>
+                        {{ t('shop.no_products') }}
+                    </div>
+                @else
+                    <div class="product-grid">
+                        @foreach($products as $product)
+                            <x-product-tile :product="$product" />
+                        @endforeach
                     </div>
                 @endif
 
-                <section id="category-header" class="category-header section">
-                    <div class="filter-container mb-4">
-                        <div class="row g-3">
-                            <div class="col-12 col-md-6 col-lg-4">
-                                <div class="filter-item search-form">
-                                    <label for="productSearch" class="form-label">{{ t('shop.search_products') }}</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="productSearch" name="search" value="{{ request('search') }}" placeholder="{{ t('shop.search_placeholder') }}">
-                                        <button class="btn search-btn" type="button">
-                                            <i class="bi bi-search"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-                            <div class="col-12 col-md-6 col-lg-2">
-                                <div class="filter-item">
-                                    <label for="sortBy" class="form-label">{{ t('shop.sort_by') }}</label>
-                                    <select class="form-select" id="sortBy" name="sort">
-                                        @foreach(\App\Modules\Shop\Enums\SortOptionEnum::cases() as $option)
-                                            <option value="{{ $option->value }}" @selected(request('sort') === $option->value)>{{ $option->label() }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-md-6 col-lg-2">
-                                <div class="filter-item">
-                                    <label for="itemsPerPage" class="form-label">{{ t('shop.items') }}</label>
-                                    <select class="form-select" id="itemsPerPage" name="c">
-                                        @foreach(\App\Modules\Shop\Enums\PerPageOptionEnum::cases() as $option)
-                                            <option value="{{ $option->value }}" @selected((int)request('c') === $option->value)>{{ $option->label() }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </section>
-
-                <section id="category-product-list" class="category-product-list section">
-                    <div class="row gy-4">
-                        @foreach($products as $product)
-                            @include('modules.shop.partials.product_box', ['product' => $product])
-                        @endforeach
-                    </div>
-
-                    <div class="category-pagination mt-4">
-                        {{ $products->links() }}
-                    </div>
-                </section>
-
+                {{ $products->links() }}
             </div>
+
         </div>
     </div>
-    <script>
-        // Do not include price parameters in the URL unless the minimum or maximum
-        // price has been changed by the user.
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.pricing-range-widget').forEach(function (widget) {
-                const minRange = widget.querySelector('.min-range');
-                const maxRange = widget.querySelector('.max-range');
-                const minInput = widget.querySelector('.min-price-input');
-                const maxInput = widget.querySelector('.max-price-input');
-
-                function activatePriceFilter() {
-                    minInput.name = minInput.dataset.name;
-                    maxInput.name = maxInput.dataset.name;
-                }
-
-                minRange.addEventListener('input', function () {
-                    activatePriceFilter();
-                    minInput.value = minRange.value;
-                });
-
-                maxRange.addEventListener('input', function () {
-                    activatePriceFilter();
-                    maxInput.value = maxRange.value;
-                });
-
-                minInput.addEventListener('input', activatePriceFilter);
-                maxInput.addEventListener('input', activatePriceFilter);
-            });
-        });
-    </script>
-    <script>
-        // This code updates the URL query parameters when a filter value changes,
-        // allowing the filters to work correctly and remain visible in the address bar.
-        document.addEventListener('change', function (e) {
-            if (!e.target.closest('.filter-container')) return;
-            if (!e.target.matches('input, select')) return;
-
-            const url = new URL(window.location.href);
-            const name = e.target.name || e.target.id;
-            const value = e.target.value.trim();
-
-            value ? url.searchParams.set(name, value) : url.searchParams.delete(name);
-
-            window.location.href = url;
-        });
-    </script>
-
 @endsection
+
+@push('scripts')
+    <script>
+        // Price range: the slider fills the inputs; only a touched filter gets its name.
+        document.querySelectorAll('.price-filter').forEach(function (box) {
+            var minRange = box.querySelector('.min-range'), maxRange = box.querySelector('.max-range');
+            var minInput = box.querySelector('.min-price-input'), maxInput = box.querySelector('.max-price-input');
+            function activate() { minInput.name = minInput.dataset.name; maxInput.name = maxInput.dataset.name; }
+            minRange.addEventListener('input', function () { activate(); minInput.value = minRange.value; });
+            maxRange.addEventListener('input', function () { activate(); maxInput.value = maxRange.value; });
+            minInput.addEventListener('input', activate);
+            maxInput.addEventListener('input', activate);
+        });
+
+        // Search / sort / per page apply at once through the URL.
+        function applyToolbar(el) {
+            var url = new URL(window.location.href);
+            var value = el.value.trim();
+            value ? url.searchParams.set(el.name, value) : url.searchParams.delete(el.name);
+            url.searchParams.delete('page');
+            window.location.href = url;
+        }
+        document.querySelectorAll('.filter-container select, .filter-container input').forEach(function (el) {
+            el.addEventListener('change', function () { applyToolbar(el); });
+        });
+        document.querySelector('.search-input button').addEventListener('click', function () {
+            applyToolbar(document.getElementById('productSearch'));
+        });
+    </script>
+@endpush

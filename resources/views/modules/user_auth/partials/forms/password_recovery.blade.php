@@ -1,24 +1,14 @@
-<ul class="nav nav-tabs nav-tabs-bordered justify-content-center mb-4" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link active">
-            <i class="bi bi-shield-lock-fill me-1"></i>{{t('auth.password_recovery')}}
-        </button>
-    </li>
-</ul>
+<nav class="tabs"><span class="is-active">{{ t('auth.password_recovery') }}</span></nav>
 @include('partials.alerts')
-<form method="post" action="{{route('password.recovery.store')}}">
+
+<form method="post" action="{{ route('password.recovery.store') }}" class="form-stack">
     @csrf
-    <div class="mb-4">
-        <label for="login-register-login-email" class="form-label">{{t('auth.email')}}</label>
-        <input type="email" name="email" class="form-control" id="login-register-login-email"  value="{{ old('email') }}" required>
-        @error('email')
-        <div class="text-danger small mt-1">
-            {{ $message }}
-        </div>
-        @enderror
+    <div class="field">
+        <label for="recovery-email">{{ t('auth.email') }}</label>
+        <input type="email" name="email" @class(['input', 'is-invalid' => $errors->has('email')]) id="recovery-email" value="{{ old('email') }}" autocomplete="email" required>
+        @error('email')<div class="field-error">{{ $message }}</div>@enderror
     </div>
 
-    <div class="d-grid">
-        <button type="submit" class="btn btn-primary btn-lg">{{t('buttons.request_password_recovery')}}</button>
-    </div>
+    <button type="submit" class="btn btn-dark btn-block">{{ t('buttons.request_password_recovery') }}</button>
+    <a href="{{ save_route('auth.index') }}?login" class="btn btn-line btn-block"><i class="bi bi-arrow-left"></i> {{ t('auth.login') }}</a>
 </form>

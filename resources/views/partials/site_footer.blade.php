@@ -1,5 +1,5 @@
 {{-- Site footer of the Nosi design. Texts and contacts — dictionary (footer.*, contacts.*),
-     «Каталог» — root categories, «Покупцям» — CMS pages marked for the footer menu. --}}
+     «Каталог» — root categories (SiteChromeComposer), «Покупцям» — CMS pages marked for the footer menu. --}}
 @php
     $socials = [
         'instagram' => 'Instagram',
@@ -25,11 +25,11 @@
                 </div>
             </div>
 
-            @if(!empty($categories) && $categories->isNotEmpty())
+            @if(!empty($footer_categories) && $footer_categories->isNotEmpty())
                 <div>
                     <h4 class="f-h">{{ t('footer.catalog_title') }}</h4>
                     <ul class="f-links">
-                        @foreach($categories->take(5) as $category)
+                        @foreach($footer_categories as $category)
                             <li><a href="{{ $category->url }}">{{ $category->title }}</a></li>
                         @endforeach
                     </ul>

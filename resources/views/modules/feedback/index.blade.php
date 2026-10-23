@@ -5,39 +5,48 @@
 @section('content')
     @include('partials.page_title')
 
-    <div class="container mt-4">
-        @include('partials.alerts')
-
-        <div class="row g-4">
-            <div class="col-lg-6">
+    <div class="container page">
+        <div class="two-col">
+            <div>
                 @include('partials.page_content')
+
+                <ul class="pd-perks" style="margin-top: 24px;">
+                    @foreach(['phone' => 'bi-telephone', 'email' => 'bi-envelope', 'hours' => 'bi-clock', 'address' => 'bi-geo-alt'] as $key => $icon)
+                        @if(t("contacts.{$key}") !== '')
+                            <li><i class="bi {{ $icon }}"></i> {{ t("contacts.{$key}") }}</li>
+                        @endif
+                    @endforeach
+                </ul>
             </div>
 
-            <div class="col-lg-6">
-                <form method="POST" action="{{ route('feedback.store') }}">
+            <div class="panel-white">
+                @include('partials.alerts')
+
+                <form method="POST" action="{{ route('feedback.store') }}" class="form-stack">
                     @csrf
-
-                    <div class="mb-3">
-                        <label class="form-label">{{t('feedback.name')}}</label>
-                        <input type="text" name="name" class="form-control" required>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="feedback-name">{{ t('feedback.name') }}</label>
+                            <input type="text" name="name" id="feedback-name" @class(['input', 'is-invalid' => $errors->has('name')]) value="{{ old('name') }}" autocomplete="name" required>
+                            @error('name')<div class="field-error">{{ $message }}</div>@enderror
+                        </div>
+                        <div class="field">
+                            <label for="feedback-phone">{{ t('feedback.phone') }}</label>
+                            <input type="tel" name="phone" id="feedback-phone" @class(['input', 'is-invalid' => $errors->has('phone')]) value="{{ old('phone') }}" autocomplete="tel">
+                            @error('phone')<div class="field-error">{{ $message }}</div>@enderror
+                        </div>
                     </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">{{t('feedback.email')}}</label>
-                        <input type="email" name="email" class="form-control" required>
+                    <div class="field">
+                        <label for="feedback-email">{{ t('feedback.email') }}</label>
+                        <input type="email" name="email" id="feedback-email" @class(['input', 'is-invalid' => $errors->has('email')]) value="{{ old('email') }}" autocomplete="email" required>
+                        @error('email')<div class="field-error">{{ $message }}</div>@enderror
                     </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">{{t('feedback.phone')}}</label>
-                        <input type="tel" name="phone" class="form-control">
+                    <div class="field">
+                        <label for="feedback-message">{{ t('feedback.message') }}</label>
+                        <textarea name="message" id="feedback-message" @class(['input', 'is-invalid' => $errors->has('message')]) rows="5" required>{{ old('message') }}</textarea>
+                        @error('message')<div class="field-error">{{ $message }}</div>@enderror
                     </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">{{t('feedback.message')}}</label>
-                        <textarea name="message" class="form-control" required></textarea>
-                    </div>
-
-                    <button class="btn btn-success">{{t('buttons.send')}}</button>
+                    <button type="submit" class="btn btn-dark">{{ t('buttons.send') }}</button>
                 </form>
             </div>
         </div>

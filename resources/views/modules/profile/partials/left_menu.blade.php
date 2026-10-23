@@ -1,41 +1,17 @@
-<!-- Profile Menu -->
-<div class="col-lg-3">
-    <div class="profile-menu collapse d-lg-block" id="profileMenu">
-        <!-- User Info -->
-        <div class="user-info" data-aos="fade-right">
-            <h4>{{$user->formatted_name}}</h4>
-        </div>
+<aside class="account-menu">
+    <h4>{{ $user->formatted_name }}</h4>
 
-        <!-- Navigation Menu -->
-        <nav class="menu-nav">
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link {{ $active_section === 'edit' ? 'active' : '' }}"
-                       href="{{ save_route('profile.edit') }}">
-                        <i class="bi bi-gear"></i>
-                        <span>{{t('profile.account_settings')}}</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ $active_section === 'orders' ? 'active' : '' }}"
-                       href="{{ save_route('profile.orders') }}">
-                        <i class="bi bi-bag"></i>
-                        <span>{{t('profile.orders')}}</span>
-                    </a>
-                </li>
-            </ul>
+    <nav>
+        <a href="{{ save_route('profile.edit') }}" @class(['is-active' => $active_section === 'edit'])>
+            <i class="bi bi-gear"></i> {{ t('profile.account_settings') }}
+        </a>
+        <a href="{{ save_route('profile.orders') }}" @class(['is-active' => $active_section === 'orders'])>
+            <i class="bi bi-bag"></i> {{ t('profile.orders') }}
+        </a>
+    </nav>
 
-            <div class="menu-footer">
-                <form id="logout-form" method="POST" action="{{ route('logout') }}">
-                    @csrf
-                </form>
-
-                <a href="#" class="logout-link"
-                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span>{{ t('buttons.logout') }}</span>
-                </a>
-            </div>
-        </nav>
-    </div>
-</div>
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit"><i class="bi bi-box-arrow-right"></i> {{ t('buttons.logout') }}</button>
+    </form>
+</aside>

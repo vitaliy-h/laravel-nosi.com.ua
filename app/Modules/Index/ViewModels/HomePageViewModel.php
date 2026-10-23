@@ -2,7 +2,6 @@
 
 namespace App\Modules\Index\ViewModels;
 
-use App\Modules\Announce\ViewModels\AnnounceViewModel;
 use App\Modules\Core\Abstract\BaseViewModel;
 use App\Modules\Faq\ViewModels\FaqViewModel;
 use App\Modules\Promo\ViewModels\PromoViewModel;
@@ -15,12 +14,12 @@ use Illuminate\Support\Collection;
 /**
  * Every block of the home page design. Nothing is fetched in this class — the
  * controller passes in what the queries returned. Texts that are not records
- * (section titles, benefits, contacts) come from the dictionary in blade.
+ * (section titles, benefits, contacts) come from the dictionary in blade; the
+ * running line and the footer come from SiteChromeComposer like on every page.
  */
 class HomePageViewModel extends BaseViewModel
 {
     /**
-     * @param  Collection<int, AnnounceViewModel>  $announces
      * @param  Collection<int, SlideViewModel>  $slides
      * @param  Collection<int, ProductViewModel>  $top_products
      * @param  Collection<int, ProductViewModel>  $new_products
@@ -31,7 +30,6 @@ class HomePageViewModel extends BaseViewModel
      * @param  Collection<int, FaqViewModel>  $faqs
      */
     public function __construct(
-        public readonly Collection $announces,
         public readonly Collection $slides,
         public readonly Collection $top_products,
         public readonly Collection $new_products,

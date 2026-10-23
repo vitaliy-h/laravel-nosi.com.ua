@@ -131,6 +131,7 @@ return [
 
     'news' => [
         'read_more' => 'Read more',
+        'back'      => 'All news',
     ],
 
     'subscribe' => [
@@ -174,6 +175,9 @@ return [
         'items'               => 'Items',
         'sale'                => 'Sale',
         'add_to_cart'         => 'Add to Cart',
+        'added_to_cart'       => 'Added',
+        'brand'               => 'Brand',
+        'no_products'         => 'Nothing found. Try changing the filters.',
         'buy_now'             => 'Buy Now',
         'quantity'            => 'Quantity',
         'in_stock'            => 'In Stock',

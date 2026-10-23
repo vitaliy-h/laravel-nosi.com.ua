@@ -1,9 +1,7 @@
-<section class="content-text">
-
+<section class="block content">
     @if(!empty($block['data']['title']))
         <h2>{{ $block['data']['title'] }}</h2>
     @endif
 
-    {!! str($block['data']['content'])->sanitizeHtml() !!}
-
+    {!! str($block['data']['content'] ?? '')->sanitizeHtml() !!}
 </section>

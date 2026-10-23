@@ -1,33 +1,21 @@
 @extends('layouts.app')
 
+@section('body-class', 'news-item-page')
+
 @section('content')
-    <div class="container py-5">
+    @include('partials.page_title', ['title' => $newsItem->title, 'lead' => $newsItem->published_at_formatted])
 
-        <a href="{{ save_route('news.index') }}" class="btn btn-light mb-4">
-            ← Back
-        </a>
+    <div class="container page">
+        <div class="page-narrow">
+            @if($newsItem->has_image)
+                <figure class="block block-image">
+                    <img src="{{ $newsItem->image }}" alt="{{ $newsItem->title }}">
+                </figure>
+            @endif
 
-        <h1 class="mb-3">
-            {{ $newsItem->title }}
-        </h1>
-
-        @if($newsItem->published_at_formatted)
-            <div class="text-muted mb-4">
-                {{ $newsItem->published_at_formatted }}
-            </div>
-        @endif
-
-        @if($newsItem->has_image)
-            <img
-                src="{{ $newsItem->image }}"
-                class="img-fluid rounded mb-4 news-card-image"
-                alt="{{ $newsItem->title }}"
-            >
-        @endif
-
-        <div>
             @include('partials.builder', ['content' => $newsItem->content])
-        </div>
 
+            <a href="{{ save_route('news.index') }}" class="link-arrow" style="margin-top: 32px;"><i class="bi bi-arrow-left"></i> {{ t('news.back') }}</a>
+        </div>
     </div>
 @endsection

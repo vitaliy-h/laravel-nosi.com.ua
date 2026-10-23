@@ -38,8 +38,8 @@ class CartViewModelTest extends TestCase
 
         $this->assertTrue($vm->has_discount);
         $this->assertSame('SAVE10', $vm->promocode_code);
-        $this->assertStringContainsString('90.00', $vm->total_amount_formatted);
-        $this->assertStringContainsString('10.00', $vm->discount_amount_formatted);
+        $this->assertSame(Money::from(90)->format(), $vm->total_amount_formatted);
+        $this->assertSame(Money::from(10)->format(), $vm->discount_amount_formatted);
     }
 
     /**

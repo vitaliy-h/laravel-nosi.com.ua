@@ -37,9 +37,14 @@ class MoneyTest extends TestCase
         ];
     }
 
-    public function test_formatting_puts_the_currency_in_front_of_two_decimals(): void
+    public function test_formatting_splits_thousands_and_puts_the_currency_after(): void
     {
-        $this->assertSame(t('shop.currency') . '1,234.50', Money::from(1234.5)->format());
+        $this->assertSame('1 234,50 ' . t('shop.currency'), Money::from(1234.5)->format());
+    }
+
+    public function test_formatting_drops_zero_kopecks(): void
+    {
+        $this->assertSame('1 399 ' . t('shop.currency'), Money::from(1399)->format());
     }
 
     public function test_subtraction_rounds_the_result(): void

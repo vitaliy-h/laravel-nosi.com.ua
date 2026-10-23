@@ -1,51 +1,26 @@
 @include('modules.user_auth.partials.login_register_nav')
 @include('partials.alerts')
 
-<form method="post" action="{{route('login.store')}}">
+<form method="post" action="{{ route('login.store') }}" class="form-stack">
     @csrf
-    <div class="mb-4">
-        <label for="login-register-login-email" class="form-label">{{t('auth.email')}}</label>
-        <input type="text" name="email" class="form-control" id="login-register-login-email" value="{{ old('email') }}"
-               required>
-        @error('email')
-        <div class="text-danger small mt-1">
-            {{ $message }}
-        </div>
-        @enderror
+    <div class="field">
+        <label for="login-email">{{ t('auth.email') }}</label>
+        <input type="text" name="email" @class(['input', 'is-invalid' => $errors->has('email')]) id="login-email" value="{{ old('email') }}" autocomplete="username" required>
+        @error('email')<div class="field-error">{{ $message }}</div>@enderror
     </div>
 
-    <div class="mb-4">
-        <label for="login-register-login-password" class="form-label">{{t('auth.password')}}</label>
-        <input type="password" name="password" class="form-control" id="login-register-login-password" required>
-        @error('password')
-        <div class="text-danger small mt-1">
-            {{ $message }}
-        </div>
-        @enderror
+    <div class="field">
+        <label for="login-password">{{ t('auth.password') }}</label>
+        <input type="password" name="password" @class(['input', 'is-invalid' => $errors->has('password')]) id="login-password" autocomplete="current-password" required>
+        @error('password')<div class="field-error">{{ $message }}</div>@enderror
     </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="form-check">
-            <input type="checkbox" name="remember_me" class="form-check-input" id="login-register-remember-me"
-                   value="1">
-            <label class="form-check-label" for="login-register-remember-me">{{t('auth.remember_me')}}</label>
-        </div>
-        <a href="{{save_route('auth.index')}}?password_recovery"
-           class="forgot-password">{{t('auth.forgot_password')}}</a>
+    <div class="auth-row">
+        <label class="check"><input type="checkbox" name="remember_me" value="1"> {{ t('auth.remember_me') }}</label>
+        <a href="{{ save_route('auth.index') }}?password_recovery" class="link">{{ t('auth.forgot_password') }}</a>
     </div>
 
-    <div class="d-grid">
-        <button type="submit" class="btn btn-primary btn-lg">{{t('buttons.login')}}</button>
-    </div>
+    <button type="submit" class="btn btn-dark btn-block">{{ t('buttons.login') }}</button>
 </form>
 
-<div class="social-divider">{{ t('auth.or_continue_with') }}</div>
-
-<div class="social-buttons">
-    @foreach (config('social.providers') as $provider)
-        <a href="{{ route('social.redirect', $provider) }}" class="btn-social btn-{{ $provider }}">
-            <i class="bi bi-{{ $provider }}"></i>
-            {{ t('social.sign_in_with', ['provider' => t('social.' . $provider)]) }}
-        </a>
-    @endforeach
-</div>
+@include('modules.user_auth.partials.social_buttons')

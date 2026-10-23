@@ -1,47 +1,18 @@
-<ul class="{{ $level === 0 ? 'category-tree list-unstyled mb-0' : 'subcategory-list list-unstyled ps-3 mt-2 collapse' }} {{ $level > 0 && !empty($parentOpened) ? 'show' : '' }}">
+{{-- Category tree of the catalogue sidebar, recursive. Children are shown for the active
+     category and its ancestors (is_active / is_opened from GetAllCategoriesQuery). --}}
+<ul @class(['cat-tree' => $level === 0])>
     @foreach($categories as $item)
-        @php
-            $hasChildren = $item->children->isNotEmpty();
-            $isExpanded = $item->is_active || $item->is_opened;
-            $collapseId = 'category-' . $item->id . '-children';
-        @endphp
+        <li>
+            <a href="{{ $item->url }}" @class(['is-active' => $item->is_active])>
+                {{ $item->title }}
+                <span>{{ $item->products_count }}</span>
+            </a>
 
-        <li class="category-item">
-            <div
-                class="d-flex justify-content-between align-items-center category-header {{ $hasChildren && !$isExpanded ? 'collapsed' : '' }}"
-                @if($hasChildren)
-                    data-bs-toggle="collapse"
-                data-bs-target="#{{ $collapseId }}"
-                aria-expanded="{{ $isExpanded ? 'true' : 'false' }}"
-                aria-controls="{{ $collapseId }}"
-                @endif
-            >
-                <a
-                    href="{{ $item->url }}"
-                    class="{{ $level === 0 ? 'category-link' : 'subcategory-link' }} {{ $item->is_active ? 'active' : '' }}"
-                >
-                    {{ $item->title }}
-                    <span class="category-count">({{ $item->products_count }})</span>
-                </a>
-
-                @if($hasChildren)
-                    <span class="category-toggle">
-                        <i class="bi bi-chevron-down"></i>
-                        <i class="bi bi-chevron-up"></i>
-                    </span>
-                @endif
-            </div>
-
-            @if($hasChildren)
-                <ul
-                    id="{{ $collapseId }}"
-                    class="subcategory-list list-unstyled ps-3 mt-2 collapse {{ $isExpanded ? 'show' : '' }}"
-                >
-                    @include('modules.shop.partials.category_tree_items', [
-                        'categories' => $item->children,
-                        'level' => $level + 1,
-                    ])
-                </ul>
+            @if($item->children->isNotEmpty() && ($item->is_active || $item->is_opened))
+                @include('modules.shop.partials.category_tree', [
+                    'categories' => $item->children,
+                    'level' => $level + 1,
+                ])
             @endif
         </li>
     @endforeach

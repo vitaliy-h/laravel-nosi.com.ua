@@ -273,8 +273,12 @@ class LanguageResource extends Resource
             default => TextInput::make($path),
         };
 
+        // A readable label from admin.dictionary_fields.{module}.{key} when the
+        // admin locale has one, the humanised key otherwise.
+        $labelKey = "admin.dictionary_fields.{$module}.{$key}";
+
         return $field
-            ->label(str($key)->replace('_', ' ')->title())
+            ->label(Lang::has($labelKey) ? __($labelKey) : str($key)->replace('_', ' ')->title())
             ->default($value)
             ->columnSpan($span);
     }

@@ -6,11 +6,11 @@
     abc-response.js turns data-* attributes into query params in camelCase,
     hence the short `data-product` / `data-page` names.
 --}}
-<div class="text-center mt-4" id="reviews-load-more">
-
+<div id="reviews-load-more" style="margin-top: 20px;">
     @if($reviews->hasMorePages())
         <button
-            class="btn btn-outline-primary load-more-btn"
+            type="button"
+            class="btn btn-line btn-sm"
             data-abcr="{{ save_route('shop.product.review.list') }}"
             data-product="{{ $product->id }}"
             data-page="{{ $reviews->currentPage() + 1 }}"
@@ -18,5 +18,4 @@
             {{ t('shop.load_more_product_reviews') }}
         </button>
     @endif
-
 </div>

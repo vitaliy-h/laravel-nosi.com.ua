@@ -13,12 +13,87 @@
 
     // Add to cart: abc-response sends the form and updates .js_cart_count, here just a short confirmation
     document.addEventListener('submit', function (e) {
-        var form = e.target.closest('.card-add-form');
+        var form = e.target.closest('.card-add-form, .js-add-form');
         if (!form) return;
-        var btn = form.querySelector('.card-add');
+        var btn = form.querySelector('.card-add, [type="submit"]');
         if (!btn) return;
         btn.classList.add('is-added');
-        setTimeout(function () { btn.classList.remove('is-added'); }, 1500);
+        var label = btn.dataset.added;
+        var original = btn.innerHTML;
+        if (label) btn.innerHTML = '<i class="bi bi-check2"></i> ' + label;
+        setTimeout(function () {
+            btn.classList.remove('is-added');
+            if (label) btn.innerHTML = original;
+        }, 1500);
+    });
+
+    // Quantity +/- (product page, cart): change the input and fire `change`
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-qty]');
+        if (!btn) return;
+        var input = btn.closest('.qty').querySelector('input');
+        var count = (parseInt(input.value, 10) || 1) + parseInt(btn.dataset.qty, 10);
+        input.value = Math.max(1, count);
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    // Cart page: a changed quantity is saved right away (abc-response form)
+    document.addEventListener('change', function (e) {
+        if (!e.target.matches('.js_change_checkout_products')) return;
+        var form = e.target.closest('form[data-abcr]');
+        if (form) form.requestSubmit();
+    });
+
+    // Product page: gallery thumbnails
+    document.querySelectorAll('[data-gallery]').forEach(function (gallery) {
+        var main = gallery.querySelector('[data-gallery-main]');
+        gallery.querySelectorAll('[data-gallery-thumb]').forEach(function (thumb) {
+            thumb.addEventListener('click', function () {
+                main.src = thumb.dataset.galleryThumb;
+                gallery.querySelectorAll('[data-gallery-thumb]').forEach(function (t) { t.classList.toggle('is-active', t === thumb); });
+            });
+        });
+    });
+
+    // Plain tabs: buttons [data-tab-target] switch panels [data-tab-panel] in the same [data-tabs]
+    document.querySelectorAll('[data-tabs]').forEach(function (box) {
+        var buttons = box.querySelectorAll('[data-tab-target]');
+        buttons.forEach(function (btn) {
+            btn.addEventListener('click', function () { openTab(box, btn.dataset.tabTarget); });
+        });
+        if (location.hash && box.querySelector('[data-tab-panel="' + location.hash.slice(1) + '"]')) {
+            openTab(box, location.hash.slice(1));
+        }
+    });
+    function openTab(box, name) {
+        box.querySelectorAll('[data-tab-target]').forEach(function (b) { b.classList.toggle('is-active', b.dataset.tabTarget === name); });
+        box.querySelectorAll('[data-tab-panel]').forEach(function (p) { p.hidden = p.dataset.tabPanel !== name; });
+    }
+    // A link to a tab (#reviews) opens it
+    document.addEventListener('click', function (e) {
+        var link = e.target.closest('a[href^="#"]');
+        if (!link) return;
+        var panel = document.querySelector('[data-tab-panel="' + link.getAttribute('href').slice(1) + '"]');
+        if (panel) openTab(panel.closest('[data-tabs]'), panel.dataset.tabPanel);
+    });
+
+    // Dialogs: [data-dialog-open="id"] / [data-dialog-close]
+    document.addEventListener('click', function (e) {
+        var opener = e.target.closest('[data-dialog-open]');
+        if (opener) {
+            var dialog = document.getElementById(opener.dataset.dialogOpen);
+            if (dialog) dialog.showModal();
+            return;
+        }
+        var closer = e.target.closest('[data-dialog-close]');
+        if (closer) closer.closest('dialog').close();
+    });
+
+    // Catalogue filters fold away on phones
+    document.addEventListener('click', function (e) {
+        var toggle = e.target.closest('.filter-toggle');
+        if (!toggle) return;
+        toggle.closest('.shop-aside').classList.toggle('is-collapsed');
     });
 
     // Carousels: arrows scroll one card; disabled at the ends
@@ -48,7 +123,9 @@
 
     // Tabs: top sales / new
     document.querySelectorAll('.tabs').forEach(function (tabs) {
-        var box = tabs.closest('.section').querySelector('[data-carousel]');
+        var section = tabs.closest('.section');
+        var box = section && section.querySelector('[data-carousel]');
+        if (!box) return;
         tabs.querySelectorAll('button').forEach(function (btn) {
             btn.addEventListener('click', function () {
                 tabs.querySelectorAll('button').forEach(function (b) { b.classList.toggle('is-active', b === btn); });

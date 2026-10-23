@@ -123,7 +123,7 @@ return [
 
     'feedback' => [
         'name'             => 'Ім’я',
-        'email'            => 'Email',
+        'email'            => 'Електронна пошта',
         'phone'            => 'Телефон',
         'message:textarea' => 'Повідомлення',
         'saved'            => 'Ваше повідомлення надіслано.',
@@ -131,12 +131,13 @@ return [
 
     'news' => [
         'read_more' => 'Читати далі',
+        'back'      => 'Усі новини',
     ],
 
     'subscribe' => [
         'title'         => 'Підпишіться на розсилку',
         'text:textarea' => 'Отримуйте першими спеціальні пропозиції, розіграші та знижки.',
-        'email'         => 'Email',
+        'email'         => 'Електронна пошта',
         'placeholder'   => 'Ваш email',
         'button'        => 'Підписатися',
         'saved'         => 'Дякуємо за підписку!',
@@ -174,6 +175,9 @@ return [
         'items'               => 'Товарів',
         'sale'                => 'Знижка',
         'add_to_cart'         => 'У кошик',
+        'added_to_cart'       => 'Додано',
+        'brand'               => 'Бренд',
+        'no_products'         => 'Нічого не знайдено. Спробуйте змінити фільтри.',
         'buy_now'             => 'Купити зараз',
         'quantity'            => 'Кількість',
         'in_stock'            => 'В наявності',
@@ -247,7 +251,7 @@ return [
         'login'                     => 'Вхід',
         'register'                  => 'Реєстрація',
         'password_recovery'         => 'Відновлення пароля',
-        'email'                     => 'Email',
+        'email'                     => 'Електронна пошта',
         'password'                  => 'Пароль',
         'new_password'              => 'Новий пароль',
         'current_password'          => 'Поточний пароль',
@@ -267,7 +271,7 @@ return [
     'profile' => [
         'user_name'                       => 'Ім’я',
         'user_surname'                    => 'Прізвище',
-        'user_email'                      => 'Email',
+        'user_email'                      => 'Електронна пошта',
         'user_phone'                      => 'Телефон',
         'profile_dropdown_header_text'    => 'Вітаємо в',
         'profile_dropdown_header_subtext' => 'Вхід до кабінету та керування замовленнями',

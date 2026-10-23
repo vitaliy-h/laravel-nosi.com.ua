@@ -38,18 +38,10 @@ final class Money
     }
 
     /**
-     * The amount as a customer reads it, currency symbol included.
+     * The amount as a customer reads it: thousands split by a space, the symbol
+     * after the number — «1 399 ₴». Kopecks are shown only when there are any.
      */
     public function format(): string
-    {
-        return t('shop.currency') . number_format($this->amount, 2);
-    }
-
-    /**
-     * The storefront variant: whole hryvnias, thousands split by a space and the
-     * symbol after the number — «1 399 ₴». Kopecks are kept only when there are any.
-     */
-    public function formatShort(): string
     {
         $decimals = fmod($this->amount, 1.0) == 0.0 ? 0 : 2;
 

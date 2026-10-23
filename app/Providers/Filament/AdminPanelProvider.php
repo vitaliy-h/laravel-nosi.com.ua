@@ -206,7 +206,7 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-users')
                                     ->url(UserResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.users.*')),
-                                ModuleGate::isEnabled('user_auth') ? NavigationItem::make(__('admin.tables.social_profiles'))
+                                ModuleGate::isEnabled('social_profiles') ? NavigationItem::make(__('admin.tables.social_profiles'))
                                     ->icon('heroicon-o-link')
                                     ->url(SocialProfileResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.social-profiles.*')) : null,
@@ -273,7 +273,7 @@ class AdminPanelProvider extends PanelProvider
                 ModuleGate::isEnabled('sms') ? LogSmsResource::class : null,
                 ModuleGate::isEnabled('news') ? NewsResource::class : null,
                 ModuleGate::isEnabled('feedback') ? FeedbackResource::class : null,
-                ModuleGate::isEnabled('user_auth') ? SocialProfileResource::class : null,
+                ModuleGate::isEnabled('social_profiles') ? SocialProfileResource::class : null,
                 ModuleGate::isEnabled('subscriber') ? SubscriberResource::class : null,
                 ModuleGate::isEnabled('geo') ? GeoCountryResource::class : null,
                 ModuleGate::isEnabled('geo') ? GeoRegionResource::class : null,

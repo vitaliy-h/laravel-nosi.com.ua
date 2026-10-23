@@ -1,36 +1,15 @@
 @extends('layouts.app')
 
+@section('body-class', 'account-page')
+
 @section('content')
-    <main class="main">
+    <div class="container page">
+        <div class="account">
+            @include('modules.profile.partials.left_menu')
 
-        <!-- Account Section -->
-        <section id="account" class="account section">
-
-            <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-                <!-- Mobile Menu Toggle -->
-                <div class="mobile-menu d-lg-none mb-4">
-                    <button class="mobile-menu-toggle" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#profileMenu">
-                        <i class="bi bi-grid"></i>
-                        <span>{{t('buttons.menu')}}</span>
-                    </button>
-                </div>
-
-                <div class="row g-4">
-                    @include('modules.profile.partials.left_menu')
-
-                    <!-- Content Area -->
-                    <div class="col-lg-9">
-                        <div class="content-area">
-                            @yield('profile_content')
-                        </div>
-                    </div>
-                </div>
-
+            <div class="account-content">
+                @yield('profile_content')
             </div>
-
-        </section>
-        <!-- /Account Section -->
-    </main>
+        </div>
+    </div>
 @endsection

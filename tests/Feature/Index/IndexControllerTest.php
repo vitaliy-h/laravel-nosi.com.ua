@@ -38,7 +38,7 @@ class IndexControllerTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
-        foreach (['announces', 'slides', 'top_products', 'new_products', 'sale_products', 'categories', 'promos', 'reviews', 'faqs'] as $block) {
+        foreach (['slides', 'top_products', 'new_products', 'sale_products', 'categories', 'promos', 'reviews', 'faqs'] as $block) {
             $response->assertViewHas($block);
         }
     }

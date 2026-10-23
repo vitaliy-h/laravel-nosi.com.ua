@@ -1,31 +1,14 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{t('errors.404_title')}}</title>
+@extends('layouts.app')
 
-    <link href="/demo/vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+@section('body-class', 'error-404')
 
-<div class="container d-flex align-items-center justify-content-center min-vh-100">
-    <div class="text-center">
-
-        <div class="display-1 fw-bold text-primary">404</div>
-
-        <h1 class="h3 mb-3">{{t('errors.404_h1')}}</h1>
-
-        <p class="text-muted mb-4">
-            {{t('errors.404_text')}}
-        </p>
-
-        <a href="{{ url('/') }}" class="btn btn-primary px-4">
-            {{t('buttons.go_home')}}
-        </a>
-
+@section('content')
+    <div class="container error-page">
+        <div>
+            <div class="error-code">404</div>
+            <h1>{{ t('errors.404_h1') }}</h1>
+            <p>{{ t('errors.404_text') }}</p>
+            <a href="{{ url('/') }}" class="btn btn-dark">{{ t('buttons.go_home') }} <i class="bi bi-arrow-right"></i></a>
+        </div>
     </div>
-</div>
-
-</body>
-</html>
+@endsection

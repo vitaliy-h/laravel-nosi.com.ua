@@ -2,19 +2,23 @@
 
 ## Stack
 
-- **Frontend CSS:** Bootstrap 5 demo theme — `resources/views/layouts/app.blade.php`
-  loads `public/demo/vendors/bootstrap/css/bootstrap.min.css`, the theme's
-  `public/demo/assets/css/main.css`, `public/css/static/static.css` and the
-  project's own `public/assets/css/app.css`, plus bootstrap-icons (`<i class="bi bi-*">`)
+- **Frontend CSS:** the Nosi design (`design/home.html`) — no CSS framework.
+  `resources/views/layouts/app.blade.php` (the one layout of every page) loads
+  `public/assets/css/nosi.css` (tokens, header/footer, home page blocks, `.btn`,
+  `.card`, `.tabs`) and `public/assets/css/nosi-pages.css` (inner pages: `.page-head`,
+  forms `.field`/`.input`, catalogue, product, cart, account, CMS blocks), plus
+  bootstrap-icons (`<i class="bi bi-*">`). JS: `public/assets/js/nosi.js` and
+  `abc-response.js`. The old Bootstrap demo theme in `public/demo/` is not linked anywhere.
 - **Templating:** Laravel Blade
 - **Bundler:** Vite 8 + Tailwind CSS 4 (`@tailwindcss/vite`, `resources/css/app.css`) —
   **configured but not used by the frontend**: no view calls `@vite`, so nothing
   built by Vite reaches a page today
 
-⚠️ Write Bootstrap 5 markup and classes (`row`, `col-*`, `btn btn-primary`,
-`bi bi-*`), not Tailwind utilities — a Tailwind class on a page does nothing,
-because the Tailwind build is not linked into the layout. Pagination follows the
-same rule: `Paginator::useBootstrap()` in `AppServiceProvider` is deliberate.
+⚠️ Write markup with the classes of `nosi.css` / `nosi-pages.css`, not Bootstrap or
+Tailwind utilities (`row`, `col-*`, `btn-primary`, `d-flex` do nothing). Pagination
+has its own view: `Paginator::defaultView('partials.pagination')` in `AppServiceProvider`.
+The running line and the footer catalogue come from `Page\Services\SiteChromeComposer`
+(a view composer on `partials.announce` / `partials.site_footer`), not from controllers.
 
 Admin panel exception: `resources/js/filament/` and `resources/css/filament/` are plain files
 for Filament (Alpine components, panel CSS), **not** Vite entries. They are registered with

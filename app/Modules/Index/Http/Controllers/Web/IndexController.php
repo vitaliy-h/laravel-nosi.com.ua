@@ -2,8 +2,6 @@
 
 namespace App\Modules\Index\Http\Controllers\Web;
 
-use App\Modules\Announce\Queries\GetAnnouncesQuery;
-use App\Modules\Announce\ViewModels\AnnounceViewModel;
 use App\Modules\Core\Abstract\BaseWebController;
 use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Faq\Queries\GetFaqsQuery;
@@ -27,7 +25,6 @@ use App\Modules\Slider\ViewModels\SlideViewModel;
 class IndexController extends BaseWebController
 {
     public function __construct(
-        private readonly GetAnnouncesQuery $announces,
         private readonly GetSlidesQuery $slides,
         private readonly GetPromosQuery $promos,
         private readonly GetFaqsQuery $faqs,
@@ -48,7 +45,6 @@ class IndexController extends BaseWebController
         $rating = $reviews ? $this->shopRating->handle() : ['rating' => 0.0, 'count' => 0];
 
         $page = new HomePageViewModel(
-            announces: AnnounceViewModel::collect($this->announces->handle()),
             slides: SlideViewModel::collect($this->slides->handle()),
             top_products: $shop ? ProductViewModel::collect($this->hitProducts->handle()) : collect(),
             new_products: $shop ? ProductViewModel::collect($this->newProducts->handle()) : collect(),

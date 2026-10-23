@@ -1,7 +1,6 @@
 @php
     $url = $block['data']['url'] ?? '';
     $embedUrl = null;
-
     if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/', $url, $m)) {
         $embedUrl = 'https://www.youtube.com/embed/' . $m[1];
     } elseif (str_contains($url, 'youtube.com/embed/')) {
@@ -11,22 +10,12 @@
     }
 @endphp
 
-<section class="builder-video section">
-    <div class="container" data-aos="zoom-in" data-aos-delay="100">
-
-        @if($embedUrl)
-            <div class="ratio ratio-16x9">
-                <iframe src="{{ $embedUrl }}"
-                        title="Video"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen
-                        loading="lazy"></iframe>
-            </div>
-        @elseif($url)
-            <div class="text-center">
-                <a href="{{ $url }}" class="glightbox pulsating-play-btn"></a>
-            </div>
-        @endif
-
+@if($embedUrl)
+    <div class="block block-video">
+        <iframe src="{{ $embedUrl }}" title="Video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen loading="lazy"></iframe>
     </div>
-</section>
+@elseif($url)
+    <p class="block"><a href="{{ $url }}" class="link-arrow" target="_blank" rel="noopener"><i class="bi bi-play-circle"></i> {{ $url }}</a></p>
+@endif

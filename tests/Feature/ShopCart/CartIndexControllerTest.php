@@ -64,14 +64,13 @@ class CartIndexControllerTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function test_checkout_segment_renders_checkout_view(): void
+    public function test_checkout_segment_redirects_to_the_cart(): void
     {
         $cart = Cart::factory()->create();
         CartProduct::factory()->create(['cart_id' => $cart->id]);
 
         $response = $this->withSession(['cart_uuid' => $cart->uuid])->get(save_route('cart.checkout'));
 
-        $response->assertStatus(200);
-        $response->assertViewIs('modules.shop_cart.checkout');
+        $response->assertRedirect(save_route('cart.index'));
     }
 }

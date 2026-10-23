@@ -1,4 +1,4 @@
-@extends('layouts.nosi')
+@extends('layouts.app')
 
 @section('body-class', 'index-page')
 

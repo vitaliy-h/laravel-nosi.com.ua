@@ -28,12 +28,12 @@ class IndexController extends BaseWebController
     }
 
     /**
-     * The checkout template renders no cart data of its own yet — the totals
-     * live on the cart page.
+     * The order is placed from the cart page itself (customer form + summary),
+     * so the old /checkout address just leads there.
      */
     public function checkout(Request $request)
     {
-        return $this->render('modules.shop_cart.checkout');
+        return redirect(save_route('cart.index'));
     }
 
     public function show(Request $request, string $uuid)

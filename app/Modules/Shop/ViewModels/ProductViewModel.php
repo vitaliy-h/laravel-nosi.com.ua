@@ -17,6 +17,8 @@ class ProductViewModel extends BaseViewModel
         public readonly string $image,
         public readonly string $thumb_url,
         public readonly ?string $hover_image,
+        /** @var array<int, string> main photo first, then the gallery — the product page */
+        public readonly array $gallery,
         public readonly ?string $brand_title,
         public readonly bool $is_hit,
         public readonly ?float $price,
@@ -60,13 +62,14 @@ class ProductViewModel extends BaseViewModel
             image: $product->image,
             thumb_url: $product->imageUrl('thumb'),
             hover_image: $product->images[0] ?? null,
+            gallery: !empty($product->img) ? [$product->image, ...$product->images] : $product->images,
             brand_title: $brand?->title,
             is_hit: (bool) $product->is_hit,
             price: $product->price,
             price2: $product->price2,
             has_discount: $hasDiscount,
-            price_formatted: $current !== null ? Money::from($current)->formatShort() : null,
-            old_price_formatted: $hasDiscount && $product->price ? Money::from($product->price)->formatShort() : null,
+            price_formatted: $current !== null ? Money::from($current)->format() : null,
+            old_price_formatted: $hasDiscount && $product->price ? Money::from($product->price)->format() : null,
             discount_percent: $hasDiscount && $product->price > $product->price2
                 ? (int) round(100 - $product->price2 / $product->price * 100)
                 : null,

@@ -1,33 +1,15 @@
 {{-- One review. Also rendered standalone by ProductReviewController::list() (load more). --}}
-<div class="review-item">
-
-    <div class="review-header">
-
-        <div class="reviewer-info">
-
-            <div>
-                <h5 class="reviewer-name">
-                    {{ $review->author_name }}
-                </h5>
-
-                <div class="review-date">
-                    {{ $review->created_at_formatted }}
-                </div>
-            </div>
-
+<article class="rv-item">
+    <div class="rv-item-head">
+        <div>
+            <b>{{ $review->author_name }}</b>
+            <small>{{ $review->created_at_formatted }}</small>
         </div>
-
-        <div class="review-rating">
-            <x-rating-stars :value="$review->rating" />
-        </div>
-
+        <div class="stars"><x-rating-stars :value="$review->rating" /></div>
     </div>
 
     @if($review->text)
-        <div class="review-content">
-            {{-- nl2br over an escaped value: line breaks typed into the form survive, markup does not. --}}
-            <p>{!! nl2br(e($review->text)) !!}</p>
-        </div>
+        {{-- nl2br over an escaped value: line breaks typed into the form survive, markup does not. --}}
+        <p>{!! nl2br(e($review->text)) !!}</p>
     @endif
-
-</div>
+</article>

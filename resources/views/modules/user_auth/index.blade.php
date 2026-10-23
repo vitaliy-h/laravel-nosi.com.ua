@@ -1,25 +1,15 @@
 @extends('layouts.app')
 
+@section('body-class', 'auth-page')
+
 @section('content')
     @include('partials.page_title')
 
-    <!-- Login Section -->
-    <section id="login-register" class="login-register section">
-
-        <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-            <div class="row justify-content-center">
-                <div class="col-lg-5">
-                    <div class="login-register-wraper">
-
-                        @include($form_view)
-
-                    </div>
-                </div>
+    <div class="container page">
+        <div class="auth">
+            <div class="panel-white">
+                @include($form_view)
             </div>
-
         </div>
-
-    </section>
-    <!-- /Login Section -->
+    </div>
 @endsection

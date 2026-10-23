@@ -1,32 +1,16 @@
-@php
-    $images = $block['data']['images'] ?? [];
-    $galleryId = 'gallery-' . substr(md5(serialize($images)), 0, 8);
-@endphp
+@php($images = $block['data']['images'] ?? [])
 
-<section class="builder-gallery section light-background">
-    <div class="container" data-aos="fade-up" data-aos-delay="100">
-
+@if($images !== [])
+    <section class="block">
         @if(!empty($block['data']['title']))
-            <div class="section-title text-center">
-                <h2>{{ $block['data']['title'] }}</h2>
-            </div>
+            <h2 class="block-title">{{ $block['data']['title'] }}</h2>
         @endif
-
-        <div class="row g-3">
+        <div class="block-gallery">
             @foreach($images as $image)
-                <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="200">
-                    <a href="{{ asset('storage/' . $image) }}"
-                       class="glightbox"
-                       data-gallery="{{ $galleryId }}">
-                        <img src="{{ asset('storage/' . $image) }}"
-                             class="img-fluid rounded w-100"
-                             style="height: 220px; object-fit: cover;"
-                             loading="lazy"
-                             alt="">
-                    </a>
-                </div>
+                <a href="{{ asset('storage/' . $image) }}" target="_blank" rel="noopener">
+                    <img src="{{ asset('storage/' . $image) }}" alt="" loading="lazy">
+                </a>
             @endforeach
         </div>
-
-    </div>
-</section>
+    </section>
+@endif
