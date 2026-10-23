@@ -408,7 +408,7 @@ dialog.modal.review-dialog { max-width: 560px; }
 
 @media (max-width: 900px) {
     .section { padding: 64px 0; }
-    .cart-pill .label { display: none; }
+    .cart-pill .label_cart { display: none; }
     .cart-pill { padding: 0 7px; }
     .hero-arrows, .carousel-nav { display: none; }
     .hero-text { padding: 0 32px 40px; }
