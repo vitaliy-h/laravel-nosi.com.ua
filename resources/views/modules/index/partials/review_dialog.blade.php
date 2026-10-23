@@ -4,6 +4,9 @@
 @php($authUser = auth()->user())
 
 <dialog class="modal review-dialog" id="review-dialog">
+    {{-- Outside #review-dialog-body, so it survives the swap to the thank-you message. --}}
+    <button type="button" class="modal-close" data-dialog-close aria-label="{{ t('buttons.close') }}"><i class="bi bi-x-lg"></i></button>
+
     <div id="review-dialog-body">
         <h3>{{ t('home.review_form_title') }}</h3>
         @if(t('home.review_form_hint') !== '')
@@ -44,7 +47,7 @@
 
             <div class="field">
                 <label for="review-email">{{ t('home.review_email') }}</label>
-                <input type="email" class="input" id="review-email" name="email" value="{{ old('email', $authUser?->email) }}" required>
+                <input type="email" class="input" id="review-email" name="email" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" title="{{ t('errors.email_invalid') }}" value="{{ old('email', $authUser?->email) }}" required>
             </div>
 
             <div class="field">

@@ -84,6 +84,19 @@ class OrderControllerTest extends TestCase
         ])->assertSessionHasErrors('user_email');
     }
 
+    public function test_place_order_rejects_email_without_domain_zone(): void
+    {
+        $cart = Cart::factory()->create();
+        CartProduct::factory()->create(['cart_id' => $cart->id]);
+
+        $this->post(route('order.create'), [
+            'cart_uuid'  => $cart->uuid,
+            'user_email' => 'john@example',
+        ])->assertSessionHasErrors('user_email');
+
+        $this->assertSame(0, Order::count());
+    }
+
     public function test_place_order_requires_cart_uuid(): void
     {
         $this->post(route('order.create'), [

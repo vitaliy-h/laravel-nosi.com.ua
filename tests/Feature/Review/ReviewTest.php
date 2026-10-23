@@ -100,6 +100,47 @@ class ReviewTest extends TestCase
         $this->assertSame(0, Review::count());
     }
 
+    public function test_store_rejects_invalid_email(): void
+    {
+        foreach (['not-an-email', 'guest@example'] as $email) {
+            $response = $this->from('/')->post('/review', [
+                'rating' => 5,
+                'name'   => 'Guest Reviewer',
+                'email'  => $email,
+                'text'   => 'Fast delivery, great service.',
+            ]);
+
+            $response->assertSessionHasErrors('email');
+        }
+
+        $this->assertSame(0, Review::count());
+    }
+
+    public function test_store_via_ajax_returns_422_for_invalid_email(): void
+    {
+        $response = $this
+            ->withHeader('X-Requested-With', 'XMLHttpRequest')
+            ->postJson('/review', [
+                'rating' => 4,
+                'name'   => 'Ajax Reviewer',
+                'email'  => 'ajax@example',
+                'text'   => 'Sent over XHR.',
+            ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('email');
+        $this->assertSame(0, Review::count());
+    }
+
+    public function test_review_dialog_has_close_button_and_email_pattern(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+        $response->assertSee('class="modal-close" data-dialog-close', false);
+        $response->assertSee('id="review-email" name="email" pattern=', false);
+    }
+
     public function test_store_via_ajax_replaces_the_dialog_body(): void
     {
         $response = $this

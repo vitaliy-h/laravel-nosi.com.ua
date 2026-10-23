@@ -26,7 +26,7 @@ class PlaceOrderRequest extends FormRequest
             'cart_uuid'    => ['required', 'uuid', 'exists:shop_carts,uuid'],
             'user_name'    => ['nullable', 'string', 'max:255'],
             'user_surname' => ['nullable', 'string', 'max:255'],
-            'user_email'   => ['required', 'email', 'max:255'],
+            'user_email'   => ['required', 'email:rfc,filter', 'max:255'],
             'user_phone'   => ['nullable', 'string', 'max:50'],
             'comment'      => ['nullable', 'string', 'max:2000'],
         ];
