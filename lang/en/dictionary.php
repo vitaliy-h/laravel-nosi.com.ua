@@ -306,6 +306,7 @@ return [
     'errors' => [
         'something_went_wrong' => 'Unexpected error. Please try again.',
         'email_invalid'        => 'Enter a valid email address, e.g. name@example.com',
+        'phone_invalid'        => 'Enter a Ukrainian number, e.g. +380 67 123 45 67',
         '404_title'            => '404 - Page not found',
         '404_h1'               => 'Page not found',
         '404_text:input12'     => 'The page you are looking for doesn’t exist or has been moved.',

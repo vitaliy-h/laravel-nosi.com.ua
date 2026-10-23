@@ -70,7 +70,7 @@
                         </div>
                         <div class="field">
                             <label for="user_phone">{{ t('profile.user_phone') }}</label>
-                            <input type="tel" name="user_phone" @class(['input', 'is-invalid' => $errors->has('user_phone')]) id="user_phone" placeholder="{{ t('shop.placeholder_phone') }}" value="{{ old('user_phone', $user?->phone) }}">
+                            <input type="tel" name="user_phone" @class(['input', 'is-invalid' => $errors->has('user_phone')]) id="user_phone" placeholder="{{ t('shop.placeholder_phone') }}" value="{{ old('user_phone', $user?->phone) }}" inputmode="tel" pattern="\+?(38)?[\s\-\(\)]*0([\s\-\(\)]*\d){9}[\s\-\(\)]*" title="{{ t('errors.phone_invalid') }}" required>
                             @error('user_phone')<div class="field-error">{{ $message }}</div>@enderror
                         </div>
                         <div class="field full">

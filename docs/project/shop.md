@@ -74,7 +74,7 @@ data for a mobile client or frontend. Described in `docs/api/shop.md`.
 
 ## 3. Orders
 
-**Checkout** — `/{cart}/checkout`: email (required), first name, last name, phone,
+**Checkout** — `/{cart}/checkout`: email (required), phone (required, Ukrainian — stored as +380XXXXXXXXX, see `App\Modules\Core\Rules\UkrainianPhone`), first name, last name,
 comment. No registration required.
 
 What happens at checkout — in a single transaction:

@@ -99,8 +99,33 @@ select.input { appearance: none; padding-right: 42px; background: #fff url("data
 .cat-tree a.is-active span { color: rgba(255, 255, 255, .7); }
 .price-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
 .price-fields .input { height: 44px; padding: 0 14px; }
-.range { display: grid; gap: 4px; }
-.range input[type="range"] { width: 100%; accent-color: var(--accent); }
+/* Price range: two native range inputs stacked on one line; only their thumbs take the pointer */
+.range { --from: 0; --to: 100; --thumb: 20px; position: relative; height: 28px; }
+.range::before, .range-fill { content: ""; position: absolute; top: 50%; height: 4px; margin-top: -2px; border-radius: 4px; }
+.range::before { left: 0; right: 0; background: var(--line); }
+.range-fill {
+    left: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--from) / 100);
+    right: calc(var(--thumb) / 2 + (100% - var(--thumb)) * (100 - var(--to)) / 100);
+    background: var(--accent);
+}
+.range input[type="range"] {
+    position: absolute; inset: 0; width: 100%; height: 100%; margin: 0;
+    background: none; pointer-events: none; -webkit-appearance: none; appearance: none;
+}
+.range input[type="range"]:focus { outline: none; }
+.range input[type="range"]::-webkit-slider-runnable-track { height: 4px; background: transparent; }
+.range input[type="range"]::-moz-range-track { height: 4px; background: transparent; }
+.range input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; pointer-events: auto; cursor: grab;
+    width: var(--thumb); height: var(--thumb); margin-top: calc(2px - var(--thumb) / 2);
+    border-radius: 50%; background: #fff; border: 2px solid var(--accent); box-shadow: 0 2px 8px -2px rgba(27, 21, 48, .35);
+}
+.range input[type="range"]::-moz-range-thumb {
+    pointer-events: auto; cursor: grab; box-sizing: border-box; width: var(--thumb); height: var(--thumb);
+    border-radius: 50%; background: #fff; border: 2px solid var(--accent); box-shadow: 0 2px 8px -2px rgba(27, 21, 48, .35);
+}
+.range input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px rgba(27, 21, 48, .15); }
+.range input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px rgba(27, 21, 48, .15); }
 .brand-list { display: grid; gap: 8px; max-height: 260px; overflow: auto; }
 .filter-actions { display: grid; gap: 8px; }
 .shop-toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; margin-bottom: 28px; }

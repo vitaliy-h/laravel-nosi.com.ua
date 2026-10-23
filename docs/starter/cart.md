@@ -91,8 +91,8 @@ command, `cart:clear-abandoned` (`app/Modules/ShopCart/Console/Commands/ClearAba
 deletes carts where `user_id IS NULL` and `created_at` is older than a configurable
 number of days (`30` by default, override with `cart:clear-abandoned {days}`).
 Deletion goes through the Eloquent model (not a bulk query) so the `CascadesDeletes`
-trait on `Cart` also removes its `CartProduct` items. It's registered in
-`bootstrap/app.php` via `withSchedule()` to run daily.
+trait on `Cart` also removes its `CartProduct` items. It's scheduled daily in
+`routes/console.php`.
 
 ### Empty cart
 

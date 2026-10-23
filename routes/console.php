@@ -24,3 +24,9 @@ Schedule::command('logs:prune')->dailyAt('03:00');
 if (ModuleGate::isEnabled('shop_cart')) {
     Schedule::command('cart:clear-abandoned')->daily();
 }
+
+// Shared hosting has no Supervisor to keep `queue:work` alive, so the cron that runs
+// schedule:run also drains the queue (letters, SMS) once a minute and exits.
+Schedule::command('queue:work --stop-when-empty --tries=3 --max-time=50')
+    ->everyMinute()
+    ->withoutOverlapping();

@@ -108,7 +108,7 @@
         </section>
     @endif
 
-    {{-- Categories: 2 rows × 4 --}}
+    {{-- Categories: carousel of up to 8 --}}
     @if($categories->isNotEmpty())
         <section class="section categories" id="categories">
             <div class="container">
@@ -119,13 +119,16 @@
                     @endif
                 </div>
 
-                <div class="cat-grid">
-                    @foreach($categories as $category)
-                        <a href="{{ $category->url }}" class="cat-tile">
-                            <img src="{{ $category->image }}" alt="{{ $category->title }}" loading="lazy">
-                            <div class="cat-label"><h3>{{ $category->title }}</h3><span><i class="bi bi-arrow-right"></i></span></div>
-                        </a>
-                    @endforeach
+                <div class="carousel cat-carousel" data-carousel>
+                    <div class="carousel-track cat-track">
+                        @foreach($categories->take(8) as $category)
+                            <a href="{{ $category->url }}" class="cat-tile">
+                                <img src="{{ $category->image }}" alt="{{ $category->title }}" loading="lazy">
+                                <div class="cat-label"><h3>{{ $category->title }}</h3><span><i class="bi bi-arrow-right"></i></span></div>
+                            </a>
+                        @endforeach
+                    </div>
+                    @include('modules.index.partials.carousel_nav')
                 </div>
             </div>
         </section>

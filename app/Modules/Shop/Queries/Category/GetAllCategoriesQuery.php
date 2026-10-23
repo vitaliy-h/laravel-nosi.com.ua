@@ -11,6 +11,8 @@ class GetAllCategoriesQuery
     /**
      * Get all root categories with their recursive children.
      * Also marks the active category and opened parent categories.
+     * Categories with no visible products in their subtree are left out, except
+     * the active one and its ancestors, so an empty category's own page keeps its place.
      */
     public function handle(?int $activeCategoryId = null)
     {
@@ -33,7 +35,10 @@ class GetAllCategoriesQuery
             $category->products_count = $subtreeCounts[$category->id] ?? 0;
         });
 
-        return $categories->toTree();
+        return $categories
+            ->filter(fn (Category $category) => $category->products_count > 0 || $category->_active || $category->_opened)
+            ->values()
+            ->toTree();
     }
 
     /**

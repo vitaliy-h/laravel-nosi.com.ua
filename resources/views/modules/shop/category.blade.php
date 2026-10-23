@@ -24,6 +24,7 @@
                     <div class="price-filter">
                         <h3 class="filter-title">{{ t('shop.price_range') }}</h3>
                         <div class="range">
+                            <span class="range-fill"></span>
                             <input type="range" class="min-range" min="{{ $filter->price->min }}" max="{{ $filter->price->max }}" value="{{ $filter->price->fromSlider() }}" step="1" aria-label="Min">
                             <input type="range" class="max-range" min="{{ $filter->price->min }}" max="{{ $filter->price->max }}" value="{{ $filter->price->toSlider() }}" step="1" aria-label="Max">
                         </div>
@@ -107,15 +108,40 @@
 
 @push('scripts')
     <script>
-        // Price range: the slider fills the inputs; only a touched filter gets its name.
+        // Price range: one line, two thumbs that cannot cross; the slider and the
+        // inputs follow each other, and only a touched filter gets its name.
         document.querySelectorAll('.price-filter').forEach(function (box) {
+            var range = box.querySelector('.range');
             var minRange = box.querySelector('.min-range'), maxRange = box.querySelector('.max-range');
             var minInput = box.querySelector('.min-price-input'), maxInput = box.querySelector('.max-price-input');
+            var lo = +minRange.min, hi = +minRange.max;
             function activate() { minInput.name = minInput.dataset.name; maxInput.name = maxInput.dataset.name; }
-            minRange.addEventListener('input', function () { activate(); minInput.value = minRange.value; });
-            maxRange.addEventListener('input', function () { activate(); maxInput.value = maxRange.value; });
-            minInput.addEventListener('input', activate);
-            maxInput.addEventListener('input', activate);
+            function percent(value) { return hi > lo ? (value - lo) / (hi - lo) * 100 : 0; }
+            function paint() {
+                range.style.setProperty('--from', percent(+minRange.value));
+                range.style.setProperty('--to', percent(+maxRange.value));
+                // Both thumbs at the right end: the lower one must stay grabbable
+                minRange.style.zIndex = +minRange.value >= hi - (hi - lo) / 2 ? 3 : '';
+            }
+            minRange.addEventListener('input', function () {
+                if (+minRange.value > +maxRange.value) minRange.value = maxRange.value;
+                activate(); minInput.value = minRange.value; paint();
+            });
+            maxRange.addEventListener('input', function () {
+                if (+maxRange.value < +minRange.value) maxRange.value = minRange.value;
+                activate(); maxInput.value = maxRange.value; paint();
+            });
+            minInput.addEventListener('input', function () {
+                activate();
+                if (minInput.value !== '') minRange.value = Math.min(+minInput.value, +maxRange.value);
+                paint();
+            });
+            maxInput.addEventListener('input', function () {
+                activate();
+                if (maxInput.value !== '') maxRange.value = Math.max(+maxInput.value, +minRange.value);
+                paint();
+            });
+            paint();
         });
 
         // Search / sort / per page apply at once through the URL.

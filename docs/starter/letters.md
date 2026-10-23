@@ -18,7 +18,9 @@ Email system is based on:
 * `letter_templates` → stores all templates in DB
 * `log_letters` → stores all sent emails (audit log)
 * Facade → used for sending emails
-* Job-based sending (queued)
+* Job-based sending (queued) — `routes/console.php` runs `queue:work --stop-when-empty`
+  every minute, so on a host without Supervisor one cron line
+  (`* * * * * php artisan schedule:run`) is enough to deliver letters
 
 ---
 

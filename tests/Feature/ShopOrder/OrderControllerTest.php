@@ -34,7 +34,7 @@ class OrderControllerTest extends TestCase
             'user_name'    => 'John',
             'user_surname' => 'Doe',
             'user_email'   => 'john@example.com',
-            'user_phone'   => '+123456789',
+            'user_phone'   => '067 123-45-67',
             'comment'      => 'Please call before delivery',
         ]);
 
@@ -45,7 +45,7 @@ class OrderControllerTest extends TestCase
         $this->assertSame('John', $order->user_name);
         $this->assertSame('Doe', $order->user_surname);
         $this->assertSame('john@example.com', $order->user_email);
-        $this->assertSame('+123456789', $order->user_phone);
+        $this->assertSame('+380671234567', $order->user_phone, 'the phone is stored normalized');
         $this->assertSame('Please call before delivery', $order->comment);
         $this->assertSame(1, $order->items()->count());
     }
@@ -58,6 +58,7 @@ class OrderControllerTest extends TestCase
         $this->post(route('order.create'), [
             'cart_uuid'  => $cart->uuid,
             'user_email' => 'john@example.com',
+            'user_phone' => '+380671234567',
         ]);
 
         $this->assertDatabaseMissing('shop_carts', ['id' => $cart->id]);
@@ -110,5 +111,34 @@ class OrderControllerTest extends TestCase
             'cart_uuid'  => '00000000-0000-0000-0000-000000000000',
             'user_email' => 'john@example.com',
         ])->assertSessionHasErrors('cart_uuid');
+    }
+
+    public function test_place_order_requires_phone(): void
+    {
+        $cart = Cart::factory()->create();
+        CartProduct::factory()->create(['cart_id' => $cart->id]);
+
+        $this->post(route('order.create'), [
+            'cart_uuid'  => $cart->uuid,
+            'user_email' => 'john@example.com',
+        ])->assertSessionHasErrors('user_phone');
+
+        $this->assertDatabaseCount('shop_orders', 0);
+    }
+
+    public function test_place_order_rejects_a_non_ukrainian_phone(): void
+    {
+        $cart = Cart::factory()->create();
+        CartProduct::factory()->create(['cart_id' => $cart->id]);
+
+        foreach (['+48 512 345 678', '067 123 45', '+380 67 123 45 678', 'call me'] as $phone) {
+            $this->post(route('order.create'), [
+                'cart_uuid'  => $cart->uuid,
+                'user_email' => 'john@example.com',
+                'user_phone' => $phone,
+            ])->assertSessionHasErrors('user_phone');
+        }
+
+        $this->assertDatabaseCount('shop_orders', 0);
     }
 }

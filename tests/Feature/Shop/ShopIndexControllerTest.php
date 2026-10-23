@@ -161,4 +161,32 @@ class ShopIndexControllerTest extends TestCase
 
         $response->assertStatus(404);
     }
+
+    public function test_sidebar_hides_categories_without_products(): void
+    {
+        $filled = Category::factory()->create();
+        $parent = Category::factory()->create();
+        $child = Category::factory()->create();
+        $child->appendToNode($parent)->save();
+        $empty = Category::factory()->create();
+
+        Product::factory()->forCategory($filled)->create();
+        Product::factory()->forCategory($child)->create();
+        Product::factory()->invisible()->forCategory($empty)->create();
+
+        $ids = $this->get('/shop')->viewData('categories')->pluck('id')->all();
+
+        $this->assertContains($filled->id, $ids);
+        $this->assertContains($parent->id, $ids, 'a parent counts the products of its subcategories');
+        $this->assertNotContains($empty->id, $ids, 'an invisible product does not make a category filled');
+    }
+
+    public function test_sidebar_keeps_the_empty_category_being_viewed(): void
+    {
+        $empty = Category::factory()->create();
+
+        $ids = $this->get('/shop/' . $empty->slug)->viewData('categories')->pluck('id')->all();
+
+        $this->assertContains($empty->id, $ids);
+    }
 }

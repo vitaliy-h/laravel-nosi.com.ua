@@ -166,6 +166,7 @@ return [
     'url'         => 'The :attribute field must be a valid URL.',
     'ulid'        => 'The :attribute field must be a valid ULID.',
     'uuid'        => 'The :attribute field must be a valid UUID.',
+    'ua_phone'    => 'The :attribute field must be a Ukrainian number, e.g. +380 67 123 45 67.',
 
     /*
     |--------------------------------------------------------------------------

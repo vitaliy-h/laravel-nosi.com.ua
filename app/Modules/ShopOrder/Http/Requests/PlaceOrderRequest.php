@@ -2,6 +2,7 @@
 
 namespace App\Modules\ShopOrder\Http\Requests;
 
+use App\Modules\Core\Rules\UkrainianPhone;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -16,6 +17,16 @@ class PlaceOrderRequest extends FormRequest
     }
 
     /**
+     * The phone is stored as +380XXXXXXXXX whatever way the customer typed it.
+     */
+    protected function prepareForValidation(): void
+    {
+        if (is_string($this->input('user_phone'))) {
+            $this->merge(['user_phone' => UkrainianPhone::normalize($this->input('user_phone'))]);
+        }
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, ValidationRule|array<mixed>|string>
@@ -27,7 +38,7 @@ class PlaceOrderRequest extends FormRequest
             'user_name'    => ['nullable', 'string', 'max:255'],
             'user_surname' => ['nullable', 'string', 'max:255'],
             'user_email'   => ['required', 'email:rfc,filter', 'max:255'],
-            'user_phone'   => ['nullable', 'string', 'max:50'],
+            'user_phone'   => ['required', 'string', new UkrainianPhone()],
             'comment'      => ['nullable', 'string', 'max:2000'],
         ];
     }
