@@ -28,7 +28,7 @@ class StoreReviewRequest extends FormRequest
             'rating' => ['required', 'integer', 'between:1,5'],
             'name'   => ['required', 'string', 'max:255'],
             'city'   => ['nullable', 'string', 'max:255'],
-            'email'  => ['required', 'email', 'max:255'],
+            'email'  => ['required', 'email:rfc,filter', 'max:255'],
             'text'   => ['required', 'string', 'max:5000'],
         ];
     }

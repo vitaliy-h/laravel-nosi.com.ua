@@ -55,23 +55,28 @@
                     <div class="form-grid">
                         <div class="field">
                             <label for="user_name">{{ t('profile.user_name') }}</label>
-                            <input type="text" name="user_name" class="input" id="user_name" placeholder="{{ t('shop.placeholder_first_name') }}" value="{{ old('user_name', $user?->name) }}">
+                            <input type="text" name="user_name" @class(['input', 'is-invalid' => $errors->has('user_name')]) id="user_name" placeholder="{{ t('shop.placeholder_first_name') }}" value="{{ old('user_name', $user?->name) }}">
+                            @error('user_name')<div class="field-error">{{ $message }}</div>@enderror
                         </div>
                         <div class="field">
                             <label for="user_surname">{{ t('profile.user_surname') }}</label>
-                            <input type="text" name="user_surname" class="input" id="user_surname" placeholder="{{ t('shop.placeholder_last_name') }}" value="{{ old('user_surname', $user?->surname) }}">
+                            <input type="text" name="user_surname" @class(['input', 'is-invalid' => $errors->has('user_surname')]) id="user_surname" placeholder="{{ t('shop.placeholder_last_name') }}" value="{{ old('user_surname', $user?->surname) }}">
+                            @error('user_surname')<div class="field-error">{{ $message }}</div>@enderror
                         </div>
                         <div class="field">
                             <label for="user_email">{{ t('profile.user_email') }}</label>
-                            <input type="email" name="user_email" class="input" id="user_email" placeholder="{{ t('shop.placeholder_email') }}" value="{{ old('user_email', $user?->email) }}" required>
+                            <input type="email" name="user_email" @class(['input', 'is-invalid' => $errors->has('user_email')]) id="user_email" placeholder="{{ t('shop.placeholder_email') }}" value="{{ old('user_email', $user?->email) }}" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" title="{{ t('errors.email_invalid') }}" required>
+                            @error('user_email')<div class="field-error">{{ $message }}</div>@enderror
                         </div>
                         <div class="field">
                             <label for="user_phone">{{ t('profile.user_phone') }}</label>
-                            <input type="tel" name="user_phone" class="input" id="user_phone" placeholder="{{ t('shop.placeholder_phone') }}" value="{{ old('user_phone', $user?->phone) }}">
+                            <input type="tel" name="user_phone" @class(['input', 'is-invalid' => $errors->has('user_phone')]) id="user_phone" placeholder="{{ t('shop.placeholder_phone') }}" value="{{ old('user_phone', $user?->phone) }}">
+                            @error('user_phone')<div class="field-error">{{ $message }}</div>@enderror
                         </div>
                         <div class="field full">
                             <label for="comment">{{ t('profile.order_comment') }}</label>
-                            <textarea name="comment" id="comment" class="input" rows="3">{{ old('comment') }}</textarea>
+                            <textarea name="comment" id="comment" @class(['input', 'is-invalid' => $errors->has('comment')]) rows="3">{{ old('comment') }}</textarea>
+                            @error('comment')<div class="field-error">{{ $message }}</div>@enderror
                         </div>
                     </div>
                 </form>

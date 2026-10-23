@@ -47,6 +47,38 @@ class CartIndexControllerTest extends TestCase
         $response->assertViewIs('modules.shop_cart.index');
     }
 
+    public function test_checkout_form_shows_email_error_under_the_field(): void
+    {
+        $this->skipUnlessModules('shop_order');
+
+        $cart = Cart::factory()->create();
+        CartProduct::factory()->create(['cart_id' => $cart->id]);
+
+        $response = $this
+            ->from(save_route('cart.show', $cart->uuid))
+            ->followingRedirects()
+            ->post(route('order.create'), [
+                'cart_uuid'  => $cart->uuid,
+                'user_email' => 'john@example',
+            ]);
+
+        $response->assertStatus(200);
+        $response->assertViewIs('modules.shop_cart.index');
+        $response->assertSee('is-invalid', false);
+        $response->assertSee('field-error', false);
+    }
+
+    public function test_checkout_email_field_has_client_side_pattern(): void
+    {
+        $cart = Cart::factory()->create();
+        CartProduct::factory()->create(['cart_id' => $cart->id]);
+
+        $response = $this->get(save_route('cart.show', $cart->uuid));
+
+        $response->assertSee('name="user_email"', false);
+        $response->assertSee('pattern="[^@\s]+@[^@\s]+\.[^@\s]+"', false);
+    }
+
     public function test_index_by_uuid_shows_empty_view_when_no_items(): void
     {
         $cart = Cart::factory()->create();
