@@ -20,6 +20,6 @@ class FeedbackController extends BaseWebController
             phone: $request->validated('phone'),
         ));
 
-        return redirect()->back()->with('success', t('feedback.saved'));
+        return redirect()->back()->with('success', __('site.feedback.saved'));
     }
 }

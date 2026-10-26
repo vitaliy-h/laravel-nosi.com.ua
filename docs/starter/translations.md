@@ -97,6 +97,10 @@ The `counters` group (`counters.head`, `counters.body`) holds analytics code (GA
 Pixel…). `layouts/app.blade.php` prints it **unescaped**: `head` at the end of `<head>`,
 `body` right after `<body>`.
 
+Fixed system texts the manager does not edit — form attributes and notices of `feedback` /
+`subscribe`, `news.back`, API messages, social login — are not in the dictionary: they live
+in `lang/{locale}/site.php` and are read with `__('site.{group}.{key}')`.
+
 ---
 
 # 🏗 Supported field suffixes
@@ -176,7 +180,7 @@ Running seeder again rewrites dictionaries using file defaults.
 ## Helper
 
 ```php
-t('feedback.name')
+t('auth.name')
 ```
 
 ## Blade

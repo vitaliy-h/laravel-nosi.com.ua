@@ -11,8 +11,9 @@ use Illuminate\Support\Facades\Schema;
  * lang/{locale}/dictionary.php (lang/en for a locale without its own file):
  * keys added to the file after the language was seeded (the review form,
  * counters, errors.email_invalid, buttons.close) get the file value, keys the
- * file no longer has (unused leftovers of the starter) are dropped. A text
- * already in the database stays as it is.
+ * file no longer has (unused leftovers of the starter, the groups moved to
+ * lang/{locale}/site.php) are dropped. A text already in the database stays
+ * as it is.
  */
 return new class extends Migration
 {

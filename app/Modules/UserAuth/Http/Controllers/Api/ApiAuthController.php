@@ -28,7 +28,7 @@ class ApiAuthController extends BaseApiController
                 'token' => $token,
                 'user'  => $user,
             ]),
-            t('api.login_success')
+            __('site.api.login_success')
         );
     }
 
@@ -45,7 +45,7 @@ class ApiAuthController extends BaseApiController
                 'token' => $token,
                 'user'  => $user,
             ]),
-            t('api.register_success'),
+            __('site.api.register_success'),
             201
         );
     }
@@ -57,7 +57,7 @@ class ApiAuthController extends BaseApiController
             ?->delete();
 
         return $this->success(
-            message: t('api.logout_success')
+            message: __('site.api.logout_success')
         );
     }
 }

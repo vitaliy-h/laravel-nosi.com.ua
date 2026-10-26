@@ -45,23 +45,23 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             if ($e instanceof ValidationException) {
-                return ApiEnvelope::error(t('api.validation_error'), $e->errors(), 422);
+                return ApiEnvelope::error(__('site.api.validation_error'), $e->errors(), 422);
             }
 
             if ($e instanceof AuthenticationException) {
-                return ApiEnvelope::error(t('api.unauthenticated'), status: 401);
+                return ApiEnvelope::error(__('site.api.unauthenticated'), status: 401);
             }
 
             if ($e instanceof AccessDeniedHttpException) {
-                return ApiEnvelope::error(t('api.forbidden'), status: 403);
+                return ApiEnvelope::error(__('site.api.forbidden'), status: 403);
             }
 
             if ($e instanceof ModelNotFoundException || $e instanceof NotFoundHttpException) {
-                return ApiEnvelope::error(t('api.resource_not_found'), status: 404);
+                return ApiEnvelope::error(__('site.api.resource_not_found'), status: 404);
             }
 
             if ($e instanceof ThrottleRequestsException) {
-                return ApiEnvelope::error(t('api.to_many_requests'), status: 429);
+                return ApiEnvelope::error(__('site.api.to_many_requests'), status: 429);
             }
 
             if ($e instanceof HttpExceptionInterface) {

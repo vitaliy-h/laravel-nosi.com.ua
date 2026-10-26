@@ -25,15 +25,6 @@ GET /api/translations?locale=en
     "success": true,
     "message": "OK",
     "data": {
-        "feedback": {
-            "name": "Name",
-            "email": "Email",
-            "message": "Message",
-            "saved": "Feedback has been saved."
-        },
-        "news": {
-            "back": "All news"
-        },
         "auth": {
             "login": "Sign In",
             "register": "Register",

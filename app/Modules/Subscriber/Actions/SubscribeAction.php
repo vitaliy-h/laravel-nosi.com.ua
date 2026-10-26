@@ -26,7 +26,7 @@ class SubscribeAction
         if ($subscriber) {
             return ActionResult::ok(
                 new SubscriberData(subscriber: $subscriber, alreadyExists: true),
-                t('subscribe.already'),
+                __('site.subscribe.already'),
             );
         }
 
@@ -39,7 +39,7 @@ class SubscribeAction
 
         return ActionResult::ok(
             new SubscriberData(subscriber: $subscriber, alreadyExists: false),
-            t('subscribe.saved'),
+            __('site.subscribe.saved'),
         );
     }
 }

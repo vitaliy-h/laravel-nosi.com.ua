@@ -26,23 +26,23 @@
                     @csrf
                     <div class="form-grid">
                         <div class="field">
-                            <label for="feedback-name">{{ t('feedback.name') }}</label>
+                            <label for="feedback-name">{{ __('site.feedback.name') }}</label>
                             <input type="text" name="name" id="feedback-name" @class(['input', 'is-invalid' => $errors->has('name')]) value="{{ old('name') }}" autocomplete="name" required>
                             @error('name')<div class="field-error">{{ $message }}</div>@enderror
                         </div>
                         <div class="field">
-                            <label for="feedback-phone">{{ t('feedback.phone') }}</label>
+                            <label for="feedback-phone">{{ __('site.feedback.phone') }}</label>
                             <input type="tel" name="phone" id="feedback-phone" @class(['input', 'is-invalid' => $errors->has('phone')]) value="{{ old('phone') }}" autocomplete="tel">
                             @error('phone')<div class="field-error">{{ $message }}</div>@enderror
                         </div>
                     </div>
                     <div class="field">
-                        <label for="feedback-email">{{ t('feedback.email') }}</label>
+                        <label for="feedback-email">{{ __('site.feedback.email') }}</label>
                         <input type="email" name="email" id="feedback-email" @class(['input', 'is-invalid' => $errors->has('email')]) value="{{ old('email') }}" autocomplete="email" required>
                         @error('email')<div class="field-error">{{ $message }}</div>@enderror
                     </div>
                     <div class="field">
-                        <label for="feedback-message">{{ t('feedback.message') }}</label>
+                        <label for="feedback-message">{{ __('site.feedback.message') }}</label>
                         <textarea name="message" id="feedback-message" @class(['input', 'is-invalid' => $errors->has('message')]) rows="5" required>{{ old('message') }}</textarea>
                         @error('message')<div class="field-error">{{ $message }}</div>@enderror
                     </div>

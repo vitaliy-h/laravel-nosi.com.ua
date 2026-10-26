@@ -38,7 +38,7 @@ class StoreSubscriberRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'email' => t('subscribe.email'),
+            'email' => __('site.subscribe.email'),
         ];
     }
 }

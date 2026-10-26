@@ -36,10 +36,10 @@ class StoreFeedbackRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name'    => t('feedback.name'),
-            'email'   => t('feedback.email'),
-            'phone'   => t('feedback.phone'),
-            'message' => t('feedback.message'),
+            'name'    => __('site.feedback.name'),
+            'email'   => __('site.feedback.email'),
+            'phone'   => __('site.feedback.phone'),
+            'message' => __('site.feedback.message'),
         ];
     }
 }

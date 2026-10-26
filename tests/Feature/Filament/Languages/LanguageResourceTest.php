@@ -140,7 +140,7 @@ class LanguageResourceTest extends TestCase
 
         $saved = Language::find($language->id);
         $this->assertArrayHasKey('home', $saved->dictionary);
-        $this->assertArrayHasKey('feedback', $saved->dictionary);
+        $this->assertArrayHasKey('shop', $saved->dictionary);
     }
 
     public function test_delete_language(): void

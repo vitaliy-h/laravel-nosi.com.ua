@@ -18,8 +18,8 @@
 
         @if(!empty(config('social.providers')))
             <section class="panel-white">
-                <h3>{{ t('social.section_title') }}</h3>
-                <p class="muted" style="margin: -8px 0 18px; font-size: 14px;">{{ t('social.section_subtitle') }}</p>
+                <h3>{{ __('site.social.section_title') }}</h3>
+                <p class="muted" style="margin: -8px 0 18px; font-size: 14px;">{{ __('site.social.section_subtitle') }}</p>
 
                 @if($errors->has('provider'))
                     <div class="alert alert-error">{{ $errors->first('provider') }}</div>
@@ -33,18 +33,18 @@
                         @php($connected = $user->social_profiles[$provider] ?? null)
                         <div class="social-item">
                             <div>
-                                <b><i class="bi bi-{{ $provider }}"></i> {{ t('social.' . $provider) }}</b>
+                                <b><i class="bi bi-{{ $provider }}"></i> {{ __('site.social.' . $provider) }}</b>
                                 @if($connected)
-                                    <small>{{ t('social.connected', ['identifier' => $connected->identifier]) }}</small>
+                                    <small>{{ __('site.social.connected', ['identifier' => $connected->identifier]) }}</small>
                                 @endif
                             </div>
                             @if($connected)
                                 <form action="{{ route('profile.social.disconnect', $provider) }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="btn btn-line btn-sm">{{ t('social.disconnect') }}</button>
+                                    <button type="submit" class="btn btn-line btn-sm">{{ __('site.social.disconnect') }}</button>
                                 </form>
                             @else
-                                <a href="{{ route('social.redirect', $provider) }}" class="btn btn-dark btn-sm">{{ t('social.connect') }}</a>
+                                <a href="{{ route('social.redirect', $provider) }}" class="btn btn-dark btn-sm">{{ __('site.social.connect') }}</a>
                             @endif
                         </div>
                     @endforeach

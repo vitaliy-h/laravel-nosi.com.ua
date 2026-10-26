@@ -17,7 +17,7 @@ class ConnectSocialProfileAction
 
         if ($existing && $existing->user_id !== $user->id) {
             throw ValidationException::withMessages([
-                'provider' => [t('social.already_connected_to_another_account')],
+                'provider' => [__('site.social.already_connected_to_another_account')],
             ]);
         }
 

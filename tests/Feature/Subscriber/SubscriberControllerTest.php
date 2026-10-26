@@ -75,10 +75,10 @@ class SubscriberControllerTest extends TestCase
     {
         // The message now comes from the ActionResult envelope, not from the controller.
         $first = $this->from('/')->post('/subscriber', ['email' => 'msg@example.com']);
-        $first->assertSessionHas('success', t('subscribe.saved'));
+        $first->assertSessionHas('success', __('site.subscribe.saved'));
 
         $second = $this->from('/')->post('/subscriber', ['email' => 'msg@example.com']);
-        $second->assertSessionHas('success', t('subscribe.already'));
+        $second->assertSessionHas('success', __('site.subscribe.already'));
     }
 
     public function test_store_creates_subscriber_not_integrated_yet(): void

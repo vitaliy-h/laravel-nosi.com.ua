@@ -40,14 +40,14 @@ class OAuthController extends BaseWebController
             $this->authLog->failure(AuthLogActionEnum::SOCIAL, $provider);
 
             return redirect()->to(save_route('auth.index'))
-                ->withErrors(['social' => t('social.auth_failed')]);
+                ->withErrors(['social' => __('site.social.auth_failed')]);
         }
 
         if (auth()->check()) {
             $socialProfile = $this->connect->handle(auth()->user(), $provider, $socialUser);
 
             return redirect()->to(save_route('profile.edit'))
-                ->with('success', t('social.connected', ['identifier' => $socialProfile->identifier]));
+                ->with('success', __('site.social.connected', ['identifier' => $socialProfile->identifier]));
         }
 
         $user = $this->findOrCreate->handle($provider, $socialUser);

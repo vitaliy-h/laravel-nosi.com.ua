@@ -110,7 +110,7 @@ return ActionResult::ok(
 );
 
 // success with nothing to hand back
-return ActionResult::ok(message: t('subscribe.saved'));
+return ActionResult::ok(message: __('site.subscribe.saved'));
 
 // expected failure
 return ActionResult::fail(t('shop.promocode_invalid'));

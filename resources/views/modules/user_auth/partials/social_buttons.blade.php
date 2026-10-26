@@ -5,7 +5,7 @@
         @foreach(config('social.providers') as $provider)
             <a href="{{ route('social.redirect', $provider) }}" class="btn btn-line">
                 <i class="bi bi-{{ $provider }}"></i>
-                {{ t('social.sign_in_with', ['provider' => t('social.' . $provider)]) }}
+                {{ __('site.social.sign_in_with', ['provider' => __('site.social.' . $provider)]) }}
             </a>
         @endforeach
     </div>

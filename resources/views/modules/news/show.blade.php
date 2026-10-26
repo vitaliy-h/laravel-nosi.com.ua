@@ -34,7 +34,7 @@
 
             @include('partials.builder', ['content' => $newsItem->content])
 
-            <a href="{{ save_route('news.index') }}" class="link-arrow" style="margin-top: 32px;"><i class="bi bi-arrow-left"></i> {{ t('news.back') }}</a>
+            <a href="{{ save_route('news.index') }}" class="link-arrow" style="margin-top: 32px;"><i class="bi bi-arrow-left"></i> {{ __('site.news.back') }}</a>
         </div>
     </div>
 @endsection

@@ -361,16 +361,11 @@ return [
         'contacts'      => 'Contacts and socials',
         'footer'        => 'Site footer',
         'counters'      => 'Counters and analytics',
-        'feedback'      => 'Feedback form',
-        'news'          => 'News',
-        'subscribe'     => 'Newsletter subscription',
         'shop'          => 'Shop, cart and checkout',
         'auth'          => 'Sign in and registration',
         'profile'       => 'Account',
         'errors'        => 'Error pages',
         'buttons'       => 'Buttons',
-        'api'           => 'API messages',
-        'social'        => 'Social accounts',
     ],
     // buttons & actions
     'actions' => [
