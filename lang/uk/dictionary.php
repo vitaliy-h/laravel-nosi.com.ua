@@ -14,7 +14,6 @@ return [
         'menu_sale:input6:br'  => 'Розпродаж %',
         'menu_sale_url:input6' => '/#sale',
         'menu:input4:br'       => 'Меню',
-        'search:input4'        => 'Пошук',
         'account:input4'       => 'Кабінет',
         'cart:input4'          => 'Кошик',
     ],
@@ -127,11 +126,6 @@ return [
         'body:textarea' => '',
     ],
 
-    // Legacy starter layout (layouts.app navbar).
-    'index' => [
-        'project_name' => 'Nosi',
-    ],
-
     'feedback' => [
         'name'             => 'Ім’я',
         'email'            => 'Електронна пошта',
@@ -141,16 +135,11 @@ return [
     ],
 
     'news' => [
-        'read_more' => 'Читати далі',
         'back'      => 'Усі новини',
     ],
 
     'subscribe' => [
-        'title'         => 'Підпишіться на розсилку',
-        'text:textarea' => 'Отримуйте першими спеціальні пропозиції, розіграші та знижки.',
         'email'         => 'Електронна пошта',
-        'placeholder'   => 'Ваш email',
-        'button'        => 'Підписатися',
         'saved'         => 'Дякуємо за підписку!',
         'already'       => 'Цей email уже підписаний.',
     ],
@@ -184,33 +173,19 @@ return [
         'search_placeholder'  => 'Шукати товари...',
         'sort_by'             => 'Сортувати',
         'items'               => 'Товарів',
-        'sale'                => 'Знижка',
         'add_to_cart'         => 'У кошик',
         'added_to_cart'       => 'Додано',
         'brand'               => 'Бренд',
         'no_products'         => 'Нічого не знайдено. Спробуйте змінити фільтри.',
-        'buy_now'             => 'Купити зараз',
         'quantity'            => 'Кількість',
         'in_stock'            => 'В наявності',
         'description'         => 'Опис',
         'specifications'      => 'Характеристики',
-        'product_overview'    => 'Огляд товару',
-        'product_information' => 'Інформація про товар',
         'article'             => 'Артикул',
         'category'            => 'Категорія',
-        'price'               => 'Ціна',
-        'free_shipping'       => 'Безкоштовна доставка від 1000 ₴',
-        'return_policy'       => 'Обмін і повернення протягом 14 днів',
-        'warranty'            => 'Гарантія якості',
 
-        'main_page'      => 'Головна',
-        'open_category'  => 'Відкрити категорію',
-        'products_count' => 'Товарів: :count',
-        'badge_new'      => 'Новинка',
-        'badge_sold_out' => 'Немає в наявності',
         'remove'         => 'Видалити',
 
-        'table_header_product'  => 'Товар',
         'total'                 => 'Разом',
         'subtotal'              => 'Сума',
         'discount'              => 'Знижка',
@@ -234,11 +209,6 @@ return [
         'placeholder_last_name'  => 'Ваше прізвище',
         'placeholder_email'      => 'Ваш email',
         'placeholder_phone'      => 'Ваш номер телефону',
-    ],
-
-    'impersonation' => [
-        'banner_viewing_as' => 'Ви переглядаєте сайт як',
-        'banner_return'     => 'Повернутися до свого акаунта',
     ],
 
     'auth' => [
@@ -267,16 +237,11 @@ return [
         'user_surname'                    => 'Прізвище',
         'user_email'                      => 'Електронна пошта',
         'user_phone'                      => 'Телефон',
-        'profile_dropdown_header_text'    => 'Вітаємо в',
-        'profile_dropdown_header_subtext' => 'Вхід до кабінету та керування замовленнями',
-        'my_profile'                      => 'Мій профіль',
         'account_settings'                => 'Налаштування акаунта',
         'personal_information'            => 'Особисті дані',
         'user_data_updated'               => 'Особисті дані успішно оновлено.',
-        'user_data_update_error'          => 'Не вдалося оновити особисті дані. Спробуйте ще раз.',
         'security'                        => 'Безпека',
         'password_updated'                => 'Пароль успішно змінено.',
-        'password_updated_error'          => 'Не вдалося змінити пароль. Спробуйте ще раз.',
         'delete_account'                  => 'Видалити акаунт',
         'delete_account_text'             => 'Після видалення акаунт неможливо відновити. Переконайтеся, що ви цього хочете.',
         'delete_account_confirm_text'     => 'Введіть свій email, щоб підтвердити видалення акаунта.',
@@ -295,9 +260,6 @@ return [
         'order_information'               => 'Інформація про замовлення',
         'order_payment_type'              => 'Спосіб оплати',
         'order_price_details'             => 'Деталі вартості',
-        'order_pay'                       => 'Оплатити замовлення',
-        'order_review'                    => 'Залишити відгук',
-        'order_reorder'                   => 'Повторити замовлення',
         'order_comment'                   => 'Коментар',
         'qty'                             => 'К-сть',
         'sku'                             => 'Артикул',
@@ -307,7 +269,6 @@ return [
         'something_went_wrong' => 'Сталася помилка. Будь ласка, спробуйте ще раз.',
         'email_invalid'        => 'Вкажіть коректну email-адресу, наприклад name@example.com',
         'phone_invalid'        => 'Вкажіть український номер, наприклад +380 67 123 45 67',
-        '404_title'            => '404 — Сторінку не знайдено',
         '404_h1'               => 'Сторінку не знайдено',
         '404_text:input12'     => 'Сторінка, яку ви шукаєте, не існує або була переміщена.',
 
@@ -325,7 +286,6 @@ return [
         'logout'                    => 'Вийти',
         'create_acc'                => 'Створити акаунт',
         'request_password_recovery' => 'Відновити пароль',
-        'menu'                      => 'Меню',
         'save_changes'              => 'Зберегти зміни',
         'update_password'           => 'Змінити пароль',
         'delete_account'            => 'Видалити акаунт',
@@ -337,7 +297,6 @@ return [
         'unauthenticated'    => 'Потрібна авторизація.',
         'forbidden'          => 'Доступ заборонено.',
         'resource_not_found' => 'Ресурс не знайдено.',
-        'route_not_found'    => 'Маршрут не знайдено.',
         'to_many_requests'   => 'Забагато запитів.',
         'login_success'      => 'Вхід виконано.',
         'register_success'   => 'Реєстрація успішна.',

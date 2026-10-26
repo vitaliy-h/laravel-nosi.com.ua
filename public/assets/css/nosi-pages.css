@@ -2,7 +2,7 @@
    Uses the tokens and components of nosi.css (colors, .btn, .card, .tabs, .kicker). */
 
 /* ---------- Page head ---------- */
-.page-head { padding: 28px 0 8px; }
+.page-head { padding: 16px 0 8px; }
 .crumbs { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0 0 14px; padding: 18px 20px; border-radius: var(--r); background: var(--cream); font-size: 14px; color: var(--ink-soft); }
 .crumbs li { display: inline-flex; align-items: center; gap: 6px; }
 .crumbs li + li::before { content: "/"; color: var(--muted); }

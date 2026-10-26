@@ -134,7 +134,7 @@ button.link-arrow { background: none; cursor: pointer; }
 .menu-toggle { display: none; }
 
 /* ---------- Hero ---------- */
-.hero { position: relative; padding-top: 8px; }
+.hero { position: relative; padding-top: 16px; }
 .hero-slides { position: relative; height: 54vh; min-height: 400px; max-height: 580px; overflow: hidden; border-radius: 32px; background: var(--plum); }
 .hero-slide {
     position: absolute; inset: 0;

@@ -14,7 +14,6 @@ return [
         'menu_sale:input6:br'  => 'Sale %',
         'menu_sale_url:input6' => '/#sale',
         'menu:input4:br'       => 'Menu',
-        'search:input4'        => 'Search',
         'account:input4'       => 'Account',
         'cart:input4'          => 'Cart',
     ],
@@ -127,11 +126,6 @@ return [
         'body:textarea' => '',
     ],
 
-    // Legacy starter layout (layouts.app navbar).
-    'index' => [
-        'project_name' => 'eStore',
-    ],
-
     'feedback' => [
         'name'             => 'Name',
         'email'            => 'Email',
@@ -141,16 +135,11 @@ return [
     ],
 
     'news' => [
-        'read_more' => 'Read more',
         'back'      => 'All news',
     ],
 
     'subscribe' => [
-        'title'         => 'Join Our Newsletter',
-        'text:textarea' => 'Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals.',
         'email'         => 'Email',
-        'placeholder'   => 'Your email address',
-        'button'        => 'Subscribe',
         'saved'         => 'Thank you for subscribing!',
         'already'       => 'This email is already subscribed.',
     ],
@@ -184,33 +173,19 @@ return [
         'search_placeholder'  => 'Search for products...',
         'sort_by'             => 'Sort By',
         'items'               => 'Items',
-        'sale'                => 'Sale',
         'add_to_cart'         => 'Add to Cart',
         'added_to_cart'       => 'Added',
         'brand'               => 'Brand',
         'no_products'         => 'Nothing found. Try changing the filters.',
-        'buy_now'             => 'Buy Now',
         'quantity'            => 'Quantity',
         'in_stock'            => 'In Stock',
         'description'         => 'Description',
         'specifications'      => 'Specifications',
-        'product_overview'    => 'Product Overview',
-        'product_information' => 'Product Information',
         'article'             => 'Article',
         'category'            => 'Category',
-        'price'               => 'Price',
-        'free_shipping'       => 'Free shipping on orders over $50',
-        'return_policy'       => '30-day return policy',
-        'warranty'            => '2-year warranty',
 
-        'main_page'      => 'Main Page',
-        'open_category'  => 'Open category',
-        'products_count' => ':count Products',
-        'badge_new'      => 'New',
-        'badge_sold_out' => 'Sold Out',
         'remove'         => 'Remove',
 
-        'table_header_product'  => 'Product',
         'total'                 => 'Total',
         'subtotal'              => 'Subtotal',
         'discount'              => 'Discount',
@@ -234,11 +209,6 @@ return [
         'placeholder_last_name'  => 'Your Last Name',
         'placeholder_email'      => 'Your Email',
         'placeholder_phone'      => 'Your Phone Number',
-    ],
-
-    'impersonation' => [
-        'banner_viewing_as' => 'Viewing as',
-        'banner_return'     => 'Return to my account',
     ],
 
     'auth' => [
@@ -267,16 +237,11 @@ return [
         'user_surname'                    => 'Surname',
         'user_email'                      => 'Email',
         'user_phone'                      => 'Phone',
-        'profile_dropdown_header_text'    => 'Welcome to',
-        'profile_dropdown_header_subtext' => 'Access account & manage orders',
-        'my_profile'                      => 'My profile',
         'account_settings'                => 'Account Settings',
         'personal_information'            => 'Personal Information',
         'user_data_updated'               => 'Personal Information has been successfully updated.',
-        'user_data_update_error'          => 'Error occurred while updating personal data. Please try again.',
         'security'                        => 'Security',
         'password_updated'                => 'Password has been successfully updated.',
-        'password_updated_error'          => 'Error occurred while updating password. Please try again.',
         'delete_account'                  => 'Delete Account',
         'delete_account_text'             => 'Once you delete your account, there is no going back. Please be certain.',
         'delete_account_confirm_text'     => 'Enter your email to confirm account deletion.',
@@ -295,9 +260,6 @@ return [
         'order_information'               => 'Order Information',
         'order_payment_type'              => 'Payment Method',
         'order_price_details'             => 'Price Details',
-        'order_pay'                       => 'Pay Order',
-        'order_review'                    => 'Write Review',
-        'order_reorder'                   => 'Reorder',
         'order_comment'                   => 'Comment',
         'qty'                             => 'Qty',
         'sku'                             => 'SKU',
@@ -307,7 +269,6 @@ return [
         'something_went_wrong' => 'Unexpected error. Please try again.',
         'email_invalid'        => 'Enter a valid email address, e.g. name@example.com',
         'phone_invalid'        => 'Enter a Ukrainian number, e.g. +380 67 123 45 67',
-        '404_title'            => '404 - Page not found',
         '404_h1'               => 'Page not found',
         '404_text:input12'     => 'The page you are looking for doesn’t exist or has been moved.',
 
@@ -325,7 +286,6 @@ return [
         'logout'                    => 'Sign Out',
         'create_acc'                => 'Create Account',
         'request_password_recovery' => 'Reset Password',
-        'menu'                      => 'Reset Password',
         'save_changes'              => 'Save Changes',
         'update_password'           => 'Update Password',
         'delete_account'            => 'Delete Account',
@@ -337,7 +297,6 @@ return [
         'unauthenticated'    => 'Unauthenticated.',
         'forbidden'          => 'Forbidden.',
         'resource_not_found' => 'Resource not found.',
-        'route_not_found'    => 'Route not found.',
         'to_many_requests'   => 'Too many requests.',
         'login_success'      => 'Login successful.',
         'register_success'   => 'Registration successful.',

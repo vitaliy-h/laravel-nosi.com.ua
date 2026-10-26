@@ -139,7 +139,7 @@ class LanguageResourceTest extends TestCase
             ->assertHasNoFormErrors();
 
         $saved = Language::find($language->id);
-        $this->assertArrayHasKey('index', $saved->dictionary);
+        $this->assertArrayHasKey('home', $saved->dictionary);
         $this->assertArrayHasKey('feedback', $saved->dictionary);
     }
 

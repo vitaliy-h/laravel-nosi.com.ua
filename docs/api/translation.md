@@ -25,9 +25,6 @@ GET /api/translations?locale=en
     "success": true,
     "message": "OK",
     "data": {
-        "index": {
-            "project_name": "eStore"
-        },
         "feedback": {
             "name": "Name",
             "email": "Email",
@@ -35,7 +32,7 @@ GET /api/translations?locale=en
             "saved": "Feedback has been saved."
         },
         "news": {
-            "read_more": "Read more"
+            "back": "All news"
         },
         "auth": {
             "login": "Sign In",
@@ -56,11 +53,9 @@ GET /api/translations?locale=en
             "password_reset_error": "Error occurred while resetting password."
         },
         "profile": {
-            "my_profile": "My profile",
             "account_settings": "Account Settings",
             "personal_information": "Personal Information",
-            "user_data_updated": "Personal Information has been successfully updated.",
-            "user_data_update_error": "Error occurred while updating personal data. Please try again."
+            "user_data_updated": "Personal Information has been successfully updated."
         },
         "buttons": {
             "send": "Send",
@@ -70,7 +65,6 @@ GET /api/translations?locale=en
             "logout": "Sign Out",
             "create_acc": "Create Account",
             "request_password_recovery": "Reset Password",
-            "menu": "Reset Password",
             "save_changes": "Save Changes"
         }
     },

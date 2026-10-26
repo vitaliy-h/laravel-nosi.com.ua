@@ -34,7 +34,7 @@ return [
     */
     'list' => [
         // 'user_auth'       => false,
-        // 'feedback'        => false,
+        'feedback'        => false,
         'geo'  => false,
         'news' => false,
         // 'shop'            => false,
