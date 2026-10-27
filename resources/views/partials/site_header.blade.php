@@ -39,3 +39,27 @@
         </div>
     </div>
 </header>
+{{-- Inline, right after the markup, so the header never paints in the wrong mode: the burger
+     at ≤1024px, and on wider screens too when the menu does not fit in one line
+     (the number and length of categories come from the admin). --}}
+<script>
+    (function () {
+        var header = document.querySelector('.header');
+        var nav = document.getElementById('nav');
+        if (!header || !nav) return;
+        var fit = function () {
+            header.classList.remove('is-compact');
+            var compact = window.innerWidth <= 1024 || nav.scrollWidth > nav.clientWidth;
+            header.classList.toggle('is-compact', compact);
+            if (!compact) nav.classList.remove('is-open');
+        };
+        fit();
+        var frame;
+        window.addEventListener('resize', function () {
+            cancelAnimationFrame(frame);
+            frame = requestAnimationFrame(fit);
+        });
+        // web fonts change the item widths once loaded
+        if (document.fonts) document.fonts.ready.then(fit);
+    })();
+</script>
