@@ -55,6 +55,7 @@ itself — its signature belongs to `Data`.
 namespace App\Modules\Shop\ViewModels;
 
 use App\Modules\Core\Abstract\BaseViewModel;
+use App\Modules\Core\Support\Money;
 use App\Modules\Shop\Models\Product;
 
 class ProductViewModel extends BaseViewModel
@@ -63,7 +64,7 @@ class ProductViewModel extends BaseViewModel
         public readonly int $id,
         public readonly string $title,
         public readonly ?string $url,
-        public readonly bool $has_discount,
+        public readonly ?string $price_formatted,
         public readonly ?CategoryViewModel $category,
     ) {}
 
@@ -77,7 +78,7 @@ class ProductViewModel extends BaseViewModel
             url: $category
                 ? save_route('shop.product', [$category->slug, $product->slug_with_id])
                 : null,
-            has_discount: (bool) $product->price2,
+            price_formatted: $product->price !== null ? Money::from($product->price)->format() : null,
             category: $category ? CategoryViewModel::from($category) : null,
         );
     }
@@ -106,7 +107,6 @@ object:
 $page = new ShopProductPageViewModel(
     product: ProductViewModel::from($product),
     category: CategoryViewModel::from($category),
-    cart_quantity: $quantity,
 );
 
 return $this->render('modules.shop.product', $page->toViewData());

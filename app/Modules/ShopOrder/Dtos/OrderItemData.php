@@ -12,5 +12,7 @@ class OrderItemData extends Data
         public readonly ?string $product_article,
         public readonly float $selling_price,
         public readonly int $quantity,
+        // The set size of the line («5 шт.»); `quantity` counts such sets.
+        public readonly int $pack_quantity = 1,
     ) {}
 }

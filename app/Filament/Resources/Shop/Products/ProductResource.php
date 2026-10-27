@@ -8,6 +8,7 @@ use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
 use App\Filament\Tables\Columns\InlineEditColumn;
 use App\Filament\Traits\HasSeoFields;
 use App\Modules\Core\Support\ModuleGate;
+use App\Modules\Shop\Models\Attribute;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
@@ -18,11 +19,13 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
@@ -102,12 +105,33 @@ class ProductResource extends Resource
                         );
                     }),
 
-                TextInput::make('price')
-                    ->numeric()
+                Toggle::make('is_pack')
+                    ->inline(false)
+                    ->default(false)
+                    ->helperText(__('admin.fields.is_pack_helper'))
                     ->columnSpan(2),
-                TextInput::make('price2')
-                    ->numeric()
-                    ->columnSpan(2),
+
+                // The sets the product is sold in; Product keeps `price` at the
+                // price of the smallest one for the catalogue filter and sorting.
+                Repeater::make('packs')
+                    ->schema([
+                        TextInput::make('quantity')
+                            ->label(__('admin.fields.pack_quantity'))
+                            ->integer()
+                            ->minValue(1)
+                            ->required()
+                            ->distinct(),
+                        TextInput::make('price')
+                            ->numeric()
+                            ->minValue(0),
+                    ])
+                    ->columns(2)
+                    ->default([['quantity' => 1, 'price' => null], ['quantity' => 5, 'price' => null], ['quantity' => 10, 'price' => null]])
+                    ->minItems(1)
+                    ->maxItems(Product::MAX_PACKS)
+                    ->reorderable(false)
+                    ->helperText(__('admin.fields.packs_helper'))
+                    ->columnSpan(4),
 
                 FileUpload::make('imgs')
                     ->image()
@@ -123,6 +147,12 @@ class ProductResource extends Resource
                             'gallery',
                         );
                     }),
+
+                Section::make(__('admin.tables.shop_attributes'))
+                    ->schema(fn (): array => static::getAttributeFields())
+                    ->columns(3)
+                    ->visible(fn (): bool => Attribute::query()->exists())
+                    ->columnSpanFull(),
 
                 RichEditor::make('text')
                     ->columnSpanFull(),
@@ -155,12 +185,6 @@ class ProductResource extends Resource
                     ->rules([Rule::exists(Brand::class, 'id')])
                     ->visible(ModuleGate::isEnabled('shop_brands')),
                 InlineEditColumn::make('price')
-                    ->editAsNumber()
-                    ->rules(['numeric', 'min:0'])
-                    ->numeric(decimalPlaces: 2)
-                    ->alignEnd()
-                    ->sortable(),
-                InlineEditColumn::make('price2')
                     ->editAsNumber()
                     ->rules(['numeric', 'min:0'])
                     ->numeric(decimalPlaces: 2)
@@ -225,6 +249,47 @@ class ProductResource extends Resource
                     DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    /**
+     * A multiple choice per parameter (size, season, material…). All of them
+     * share one pivot, so each field reads and syncs only its own parameter's
+     * values and leaves the others' alone.
+     *
+     * @return array<int, Select>
+     */
+    protected static function getAttributeFields(): array
+    {
+        return Attribute::query()
+            ->with('options')
+            ->orderByDesc('rank')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (Attribute $attribute): Select => Select::make('attribute_options_' . $attribute->id)
+                ->label($attribute->title)
+                ->multiple()
+                ->options($attribute->options->pluck('title', 'id')->all())
+                ->afterStateHydrated(fn (Select $component, ?Product $record) => $component->state(
+                    $record?->attributeOptions()
+                        ->where('attribute_id', $attribute->id)
+                        ->pluck('shop_attribute_options.id')
+                        ->all() ?? []
+                ))
+                ->dehydrated(false)
+                ->saveRelationshipsUsing(function (Product $record, ?array $state) use ($attribute): void {
+                    $others = $record->attributeOptions()
+                        ->where('attribute_id', '!=', $attribute->id)
+                        ->pluck('shop_attribute_options.id')
+                        ->all();
+
+                    $own = $attribute->options()
+                        ->whereIn('id', array_map('intval', $state ?? []))
+                        ->pluck('id')
+                        ->all();
+
+                    $record->attributeOptions()->sync([...$others, ...$own]);
+                }))
+            ->all();
     }
 
     /**

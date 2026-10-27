@@ -15,6 +15,7 @@ use App\Modules\ShopCart\Services\CartContext;
 use App\Modules\ShopCart\ViewModels\CartItemViewModel;
 use App\Modules\ShopCart\ViewModels\CartViewModel;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class AjaxCartController extends BaseWebController
 {
@@ -29,11 +30,18 @@ class AjaxCartController extends BaseWebController
         DuplicateCartAction $fork,
     ) {
         $productId = (int) $request->input('id');
+        $pack = max(1, (int) $request->input('pack', 1));
         $count = max(1, (int) $request->input('count'));
         $action = CartAction::from($request->input('action'));
         $viewedUuid = $request->input('cart_uuid');
 
         $product = Product::query()->findOrFail($productId);
+
+        // A line can only be added or changed in a set the product is sold in;
+        // removing one of a set dropped since is still allowed.
+        if (!in_array($action, [CartAction::DeleteModal, CartAction::DeleteCheckout], true) && $product->pack($pack) === null) {
+            throw ValidationException::withMessages(['pack' => __('validation.in', ['attribute' => 'pack'])]);
+        }
 
         $forked = false;
 
@@ -53,11 +61,11 @@ class AjaxCartController extends BaseWebController
         }
 
         $actions = match ($action) {
-            CartAction::DeleteModal         => $this->handleDeleteModal($cart, $product, $remove),
-            CartAction::DeleteCheckout      => $this->handleDeleteCheckout($cart, $product, $remove),
-            CartAction::ChangeCount         => $this->handleChangeCount($cart, $product, $count, $addOrUpdate),
-            CartAction::ChangeCountModal    => $this->handleChangeCountModal($cart, $product, $count, $addOrUpdate),
-            CartAction::ChangeCountCheckout => $this->handleChangeCountCheckout($cart, $product, $count, $addOrUpdate),
+            CartAction::DeleteModal         => $this->handleDeleteModal($cart, $product, $pack, $remove),
+            CartAction::DeleteCheckout      => $this->handleDeleteCheckout($cart, $product, $pack, $remove),
+            CartAction::ChangeCount         => $this->handleChangeCount($cart, $product, $pack, $count, $addOrUpdate),
+            CartAction::ChangeCountModal    => $this->handleChangeCountModal($cart, $product, $pack, $count, $addOrUpdate),
+            CartAction::ChangeCountCheckout => $this->handleChangeCountCheckout($cart, $product, $pack, $count, $addOrUpdate),
         };
 
         if ($forked) {
@@ -75,9 +83,9 @@ class AjaxCartController extends BaseWebController
         ]);
     }
 
-    private function handleDeleteModal(Cart $cart, Product $product, RemoveCartItemAction $remove): array
+    private function handleDeleteModal(Cart $cart, Product $product, int $pack, RemoveCartItemAction $remove): array
     {
-        $remove->handle($cart, $product);
+        $remove->handle($cart, $product, $pack);
 
         return [
             $this->cartCountAction($cart),
@@ -89,9 +97,9 @@ class AjaxCartController extends BaseWebController
         ];
     }
 
-    private function handleDeleteCheckout(Cart $cart, Product $product, RemoveCartItemAction $remove): array
+    private function handleDeleteCheckout(Cart $cart, Product $product, int $pack, RemoveCartItemAction $remove): array
     {
-        $remove->handle($cart, $product);
+        $remove->handle($cart, $product, $pack);
         $cart->refresh();
 
         if ($cart->items()->count() === 0) {
@@ -103,7 +111,7 @@ class AjaxCartController extends BaseWebController
         return [
             $this->cartCountAction($cart),
             [
-                'selector' => '.checkout_item[data-product="' . $product->id . '"]',
+                'selector' => '.checkout_item[data-line="' . CartItemViewModel::lineKey($product->id, $pack) . '"]',
                 'method'   => 'remove',
             ],
             $this->summaryDiscountAction($cart),
@@ -111,9 +119,13 @@ class AjaxCartController extends BaseWebController
         ];
     }
 
-    private function handleChangeCount(Cart $cart, Product $product, int $count, AddOrUpdateCartItemAction $addOrUpdate): array
+    /**
+     * The product page and the card add to what is already in the cart; the
+     * cart modal and the cart page set the count.
+     */
+    private function handleChangeCount(Cart $cart, Product $product, int $pack, int $count, AddOrUpdateCartItemAction $addOrUpdate): array
     {
-        $item = $addOrUpdate->handle($cart, $product, $count);
+        $item = $addOrUpdate->add($cart, $product, $count, $pack);
         $cart->refresh();
 
         return [
@@ -132,9 +144,9 @@ class AjaxCartController extends BaseWebController
         ];
     }
 
-    private function handleChangeCountModal(Cart $cart, Product $product, int $count, AddOrUpdateCartItemAction $addOrUpdate): array
+    private function handleChangeCountModal(Cart $cart, Product $product, int $pack, int $count, AddOrUpdateCartItemAction $addOrUpdate): array
     {
-        $item = $addOrUpdate->handle($cart, $product, $count);
+        $item = $addOrUpdate->handle($cart, $product, $count, $pack);
 
         return [
             $this->cartCountAction($cart->refresh()),
@@ -146,15 +158,15 @@ class AjaxCartController extends BaseWebController
         ];
     }
 
-    private function handleChangeCountCheckout(Cart $cart, Product $product, int $count, AddOrUpdateCartItemAction $addOrUpdate): array
+    private function handleChangeCountCheckout(Cart $cart, Product $product, int $pack, int $count, AddOrUpdateCartItemAction $addOrUpdate): array
     {
-        $item = $addOrUpdate->handle($cart, $product, $count);
+        $item = $addOrUpdate->handle($cart, $product, $count, $pack);
         $cart->refresh();
 
         return [
             $this->cartCountAction($cart),
             [
-                'selector' => '.js_product_checkout_total_' . $product->id,
+                'selector' => '.js_product_checkout_total_' . CartItemViewModel::lineKey($product->id, $pack),
                 'method'   => 'text',
                 'content'  => Money::from($item->total)->format(),
             ],

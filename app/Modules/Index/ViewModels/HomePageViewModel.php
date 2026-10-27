@@ -23,7 +23,6 @@ class HomePageViewModel extends BaseViewModel
      * @param  Collection<int, SlideViewModel>  $slides
      * @param  Collection<int, ProductViewModel>  $top_products
      * @param  Collection<int, ProductViewModel>  $new_products
-     * @param  Collection<int, ProductViewModel>  $sale_products
      * @param  Collection<int, CategoryViewModel>  $categories
      * @param  Collection<int, PromoViewModel>  $promos
      * @param  bool  $reviews_enabled  the block (and its «leave a review» button) shows even before the first review is published
@@ -34,7 +33,6 @@ class HomePageViewModel extends BaseViewModel
         public readonly Collection $slides,
         public readonly Collection $top_products,
         public readonly Collection $new_products,
-        public readonly Collection $sale_products,
         public readonly Collection $categories,
         public readonly Collection $promos,
         public readonly bool $reviews_enabled,

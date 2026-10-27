@@ -28,6 +28,20 @@ class ShopFilterCriteriaDataTest extends TestCase
         $this->assertSame([7], $criteria->brands);
     }
 
+    public function test_parameter_values_are_read_from_the_rest_of_the_query(): void
+    {
+        $criteria = ShopFilterCriteriaData::fromQuery(null, null, null, null, [
+            'season'   => ['3', '4'],
+            'material' => '7,abc',
+            'size'     => 'abc',
+            'brand'    => '1',
+            'sort'     => 'newest',
+            'page'     => '2',
+        ]);
+
+        $this->assertSame(['season' => [3, 4], 'material' => [7]], $criteria->attributes);
+    }
+
     public function test_missing_values_stay_null(): void
     {
         $criteria = ShopFilterCriteriaData::fromQuery(null, null, null, null);

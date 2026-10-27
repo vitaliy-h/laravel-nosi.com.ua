@@ -99,6 +99,7 @@ class ShopController extends BaseApiController
             priceFrom: $request->query('price_from'),
             priceTo: $request->query('price_to'),
             search: $request->query('search'),
+            query: $request->query(),
         );
     }
 }

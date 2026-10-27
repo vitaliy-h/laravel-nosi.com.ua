@@ -45,7 +45,7 @@ During login or registration (`AuthController::login/register`, `OAuthController
 2. If the user doesn't have their own cart yet — the guest cart is simply
    "adopted" (its `user_id` is set to the user).
 3. If the user already has their own cart — items from the guest cart are merged
-   into the user's cart (`updateOrCreate` by `shop_product_id`, quantity/total are
+   into the user's cart (`updateOrCreate` by `shop_product_id` + `pack_quantity`, quantity/total are
    overwritten with the guest cart's values), then the guest cart is deleted.
 
 ### Behavior when sharing a link
@@ -74,10 +74,19 @@ sends it to someone else:
 ### Item lifecycle
 
 - `AddOrUpdateCartItemAction` — adds an item or updates its quantity/price/total
-  (`updateOrCreate` by the `cart_id` + `shop_product_id` pair), snapshotting the
+  (`updateOrCreate` by `cart_id` + `shop_product_id` + `pack_quantity`), snapshotting the
   product's name/article/price at the moment of adding (`product_name`,
-  `product_article`, `selling_price`).
-- `RemoveCartItemAction` — removes an item from the cart.
+  `product_article`, `selling_price`). A line is one **set** of the product
+  (`Product::$packs`, «1 шт.» / «5 шт.» / «10 шт.»): `pack_quantity` is the set size,
+  `quantity` how many such sets, `selling_price` the price of the set. Two sets of one
+  product are two lines; the name snapshot carries the set («Шкарпетки — 5 шт.»)
+  unless the product is sold by the piece only. A set the product is not sold in is
+  refused (`InvalidArgumentException`; the AJAX controller answers 422 on `pack`).
+- `RemoveCartItemAction` — removes one set's line from the cart.
+
+The forms send `pack` alongside `id`; the page tells lines apart by
+`CartItemViewModel::$line_key` (`{product_id}-{pack}`) — `data-line` on the row and
+`.js_product_checkout_total_{line_key}`.
 - The cart total (`total_amount`) is **not** recalculated manually after every
   action: `CartProductObserver` listens to `CartProduct`'s `created`/`updated`
   events and calls `RecalculateCartTotalAction`, which recomputes `total_amount` as
@@ -116,10 +125,10 @@ shows the same placeholder.
     layer through `Core\Support\Money`, never by the model
 
 - **`CartProduct`** (`shop_cart_products`)
-  - `cart_id`, `shop_product_id` (`belongsTo(Product)`)
+  - `cart_id`, `shop_product_id` (`belongsTo(Product)`), `pack_quantity` (the set size, default 1)
   - a product "snapshot" taken at the time it was added: `product_name`,
     `product_article`, `selling_price`
-  - `quantity`, `total`
+  - `quantity` (number of sets), `total`
 
 ### Queries
 
@@ -188,7 +197,8 @@ shows the same placeholder.
 ```
 DeleteModal            — remove an item from the cart modal
 DeleteCheckout          — remove an item from the cart/checkout page
-ChangeCount             — add an item from the product page
+ChangeCount             — add `count` more sets from the product page or a card
+                          (2 pressed five times → 10)
 ChangeCountModal        — change quantity in the cart modal
 ChangeCountCheckout     — change quantity on the cart/checkout page
 ```
@@ -269,8 +279,8 @@ increments promocode usage) and the controller redirects to `order.show`
   `min_order_amount`, `max_discount`, `starts_at`, `expires_at`, `usage_limit`,
   `used_count`, `display`, `comment`, timestamps
 - `shop_cart_products`: `id`, `cart_id` (FK), `shop_product_id` (FK to
-  `shop_products`), `product_name`, `product_article`, `selling_price`, `quantity`,
-  `total`, timestamps
+  `shop_products`), `pack_quantity`, `product_name`, `product_article`, `selling_price`,
+  `quantity`, `total`, timestamps (`shop_order_products` copies `pack_quantity` too)
 
 ### Related modules
 

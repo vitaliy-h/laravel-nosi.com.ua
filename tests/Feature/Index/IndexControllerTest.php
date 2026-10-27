@@ -6,7 +6,6 @@ use App\Modules\Announce\Models\Announce;
 use App\Modules\Faq\Models\Faq;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
-use Database\Seeders\LanguageSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -39,7 +38,7 @@ class IndexControllerTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
-        foreach (['slides', 'top_products', 'new_products', 'sale_products', 'categories', 'promos', 'reviews', 'faqs'] as $block) {
+        foreach (['slides', 'top_products', 'new_products', 'categories', 'promos', 'reviews', 'faqs'] as $block) {
             $response->assertViewHas($block);
         }
     }
@@ -53,34 +52,6 @@ class IndexControllerTest extends TestCase
         $response = $this->get('/');
 
         $this->assertSame([$hit->id], $response->viewData('top_products')->pluck('id')->all());
-    }
-
-    public function test_sale_block_holds_products_with_a_different_second_price(): void
-    {
-        $category = Category::factory()->create();
-        $discounted = Product::factory()->forCategory($category)->create(['price' => 100, 'price2' => 70]);
-        Product::factory()->forCategory($category)->create(['price' => 100, 'price2' => 100]);
-        Product::factory()->forCategory($category)->create(['price' => 100, 'price2' => null]);
-
-        $response = $this->get('/');
-
-        $this->assertSame([$discounted->id], $response->viewData('sale_products')->pluck('id')->all());
-    }
-
-    public function test_sale_menu_item_shows_while_products_are_on_sale(): void
-    {
-        $this->seed(LanguageSeeder::class);
-        Product::factory()->forCategory(Category::factory()->create())->create(['price' => 100, 'price2' => 70]);
-
-        $this->get('/')->assertSee('class="is-sale"', false);
-    }
-
-    public function test_sale_menu_item_is_hidden_without_products_on_sale(): void
-    {
-        $this->seed(LanguageSeeder::class);
-        Product::factory()->forCategory(Category::factory()->create())->create(['price' => 100, 'price2' => 100]);
-
-        $this->get('/')->assertDontSee('class="is-sale"', false);
     }
 
     public function test_categories_block_skips_categories_without_products(): void

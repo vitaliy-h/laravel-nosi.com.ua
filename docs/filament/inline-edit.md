@@ -100,7 +100,7 @@ the same rules as the SEO section's field.
 | Countries / Regions / Cities | `title`, `rank` |
 | Categories | `title`, `slug` (no `rank` column: the tree order is the nested set) |
 | Brands | `title`, `slug`, `rank` |
-| Products | `title`, category (select), brand (select), `price`, `price2`, `rank` |
+| Products | `title`, category (select), brand (select), `price` (the smallest set's, see `docs/project/shop.md`), `rank` |
 | Users | `name`, roles (multiselect; `super_admin` offered to Super Admins only) |
 | Feedback | `name` |
 

@@ -11,9 +11,15 @@ class RemoveCartItemAction
         private RecalculateCartTotalAction $recalculate,
     ) {}
 
-    public function handle(Cart $cart, Product $product): void
+    /**
+     * Drops the line of one set size of the product; the other sets stay.
+     */
+    public function handle(Cart $cart, Product $product, int $pack = 1): void
     {
-        $cart->items()->where('shop_product_id', $product->id)->delete();
+        $cart->items()
+            ->where('shop_product_id', $product->id)
+            ->where('pack_quantity', $pack)
+            ->delete();
 
         $this->recalculate->handle($cart);
     }

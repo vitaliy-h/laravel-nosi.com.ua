@@ -20,6 +20,7 @@
                             <form data-abcr="{{ save_route('change_product_count') }}" action="{{ save_route('change_product_count') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="id" value="{{$item->product_id}}">
+                                <input type="hidden" name="pack" value="{{ $item->pack_quantity }}">
                                 <input type="hidden" name="count" value="0">
                                 <input type="hidden" name="action" value="{{ \App\Modules\ShopCart\Enums\CartAction::DeleteModal->value }}">
                                 <button type="submit" class="remove-item">
@@ -38,6 +39,7 @@
                     <form data-abcr="{{ save_route('change_product_count') }}" action="{{ save_route('change_product_count') }}" method="POST">
                         @csrf
                         <input type="hidden" name="id" value="{{$item->product_id}}">
+                        <input type="hidden" name="pack" value="{{ $item->pack_quantity }}">
                         <input type="hidden" name="action" value="{{ \App\Modules\ShopCart\Enums\CartAction::ChangeCountModal->value }}">
                         <div class="quantity-selector">
                             <button type="button" class="quantity-btn decrease">

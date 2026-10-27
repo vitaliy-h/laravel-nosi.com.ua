@@ -14,7 +14,6 @@ use App\Modules\Review\Queries\GetReviewRatingQuery;
 use App\Modules\Review\ViewModels\ReviewViewModel;
 use App\Modules\Shop\Dtos\CategorySearchData;
 use App\Modules\Shop\Queries\Category\SearchCategoriesQuery;
-use App\Modules\Shop\Queries\Product\GetDiscountedProductsQuery;
 use App\Modules\Shop\Queries\Product\GetHitProductsQuery;
 use App\Modules\Shop\Queries\Product\GetNewProductsQuery;
 use App\Modules\Shop\ViewModels\CategoryViewModel;
@@ -30,7 +29,6 @@ class IndexController extends BaseWebController
         private readonly GetFaqsQuery $faqs,
         private readonly GetHitProductsQuery $hitProducts,
         private readonly GetNewProductsQuery $newProducts,
-        private readonly GetDiscountedProductsQuery $discountedProducts,
         private readonly SearchCategoriesQuery $searchCategories,
         private readonly GetLatestReviewsQuery $latestReviews,
         private readonly GetReviewRatingQuery $reviewRating,
@@ -48,7 +46,6 @@ class IndexController extends BaseWebController
             slides: SlideViewModel::collect($this->slides->handle()),
             top_products: $shop ? ProductViewModel::collect($this->hitProducts->handle()) : collect(),
             new_products: $shop ? ProductViewModel::collect($this->newProducts->handle()) : collect(),
-            sale_products: $shop ? ProductViewModel::collect($this->discountedProducts->handle()) : collect(),
             categories: $shop
                 ? CategoryViewModel::collect($this->searchCategories->handle(new CategorySearchData(root: true, withProductsInTree: true, limit: 8)))
                 : collect(),

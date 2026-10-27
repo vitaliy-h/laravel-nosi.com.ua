@@ -46,7 +46,7 @@ class MergeCartOnAuthAction
         DB::transaction(function () use ($guestCart, $userCart): void {
             foreach ($guestCart->items as $item) {
                 $userCart->items()->updateOrCreate(
-                    ['shop_product_id' => $item->shop_product_id],
+                    ['shop_product_id' => $item->shop_product_id, 'pack_quantity' => $item->pack_quantity],
                     [
                         'product_name'    => $item->product_name,
                         'product_article' => $item->product_article,

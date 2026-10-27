@@ -48,6 +48,21 @@
                         </div>
                     @endif
 
+                    {{-- Product parameters (admin → Catalog → Parameters), each under its code --}}
+                    @foreach($filter->attributes ?? [] as $attributeFilter)
+                        @if($attributeFilter->items->isNotEmpty())
+                            <h3 class="filter-title" style="margin-top: 22px;">{{ $attributeFilter->title }}</h3>
+                            <div class="brand-list">
+                                @foreach($attributeFilter->items as $option)
+                                    <label class="check">
+                                        <input type="checkbox" name="{{ $attributeFilter->key }}[]" value="{{ $option->id }}" @checked(in_array($option->id, $attributeFilter->selected, true))>
+                                        <span>{{ $option->title }} <span class="muted">({{ $option->products_count }})</span></span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        @endif
+                    @endforeach
+
                     <div class="filter-actions" style="margin-top: 22px;">
                         <button type="submit" class="btn btn-dark btn-sm">{{ t('shop.apply_filter') }}</button>
                         <a href="{{ url()->current() }}" class="btn btn-line btn-sm">{{ t('shop.clear_all') }}</a>

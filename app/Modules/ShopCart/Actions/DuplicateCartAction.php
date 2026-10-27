@@ -34,6 +34,7 @@ class DuplicateCartAction
             foreach ($source->items as $item) {
                 $cart->items()->create([
                     'shop_product_id' => $item->shop_product_id,
+                    'pack_quantity'   => $item->pack_quantity,
                     'product_name'    => $item->product_name,
                     'product_article' => $item->product_article,
                     'selling_price'   => $item->selling_price,

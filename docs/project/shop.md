@@ -23,9 +23,26 @@ not twice. The header is one row: logo left, menu in the middle, profile and car
 **Brands** — name, slug, logo, text, SEO. Optional: enabled separately
 (`shop_brands`).
 
-**Product** — category, brand, SKU, price (`price`) and a second price (`price2`, old /
-struck-through), main photo + gallery, text, SEO, sort order, "show" toggle.
-Products have no reviews or rating.
+**Product** — category, brand, SKU, prices by set, the "pack" toggle, parameters, main
+photo + gallery, text, SEO, sort order, "show" toggle. Products have no reviews or rating,
+and there is no old / crossed-out price or sale block any more.
+
+**Sets** (`packs`, JSON `[{quantity, price}]`) — a product is sold in 1 to 3 sets, e.g.
+«1 шт.» / «5 шт.» / «10 шт.», each with the price of the whole set; the admin form starts
+with 1 / 5 / 10 and a row without a price is not sold. With more than one set the card and
+the product page show a button per set, which swaps the price; the price is labelled
+«за шт.» / «за 5 шт.». `price` mirrors the smallest set's price (kept by the model) — the
+catalogue filter, sorting and the inline price column work on it. The **pack** toggle
+(`is_pack`) only changes the unit word: «шт.» → «уп.».
+
+In the cart each set is its own line: «7 × 3 шт.» and «2 × 5 шт.» of one product are two
+lines, each with its own count (see `docs/starter/cart.md`).
+
+**Parameters** (admin → Catalog → Parameters: `shop_attributes`, `shop_attribute_options`,
+pivot `shop_attribute_option_product`) — e.g. size, season, material: a parameter has a
+list of values, a product gets any number of values of each (a multiple choice per
+parameter in the product form). They show in the product's specifications and, with
+"in filter" on, in the catalogue sidebar.
 
 ### Pages
 
@@ -40,6 +57,9 @@ Products have no reviews or rating.
 ### Filters, sorting, pagination
 
 - **Brand** — list of brands with the product count next to each.
+- **Parameters** — a checkbox list per parameter, under its code in the URL
+  (`?season[]=3&size[]=7`): values of one parameter are alternatives, different
+  parameters narrow each other down; counts as for brands.
 - **Price** — a "from / to" range; the bounds come from the actual product prices in the selection.
 - **Search** — by product name.
 - Each filter's counts and bounds are calculated taking the **other** selected filters into
@@ -112,7 +132,8 @@ value hides its row, all empty — the whole block.
 |---|---|
 | Categories | tree (parent category, order), CRUD |
 | Brands | CRUD |
-| Products | CRUD, photos, gallery |
+| Products | CRUD, photos, gallery, prices by set, parameter values |
+| Parameters | CRUD, values (ordered), "in filter" and "show" toggles |
 | Promo codes | CRUD, usage counter |
 | Carts | CRUD, filter by user |
 | Orders | CRUD, filters by payment status, payment type and user; changing the discount or promo code recalculates the total |
@@ -139,7 +160,11 @@ Before disabling `shop`, remove product blocks from page content.
 
 ## 6. Not implemented yet
 
-- Product variants (size, color) — [`docs/todo/product_items.md`](../todo/product_items.md).
-- Product attributes and filtering by them — [`docs/todo/product_attributes.md`](../todo/product_attributes.md).
+- Variants with their own photos / SKU (size, color as a choice in the cart) —
+  [`docs/todo/product_items.md`](../todo/product_items.md); for now the sets cover
+  «how many», the parameters only describe the product.
+- Typed parameters (numbers with a range filter, per-category parameter sets) —
+  [`docs/todo/product_attributes.md`](../todo/product_attributes.md); the simpler
+  multiple-choice version above is what is built.
 - Online payment, delivery, stock / inventory, order fulfillment statuses,
   order emails to the customer.

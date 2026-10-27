@@ -4,6 +4,7 @@ namespace App\Modules\Shop\ViewModels;
 
 use App\Modules\Core\Abstract\BaseViewModel;
 use App\Modules\Core\Support\Money;
+use App\Modules\Shop\Models\AttributeOption;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
 
@@ -21,14 +22,15 @@ class ProductViewModel extends BaseViewModel
         public readonly array $gallery,
         public readonly ?string $brand_title,
         public readonly bool $is_hit,
+        /** The price of the smallest set — what the card shows first. */
         public readonly ?float $price,
-        public readonly ?float $price2,
-        public readonly bool $has_discount,
-        /** What the customer pays: `price2` when it is a discount, otherwise `price`. */
         public readonly ?string $price_formatted,
-        /** The crossed-out regular price, only with a discount. */
-        public readonly ?string $old_price_formatted,
-        public readonly ?int $discount_percent,
+        /** «шт.» or, for a product sold in packs, «уп.». */
+        public readonly string $unit,
+        /** @var array<int, array{quantity: int, price: float, price_formatted: string, label: string, per_label: string}> smallest first */
+        public readonly array $packs,
+        /** @var array<int, array{title: string, values: string}> parameters with their chosen values — the product page */
+        public readonly array $specs,
         public readonly ?string $text,
         public readonly ?string $article,
         public readonly ?CategoryViewModel $category,
@@ -39,16 +41,14 @@ class ProductViewModel extends BaseViewModel
      * The product's category has to be eager-loaded by the caller: it carries
      * the URL, and on the home page the root ancestor the isotope filter groups
      * by. Without it the product simply loses its link rather than firing a
-     * query per card.
+     * query per card. The same goes for `attributeOptions.attribute` and the
+     * specifications.
      */
     public static function fromProduct(Product $product): self
     {
         $category = $product->relationLoaded('category') ? $product->category : null;
         $brand = $product->relationLoaded('brand') ? $product->brand : null;
-
-        // A second price is a discount only when it differs from the regular one.
-        $hasDiscount = $product->price2 !== null && $product->price2 > 0 && $product->price2 != $product->price;
-        $current = $hasDiscount ? $product->price2 : $product->price;
+        $unit = self::unit((bool) $product->is_pack);
 
         return new self(
             id: $product->id,
@@ -64,18 +64,58 @@ class ProductViewModel extends BaseViewModel
             brand_title: $brand?->title,
             is_hit: (bool) $product->is_hit,
             price: $product->price,
-            price2: $product->price2,
-            has_discount: $hasDiscount,
-            price_formatted: $current !== null ? Money::from($current)->format() : null,
-            old_price_formatted: $hasDiscount && $product->price ? Money::from($product->price)->format() : null,
-            discount_percent: $hasDiscount && $product->price > $product->price2
-                ? (int) round(100 - $product->price2 / $product->price * 100)
-                : null,
+            price_formatted: $product->price !== null ? Money::from($product->price)->format() : null,
+            unit: $unit,
+            packs: array_map(fn (array $pack): array => [
+                'quantity'        => $pack['quantity'],
+                'price'           => $pack['price'],
+                'price_formatted' => Money::from($pack['price'])->format(),
+                'label'           => $pack['quantity'] . ' ' . $unit,
+                // «за шт.» for a single piece, «за 5 шт.» for a set
+                'per_label' => (t('shop.price_per') ?: 'за') . ' ' . ($pack['quantity'] > 1 ? $pack['quantity'] . ' ' : '') . $unit,
+            ], Product::normalizePacks($product->packs)),
+            specs: self::specs($product),
             text: $product->text,
             article: $product->article,
             category: $category ? CategoryViewModel::from($category) : null,
             root_category_id: self::rootCategoryId($category),
         );
+    }
+
+    /**
+     * The unit word next to a set size. The dictionary may not have the key yet
+     * on a database seeded before it was added — the word is never left empty.
+     */
+    public static function unit(bool $isPack): string
+    {
+        return $isPack
+            ? (t('shop.unit_pack') ?: 'уп.')
+            : (t('shop.unit_piece') ?: 'шт.');
+    }
+
+    /**
+     * @return array<int, array{title: string, values: string}>
+     */
+    private static function specs(Product $product): array
+    {
+        if (!$product->relationLoaded('attributeOptions')) {
+            return [];
+        }
+
+        return $product->attributeOptions
+            ->filter(fn (AttributeOption $option): bool => $option->relationLoaded('attribute')
+                && $option->attribute?->display)
+            ->sortBy([
+                fn (AttributeOption $a, AttributeOption $b): int => [-(int) $a->attribute->rank, $a->attribute_id] <=> [-(int) $b->attribute->rank, $b->attribute_id],
+                fn (AttributeOption $a, AttributeOption $b): int => [(int) $a->rank, $a->id] <=> [(int) $b->rank, $b->id],
+            ])
+            ->groupBy('attribute_id')
+            ->map(fn ($options): array => [
+                'title'  => (string) $options->first()->attribute->title,
+                'values' => $options->pluck('title')->filter()->implode(', '),
+            ])
+            ->values()
+            ->all();
     }
 
     /**

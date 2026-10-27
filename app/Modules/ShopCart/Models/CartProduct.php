@@ -17,6 +17,7 @@ class CartProduct extends Model
     protected $fillable = [
         'cart_id',
         'shop_product_id',
+        'pack_quantity',
         'product_name',
         'product_article',
         'selling_price',
@@ -26,6 +27,7 @@ class CartProduct extends Model
 
     protected $casts = [
         'selling_price' => 'decimal:2',
+        'pack_quantity' => 'integer',
         'quantity'      => 'integer',
         'total'         => 'decimal:2',
     ];

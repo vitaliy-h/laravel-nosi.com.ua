@@ -42,6 +42,7 @@ readonly class PlaceOrderFromCartAction
             product_article: $item->product_article,
             selling_price: (float) $item->selling_price,
             quantity: $item->quantity,
+            pack_quantity: (int) ($item->pack_quantity ?? 1),
         ))->all();
 
         $order = $this->createOrder->handle(new CreateOrderData(

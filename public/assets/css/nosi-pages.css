@@ -327,6 +327,16 @@ dialog.modal p { color: var(--ink-soft); margin: 0 0 16px; }
 .error-page h1 { font-size: clamp(24px, 3vw, 34px); margin: 12px 0; }
 .error-page p { color: var(--ink-soft); margin: 0 0 28px; }
 
+/* ---------- Product sets («1 шт.», «5 шт.») ---------- */
+.price-unit { font-family: var(--sans); font-weight: 400; font-size: .62em; color: var(--muted); margin-left: 4px; }
+.pd-price .price-unit { font-size: 16px; }
+.pack-choice { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.pd-info .pack-choice { margin: -8px 0 20px; gap: 8px; }
+.pack-btn { padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); font-size: 13px; font-weight: 500; line-height: 1.5; cursor: pointer; transition: border-color .2s var(--ease), background .2s var(--ease); }
+.pd-info .pack-btn { padding: 8px 18px; font-size: 15px; }
+.pack-btn:hover { border-color: var(--ink); }
+.pack-btn.is-active { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1100px) {
     .product-grid { grid-template-columns: repeat(2, 1fr); }

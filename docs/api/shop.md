@@ -128,7 +128,8 @@ returns `422` in the standard validation-error envelope.
 |-------------|---------|-------|-------------|
 | category_id | integer | must exist in `shop_categories` | Restrict to a category (and its descendants) |
 | brand       | string / array | `1,2,3` or `brand[]=1&brand[]=2`; every id a positive integer | Filter by brand |
-| price_from  | number  | `>= 0` | Minimum price |
+| {code}      | string / array | same shapes as `brand`, option ids | Filter by a product parameter, under its code from admin → Catalog → Parameters (`season[]=3`); values of one parameter are alternatives |
+| price_from  | number  | `>= 0` | Minimum price (of the smallest set) |
 | price_to    | number  | `>= 0`, not below `price_from` | Maximum price |
 | search      | string  | max 255 characters | Search term |
 | sort        | string  | one of the values below | `price_asc`, `price_desc`, `newest`, `title_asc`, `title_desc` |
@@ -148,7 +149,8 @@ returns `422` in the standard validation-error envelope.
         "slug": "iphone-15",
         "article": "APL-IP15",
         "price": 999.00,
-        "price2": 1099.00,
+        "packs": [{"quantity": 1, "price": 999.00}, {"quantity": 3, "price": 2799.00}],
+        "is_pack": false,
         "image": "products/iphone-15.jpg",
         "text": "Product description...",
         "meta_title": "Buy iPhone 15",
@@ -213,7 +215,8 @@ GET /api/shop/products/{id}
       "slug": "iphone-15",
       "article": "APL-IP15",
       "price": 999.00,
-      "price2": 1099.00,
+      "packs": [{"quantity": 1, "price": 999.00}, {"quantity": 3, "price": 2799.00}],
+      "is_pack": false,
       "image": "products/iphone-15.jpg",
       "text": "Product description...",
       "meta_title": "Buy iPhone 15",

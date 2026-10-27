@@ -34,12 +34,12 @@ return [
     */
     'list' => [
         // 'user_auth'       => false,
-        'feedback'        => false,
-        'geo'  => false,
-        'news' => false,
+        'feedback' => false,
+        'geo'      => false,
+        'news'     => false,
         // 'shop'            => false,
         // 'shop_cart'       => false,
-        'shop_brands'     => false,
+        // 'shop_brands'     => false,
         'shop_promocodes' => false,
         // 'review'          => false,
         'subscriber' => false,

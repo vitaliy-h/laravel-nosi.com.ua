@@ -37,6 +37,24 @@
         input.dispatchEvent(new Event('change', { bubbles: true }));
     });
 
+    // Product sets («1 шт.», «5 шт.»): the picked set swaps the price and the `pack` sent
+    // to the cart
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-pack]');
+        if (!btn) return;
+        var scope = btn.closest('[data-pack-scope]');
+        if (!scope) return;
+        scope.querySelectorAll('[data-pack]').forEach(function (b) {
+            b.classList.toggle('is-active', b === btn);
+            b.setAttribute('aria-checked', b === btn ? 'true' : 'false');
+        });
+        var price = scope.querySelector('[data-pack-price]');
+        if (price) price.textContent = btn.dataset.price;
+        var per = scope.querySelector('[data-pack-per]');
+        if (per) per.textContent = btn.dataset.per;
+        scope.querySelectorAll('[data-pack-input]').forEach(function (input) { input.value = btn.dataset.pack; });
+    });
+
     // Cart page: a changed quantity is saved right away (abc-response form)
     document.addEventListener('change', function (e) {
         if (!e.target.matches('.js_change_checkout_products')) return;

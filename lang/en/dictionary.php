@@ -10,12 +10,10 @@ return [
 
     // Site header (home page design). An empty menu title hides the item.
     'header' => [
-        'logo:input6:br'       => 'nosi',
-        'menu_sale:input6:br'  => 'Sale %',
-        'menu_sale_url:input6' => '/#sale',
-        'menu:input4:br'       => 'Menu',
-        'account:input4'       => 'Account',
-        'cart:input4'          => 'Cart',
+        'logo:input6:br' => 'nosi',
+        'menu:input4:br' => 'Menu',
+        'account:input4' => 'Account',
+        'cart:input4'    => 'Cart',
     ],
 
     // Home page section titles and buttons.
@@ -29,11 +27,6 @@ return [
         'catalog_url:input6'           => '/shop',
         'categories_title:input12:br'  => 'Categories',
         'categories_subtitle:textarea' => 'From everyday basics to festive gift sets.',
-        'sale_kicker:input4:br'        => 'Sale',
-        'sale_title:input8'            => 'Up to −50% off',
-        'sale_subtitle:textarea'       => 'Last sizes and colours — while stocks last.',
-        'sale_link:input6:br'          => 'All discounted products',
-        'sale_url:input6'              => '/shop',
         'reviews_title:input12:br'     => 'Customer reviews',
         'reviews_subtitle:textarea'    => 'What our customers say about us.',
         'reviews_count:input6:br'      => ':count reviews',
@@ -161,6 +154,10 @@ return [
         'no_products'        => 'Nothing found. Try changing the filters.',
         'quantity'           => 'Quantity',
         'in_stock'           => 'In Stock',
+        'unit_piece'         => 'pcs',
+        'unit_pack'          => 'pk',
+        'pack_choice'        => 'Set size',
+        'price_per'          => 'per',
         'description'        => 'Description',
         'specifications'     => 'Specifications',
         'article'            => 'Article',

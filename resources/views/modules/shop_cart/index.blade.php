@@ -12,7 +12,7 @@
             <div>
                 <div class="cart-list">
                     @foreach($cart->items as $item)
-                        <div class="cart-row checkout_item" data-product="{{ $item->product_id }}">
+                        <div class="cart-row checkout_item" data-product="{{ $item->product_id }}" data-line="{{ $item->line_key }}">
                             <img src="{{ $item->image }}" alt="{{ $item->name }}" loading="lazy">
 
                             <div>
@@ -21,6 +21,7 @@
                                 <form data-abcr="{{ save_route('change_product_count') }}" action="{{ save_route('change_product_count') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $item->product_id }}">
+                                    <input type="hidden" name="pack" value="{{ $item->pack_quantity }}">
                                     <input type="hidden" name="count" value="0">
                                     <input type="hidden" name="cart_uuid" value="{{ $cart->uuid }}">
                                     <input type="hidden" name="action" value="{{ \App\Modules\ShopCart\Enums\CartAction::DeleteCheckout->value }}">
@@ -31,6 +32,7 @@
                             <form data-abcr="{{ save_route('change_product_count') }}" action="{{ save_route('change_product_count') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $item->product_id }}">
+                                <input type="hidden" name="pack" value="{{ $item->pack_quantity }}">
                                 <input type="hidden" name="cart_uuid" value="{{ $cart->uuid }}">
                                 <input type="hidden" name="action" value="{{ \App\Modules\ShopCart\Enums\CartAction::ChangeCountCheckout->value }}">
                                 <div class="qty">
@@ -40,7 +42,7 @@
                                 </div>
                             </form>
 
-                            <div class="cart-row-total"><span class="js_product_checkout_total_{{ $item->product_id }}">{{ $item->total_formatted }}</span></div>
+                            <div class="cart-row-total"><span class="js_product_checkout_total_{{ $item->line_key }}">{{ $item->total_formatted }}</span></div>
                         </div>
                     @endforeach
                 </div>

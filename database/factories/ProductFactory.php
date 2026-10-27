@@ -26,7 +26,6 @@ class ProductFactory extends Factory
             'category_id' => Category::factory(),
             'brand_id'    => null,
             'price'       => fake()->randomFloat(2, 1, 1000),
-            'price2'      => null,
             'title'       => fake()->words(3, true),
             'slug'        => fake()->unique()->slug(),
             'article'     => fake()->bothify('ART-####'),

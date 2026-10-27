@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Shop;
 
+use App\Modules\Shop\Models\Attribute;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
@@ -139,6 +140,39 @@ class ShopIndexControllerTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewIs('modules.shop.product');
         $response->assertViewHas('product', fn ($viewProduct) => $viewProduct->id === $product->id);
+    }
+
+    public function test_product_page_shows_the_sets_and_the_parameters(): void
+    {
+        $category = Category::factory()->create();
+        $season = Attribute::factory()->withOptions(['Зима', 'Літо'])->create(['title' => 'Сезон']);
+        $product = Product::factory()->forCategory($category)->create([
+            'packs' => [['quantity' => 1, 'price' => 89], ['quantity' => 5, 'price' => 399]],
+        ]);
+        $product->attributeOptions()->sync($season->options->pluck('id'));
+
+        $response = $this->get('/shop/' . $category->slug . '/' . $product->slug_with_id);
+
+        $response->assertStatus(200);
+        $response->assertSee('data-pack="5"', false);
+        $response->assertSee('name="pack" value="1"', false);
+        $response->assertSeeInOrder(['Сезон', 'Зима, Літо']);
+    }
+
+    public function test_attribute_filter_only_returns_products_with_a_selected_value(): void
+    {
+        $category = Category::factory()->create();
+        $season = Attribute::factory()->withOptions(['Зима', 'Літо'])->create(['code' => 'season']);
+        [$winter, $summer] = $season->options->all();
+        $warm = Product::factory()->forCategory($category)->create();
+        $warm->attributeOptions()->sync([$winter->id]);
+        Product::factory()->forCategory($category)->create()->attributeOptions()->sync([$summer->id]);
+
+        $response = $this->get('/shop/' . $category->slug . '?season[]=' . $winter->id);
+
+        $response->assertStatus(200);
+        $this->assertSame([$warm->id], $response->viewData('products')->pluck('id')->all());
+        $response->assertSee('name="season[]"', false);
     }
 
     public function test_product_page_redirects_when_slug_does_not_match_current_product_slug(): void

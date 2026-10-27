@@ -7,7 +7,8 @@
 @endif
 
 @php
-    $productPrice = $product->has_discount ? $product->price2 : $product->price;
+    $productPrice = $product->price;
+    $firstPack = $product->packs[0] ?? null;
 
     $productSchema = array_filter([
         '@context'    => 'https://schema.org',
@@ -42,9 +43,6 @@
                 <div class="pd-main">
                     <img src="{{ $product->gallery[0] ?? $product->image }}" alt="{{ $product->title }}" data-gallery-main>
                     <div class="card-badges">
-                        @if($product->discount_percent)
-                            <span class="card-badge sale">−{{ $product->discount_percent }}%</span>
-                        @endif
                         @if($product->is_hit)
                             <span class="card-badge">{{ t('home.badge_hit') }}</span>
                         @endif
@@ -62,29 +60,31 @@
                 @endif
             </div>
 
-            <div class="pd-info">
+            <div class="pd-info" data-pack-scope>
                 <div class="pd-brand">{{ $product->brand_title ?? $category->title }}</div>
                 <h1>{{ $product->title }}</h1>
 
                 <div class="pd-price">
-                    @if($product->has_discount)
-                        <ins>{{ $product->price_formatted }}</ins><del>{{ $product->old_price_formatted }}</del>
-                    @else
-                        <span>{{ $product->price_formatted }}</span>
+                    <span data-pack-price>{{ $firstPack['price_formatted'] ?? $product->price_formatted }}</span>
+                    @if($firstPack)
+                        <small class="price-unit" data-pack-per>{{ $firstPack['per_label'] }}</small>
                     @endif
                 </div>
+
+                @include('modules.shop.partials.pack_choice', ['product' => $product])
 
                 <div class="pd-stock"><i class="bi bi-check-circle-fill"></i> {{ t('shop.in_stock') }}</div>
 
                 <form class="js-add-form" data-abcr="{{ save_route('change_product_count') }}" action="{{ save_route('change_product_count') }}" method="POST">
                     @csrf
                     <input type="hidden" name="id" value="{{ $product->id }}">
+                    <input type="hidden" name="pack" value="{{ $firstPack['quantity'] ?? 1 }}" data-pack-input>
                     <input type="hidden" name="action" value="{{ \App\Modules\ShopCart\Enums\CartAction::ChangeCount->value }}">
 
                     <div class="pd-buy">
                         <div class="qty">
                             <button type="button" data-qty="-1" aria-label="−"><i class="bi bi-dash"></i></button>
-                            <input type="number" name="count" value="{{ $cart_quantity }}" min="1" aria-label="{{ t('shop.quantity') }}">
+                            <input type="number" name="count" value="1" min="1" aria-label="{{ t('shop.quantity') }}">
                             <button type="button" data-qty="1" aria-label="+"><i class="bi bi-plus"></i></button>
                         </div>
                         <button type="submit" class="btn btn-dark" data-added="{{ t('shop.added_to_cart') }}"><i class="bi bi-bag-plus"></i> {{ t('shop.add_to_cart') }}</button>
@@ -121,6 +121,10 @@
                             <dt>{{ t('shop.brand') }}</dt>
                             <dd>{{ $product->brand_title }}</dd>
                         @endif
+                        @foreach($product->specs as $spec)
+                            <dt>{{ $spec['title'] }}</dt>
+                            <dd>{{ $spec['values'] }}</dd>
+                        @endforeach
                     </dl>
                 </div>
             </div>

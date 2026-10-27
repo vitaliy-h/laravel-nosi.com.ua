@@ -3,7 +3,6 @@
 namespace App\Modules\Shop\Http\Controllers\Web;
 
 use App\Modules\Core\Abstract\BaseWebController;
-use App\Modules\Core\Support\ModuleGate;
 use App\Modules\Core\ViewModels\BreadcrumbViewModel;
 use App\Modules\Shop\Dtos\ProductSearchData;
 use App\Modules\Shop\Dtos\ShopFilterCriteriaData;
@@ -19,7 +18,6 @@ use App\Modules\Shop\ViewModels\CategoryViewModel;
 use App\Modules\Shop\ViewModels\ProductViewModel;
 use App\Modules\Shop\ViewModels\ShopCategoryPageViewModel;
 use App\Modules\Shop\ViewModels\ShopProductPageViewModel;
-use App\Modules\ShopCart\Services\CartContext;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -32,7 +30,6 @@ class IndexController extends BaseWebController
         private readonly FindCategoryBySlugQuery $findCategoryBySlug,
         private readonly GetCategoryBreadcrumbsQuery $getCategoryBreadcrumbs,
         private readonly FindProductByIdQuery $findProductById,
-        private readonly CartContext $cart,
     ) {}
 
     public function index(Request $request)
@@ -94,7 +91,6 @@ class IndexController extends BaseWebController
         $page = new ShopProductPageViewModel(
             product: ProductViewModel::from($product),
             category: CategoryViewModel::from($category),
-            cart_quantity: $this->cartQuantityFor($product->id) ?? 1,
         );
 
         return $this->render('modules.shop.product', $page);
@@ -128,25 +124,6 @@ class IndexController extends BaseWebController
     }
 
     /**
-     * How many of this product the visitor already has in the cart, so the
-     * quantity input opens on that number.
-     *
-     * The product page belongs to `shop` but the cart does not: without this
-     * guard the page would query a shop_carts table that stops existing once
-     * shop_cart is switched off.
-     */
-    private function cartQuantityFor(int $productId): ?int
-    {
-        if (!ModuleGate::isEnabled('shop_cart')) {
-            return null;
-        }
-
-        $cart = $this->cart->current();
-
-        return $cart?->items()->where('shop_product_id', $productId)->value('quantity');
-    }
-
-    /**
      * The HTTP layer stops here: the Query gets values, not a Request.
      */
     private function filterCriteria(Request $request): ShopFilterCriteriaData
@@ -156,6 +133,7 @@ class IndexController extends BaseWebController
             priceFrom: $request->query('price_from'),
             priceTo: $request->query('price_to'),
             search: $request->query('search'),
+            query: $request->query(),
         );
     }
 }

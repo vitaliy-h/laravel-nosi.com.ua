@@ -26,6 +26,7 @@ class ChangeCartRequest extends FormRequest
     {
         return [
             'id'        => ['required', 'integer', 'exists:shop_products,id'],
+            'pack'      => ['nullable', 'integer', 'min:1'],
             'count'     => ['required', 'integer', 'min:0'],
             'action'    => ['required', Rule::enum(CartAction::class)],
             'cart_uuid' => ['nullable', 'uuid', 'exists:shop_carts,uuid'],

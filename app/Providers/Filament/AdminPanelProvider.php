@@ -23,6 +23,7 @@ use App\Filament\Resources\Logs\LogResource;
 use App\Filament\Resources\LogSms\LogSmsResource;
 use App\Filament\Resources\News\NewsResource;
 use App\Filament\Resources\Pages\PageResource;
+use App\Filament\Resources\Shop\Attributes\AttributeResource;
 use App\Filament\Resources\Shop\Brands\BrandResource;
 use App\Filament\Resources\Shop\Cart\CartResource;
 use App\Filament\Resources\Shop\Categories\CategoryResource;
@@ -182,6 +183,10 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-tag')
                                     ->url(BrandResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.shop.brands*')) : null,
+                                NavigationItem::make(__('admin.tables.shop_attributes'))
+                                    ->icon('heroicon-o-adjustments-horizontal')
+                                    ->url(AttributeResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.shop.attributes*')),
                             ])) : null,
                         // shop
                         ModuleGate::isEnabled('shop_cart') ? NavigationGroup::make(__('admin.tables.shop'))
@@ -256,7 +261,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Sky,
             ])
-            ->favicon(asset('favicon.svg').'?v=2')
+            ->favicon(asset('favicon.svg') . '?v=2')
             ->resources(array_filter([
                 PageResource::class,
                 LanguageResource::class,
@@ -282,6 +287,7 @@ class AdminPanelProvider extends PanelProvider
                 ModuleGate::isEnabled('shop') ? ProductResource::class : null,
                 ModuleGate::isEnabled('shop') ? CategoryResource::class : null,
                 ModuleGate::isEnabled('shop_brands') ? BrandResource::class : null,
+                ModuleGate::isEnabled('shop') ? AttributeResource::class : null,
                 ModuleGate::isEnabled('shop') ? OrderResource::class : null,
                 ModuleGate::isEnabled('shop_cart') ? CartResource::class : null,
                 ModuleGate::isEnabled('shop_promocodes') ? PromocodeResource::class : null,

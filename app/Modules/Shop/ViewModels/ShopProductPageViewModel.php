@@ -9,6 +9,5 @@ class ShopProductPageViewModel extends BaseViewModel
     public function __construct(
         public readonly ProductViewModel $product,
         public readonly CategoryViewModel $category,
-        public readonly int $cart_quantity,
     ) {}
 }

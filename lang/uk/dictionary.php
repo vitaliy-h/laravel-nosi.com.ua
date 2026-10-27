@@ -10,12 +10,10 @@ return [
 
     // Site header (home page design). An empty menu title hides the item.
     'header' => [
-        'logo:input6:br'       => 'nosi',
-        'menu_sale:input6:br'  => 'Розпродаж %',
-        'menu_sale_url:input6' => '/#sale',
-        'menu:input4:br'       => 'Меню',
-        'account:input4'       => 'Кабінет',
-        'cart:input4'          => 'Кошик',
+        'logo:input6:br' => 'nosi',
+        'menu:input4:br' => 'Меню',
+        'account:input4' => 'Кабінет',
+        'cart:input4'    => 'Кошик',
     ],
 
     // Home page section titles and buttons.
@@ -29,11 +27,6 @@ return [
         'catalog_url:input6'           => '/shop',
         'categories_title:input12:br'  => 'Категорії',
         'categories_subtitle:textarea' => 'Від щоденних базових пар до святкових подарункових наборів.',
-        'sale_kicker:input4:br'        => 'Розпродаж',
-        'sale_title:input8'            => 'Знижки до −50%',
-        'sale_subtitle:textarea'       => 'Останні розміри та кольори — встигніть, поки є в наявності.',
-        'sale_link:input6:br'          => 'Усі товари зі знижкою',
-        'sale_url:input6'              => '/shop',
         'reviews_title:input12:br'     => 'Відгуки покупців',
         'reviews_subtitle:textarea'    => 'Що кажуть про нас покупці.',
         'reviews_count:input6:br'      => ':count відгуків',
@@ -161,6 +154,10 @@ return [
         'no_products'        => 'Нічого не знайдено. Спробуйте змінити фільтри.',
         'quantity'           => 'Кількість',
         'in_stock'           => 'В наявності',
+        'unit_piece'         => 'шт.',
+        'unit_pack'          => 'уп.',
+        'pack_choice'        => 'Кількість у наборі',
+        'price_per'          => 'за',
         'description'        => 'Опис',
         'specifications'     => 'Характеристики',
         'article'            => 'Артикул',

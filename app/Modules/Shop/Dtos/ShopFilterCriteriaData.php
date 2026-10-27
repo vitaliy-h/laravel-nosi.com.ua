@@ -11,27 +11,41 @@ namespace App\Modules\Shop\Dtos;
  */
 readonly class ShopFilterCriteriaData
 {
+    /** Query keys that are never a parameter code. */
+    public const array RESERVED = ['brand', 'price', 'price_from', 'price_to', 'search', 'sort', 'page', 'c', 'category_id'];
+
     /**
      * @param  array<int, int>  $brands  brand ids, already cast to positive integers
+     * @param  array<string, array<int, int>>  $attributes  option ids by parameter code; codes of no parameter are ignored later
      */
     public function __construct(
         public array $brands = [],
         public ?float $priceFrom = null,
         public ?float $priceTo = null,
         public ?string $search = null,
+        public array $attributes = [],
     ) {}
 
     /**
      * Accepts both shapes the catalogue supports: `brand=1,2,3` and `brand[]=1&brand[]=2`
-     * (see ShopProductsRequest).
+     * (see ShopProductsRequest). Parameter values come the same way under the
+     * parameter's code (`season=3,4` or `season[]=3`), picked out of the whole query.
+     *
+     * @param  array<string, mixed>  $query  the rest of the query string
      */
-    public static function fromQuery(string|array|null $brand, mixed $priceFrom, mixed $priceTo, ?string $search): self
+    public static function fromQuery(string|array|null $brand, mixed $priceFrom, mixed $priceTo, ?string $search, array $query = []): self
     {
         return new self(
             brands: self::toIntArray($brand),
             priceFrom: $priceFrom !== null ? (float) $priceFrom : null,
             priceTo: $priceTo !== null ? (float) $priceTo : null,
             search: $search,
+            attributes: collect($query)
+                ->except(self::RESERVED)
+                ->filter(fn ($value): bool => is_string($value) || is_array($value))
+                ->map(fn ($value): array => self::toIntArray($value))
+                ->filter()
+                ->all(),
         );
     }
 
@@ -42,6 +56,7 @@ readonly class ShopFilterCriteriaData
     {
         if (is_array($value)) {
             return collect($value)
+                ->filter(fn ($item): bool => is_scalar($item))
                 ->map(fn ($item): int => (int) $item)
                 ->filter(fn (int $item): bool => $item > 0)
                 ->values()

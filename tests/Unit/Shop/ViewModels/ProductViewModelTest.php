@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Shop\ViewModels;
 
+use App\Modules\Shop\Models\Attribute;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
 use App\Modules\Shop\ViewModels\ProductViewModel;
@@ -76,14 +77,40 @@ class ProductViewModelTest extends TestCase
         $this->assertNull($vm->root_category_id);
     }
 
-    public function test_discount_is_flagged_only_when_a_second_price_is_set(): void
+    public function test_packs_are_listed_smallest_first_with_the_price_of_the_smallest(): void
     {
-        $plain = ProductViewModel::from(Product::factory()->create(['price' => 100, 'price2' => null]));
-        $discounted = ProductViewModel::from(Product::factory()->create(['price' => 100, 'price2' => 80]));
+        $vm = ProductViewModel::from(Product::factory()->create([
+            'packs' => [['quantity' => 10, 'price' => 700], ['quantity' => 1, 'price' => 89], ['quantity' => 5, 'price' => 399]],
+        ]));
 
-        $this->assertFalse($plain->has_discount);
-        $this->assertTrue($discounted->has_discount);
-        $this->assertSame(80.0, $discounted->price2);
+        $this->assertSame([1, 5, 10], array_column($vm->packs, 'quantity'));
+        $this->assertSame(89.0, $vm->price);
+        $this->assertStringStartsWith('5 ', $vm->packs[1]['label']);
+    }
+
+    public function test_the_unit_switches_to_packs_for_a_product_sold_in_packs(): void
+    {
+        $pieces = ProductViewModel::from(Product::factory()->create(['is_pack' => false]));
+        $packs = ProductViewModel::from(Product::factory()->create(['is_pack' => true]));
+
+        $this->assertSame(ProductViewModel::unit(false), $pieces->unit);
+        $this->assertSame(ProductViewModel::unit(true), $packs->unit);
+        $this->assertNotSame($pieces->unit, $packs->unit);
+    }
+
+    public function test_specs_group_the_chosen_values_by_parameter(): void
+    {
+        $season = Attribute::factory()->withOptions(['Зима', 'Літо', 'Демісезон'])->create(['title' => 'Сезон']);
+        $hidden = Attribute::factory()->withOptions(['X'])->create(['display' => false]);
+        $product = Product::factory()->create();
+        $product->attributeOptions()->sync([
+            ...$season->options->whereIn('title', ['Зима', 'Демісезон'])->pluck('id'),
+            ...$hidden->options->pluck('id'),
+        ]);
+
+        $vm = ProductViewModel::from($product->load('attributeOptions.attribute'));
+
+        $this->assertSame([['title' => 'Сезон', 'values' => 'Зима, Демісезон']], $vm->specs);
     }
 
     public function test_a_product_without_a_picture_still_resolves_an_image(): void

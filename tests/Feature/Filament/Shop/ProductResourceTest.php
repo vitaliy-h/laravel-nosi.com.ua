@@ -3,6 +3,7 @@
 namespace Tests\Feature\Filament\Shop;
 
 use App\Filament\Resources\Shop\Products\Pages\ManageProducts;
+use App\Modules\Shop\Models\Attribute;
 use App\Modules\Shop\Models\Brand;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
@@ -11,6 +12,7 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\Testing\TestAction;
+use Filament\Forms\Components\Repeater;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -154,19 +156,91 @@ class ProductResourceTest extends TestCase
         $this->assertModelMissing($product);
     }
 
-    public function test_inline_edit_saves_prices_and_rank(): void
+    public function test_inline_edit_saves_the_price_and_rank(): void
     {
-        $product = Product::factory()->create(['price' => 10, 'price2' => null, 'rank' => 1]);
+        $product = Product::factory()->create([
+            'packs' => [['quantity' => 1, 'price' => 10], ['quantity' => 5, 'price' => 45]],
+            'rank'  => 1,
+        ]);
 
         $table = Livewire::test(ManageProducts::class)->instance();
         $table->updateTableColumnState('price', (string) $product->id, '12.5');
-        $table->updateTableColumnState('price2', (string) $product->id, '15');
         $table->updateTableColumnState('rank', (string) $product->id, '7');
 
         $product->refresh();
         $this->assertEquals(12.5, $product->price);
-        $this->assertEquals(15, $product->price2);
+        // the inline price is the smallest set's; the other sets stay
+        $this->assertEquals([['quantity' => 1, 'price' => 12.5], ['quantity' => 5, 'price' => 45]], $product->packs);
         $this->assertSame(7, $product->rank);
+    }
+
+    public function test_create_product_with_packs_keeps_the_smallest_price(): void
+    {
+        $undoRepeaterFake = Repeater::fake();
+        $category = Category::factory()->create();
+
+        Livewire::test(ManageProducts::class)
+            ->callAction(TestAction::make(CreateAction::getDefaultName())->table(), data: [
+                'title'       => 'Socks',
+                'category_id' => $category->id,
+                'is_pack'     => true,
+                'packs'       => [
+                    ['quantity' => 5, 'price' => 399],
+                    ['quantity' => 1, 'price' => 89],
+                    ['quantity' => 10, 'price' => null],
+                ],
+            ])
+            ->assertHasNoFormErrors();
+
+        $undoRepeaterFake();
+
+        $product = Product::where('title', 'Socks')->firstOrFail();
+        $this->assertEquals([['quantity' => 1, 'price' => 89], ['quantity' => 5, 'price' => 399]], $product->packs);
+        $this->assertEquals(89, $product->price);
+        $this->assertTrue($product->is_pack);
+    }
+
+    public function test_create_product_rejects_two_packs_of_one_size(): void
+    {
+        $undoRepeaterFake = Repeater::fake();
+        $category = Category::factory()->create();
+
+        Livewire::test(ManageProducts::class)
+            ->callAction(TestAction::make(CreateAction::getDefaultName())->table(), data: [
+                'title'       => 'Socks',
+                'category_id' => $category->id,
+                'packs'       => [
+                    ['quantity' => 5, 'price' => 399],
+                    ['quantity' => 5, 'price' => 350],
+                ],
+            ])
+            ->assertHasFormErrors();
+
+        $undoRepeaterFake();
+
+        $this->assertDatabaseMissing('shop_products', ['title' => 'Socks']);
+    }
+
+    public function test_edit_product_saves_parameter_values_per_parameter(): void
+    {
+        $season = Attribute::factory()->withOptions(['Зима', 'Літо'])->create();
+        $material = Attribute::factory()->withOptions(['Вовна', 'Бавовна'])->create();
+        [$winter, $summer] = $season->options->all();
+        [$wool] = $material->options->all();
+
+        $product = Product::factory()->create();
+        $product->attributeOptions()->sync([$summer->id, $wool->id]);
+
+        Livewire::test(ManageProducts::class)
+            ->callAction(TestAction::make(EditAction::getDefaultName())->table($product), data: [
+                'attribute_options_' . $season->id => [$winter->id, $summer->id],
+            ])
+            ->assertHasNoFormErrors();
+
+        $this->assertEqualsCanonicalizing(
+            [$winter->id, $summer->id, $wool->id],
+            $product->attributeOptions()->pluck('shop_attribute_options.id')->all(),
+        );
     }
 
     public function test_inline_edit_rejects_a_negative_price(): void

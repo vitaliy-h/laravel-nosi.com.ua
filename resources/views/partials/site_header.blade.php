@@ -1,8 +1,6 @@
 {{-- Site header of the Nosi design: logo left, menu in the middle, profile and cart right.
      Menu — categories (with a dropdown of their subcategories), then CMS pages marked for
-     the header menu (PageContextSharer); the highlighted «Розпродаж» item comes from the
-     dictionary (header.menu_sale) and is hidden when its title is empty or nothing is on
-     sale (has_sale, SiteChromeComposer). The item of the current page gets `.is-active`.
+     the header menu (PageContextSharer). The item of the current page gets `.is-active`.
      Desktop opens a dropdown on hover/focus, the chevron opens it on touch and in the
      mobile panel (nosi.js). --}}
 <header class="header">
@@ -27,10 +25,6 @@
                     <a href="{{ $item->url }}" @class(['is-active' => $item->is_active]) @if($item->is_active) aria-current="page" @endif>{{ $item->title }}</a>
                 @endif
             @endforeach
-            @if(($has_sale ?? false) && t('header.menu_sale') !== '')
-                @php($url = t('header.menu_sale_url') ?: '#')
-                <a href="{{ $url }}" @class(['is-sale', 'is-active' => is_active_url($url)]) @if(is_active_url($url)) aria-current="page" @endif>{{ t('header.menu_sale') }}</a>
-            @endif
         </nav>
 
         <div class="header-actions">
@@ -39,27 +33,3 @@
         </div>
     </div>
 </header>
-{{-- Inline, right after the markup, so the header never paints in the wrong mode: the burger
-     at ≤1024px, and on wider screens too when the menu does not fit in one line
-     (the number and length of categories come from the admin). --}}
-<script>
-    (function () {
-        var header = document.querySelector('.header');
-        var nav = document.getElementById('nav');
-        if (!header || !nav) return;
-        var fit = function () {
-            header.classList.remove('is-compact');
-            var compact = window.innerWidth <= 1024 || nav.scrollWidth > nav.clientWidth;
-            header.classList.toggle('is-compact', compact);
-            if (!compact) nav.classList.remove('is-open');
-        };
-        fit();
-        var frame;
-        window.addEventListener('resize', function () {
-            cancelAnimationFrame(frame);
-            frame = requestAnimationFrame(fit);
-        });
-        // web fonts change the item widths once loaded
-        if (document.fonts) document.fonts.ready.then(fit);
-    })();
-</script>

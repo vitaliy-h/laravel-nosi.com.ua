@@ -168,38 +168,6 @@
         </section>
     @endif
 
-    {{-- Sale: products whose second price differs from the regular one --}}
-    @if($sale_products->isNotEmpty())
-        <section class="section" id="sale">
-            <div class="container">
-                <div class="section-head left">
-                    @if(t('home.sale_kicker') !== '')
-                        <span class="kicker">{{ t('home.sale_kicker') }}</span>
-                    @endif
-                    <h2 class="title">{{ t('home.sale_title') }}</h2>
-                    @if(t('home.sale_subtitle') !== '')
-                        <p class="subtitle">{{ t('home.sale_subtitle') }}</p>
-                    @endif
-                </div>
-
-                <div class="carousel" data-carousel>
-                    <div class="carousel-track">
-                        @foreach($sale_products as $product)
-                            <x-product-tile :product="$product" />
-                        @endforeach
-                    </div>
-                    @include('modules.index.partials.carousel_nav')
-                </div>
-
-                @if(t('home.sale_link') !== '')
-                    <div class="section-cta">
-                        <a href="{{ t('home.sale_url') ?: save_route('shop.index') }}" class="link-arrow">{{ t('home.sale_link') }} <i class="bi bi-arrow-right"></i></a>
-                    </div>
-                @endif
-            </div>
-        </section>
-    @endif
-
     {{-- Reviews of the shop (admin → Home page → Reviews). Shown with no reviews yet
          too, so the first customer can leave one through the button. --}}
     @if($reviews_enabled)

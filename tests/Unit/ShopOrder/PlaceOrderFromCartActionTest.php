@@ -48,6 +48,18 @@ class PlaceOrderFromCartActionTest extends TestCase
         $this->assertSame('john@example.com', $order->user_email);
     }
 
+    public function test_the_set_size_of_a_line_is_copied_to_the_order(): void
+    {
+        $cart = Cart::factory()->create();
+        CartProduct::factory()->create(['cart_id' => $cart->id, 'pack_quantity' => 5, 'quantity' => 2]);
+
+        $order = app(PlaceOrderFromCartAction::class)->handle($cart, new CustomerData(user_email: 'john@example.com'));
+
+        $item = $order->items()->first();
+        $this->assertSame(5, $item->pack_quantity);
+        $this->assertSame(2, $item->quantity);
+    }
+
     public function test_copies_user_id_from_cart_when_present(): void
     {
         $user = User::factory()->create();
