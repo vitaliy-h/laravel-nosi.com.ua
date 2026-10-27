@@ -31,3 +31,5 @@ When code and a doc disagree, the code wins — fix the doc in the same change.
 - Always add newly created test files to git
 - Tests are plain PHPUnit 13 classes — the stack and conventions live in
   `@.claude/testing.md`; follow that file rather than inventing a setup
+  
+## php artisan deploy:ftp
