@@ -9,6 +9,10 @@
     ])
 
     <div class="container page">
+        @if($order->can_pay)
+            @include('modules.shop_order.partials.requisites')
+        @endif
+
         <div class="cart-grid">
             <div class="panel-white">
                 <h3>{{ t('profile.order_items') }} ({{ $order->items_count }})</h3>

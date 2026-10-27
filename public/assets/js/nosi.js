@@ -167,6 +167,59 @@
         nav.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
     }
 
+    // Header dropdowns: the chevron opens a category's subcategories (touch, mobile panel)
+    document.querySelectorAll('.nav-sub-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var item = btn.closest('.nav-item');
+            var open = !item.classList.contains('is-open');
+            document.querySelectorAll('.nav-item.is-open').forEach(function (other) {
+                if (other !== item) {
+                    other.classList.remove('is-open');
+                    other.querySelector('.nav-sub-toggle').setAttribute('aria-expanded', 'false');
+                }
+            });
+            item.classList.toggle('is-open', open);
+            btn.setAttribute('aria-expanded', open);
+        });
+    });
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('.nav-item')) {
+            document.querySelectorAll('.nav-item.is-open').forEach(function (item) {
+                item.classList.remove('is-open');
+                item.querySelector('.nav-sub-toggle').setAttribute('aria-expanded', 'false');
+            });
+        }
+    });
+
+    // Order page: copy a payment detail; the icon turns into a check for a moment
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-copy]');
+        if (!btn) return;
+        var text = btn.dataset.copy;
+        var done = function () {
+            btn.classList.add('is-copied');
+            btn.innerHTML = '<i class="bi bi-check2"></i>';
+            clearTimeout(btn._copyTimer);
+            btn._copyTimer = setTimeout(function () {
+                btn.classList.remove('is-copied');
+                btn.innerHTML = '<i class="bi bi-copy"></i>';
+            }, 1500);
+        };
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(done);
+            return;
+        }
+        // Fallback for plain http (local dev)
+        var area = document.createElement('textarea');
+        area.value = text;
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        try { document.execCommand('copy'); done(); } catch (err) {}
+        area.remove();
+    });
+
     // Hero slider
     var slides = document.querySelectorAll('.hero-slide');
     var dotsBox = document.getElementById('hero-dots');

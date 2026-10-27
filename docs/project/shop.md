@@ -15,6 +15,11 @@ SEO fields, sort order, "show" toggle, and the "header menu" / "footer menu" tog
 pages): the header lists the marked categories first, then the pages; the footer has the
 «Каталог» column (categories) next to «Покупцям» (pages).
 
+In the header a marked category opens a dropdown of its visible direct children, so a
+short menu can carry many categories: mark a parent («Жінкам») and its children appear
+under it. A marked category nested inside another marked one shows only in that dropdown,
+not twice. The header is one row: logo left, menu in the middle, profile and cart right.
+
 **Brands** — name, slug, logo, text, SEO. Optional: enabled separately
 (`shop_brands`).
 
@@ -91,6 +96,10 @@ its code string are kept in the order even if the promo code is later deleted.
 
 **Payment** — only fields so far: status (unpaid / processing / paid), type
 (none / online / manual), payment date. There is no payment integration.
+While an order is unpaid, its page shows the bank details for a transfer (recipient, IBAN,
+tax ID, payment purpose), each with a copy button. Both the values and their labels are in
+the dictionary, group `requisites` (admin → Languages → «Реквізити для оплати»); an empty
+value hides its row, all empty — the whole block.
 
 **Account** — a logged-in customer sees their orders in the profile
 (`/profile/orders`).

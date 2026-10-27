@@ -234,6 +234,16 @@ select.input { appearance: none; padding-right: 42px; background: #fff url("data
 .result p { color: var(--ink-soft); margin: 0 0 24px; }
 .result .summary-list { margin: 0 0 24px; padding: 18px 22px; border-radius: 18px; background: #fff; text-align: left; }
 .summary-list .summary-row:last-child { font-weight: 600; color: var(--ink); }
+.requisites { margin-bottom: 32px; padding: 28px; border-radius: 24px; background: var(--cream); }
+.requisites h3 { font-size: 20px; margin-bottom: 14px; }
+.requisites-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.requisites-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-radius: 16px; background: #fff; }
+.requisites-text { display: grid; gap: 2px; min-width: 0; }
+.requisites-text span { font-size: 13px; color: var(--muted); }
+.requisites-text b { font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+.requisites-copy { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border: 1.5px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink); font-size: 16px; cursor: pointer; transition: border-color .2s var(--ease), color .2s var(--ease), background .2s var(--ease); }
+.requisites-copy:hover { border-color: var(--ink); }
+.requisites-copy.is-copied { border-color: #1f7a45; background: #e7f6ec; color: #1f7a45; }
 .order-lines { display: grid; }
 .order-line { display: grid; grid-template-columns: 64px 1fr auto; gap: 16px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
 .order-line:last-child { border-bottom: 0; }
@@ -337,7 +347,9 @@ dialog.modal p { color: var(--ink-soft); margin: 0 0 16px; }
 @media (max-width: 600px) {
     .form-grid { grid-template-columns: 1fr; }
     .product-grid { gap: 24px 12px; }
-    .panel, .panel-white, .summary { padding: 20px; }
+    .panel, .panel-white, .summary, .requisites { padding: 20px; }
+    .requisites { margin-bottom: 20px; }
+    .requisites-list { grid-template-columns: 1fr; }
     .cart-row { grid-template-columns: 72px 1fr; gap: 12px 14px; padding: 16px; }
     .cart-row img { width: 72px; height: 90px; grid-row: span 2; }
     .cart-row-total { text-align: left; }

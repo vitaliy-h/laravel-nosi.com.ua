@@ -193,6 +193,19 @@ return [
         'placeholder_phone'      => 'Ваш номер телефону',
     ],
 
+    'requisites' => [
+        'title:input6'           => 'Реквізити для оплати',
+        'copy:input6'            => 'Копіювати',
+        'recipient_label:input6' => 'Отримувач',
+        'recipient:input6'       => 'ТОЛСТИХ ІРИНА ОЛЕКСАНДРІВНА',
+        'iban_label:input6'      => 'IBAN',
+        'iban:input6'            => 'UA953052990000026007010115550',
+        'tax_id_label:input6'    => 'РНОКПП/ЄДРПОУ',
+        'tax_id:input6'          => '3129401586',
+        'purpose_label:input6'   => 'Призначення платежу',
+        'purpose:input6'         => 'Поповнення рахунку, ТОЛСТИХ ІРИНА ОЛЕКСАНДРІВНА',
+    ],
+
     'auth' => [
         'login'                     => 'Вхід',
         'register'                  => 'Реєстрація',

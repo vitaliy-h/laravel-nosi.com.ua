@@ -193,6 +193,19 @@ return [
         'placeholder_phone'      => 'Your Phone Number',
     ],
 
+    'requisites' => [
+        'title:input6'           => 'Payment details',
+        'copy:input6'            => 'Copy',
+        'recipient_label:input6' => 'Recipient',
+        'recipient:input6'       => 'TOLSTYKH IRYNA OLEKSANDRIVNA',
+        'iban_label:input6'      => 'IBAN',
+        'iban:input6'            => 'UA953052990000026007010115550',
+        'tax_id_label:input6'    => 'Tax ID / EDRPOU',
+        'tax_id:input6'          => '3129401586',
+        'purpose_label:input6'   => 'Payment purpose',
+        'purpose:input6'         => 'Account top-up, TOLSTYKH IRYNA OLEKSANDRIVNA',
+    ],
+
     'auth' => [
         'login'                     => 'Sign In',
         'register'                  => 'Register',

@@ -41,6 +41,32 @@ class CategoryMenuTest extends TestCase
         $this->assertSame([$marked->id], $ids);
     }
 
+    public function test_header_category_brings_its_visible_children_as_a_dropdown(): void
+    {
+        $women = Category::factory()->create(['title' => 'Women', 'display_menu' => true]);
+        Category::factory()->create(['title' => 'Women socks', 'parent_id' => $women->id]);
+        Category::factory()->invisible()->create(['title' => 'Hidden child', 'parent_id' => $women->id]);
+
+        $categories = app(MenuService::class)->getHeaderCategories();
+
+        $this->assertSame(['Women socks'], $categories->first()->children->pluck('title')->all());
+
+        $response = $this->get('/');
+        $response->assertSeeInOrder(['Women', 'Women socks']);
+        $response->assertDontSee('Hidden child');
+    }
+
+    public function test_marked_category_inside_a_marked_parent_shows_only_in_the_dropdown(): void
+    {
+        $women = Category::factory()->create(['display_menu' => true]);
+        $socks = Category::factory()->create(['parent_id' => $women->id, 'display_menu' => true]);
+
+        $categories = app(MenuService::class)->getHeaderCategories();
+
+        $this->assertSame([$women->id], $categories->pluck('id')->all());
+        $this->assertSame([$socks->id], $categories->first()->children->pluck('id')->all());
+    }
+
     public function test_footer_categories_are_the_ones_marked_for_the_footer(): void
     {
         $marked = Category::factory()->create(['display_menu_footer' => true]);

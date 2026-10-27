@@ -4,7 +4,9 @@ namespace Tests\Feature\ShopOrder;
 
 use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
+use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrder\Models\Order;
+use Database\Seeders\LanguageSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -140,5 +142,26 @@ class OrderControllerTest extends TestCase
         }
 
         $this->assertDatabaseCount('shop_orders', 0);
+    }
+
+    public function test_unpaid_order_page_shows_payment_requisites(): void
+    {
+        $this->seed(LanguageSeeder::class);
+        $order = Order::factory()->create(['payment_status' => PaymentStatusEnum::UNPAID]);
+
+        $this->get(route('order.show', $order->uuid))
+            ->assertOk()
+            ->assertSee('class="requisites"', false)
+            ->assertSee('data-copy="' . t('requisites.iban') . '"', false);
+    }
+
+    public function test_paid_order_page_hides_payment_requisites(): void
+    {
+        $this->seed(LanguageSeeder::class);
+        $order = Order::factory()->create(['payment_status' => PaymentStatusEnum::PAID]);
+
+        $this->get(route('order.show', $order->uuid))
+            ->assertOk()
+            ->assertDontSee('class="requisites"', false);
     }
 }

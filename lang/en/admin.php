@@ -362,6 +362,7 @@ return [
         'footer'        => 'Site footer',
         'counters'      => 'Counters and analytics',
         'shop'          => 'Shop, cart and checkout',
+        'requisites'    => 'Payment details',
         'auth'          => 'Sign in and registration',
         'profile'       => 'Account',
         'errors'        => 'Error pages',
