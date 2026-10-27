@@ -56,7 +56,15 @@ class TranslationService
     {
         $dictionary = $this->getDictionary($locale);
 
-        return data_get($dictionary, $key);
+        // A key cleared in the admin is stored as null — it is still "set", so it
+        // must stay empty instead of falling back to the file value.
+        if (!Arr::has($dictionary, $key)) {
+            return null;
+        }
+
+        $value = Arr::get($dictionary, $key);
+
+        return is_array($value) ? null : (string) $value;
     }
 
     public function getDictionary(string $locale): array

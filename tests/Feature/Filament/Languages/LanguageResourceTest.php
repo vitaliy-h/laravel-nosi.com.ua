@@ -143,6 +143,21 @@ class LanguageResourceTest extends TestCase
         $this->assertArrayHasKey('shop', $saved->dictionary);
     }
 
+    public function test_edit_form_fills_keys_missing_in_db_from_file_and_keeps_stored_values(): void
+    {
+        $language = Language::factory()->forLocalization(Localization::UK)->create([
+            'dictionary' => ['shop' => ['currency' => 'грн']],
+        ]);
+        $fromFile = $this->dictionaryFromFile(Localization::UK);
+
+        Livewire::test(ManageLanguages::class)
+            ->mountAction(TestAction::make(EditAction::getDefaultName())->table($language))
+            ->assertSchemaStateSet([
+                'dictionary.shop.currency'   => 'грн',
+                'dictionary.requisites.iban' => $fromFile['requisites']['iban'],
+            ]);
+    }
+
     public function test_delete_language(): void
     {
         $language = Language::factory()->forLocalization(Localization::EN)->create();

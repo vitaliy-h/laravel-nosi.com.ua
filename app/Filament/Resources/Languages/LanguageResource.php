@@ -122,7 +122,9 @@ class LanguageResource extends Resource
                 //
             ])
             ->recordActions([
-                BaseEditAction::make()->iconButton(),
+                BaseEditAction::make()
+                    ->iconButton()
+                    ->mutateRecordDataUsing(fn (array $data) => static::fillMissingDictionaryKeys($data)),
                 DeleteAction::make()->iconButton(),
             ], position: RecordActionsPosition::BeforeColumns)
             ->toolbarActions([
@@ -197,6 +199,23 @@ class LanguageResource extends Resource
         }
 
         return $sections;
+    }
+
+    /**
+     * Keys added to dictionary.php after the language was saved are missing in the
+     * DB: t() falls back to the file for them, so the edit form shows the same file
+     * value instead of an empty field. Values already stored win.
+     */
+    public static function fillMissingDictionaryKeys(array $data): array
+    {
+        $locale = $data['localization'] ?? Localization::EN->value;
+        $locale = $locale instanceof Localization ? $locale->value : $locale;
+
+        $template = static::normalizeDictionaryTemplate(static::getDictionaryTemplate($locale));
+
+        $data['dictionary'] = array_replace_recursive($template, $data['dictionary'] ?? []);
+
+        return $data;
     }
 
     protected static function getDictionaryTemplate(string $locale): array

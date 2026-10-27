@@ -6,6 +6,8 @@ use App\Modules\ShopCart\Models\Cart;
 use App\Modules\ShopCart\Models\CartProduct;
 use App\Modules\ShopOrder\Enums\PaymentStatusEnum;
 use App\Modules\ShopOrder\Models\Order;
+use App\Modules\Translation\Models\Language;
+use App\Modules\Translation\Services\TranslationService;
 use Database\Seeders\LanguageSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -153,6 +155,27 @@ class OrderControllerTest extends TestCase
             ->assertOk()
             ->assertSee('class="requisites"', false)
             ->assertSee('data-copy="' . t('requisites.iban') . '"', false);
+    }
+
+    public function test_requisite_cleared_in_dictionary_is_not_shown(): void
+    {
+        $this->seed(LanguageSeeder::class);
+        $iban = t('requisites.iban');
+
+        // the admin form saves a cleared field as null
+        Language::all()->each(function (Language $language) {
+            $dictionary = $language->dictionary;
+            $dictionary['requisites']['iban'] = null;
+            $language->update(['dictionary' => $dictionary]);
+            app(TranslationService::class)->clearCache($language->localization);
+        });
+
+        $order = Order::factory()->create(['payment_status' => PaymentStatusEnum::UNPAID]);
+
+        $this->get(route('order.show', $order->uuid))
+            ->assertOk()
+            ->assertSee('class="requisites"', false)
+            ->assertDontSee($iban);
     }
 
     public function test_paid_order_page_hides_payment_requisites(): void
