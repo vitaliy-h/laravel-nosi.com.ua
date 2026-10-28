@@ -48,7 +48,9 @@ class ProductViewModel extends BaseViewModel
     {
         $category = $product->relationLoaded('category') ? $product->category : null;
         $brand = $product->relationLoaded('brand') ? $product->brand : null;
-        $unit = self::unit((bool) $product->is_pack);
+        $isPack = (bool) $product->is_pack;
+        $unit = self::unit($isPack);
+        $per = t('shop.price_per') ?: 'за';
 
         return new self(
             id: $product->id,
@@ -71,8 +73,10 @@ class ProductViewModel extends BaseViewModel
                 'price'           => $pack['price'],
                 'price_formatted' => Money::from($pack['price'])->format(),
                 'label'           => $pack['quantity'] . ' ' . $unit,
-                // «за шт.» for a single piece, «за 5 шт.» for a set
-                'per_label' => (t('shop.price_per') ?: 'за') . ' ' . ($pack['quantity'] > 1 ? $pack['quantity'] . ' ' : '') . $unit,
+                // a pack product: «за уп. (5пар)»; otherwise «за шт.» for a single piece, «за 5 шт.» for a set
+                'per_label' => $isPack
+                    ? $per . ' ' . (t('shop.unit_box') ?: 'уп.') . ' (' . $pack['quantity'] . $unit . ')'
+                    : $per . ' ' . ($pack['quantity'] > 1 ? $pack['quantity'] . ' ' : '') . $unit,
             ], Product::normalizePacks($product->packs)),
             specs: self::specs($product),
             text: $product->text,

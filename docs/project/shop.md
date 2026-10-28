@@ -20,6 +20,11 @@ short menu can carry many categories: mark a parent («Жінкам») and its c
 under it. A marked category nested inside another marked one shows only in that dropdown,
 not twice. The header is one row: logo left, menu in the middle, profile and cart right.
 
+Up to 1024px the menu moves into a drawer opened by the burger: a category with children
+shows an arrow to the side, and tapping it slides in a panel with the list of its
+children and «Усі товари» (the category itself) at the bottom. The current page is highlighted at both
+levels.
+
 **Brands** — name, slug, logo, text, SEO. Optional: enabled separately
 (`shop_brands`).
 
@@ -31,7 +36,7 @@ and there is no old / crossed-out price or sale block any more.
 «1 шт.» / «5 шт.» / «10 шт.», each with the price of the whole set; the admin form starts
 with 1 / 5 / 10 and a row without a price is not sold. With more than one set the card and
 the product page show a button per set, which swaps the price; the price is labelled
-«за шт.» / «за 5 шт.». `price` mirrors the smallest set's price (kept by the model) — the
+«за шт.» / «за 5 шт.», for a pack product «за уп. (5пар)» (`shop.unit_box` + `shop.unit_pack`). `price` mirrors the smallest set's price (kept by the model) — the
 catalogue filter, sorting and the inline price column work on it. The **pack** toggle
 (`is_pack`) only changes the unit word: «шт.» → «уп.».
 
@@ -42,7 +47,9 @@ lines, each with its own count (see `docs/starter/cart.md`).
 pivot `shop_attribute_option_product`) — e.g. size, season, material: a parameter has a
 list of values, a product gets any number of values of each (a multiple choice per
 parameter in the product form). They show in the product's specifications and, with
-"in filter" on, in the catalogue sidebar.
+"in filter" on, in the catalogue sidebar. On a live database the migration
+`2026_10_27_000006_fill_shop_attributes` creates size / season / material with their
+values and gives 10 random visible products a sample of them; the rest is set in the admin.
 
 ### Pages
 

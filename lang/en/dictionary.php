@@ -14,6 +14,8 @@ return [
         'menu:input4:br' => 'Menu',
         'account:input4' => 'Account',
         'cart:input4'    => 'Cart',
+        'back:input4:br'         => 'Back',
+        'all_in_category:input4' => 'All products',
     ],
 
     // Home page section titles and buttons.
@@ -156,6 +158,7 @@ return [
         'in_stock'           => 'In Stock',
         'unit_piece'         => 'pcs',
         'unit_pack'          => 'pk',
+        'unit_box'           => 'pk',
         'pack_choice'        => 'Set size',
         'price_per'          => 'per',
         'description'        => 'Description',

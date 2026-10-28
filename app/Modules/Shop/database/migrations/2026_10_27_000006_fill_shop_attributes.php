@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\DB;
  * the admin.
  *
  * A parameter whose code already exists is left alone, and the sample is
- * skipped once any product has a value.
+ * skipped once any product has a value. A database with no products is left
+ * to the seeder.
  */
 return new class extends Migration
 {
@@ -28,6 +29,12 @@ return new class extends Migration
 
     public function up(): void
     {
+        // A fresh install (and the test database) has no catalogue yet:
+        // ShopAttributeSeeder builds the parameters there.
+        if (!DB::table('shop_products')->exists()) {
+            return;
+        }
+
         $now = now();
         $rank = count(self::ATTRIBUTES);
         $options = [];

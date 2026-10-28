@@ -14,6 +14,8 @@ return [
         'menu:input4:br' => 'Меню',
         'account:input4' => 'Кабінет',
         'cart:input4'    => 'Кошик',
+        'back:input4:br'         => 'Назад',
+        'all_in_category:input4' => 'Усі товари',
     ],
 
     // Home page section titles and buttons.
@@ -156,6 +158,7 @@ return [
         'in_stock'           => 'В наявності',
         'unit_piece'         => 'шт.',
         'unit_pack'          => 'уп.',
+        'unit_box'           => 'уп.',
         'pack_choice'        => 'Кількість у наборі',
         'price_per'          => 'за',
         'description'        => 'Опис',

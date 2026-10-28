@@ -172,17 +172,45 @@
         });
     }
 
-    // Mobile menu
-    var nav = document.getElementById('nav');
+    // Mobile menu: a drawer of panels — the root list, and one panel of subcategory tiles
+    // per category; opening a category slides its panel over the root, «back» slides it away
+    var mMenu = document.getElementById('m-menu');
     var toggle = document.getElementById('menu-toggle');
-    if (nav && toggle) {
-        var setMenu = function (open) {
-            nav.classList.toggle('is-open', open);
-            toggle.setAttribute('aria-expanded', open);
-            toggle.innerHTML = open ? '<i class="bi bi-x-lg"></i>' : '<i class="bi bi-list"></i>';
+    if (mMenu && toggle) {
+        var root = document.getElementById('m-menu-root');
+        var showPanel = function (panel) {
+            mMenu.querySelectorAll('.m-menu-panel').forEach(function (p) {
+                p.classList.toggle('is-current', p === panel);
+                p.classList.toggle('is-behind', p === root && panel !== root);
+            });
         };
-        toggle.addEventListener('click', function () { setMenu(!nav.classList.contains('is-open')); });
-        nav.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
+        var setMenu = function (open) {
+            mMenu.classList.toggle('is-open', open);
+            mMenu.setAttribute('aria-hidden', !open);
+            toggle.setAttribute('aria-expanded', open);
+            document.body.classList.toggle('m-menu-locked', open);
+            if (open) {
+                showPanel(root);
+            }
+        };
+        toggle.addEventListener('click', function () { setMenu(true); });
+        mMenu.addEventListener('click', function (e) {
+            var opener = e.target.closest('[data-m-menu-open]');
+            if (opener) {
+                showPanel(document.getElementById(opener.dataset.mMenuOpen));
+            } else if (e.target.closest('[data-m-menu-back]')) {
+                showPanel(root);
+            } else if (e.target.closest('[data-m-menu-close], a')) {
+                setMenu(false);
+            }
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && mMenu.classList.contains('is-open')) setMenu(false);
+        });
+        // Growing past the mobile breakpoint with the drawer open would leave the page locked
+        window.matchMedia('(min-width: 1025px)').addEventListener('change', function (mq) {
+            if (mq.matches) setMenu(false);
+        });
     }
 
     // Header dropdowns: the chevron opens a category's subcategories (touch, mobile panel)
