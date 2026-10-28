@@ -75,7 +75,7 @@ class ProductViewModel extends BaseViewModel
                 'label'           => $pack['quantity'] . ' ' . $unit,
                 // a pack product: «за уп. (5пар)»; otherwise «за шт.» for a single piece, «за 5 шт.» for a set
                 'per_label' => $isPack
-                    ? $per . ' ' . (t('shop.unit_box') ?: 'уп.') . ' (' . $pack['quantity'] . $unit . ')'
+                    ? $per . ' ' . (t('shop.unit_box') ?: 'уп.') . ' (' . $pack['quantity'] .' '. $unit . ')'
                     : $per . ' ' . ($pack['quantity'] > 1 ? $pack['quantity'] . ' ' : '') . $unit,
             ], Product::normalizePacks($product->packs)),
             specs: self::specs($product),
