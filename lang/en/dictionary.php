@@ -132,6 +132,7 @@ return [
         'payment_success_description' => 'Thank you for your purchase. Your order has been confirmed.',
         'payment_error_title'         => 'Payment Failed',
         'payment_error_description'   => 'Something went wrong while processing your payment. Please try again.',
+        'order_success:html'          => '<p><strong>Thank you! Your order has been placed successfully.</strong></p><p>The seller will contact you shortly to confirm the order and delivery details.</p>',
 
         'sort_option_newest'     => 'Newest Arrivals',
         'sort_option_price_asc'  => 'Price: Low to High',

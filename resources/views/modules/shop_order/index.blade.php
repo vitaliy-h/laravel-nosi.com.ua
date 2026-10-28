@@ -9,6 +9,10 @@
     ])
 
     <div class="container page">
+        @if(filled(t('shop.order_success')))
+            <div class="alert alert-success order-success">{!! t('shop.order_success') !!}</div>
+        @endif
+
         @if($order->can_pay)
             @include('modules.shop_order.partials.requisites')
         @endif

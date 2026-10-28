@@ -506,6 +506,7 @@ return [
             'payment_success_description' => 'Дякуємо за покупку. Ваше замовлення підтверджено.',
             'payment_error_title'         => 'Оплата не пройшла',
             'payment_error_description'   => 'Під час оплати сталася помилка. Будь ласка, спробуйте ще раз.',
+            'order_success'               => 'Повідомлення про успішне замовлення',
             'sort_option_newest'          => 'Спочатку нові',
             'sort_option_price_asc'       => 'Ціна: від дешевших',
             'sort_option_price_desc'      => 'Ціна: від дорожчих',
