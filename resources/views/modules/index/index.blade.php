@@ -46,25 +46,7 @@
         </section>
     @endif
 
-    {{-- Benefits strip (dictionary → benefits): a benefit with an empty title or text is skipped --}}
-    @php
-        $benefits = collect(range(1, 4))
-            ->map(fn (int $i) => [
-                'icon'  => t("benefits.benefit_{$i}_icon"),
-                'title' => t("benefits.benefit_{$i}_title"),
-                'text'  => t("benefits.benefit_{$i}_text"),
-            ])
-            ->filter(fn (array $b) => $b['title'] !== '' && $b['text'] !== '');
-    @endphp
-    @if($benefits->isNotEmpty())
-        <section class="benefits">
-            <div class="container">
-                @foreach($benefits as $benefit)
-                    <div class="benefit"><i class="bi {{ $benefit['icon'] ?: 'bi-check2-circle' }}"></i><div><b>{{ $benefit['title'] }}</b><span>{{ $benefit['text'] }}</span></div></div>
-                @endforeach
-            </div>
-        </section>
-    @endif
+
 
     {{-- Top sales / New: tabs + carousel --}}
     @if($top_products->isNotEmpty() || $new_products->isNotEmpty())
@@ -310,6 +292,26 @@
                     </div>
                 </div>
                 <button class="link-arrow seo-toggle" type="button" id="seo-toggle" data-more="{{ t('home.seo_more') }}" data-less="{{ t('home.seo_less') }}">{{ t('home.seo_more') }} <i class="bi bi-chevron-down"></i></button>
+            </div>
+        </section>
+    @endif
+
+    @php
+        $benefits = collect(range(1, 4))
+            ->map(fn (int $i) => [
+                'icon'  => t("benefits.benefit_{$i}_icon"),
+                'title' => t("benefits.benefit_{$i}_title"),
+                'text'  => t("benefits.benefit_{$i}_text"),
+            ])
+            ->filter(fn (array $b) => $b['title'] !== '' && $b['text'] !== '');
+    @endphp
+
+    @if($benefits->isNotEmpty())
+        <section class="benefits">
+            <div class="container">
+                @foreach($benefits as $benefit)
+                    <div class="benefit"><i class="bi {{ $benefit['icon'] ?: 'bi-check2-circle' }}"></i><div><b>{{ $benefit['title'] }}</b><span>{{ $benefit['text'] }}</span></div></div>
+                @endforeach
             </div>
         </section>
     @endif

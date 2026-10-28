@@ -238,10 +238,10 @@ body.m-menu-locked { overflow: hidden; }
 .hero-dots button.is-active { width: 34px; background: var(--lime); }
 
 /* ---------- Benefits strip ---------- */
-.benefits { padding-top: 16px; }
+.benefits { padding-bottom: 25px; }
 .benefits .container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 .benefit { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border-radius: var(--r); background: var(--cream); }
-.benefit i { flex: 0 0 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: #fff; color: var(--accent); font-size: 20px; }
+.benefit i { flex: 0 0 46px; height: 46px;width: 46px; border-radius: 50%; display: grid; place-items: center; background: #fff; color: var(--accent); font-size: 20px; }
 .benefit b { display: block; font-weight: 600; font-size: 15px; line-height: 1.3; }
 .benefit span { font-size: 14px; color: var(--muted); }
 
@@ -538,11 +538,23 @@ dialog.modal.review-dialog { max-width: 560px; }
     .review { padding: 22px; }
     .faq-item summary { font-size: 16px; padding: 18px; }
     .faq-answer { padding: 0 18px 18px; }
-    .ca-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    /* minmax(0, …): a long handle or phone must not stretch its column past the screen */
+    .ca-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
     .ca-card { padding: 20px; min-height: 190px; border-radius: 20px; }
-    .ca-card strong { font-size: 14px; white-space: normal; }
+    .ca-card strong { font-size: 12px; white-space: normal; overflow-wrap: anywhere; }
     .fa-main { grid-template-columns: 1fr; gap: 32px; }
     .fa-bottom .container { flex-direction: column; text-align: center; }
+}
+
+/* Narrow phones: contact cards one per row, the icon on the left and the text beside it */
+@media (max-width: 375px) {
+    .ca-grid { grid-template-columns: minmax(0, 1fr); }
+    .ca-card { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 16px; row-gap: 2px; align-items: center; min-height: 0; }
+    .ca-card .ico { grid-row: 1 / span 3; margin-bottom: 0; }
+    .ca-card small, .ca-card strong, .ca-card .go { grid-column: 2; margin-top: 0; }
+    /* a phone number stays on one line: the font shrinks with the screen instead */
+    .ca-card strong { font-size: clamp(12px, 4.4vw, 14px); white-space: nowrap; overflow-wrap: normal; }
+    .ca-card .go { margin-top: 6px; }
 }
 
 /* ---------- Additions for the Blade version ---------- */
