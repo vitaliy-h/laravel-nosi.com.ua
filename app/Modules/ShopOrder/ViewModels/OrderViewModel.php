@@ -50,7 +50,7 @@ class OrderViewModel extends BaseViewModel
             uuid: (string) $order->uuid,
             url: route('order.show', $order->uuid),
             order_number: $order->order_number,
-            created_at_formatted: $order->created_at?->format('d M, Y'),
+            created_at_formatted: $order->created_at?->format('d.m.Y'),
             items: $items,
             items_count: $items->count(),
             payment_status: $order->payment_status->value,
