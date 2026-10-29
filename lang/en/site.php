@@ -25,6 +25,11 @@ return [
         'total'    => 'Total',
     ],
 
+    // The bot's reply to whoever writes to it (TelegramWebhookController).
+    'telegram_bot' => [
+        'chat_id' => "Your chat ID: <code>:id</code>\n\nPaste it in the admin panel: Languages → main language → «Telegram order notifications». Several recipients — comma separated.",
+    ],
+
     'feedback' => [
         'name'    => 'Name',
         'email'   => 'Email',

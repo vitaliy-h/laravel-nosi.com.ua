@@ -21,6 +21,7 @@ use App\Filament\Resources\LetterTemplates\LetterTemplateResource;
 use App\Filament\Resources\LogLetters\LogLetterResource;
 use App\Filament\Resources\Logs\LogResource;
 use App\Filament\Resources\LogSms\LogSmsResource;
+use App\Filament\Resources\LogTelegram\LogTelegramResource;
 use App\Filament\Resources\News\NewsResource;
 use App\Filament\Resources\Pages\PageResource;
 use App\Filament\Resources\Shop\Attributes\AttributeResource;
@@ -255,6 +256,10 @@ class AdminPanelProvider extends PanelProvider
                                     ->icon('heroicon-o-chat-bubble-bottom-center-text')
                                     ->url(LogSmsResource::getUrl())
                                     ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.log-sms.*')) : null,
+                                NavigationItem::make(__('admin.tables.log_telegram'))
+                                    ->icon('heroicon-o-paper-airplane')
+                                    ->url(LogTelegramResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => Request::routeIs('filament.admin.resources.log-telegram.*')),
                             ])),
                     ]));
             })
@@ -277,6 +282,7 @@ class AdminPanelProvider extends PanelProvider
                 UserResource::class,
                 ModuleGate::isEnabled('sms') ? SmsTemplateResource::class : null,
                 ModuleGate::isEnabled('sms') ? LogSmsResource::class : null,
+                LogTelegramResource::class,
                 ModuleGate::isEnabled('news') ? NewsResource::class : null,
                 ModuleGate::isEnabled('feedback') ? FeedbackResource::class : null,
                 ModuleGate::isEnabled('social_profiles') ? SocialProfileResource::class : null,

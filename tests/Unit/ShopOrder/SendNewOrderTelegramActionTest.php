@@ -34,8 +34,8 @@ class SendNewOrderTelegramActionTest extends TestCase
         $this->placeOrder();
 
         Queue::assertPushed(SendTelegramMessageJob::class, 2);
-        Queue::assertPushed(SendTelegramMessageJob::class, fn ($job) => $job->chatId === '111');
-        Queue::assertPushed(SendTelegramMessageJob::class, fn ($job) => $job->chatId === '-222');
+        Queue::assertPushed(SendTelegramMessageJob::class, fn ($job) => $job->logTelegram->receiver === '111');
+        Queue::assertPushed(SendTelegramMessageJob::class, fn ($job) => $job->logTelegram->receiver === '-222');
     }
 
     public function test_message_lists_the_customer_and_items_escaped(): void
@@ -45,10 +45,10 @@ class SendNewOrderTelegramActionTest extends TestCase
         $order = $this->placeOrder();
 
         Queue::assertPushed(SendTelegramMessageJob::class, function (SendTelegramMessageJob $job) use ($order) {
-            return str_contains($job->text, 'Нове замовлення №' . $order->order_number)
-                && str_contains($job->text, 'John &lt;b&gt;')
-                && str_contains($job->text, '+380501234567')
-                && str_contains($job->text, 'Socks (SKU-1) × 3');
+            return str_contains($job->logTelegram->body, 'Нове замовлення №' . $order->order_number)
+                && str_contains($job->logTelegram->body, 'John &lt;b&gt;')
+                && str_contains($job->logTelegram->body, '+380501234567')
+                && str_contains($job->logTelegram->body, 'Socks (SKU-1) × 3');
         });
     }
 

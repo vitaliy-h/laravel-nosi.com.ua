@@ -34,6 +34,23 @@ class TelegramServiceTest extends TestCase
         app(TelegramService::class)->send('123', 'Hi');
     }
 
+    public function test_the_command_registers_the_webhook_with_the_secret(): void
+    {
+        config(['services.telegram.bot_token' => 'test-token']);
+        Http::fake([
+            'api.telegram.org/bottest-token/setWebhook'     => Http::response(['ok' => true, 'result' => true]),
+            'api.telegram.org/bottest-token/getWebhookInfo' => Http::response(['ok' => true, 'result' => ['url' => 'https://x.test/api/telegram/webhook']]),
+        ]);
+
+        $this->artisan('telegram:webhook', ['--url' => 'https://x.test/api/telegram/webhook'])
+            ->expectsOutput('Webhook set to https://x.test/api/telegram/webhook')
+            ->assertSuccessful();
+
+        Http::assertSent(fn (Request $request) => str_ends_with($request->url(), '/setWebhook')
+            && $request['url'] === 'https://x.test/api/telegram/webhook'
+            && $request['secret_token'] === app(TelegramService::class)->webhookSecret());
+    }
+
     public function test_missing_token_throws(): void
     {
         config(['services.telegram.bot_token' => null]);

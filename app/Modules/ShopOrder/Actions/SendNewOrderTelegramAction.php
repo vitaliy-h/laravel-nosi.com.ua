@@ -3,7 +3,7 @@
 namespace App\Modules\ShopOrder\Actions;
 
 use App\Modules\Core\Support\Money;
-use App\Modules\Notification\Jobs\SendTelegramMessageJob;
+use App\Modules\Notification\Services\TelegramService;
 use App\Modules\ShopOrder\Models\Order;
 use App\Modules\ShopOrder\Models\OrderProduct;
 use App\Modules\Translation\Facade\Trans;
@@ -16,6 +16,10 @@ use Illuminate\Support\Arr;
  */
 readonly class SendNewOrderTelegramAction
 {
+    public function __construct(
+        private TelegramService $telegram,
+    ) {}
+
     public function handle(Order $order): void
     {
         $chatIds = $this->chatIds();
@@ -28,7 +32,7 @@ readonly class SendNewOrderTelegramAction
         $text = $this->message($order);
 
         foreach ($chatIds as $chatId) {
-            SendTelegramMessageJob::dispatch($chatId, $text);
+            $this->telegram->queue($chatId, $text);
         }
     }
 

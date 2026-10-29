@@ -77,6 +77,11 @@ class ArtisanCommandRunner
             'params'      => [],
             'destructive' => false,
         ],
+        // One-off on the FTP-only host: points the bot at /api/telegram/webhook on APP_URL.
+        'telegram:webhook' => [
+            'params'      => [],
+            'destructive' => false,
+        ],
     ];
 
     public static function isAllowed(string $key): bool

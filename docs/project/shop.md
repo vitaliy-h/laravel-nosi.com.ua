@@ -122,9 +122,16 @@ the bot `TELEGRAM_BOT_TOKEN` — `ShopOrder\Actions\SendNewOrderTelegramAction`,
 trigger it, not ones created in the admin panel. Recipients — chat IDs separated by commas:
 the dictionary group `telegram` of the main language (`APP_LOCALE`; admin → Languages, the
 first section), and if it is empty — `TELEGRAM_CHAT_ID` in `.env`; none set — nothing is sent.
-A chat ID is what the bot sees: the person (or group, with a leading `-`) must write to
-the bot first; the ID is in `https://api.telegram.org/bot<token>/getUpdates`. The message texts
-are in `lang/{locale}/site.php` → `telegram_order`.
+Every message is written to `log_telegram` first (admin → Logs → Telegram: queued / sent /
+failed with Telegram's error), the same way letters go to `log_letters`.
+
+A person must press Start in the bot before it may write to them. The bot answers any
+message with the sender's chat ID (`Notification\Http\Controllers\Api\TelegramWebhookController`,
+`POST /api/telegram/webhook`, checked by the `X-Telegram-Bot-Api-Secret-Token` header derived
+from the bot token). The webhook is registered once with `php artisan telegram:webhook`
+(admin → Debug Tools on the FTP-only host; `--delete` removes it). While it is set,
+`getUpdates` no longer works. The texts are in `lang/{locale}/site.php` → `telegram_order`,
+`telegram_bot`.
 
 An order gets a UUID for links and a sequential **number** for humans. The promo code and
 its code string are kept in the order even if the promo code is later deleted.
