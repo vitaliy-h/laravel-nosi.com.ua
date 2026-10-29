@@ -20,10 +20,12 @@
             ?: url()->current() . (request()->integer('page') > 1 ? '?page=' . request()->integer('page') : '');
         $siteName = t('header.logo') ?: config('app.name');
         $ogTitle = $meta_title ?? config('app.name');
-        // A page sets its picture with @section('og_image', absolute url); otherwise
-        // public/og-image.jpg (1200×630) when it is uploaded, else the touch icon.
-        $ogImage = trim($__env->yieldContent('og_image'))
-            ?: (file_exists(public_path('og-image.jpg')) ? asset('og-image.jpg') : asset('apple-touch-icon.png'));
+        // A page sets its picture with @section('og_image', absolute url); otherwise — or when
+        // it is the no_image.svg placeholder, which messengers do not show — public/og-image.jpg.
+        $ogImage = trim($__env->yieldContent('og_image'));
+        if ($ogImage === '' || str_ends_with(strtolower($ogImage), '.svg')) {
+            $ogImage = asset('og-image.jpg');
+        }
     @endphp
     <link rel="canonical" href="{{ $canonicalUrl }}">
     {{-- The storefront is single-language: declare it and make it the default. --}}

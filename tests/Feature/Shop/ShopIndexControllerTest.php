@@ -49,6 +49,30 @@ class ShopIndexControllerTest extends TestCase
         $response->assertViewHas('products', fn ($products) => $products->total() === 2);
     }
 
+    public function test_category_page_og_image_is_the_first_product_with_a_picture(): void
+    {
+        $category = Category::factory()->create();
+        Product::factory()->forCategory($category)->create();
+        $withImage = Product::factory()->forCategory($category)->create();
+        Product::whereKey($withImage->id)->update(['img' => 'products/sock.jpg']);
+
+        $response = $this->get('/shop/' . $category->slug);
+
+        $response->assertStatus(200);
+        $response->assertSee('<meta property="og:image" content="' . url($withImage->fresh()->image) . '">', false);
+    }
+
+    public function test_category_page_og_image_falls_back_to_the_site_picture(): void
+    {
+        $category = Category::factory()->create();
+        Product::factory()->forCategory($category)->create();
+
+        $response = $this->get('/shop/' . $category->slug);
+
+        $response->assertStatus(200);
+        $response->assertSee('<meta property="og:image" content="' . asset('og-image.jpg') . '">', false);
+    }
+
     public function test_category_page_returns_404_for_unknown_slug(): void
     {
         $response = $this->get('/shop/unknown-category');

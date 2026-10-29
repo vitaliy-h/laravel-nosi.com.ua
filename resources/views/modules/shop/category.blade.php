@@ -2,6 +2,12 @@
 
 @section('body-class', 'category-page')
 
+{{-- Link preview: the picture of the first product of the listing that has one. --}}
+@php($ogProduct = $products->first(fn ($product) => !str_ends_with($product->image, '.svg')))
+@if($ogProduct)
+    @section('og_image', url($ogProduct->image))
+@endif
+
 @section('content')
     @include('partials.page_title')
 
