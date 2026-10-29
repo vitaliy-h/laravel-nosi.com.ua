@@ -364,6 +364,7 @@ return [
 
     // section titles of the language form, one per lang/{locale}/dictionary.php group
     'dictionary_sections' => [
+        'telegram'   => 'Telegram-сповіщення про замовлення',
         'header'     => 'Шапка сайту',
         'home'       => 'Головна сторінка',
         'benefits'   => 'Переваги (смуга під слайдером)',
@@ -379,6 +380,9 @@ return [
     ],
     // labels of the language form fields, admin.dictionary_fields.{section}.{key}
     'dictionary_fields' => [
+        'telegram' => [
+            'chat_id' => 'Chat ID одержувачів (через кому; береться з основної мови)',
+        ],
         'header' => [
             'logo'          => 'Логотип (текст)',
             'menu_sale'     => 'Пункт «Розпродаж» (виділений)',

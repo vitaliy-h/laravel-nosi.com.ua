@@ -364,6 +364,7 @@ return [
 
     // section titles of the language form, one per lang/{locale}/dictionary.php group
     'dictionary_sections' => [
+        'telegram'   => 'Telegram order notifications',
         'header'     => 'Site header',
         'home'       => 'Home page',
         'benefits'   => 'Benefits (strip under the slider)',

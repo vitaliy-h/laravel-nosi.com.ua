@@ -87,6 +87,9 @@ Translations are grouped by modules/pages.
 
 Stored in database as nested arrays without suffixes.
 
+The `telegram` group (recipients of new-order notifications, see `docs/project/shop.md`)
+is a setting rather than a text and goes first; it is read from the main language only.
+
 The order of the groups in the file is the order of the sections in the admin form; only the
 first one is expanded. The home page groups (`header`, `home`, `benefits`, `contacts`,
 `footer`) go first. A section title comes from `admin.dictionary_sections.{group}` — add the

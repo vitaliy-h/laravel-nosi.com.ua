@@ -115,6 +115,17 @@ What happens at checkout — in a single transaction:
 2. order creation with a copy of the cart lines, totals and promo code;
 3. cart deletion.
 
+After the commit the customer gets the `order_created` letter, and the managers get a
+**Telegram message** (number, customer, phone, email, comment, lines, discount, total) from
+the bot `TELEGRAM_BOT_TOKEN` — `ShopOrder\Actions\SendNewOrderTelegramAction`, one queued
+`Notification\Jobs\SendTelegramMessageJob` per chat (3 tries). Only orders placed on the site
+trigger it, not ones created in the admin panel. Recipients — chat IDs separated by commas:
+the dictionary group `telegram` of the main language (`APP_LOCALE`; admin → Languages, the
+first section), and if it is empty — `TELEGRAM_CHAT_ID` in `.env`; none set — nothing is sent.
+A chat ID is what the bot sees: the person (or group, with a leading `-`) must write to
+the bot first; the ID is in `https://api.telegram.org/bot<token>/getUpdates`. The message texts
+are in `lang/{locale}/site.php` → `telegram_order`.
+
 An order gets a UUID for links and a sequential **number** for humans. The promo code and
 its code string are kept in the order even if the promo code is later deleted.
 

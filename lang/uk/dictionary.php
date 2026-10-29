@@ -8,6 +8,12 @@
 
 return [
 
+    // Telegram notifications about new orders (read from the main language only).
+    // Chat ID — a number, several separated by commas; empty — TELEGRAM_CHAT_ID from .env.
+    'telegram' => [
+        'chat_id:input12:br' => '',
+    ],
+
     // Site header (home page design). An empty menu title hides the item.
     'header' => [
         'logo:input6:br' => 'nosi',

@@ -15,6 +15,7 @@ readonly class PlaceOrderFromCartAction
     public function __construct(
         private CreateOrderAction $createOrder,
         private RecalculateCartTotalAction $recalculateCartTotal,
+        private SendNewOrderTelegramAction $sendNewOrderTelegram,
     ) {}
 
     /**
@@ -24,7 +25,13 @@ readonly class PlaceOrderFromCartAction
      */
     public function handle(Cart $cart, CustomerData $customer): Order
     {
-        return DB::transaction(fn () => $this->place($cart, $customer));
+        $order = DB::transaction(fn () => $this->place($cart, $customer));
+
+        // Only orders placed on the site — the ones an admin creates in
+        // Filament need no alert.
+        DB::afterCommit(fn () => $this->sendNewOrderTelegram->handle($order));
+
+        return $order;
     }
 
     private function place(Cart $cart, CustomerData $customer): Order

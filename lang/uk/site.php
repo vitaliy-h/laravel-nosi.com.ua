@@ -13,6 +13,18 @@
 
 return [
 
+    // New-order notification sent to the managers' Telegram chat.
+    'telegram_order' => [
+        'title'    => 'Нове замовлення №:number',
+        'customer' => 'Клієнт',
+        'phone'    => 'Телефон',
+        'email'    => 'Email',
+        'comment'  => 'Коментар',
+        'items'    => 'Товари',
+        'discount' => 'Знижка',
+        'total'    => 'Сума',
+    ],
+
     'feedback' => [
         'name'    => 'Ім’я',
         'email'   => 'Електронна пошта',
