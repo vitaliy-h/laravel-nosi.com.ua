@@ -11,8 +11,8 @@
         @if($product->url)
             <a href="{{ $product->url }}" aria-label="{{ $product->title }}"></a>
         @endif
-        <img class="img-main" src="{{ $product->image }}" alt="{{ $product->title }}" loading="lazy">
-        <img class="img-hover" src="{{ $product->hover_image ?? $product->image }}" alt="" loading="lazy">
+        <img class="img-main" src="{{ $product->card_image }}" alt="{{ $product->title }}" width="600" height="800" loading="lazy">
+        <img class="img-hover" src="{{ $product->hover_image ?? $product->card_image }}" alt="" width="600" height="800" loading="lazy">
 
         <div class="card-badges">
             @if($new)

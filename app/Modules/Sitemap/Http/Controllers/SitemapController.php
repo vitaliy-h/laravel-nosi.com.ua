@@ -8,6 +8,7 @@ use App\Modules\Page\Enums\PageModule;
 use App\Modules\Page\Models\Page;
 use App\Modules\Shop\Models\Category;
 use App\Modules\Shop\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
 
 class SitemapController extends BaseWebController
@@ -31,6 +32,13 @@ class SitemapController extends BaseWebController
         );
     }
 
+    // A product opens only under a visible category (FindCategoryBySlugQuery), so one
+    // whose category is hidden would be a 404 in the sitemap.
+    private function reachableProducts(): Builder
+    {
+        return Product::visible()->whereHas('category', fn (Builder $query) => $query->visible());
+    }
+
     public function index(): Response
     {
         $newsEnabled = $this->isModuleIndexable(PageModule::NEWS);
@@ -38,7 +46,7 @@ class SitemapController extends BaseWebController
 
         $newsTotalPages = $newsEnabled ? (int) ceil(News::visible()->count() / self::PER_PAGE) : 0;
         $categoriesTotalPages = $shopEnabled ? (int) ceil(Category::visible()->count() / self::PER_PAGE) : 0;
-        $productsTotalPages = $shopEnabled ? (int) ceil(Product::visible()->count() / self::PER_PAGE) : 0;
+        $productsTotalPages = $shopEnabled ? (int) ceil($this->reachableProducts()->count() / self::PER_PAGE) : 0;
 
         return $this->xmlResponse('modules.sitemap.index', compact('newsTotalPages', 'categoriesTotalPages', 'productsTotalPages'));
     }
@@ -82,7 +90,7 @@ class SitemapController extends BaseWebController
     public function products(int $page): Response
     {
         $items = $this->isModuleIndexable(PageModule::SHOP)
-            ? Product::visible()
+            ? $this->reachableProducts()
                 ->with('category')
                 ->orderBy('id')
                 ->offset(($page - 1) * self::PER_PAGE)

@@ -156,13 +156,14 @@ class ImageConversionServiceTest extends TestCase
 
         $resizer = Mockery::mock(ImageResizer::class);
         $resizer->shouldReceive('resize')
-            ->twice()
+            ->times(3) // thumb, card, large
             ->andThrow(new \RuntimeException('Resize failed'));
         $service = new ImageConversionService($resizer);
 
         $service->generateEager('shop_products/1/img/product.jpg');
 
         $this->assertFalse(Storage::exists('thumb/shop_products/1/img/product.jpg'));
+        $this->assertFalse(Storage::exists('card/shop_products/1/img/product.jpg'));
         $this->assertFalse(Storage::exists('large/shop_products/1/img/product.jpg'));
     }
 

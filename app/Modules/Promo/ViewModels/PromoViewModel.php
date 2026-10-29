@@ -18,6 +18,8 @@ class PromoViewModel extends BaseViewModel
         public readonly ?string $url,
         public readonly bool $has_image,
         public readonly string $image,
+        /** Resized preview (config/image_sizes.php `large`) — what the banner shows. */
+        public readonly string $large_image,
     ) {}
 
     public static function fromPromo(Promo $promo): self
@@ -32,6 +34,7 @@ class PromoViewModel extends BaseViewModel
             url: $promo->url ?: null,
             has_image: !empty($promo->img),
             image: $promo->image,
+            large_image: $promo->imageUrl('large'),
         );
     }
 }

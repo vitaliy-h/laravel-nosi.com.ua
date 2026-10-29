@@ -16,10 +16,14 @@ class ProductViewModel extends BaseViewModel
         public readonly ?string $url,
         public readonly bool $has_image,
         public readonly string $image,
-        public readonly string $thumb_url,
+        /** Card-sized preview (config/image_sizes.php `card`) — the product tile. */
+        public readonly string $card_image,
+        /** Card-sized preview of the first gallery photo, shown on hover. */
         public readonly ?string $hover_image,
-        /** @var array<int, string> main photo first, then the gallery — the product page */
+        /** @var array<int, string> originals, main photo first, then the gallery — schema.org, og:image */
         public readonly array $gallery,
+        /** @var array<int, array{large: string, thumb: string}> previews of `gallery`, same order — the product page */
+        public readonly array $gallery_previews,
         public readonly ?string $brand_title,
         public readonly bool $is_hit,
         /** The price of the smallest set — what the card shows first. */
@@ -60,9 +64,13 @@ class ProductViewModel extends BaseViewModel
                 : null,
             has_image: !empty($product->img),
             image: $product->image,
-            thumb_url: $product->imageUrl('thumb'),
-            hover_image: $product->images[0] ?? null,
+            card_image: $product->imageUrl('card'),
+            hover_image: !empty($product->imgs[0]) ? image_url($product->imgs[0], 'card') : null,
             gallery: !empty($product->img) ? [$product->image, ...$product->images] : $product->images,
+            gallery_previews: array_map(fn (string $path): array => [
+                'large' => image_url($path, 'large'),
+                'thumb' => image_url($path, 'card'),
+            ], array_values(array_filter([$product->img, ...($product->imgs ?? [])]))),
             brand_title: $brand?->title,
             is_hit: (bool) $product->is_hit,
             price: $product->price,

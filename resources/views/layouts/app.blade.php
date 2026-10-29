@@ -8,7 +8,8 @@
     <title>{{ $meta_title ?? config('app.name') }}</title>
     <meta name="description" content="{{ $meta_description ?? '' }}">
 
-    @if(($page ?? null) && !$page->is_indexable)
+    {{-- Error pages (404, 500 — they get $exception) and pages switched off in admin stay out of the index. --}}
+    @if(isset($exception) || (($page ?? null) && !$page->is_indexable))
         <meta name="robots" content="noindex, nofollow">
     @else
         <meta name="robots" content="index, follow, max-image-preview:large">
@@ -18,7 +19,7 @@
     @php
         $canonicalUrl = trim($__env->yieldContent('canonical'))
             ?: url()->current() . (request()->integer('page') > 1 ? '?page=' . request()->integer('page') : '');
-        $siteName = t('header.logo') ?: config('app.name');
+        $siteName = Str::ucfirst(t('header.logo') ?: config('app.name'));
         $ogTitle = $meta_title ?? config('app.name');
         // A page sets its picture with @section('og_image', absolute url); otherwise — or when
         // it is the no_image.svg placeholder, which messengers do not show — public/og-image.jpg.

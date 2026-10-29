@@ -39,7 +39,7 @@ class CartItemViewModel extends BaseViewModel
             line_key: self::lineKey((int) $item->shop_product_id, $pack),
             name: (string) $item->product_name,
             has_image: !empty($product?->img),
-            image: $product?->image ?? asset('/assets/images/no_image.svg'),
+            image: $product?->imageUrl('card') ?? asset('/assets/images/no_image.svg'),
             quantity: (int) $item->quantity,
             selling_price_formatted: Money::from($item->selling_price)->format(),
             total_formatted: Money::from($item->total)->format(),

@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\Core\Http\Middleware\Authenticate;
+use App\Modules\Core\Http\Middleware\RedirectToCanonicalUrl;
 use App\Modules\Core\Support\ApiEnvelope;
 use App\Modules\Page\Http\Middleware\ShareModulePageContext;
 use Illuminate\Auth\AuthenticationException;
@@ -23,6 +24,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // First of all, so a duplicate address (http, www, /index.php, trailing slash) never renders.
+        $middleware->prepend(RedirectToCanonicalUrl::class);
+
         $middleware->alias([
             'auth'       => Authenticate::class,
             'share.page' => ShareModulePageContext::class,

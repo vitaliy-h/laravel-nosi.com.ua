@@ -109,6 +109,31 @@ class Product extends Model
         return collect(self::normalizePacks($this->packs))->firstWhere('quantity', $quantity);
     }
 
+    /** «Жіночі шкарпетки Cashmere — купити в Nosi» */
+    public function seoMetaTitle(): string
+    {
+        return $this->getSeoTitle() . ' — купити в ' . $this->seoShopName();
+    }
+
+    /**
+     * «Купити жіночі шкарпетки Cashmere від DMDBS в інтернет-магазині Nosi. {start of the
+     * text} Доставка Новою поштою по Україні, обмін 14 днів.» — the text is cut to fit 160.
+     * No price: it changes without the description being rebuilt.
+     */
+    public function seoMetaDescription(): string
+    {
+        $brand = $this->brand?->title;
+        // the shop's own brand would read «від Nosi в інтернет-магазині Nosi»
+        $brand = mb_strtolower((string) $brand) === mb_strtolower($this->seoShopName()) ? null : $brand;
+        $head = 'Купити ' . $this->seoLowerFirst($this->getSeoTitle())
+            . ($brand ? ' від ' . $brand : '')
+            . ' в інтернет-магазині ' . $this->seoShopName() . '.';
+        $tail = 'Доставка Новою поштою по Україні, обмін 14 днів.';
+        $excerpt = $this->seoExcerpt($this->seoDescriptionLength - mb_strlen($head) - mb_strlen($tail) - 2);
+
+        return implode(' ', array_filter([$head, $excerpt, $tail]));
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);

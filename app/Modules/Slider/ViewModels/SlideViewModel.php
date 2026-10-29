@@ -14,6 +14,8 @@ class SlideViewModel extends BaseViewModel
         public readonly ?string $button_text,
         public readonly ?string $url,
         public readonly string $image,
+        /** Resized preview (config/image_sizes.php `large`) — what the slider shows. */
+        public readonly string $large_image,
     ) {}
 
     public static function fromSlider(Slider $slider): self
@@ -25,6 +27,7 @@ class SlideViewModel extends BaseViewModel
             button_text: $slider->button_text ?: null,
             url: $slider->url ?: null,
             image: $slider->image,
+            large_image: $slider->imageUrl('large'),
         );
     }
 }

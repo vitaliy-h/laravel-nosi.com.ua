@@ -42,8 +42,6 @@ class ShopCategorySeeder extends Seeder
                 'display'          => true,
                 'rank'             => $rank--,
                 'img'              => $dir . "{$slug}.jpg",
-                'meta_title'       => $title,
-                'meta_description' => $title . ' — купити в інтернет-магазині Nosi з доставкою по Україні.',
             ];
         }
 

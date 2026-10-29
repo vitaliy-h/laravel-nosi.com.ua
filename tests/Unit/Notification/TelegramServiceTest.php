@@ -21,6 +21,15 @@ class TelegramServiceTest extends TestCase
         $this->assertArrayHasKey('chat_id', config('services.telegram_bot'));
     }
 
+    /**
+     * phpunit.xml blanks both: four test orders once reached a real chat.
+     */
+    public function test_tests_never_see_the_real_bot(): void
+    {
+        $this->assertEmpty(config('services.telegram_bot.bot_token'));
+        $this->assertEmpty(config('services.telegram_bot.chat_id'));
+    }
+
     public function test_posts_the_message_to_the_bot_api(): void
     {
         config(['services.telegram_bot.bot_token' => 'test-token']);

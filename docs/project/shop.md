@@ -61,6 +61,28 @@ values and gives 10 random visible products a sample of them; the rest is set in
 
 `{shop}` — the slug of the page with the "Shop" module in the admin panel; it is changed there too.
 
+### SEO
+
+Left empty in the admin (or with "generate SEO" on — the default when creating), the fields
+are filled on save by `HasSeoFields`; texts typed by hand are never replaced:
+
+| Field | Category | Product |
+|---|---|---|
+| slug | from the title, Ukrainian transliteration: `Чоловічі шкарпетки` → `cholovichi-shkarpetky` | the same |
+| meta_title | `{title} — купити в інтернет-магазині Nosi` | `{title} — купити в Nosi` |
+| meta_description | `Купити {title} в інтернет-магазині Nosi: оригінальні бренди, доставка Новою поштою…` | `Купити {title} від {brand} в інтернет-магазині Nosi. {start of the text} Доставка Новою поштою…` (≤ 160 chars) |
+
+The wording lives in `Category::seoMetaTitle()` / `seoMetaDescription()` and the same pair in
+`Product`. The storefront applies the same rule to a record whose fields are still empty.
+The migration `2026_10_29_000001_regenerate_shop_seo_fields` rebuilt the placeholder texts of
+records saved before the rule. The slugs of existing records were not changed: their
+addresses are already indexed.
+
+Images: the product card, the category tile and the product page thumbs show the `card`
+preset, the product page photo, the slider and the promo banners the `large` one
+(`config/image_sizes.php`) — never the uploaded original. Products of a hidden category are
+left out of the sitemap: they open with 404.
+
 ### Filters, sorting, pagination
 
 - **Brand** — list of brands with the product count next to each.

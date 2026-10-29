@@ -340,6 +340,19 @@ class SitemapTest extends TestCase
         $response->assertDontSee('ghost-product', false);
     }
 
+    public function test_sitemap_products_excludes_products_of_a_hidden_category(): void
+    {
+        $this->skipIfShopDisabled();
+
+        $this->makeModulePage(PageModule::SHOP);
+        $hidden = Category::factory()->invisible()->create();
+        Product::factory()->forCategory($hidden)->create(['slug' => 'orphan-product']);
+
+        $response = $this->get('/sitemap-products-1.xml');
+
+        $response->assertDontSee('orphan-product', false);
+    }
+
     public function test_sitemap_products_page_zero_returns_404(): void
     {
         $response = $this->get('/sitemap-products-0.xml');

@@ -78,6 +78,22 @@ class ShopIndexControllerTest extends TestCase
         $response = $this->get('/shop/unknown-category');
 
         $response->assertStatus(404);
+        $response->assertSee('<meta name="robots" content="noindex, nofollow">', false);
+    }
+
+    public function test_listing_and_product_page_show_resized_previews_not_originals(): void
+    {
+        $category = Category::factory()->create();
+        $product = Product::factory()->forCategory($category)->create();
+        Product::whereKey($product->id)->update(['img' => "shop_products/{$product->id}/img/sock.jpg"]);
+        $product->refresh();
+
+        $this->get('/shop/' . $category->slug)
+            ->assertSee("/storage/card/shop_products/{$product->id}/img/sock.jpg", false)
+            ->assertSee('width="600" height="800"', false);
+
+        $this->get('/shop/' . $category->slug . '/' . $product->slug . '-' . $product->id)
+            ->assertSee("/storage/large/shop_products/{$product->id}/img/sock.jpg", false);
     }
 
     public function test_sort_price_asc_orders_products_by_price_ascending(): void

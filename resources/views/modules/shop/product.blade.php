@@ -43,7 +43,7 @@
 
             <div class="pd-gallery" data-gallery>
                 <div class="pd-main">
-                    <img src="{{ $product->gallery[0] ?? $product->image }}" alt="{{ $product->title }}" data-gallery-main>
+                    <img src="{{ $product->gallery_previews[0]['large'] ?? $product->image }}" alt="{{ $product->title }}" width="900" height="1200" fetchpriority="high" data-gallery-main>
                     <div class="card-badges">
                         @if($product->is_hit)
                             <span class="card-badge">{{ t('home.badge_hit') }}</span>
@@ -51,11 +51,11 @@
                     </div>
                 </div>
 
-                @if(count($product->gallery) > 1)
+                @if(count($product->gallery_previews) > 1)
                     <div class="pd-thumbs">
-                        @foreach($product->gallery as $src)
-                            <button type="button" @class(['is-active' => $loop->first]) data-gallery-thumb="{{ $src }}" aria-label="{{ $product->title }} {{ $loop->iteration }}">
-                                <img src="{{ $src }}" alt="" loading="lazy">
+                        @foreach($product->gallery_previews as $preview)
+                            <button type="button" @class(['is-active' => $loop->first]) data-gallery-thumb="{{ $preview['large'] }}" aria-label="{{ $product->title }} {{ $loop->iteration }}">
+                                <img src="{{ $preview['thumb'] }}" alt="" width="150" height="200" loading="lazy">
                             </button>
                         @endforeach
                     </div>

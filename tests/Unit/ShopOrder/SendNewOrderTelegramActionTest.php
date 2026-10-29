@@ -52,6 +52,24 @@ class SendNewOrderTelegramActionTest extends TestCase
         });
     }
 
+    /**
+     * The translator runs in English here ($, phpunit.xml) while APP_LOCALE is
+     * set to uk (setUp): the message follows APP_LOCALE, currency included, and
+     * no gap doubles when the order has no contacts.
+     */
+    public function test_message_uses_the_main_language_currency(): void
+    {
+        config(['services.telegram_bot.chat_id' => '111']);
+
+        $this->placeOrder(new CustomerData);
+
+        Queue::assertPushed(SendTelegramMessageJob::class, function (SendTelegramMessageJob $job) {
+            return str_contains($job->logTelegram->body, '45 ₴')
+                && !str_contains($job->logTelegram->body, '$')
+                && !str_contains($job->logTelegram->body, "\n\n\n");
+        });
+    }
+
     public function test_nothing_is_sent_without_a_recipient(): void
     {
         $this->placeOrder();
@@ -69,7 +87,7 @@ class SendNewOrderTelegramActionTest extends TestCase
         $this->assertSame(['999'], app(SendNewOrderTelegramAction::class)->chatIds());
     }
 
-    private function placeOrder()
+    private function placeOrder(?CustomerData $customer = null)
     {
         $cart = Cart::factory()->create();
         CartProduct::factory()->create([
@@ -81,7 +99,7 @@ class SendNewOrderTelegramActionTest extends TestCase
             'total'           => 45,
         ]);
 
-        return app(PlaceOrderFromCartAction::class)->handle($cart, new CustomerData(
+        return app(PlaceOrderFromCartAction::class)->handle($cart, $customer ?? new CustomerData(
             user_name: 'John <b>',
             user_phone: '+380501234567',
         ));

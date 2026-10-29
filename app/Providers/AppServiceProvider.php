@@ -13,6 +13,7 @@ use App\Policies\UserPolicy;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use SocialiteProviders\Manager\SocialiteWasCalled;
@@ -55,6 +56,12 @@ class AppServiceProvider extends ServiceProvider
         // Model observers are registered per module by ModuleServiceProvider.
 
         $this->mergeSocialConfig();
+
+        // canonical, og:url and the sitemap always point at the public address.
+        if ($canonical = config('app.canonical_url')) {
+            URL::forceRootUrl(rtrim($canonical, '/'));
+            URL::forceScheme((string) parse_url($canonical, PHP_URL_SCHEME));
+        }
     }
 
     private function mergeSocialConfig(): void

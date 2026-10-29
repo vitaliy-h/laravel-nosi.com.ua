@@ -21,7 +21,7 @@
             array_filter([
                 '@type'        => 'Organization',
                 '@id'          => url('/') . '#organization',
-                'name'         => t('header.logo') ?: config('app.name'),
+                'name'         => Str::ucfirst(t('header.logo') ?: config('app.name')),
                 'url'          => url('/'),
                 'logo'         => asset('apple-touch-icon.png'),
                 'sameAs'       => $sameAs ?: null,
@@ -30,7 +30,7 @@
             [
                 '@type'      => 'WebSite',
                 '@id'        => url('/') . '#website',
-                'name'       => t('header.logo') ?: config('app.name'),
+                'name'       => Str::ucfirst(t('header.logo') ?: config('app.name')),
                 'url'        => url('/'),
                 'inLanguage' => app()->getLocale(),
                 'publisher'  => ['@id' => url('/') . '#organization'],

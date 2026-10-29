@@ -45,6 +45,19 @@ class Category extends Model
         'display_menu_footer' => 'boolean',
     ];
 
+    /** «Жіночі шкарпетки — купити в інтернет-магазині Nosi» */
+    public function seoMetaTitle(): string
+    {
+        return $this->getSeoTitle() . ' — купити в інтернет-магазині ' . $this->seoShopName();
+    }
+
+    /** «Купити жіночі шкарпетки в інтернет-магазині Nosi: оригінальні бренди, доставка…» */
+    public function seoMetaDescription(): string
+    {
+        return 'Купити ' . $this->seoLowerFirst($this->getSeoTitle()) . ' в інтернет-магазині ' . $this->seoShopName()
+            . ': оригінальні бренди, доставка Новою поштою по всій Україні, обмін і повернення 14 днів.';
+    }
+
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);

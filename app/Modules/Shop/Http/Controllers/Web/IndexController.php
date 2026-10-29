@@ -44,8 +44,8 @@ class IndexController extends BaseWebController
         $category = $this->findCategoryBySlug->handle($categorySlug);
 
         view()->share([
-            'meta_title'       => $category->meta_title ?: $category->title,
-            'meta_description' => $category->meta_description,
+            'meta_title'       => $category->meta_title ?: $category->seoMetaTitle(),
+            'meta_description' => $category->meta_description ?: $category->seoMetaDescription(),
             'breadcrumbs'      => $this->getCategoryBreadcrumbs->handle($category),
         ]);
 
@@ -83,8 +83,8 @@ class IndexController extends BaseWebController
         );
 
         view()->share([
-            'meta_title'       => $product->meta_title ?: $product->title,
-            'meta_description' => $product->meta_description,
+            'meta_title'       => $product->meta_title ?: $product->seoMetaTitle(),
+            'meta_description' => $product->meta_description ?: $product->seoMetaDescription(),
             'breadcrumbs'      => $breadcrumbs,
         ]);
 

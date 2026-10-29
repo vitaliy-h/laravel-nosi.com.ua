@@ -15,7 +15,7 @@
                 <div class="hero-slides" id="hero">
                     @foreach($slides as $slide)
                         <div class="hero-slide{{ $loop->first ? ' is-active' : '' }}">
-                            <img src="{{ $slide->image }}" alt="{{ $slide->title }}" @unless($loop->first) loading="lazy" @endunless>
+                            <img src="{{ $slide->large_image }}" alt="{{ $slide->title }}" width="1920" height="1080" @unless($loop->first) loading="lazy" @endunless>
                             <div class="hero-text">
                                 @if($slide->kicker)
                                     <span class="kicker">{{ $slide->kicker }}</span>
@@ -109,7 +109,7 @@
                     <div class="carousel-track cat-track">
                         @foreach($categories->take(8) as $category)
                             <a href="{{ $category->url }}" class="cat-tile">
-                                <img src="{{ $category->image }}" alt="{{ $category->title }}" loading="lazy">
+                                <img src="{{ $category->card_image }}" alt="{{ $category->title }}" width="600" height="750" loading="lazy">
                                 <div class="cat-label"><h3>{{ $category->title }}</h3><span><i class="bi bi-arrow-right"></i></span></div>
                             </a>
                         @endforeach
@@ -128,7 +128,7 @@
                     @foreach($promos as $promo)
                         <a href="{{ $promo->url ?? '#' }}" class="promo{{ $promo->style !== 'plum' ? ' ' . $promo->style : '' }}">
                             @if($promo->has_image)
-                                <img src="{{ $promo->image }}" alt="{{ $promo->title }}" loading="lazy">
+                                <img src="{{ $promo->large_image }}" alt="{{ $promo->title }}" width="1200" height="1000" loading="lazy">
                             @endif
                             <div class="promo-body">
                                 @if($promo->kicker)

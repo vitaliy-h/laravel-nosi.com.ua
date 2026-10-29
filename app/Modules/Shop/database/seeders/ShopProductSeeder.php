@@ -85,8 +85,6 @@ class ShopProductSeeder extends Seeder
                 'display'          => true,
                 'img'              => $this->copyPhoto($id, 'img', "{$photo}.jpg", $slug),
                 'imgs'             => [$this->copyPhoto($id, 'imgs', "{$photo}-hover.jpg", $slug . '-2')],
-                'meta_title'       => $title,
-                'meta_description' => $title . ' — купити в інтернет-магазині Nosi.',
                 // «Новинки» is the newest products by date.
                 'created_at' => $isNew ? now()->subMinutes($id) : now()->subDays(30 + $id),
                 'updated_at' => now(),

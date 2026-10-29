@@ -17,6 +17,8 @@ class CategoryViewModel extends BaseViewModel
         public readonly string $slug,
         public readonly string $url,
         public readonly string $image,
+        /** Card-sized preview (config/image_sizes.php `card`) — the home page tiles. */
+        public readonly string $card_image,
         public readonly ?string $text,
         public readonly int $products_count,
         public readonly bool $is_active,
@@ -37,6 +39,7 @@ class CategoryViewModel extends BaseViewModel
             slug: (string) $category->slug,
             url: save_route('shop.category', $category->slug),
             image: $category->image,
+            card_image: $category->imageUrl('card'),
             text: $category->text,
             products_count: (int) ($category->products_count ?? 0),
             is_active: (int) ($category->_active ?? 0) === 1,

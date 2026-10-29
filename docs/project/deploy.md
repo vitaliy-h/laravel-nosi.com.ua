@@ -82,8 +82,12 @@ Do it once on the first deploy, and again **whenever `composer.lock` changes** �
 1. **Database.** Create it in cPanel with collation `utf8mb4_unicode_ci`.
 2. **`.env` on the server.** Upload it over FTP into the project folder (next to `artisan`):
    `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://nosi.com.ua`,
-   `LOG_LEVEL=error`, `APP_KEY` (from local `php artisan key:generate --show`),
-   `ADMIN_PATH`, `DEPLOY_TOKEN`, `DB_*` from cPanel.
+   `APP_CANONICAL_URL=https://nosi.com.ua`, `LOG_LEVEL=error`, `APP_KEY` (from local
+   `php artisan key:generate --show`), `ADMIN_PATH`, `DEPLOY_TOKEN`, `DB_*` from cPanel.
+   `APP_CANONICAL_URL` makes every other address of the site (http, www, `/index.php`,
+   `/public/…`, a trailing slash) answer with a 301 to it
+   (`App\Modules\Core\Http\Middleware\RedirectToCanonicalUrl`), and canonical / og:url /
+   sitemap links use it. Without it these duplicates are served as separate pages.
 3. **Document root.** Point the domain at the project's `public/` folder in cPanel
    (Domains → Document Root). If cPanel does not allow it for the main domain, upload the
    project into `public_html` itself — the root `.htaccess` then sends every request into

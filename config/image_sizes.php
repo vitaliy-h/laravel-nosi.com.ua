@@ -32,6 +32,21 @@ return [
         ],
     ],
 
+    // Storefront tiles, cut to the tile's aspect ratio (2× its largest CSS size, for retina):
+    // the product card and the product page thumbs are 3:4, the home category tile 4:5.
+    'card' => [
+        'shop_products' => [
+            'width'  => 600,
+            'height' => 800,
+            'mode'   => 'crop',
+        ],
+        'shop_categories' => [
+            'width'  => 600,
+            'height' => 750,
+            'mode'   => 'crop',
+        ],
+    ],
+
     'large' => [
         'shop_products' => [
             'width'  => 1200,
@@ -41,6 +56,17 @@ return [
         'news' => [
             'width'  => 1200,
             'height' => 800,
+            'mode'   => 'contain',
+        ],
+        // The home hero slider (full container width) and the promo banners.
+        'sliders' => [
+            'width'  => 1920,
+            'height' => 1080,
+            'mode'   => 'contain',
+        ],
+        'promos' => [
+            'width'  => 1200,
+            'height' => 1000,
             'mode'   => 'contain',
         ],
     ],

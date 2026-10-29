@@ -8,6 +8,7 @@ use App\Modules\ShopOrder\Models\Order;
 use App\Modules\ShopOrder\Models\OrderProduct;
 use App\Modules\Translation\Facade\Trans;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Traits\Localizable;
 
 /**
  * Tells the shop managers about an order placed on the site. Recipients come
@@ -16,6 +17,8 @@ use Illuminate\Support\Arr;
  */
 readonly class SendNewOrderTelegramAction
 {
+    use Localizable;
+
     public function __construct(
         private TelegramService $telegram,
     ) {}
@@ -51,13 +54,18 @@ readonly class SendNewOrderTelegramAction
     }
 
     /**
-     * Managers read it in the site's main language, whatever the customer used.
+     * Managers read it in the site's main language, whatever the customer used:
+     * the labels and the currency Money::format() takes from the dictionary.
      */
     private function message(Order $order): string
     {
-        $locale = config('app.locale');
+        return $this->withLocale(config('app.locale'), fn () => $this->compose($order));
+    }
+
+    private function compose(Order $order): string
+    {
         $line = fn (string $key, ?string $value) => filled($value)
-            ? '<b>' . __("site.telegram_order.{$key}", locale: $locale) . ':</b> ' . e($value)
+            ? '<b>' . __("site.telegram_order.{$key}") . ':</b> ' . e($value)
             : null;
 
         $customer = trim($order->user_name . ' ' . $order->user_surname);
@@ -67,24 +75,29 @@ readonly class SendNewOrderTelegramAction
             . ' × ' . $item->quantity
             . ' — ' . e(Money::from($item->total)->format()));
 
-        $lines = [
-            '🛒 <b>' . __('site.telegram_order.title', ['number' => e($order->order_number)], $locale) . '</b>',
-            '',
-            $line('customer', $customer),
-            $line('phone', $order->user_phone),
-            $line('email', $order->user_email),
-            $line('comment', $order->comment),
-            '',
-            '<b>' . __('site.telegram_order.items', locale: $locale) . ':</b>',
-            ...$items->all(),
-            '',
-            $order->discount_amount > 0
-                ? $line('discount', Money::from($order->discount_amount)->format()
-                    . ($order->promocode_code ? " ({$order->promocode_code})" : ''))
-                : null,
-            $line('total', Money::from($order->total_amount)->format()),
+        // Blocks separated by an empty line; a block left empty (no contacts)
+        // is dropped instead of doubling the gap.
+        $blocks = [
+            ['🛒 <b>' . __('site.telegram_order.title', ['number' => e($order->order_number)]) . '</b>'],
+            [
+                $line('customer', $customer),
+                $line('phone', $order->user_phone),
+                $line('email', $order->user_email),
+                $line('comment', $order->comment),
+            ],
+            ['<b>' . __('site.telegram_order.items') . ':</b>', ...$items->all()],
+            [
+                $order->discount_amount > 0
+                    ? $line('discount', Money::from($order->discount_amount)->format()
+                        . ($order->promocode_code ? " ({$order->promocode_code})" : ''))
+                    : null,
+                $line('total', Money::from($order->total_amount)->format()),
+            ],
         ];
 
-        return implode("\n", array_filter($lines, fn (?string $l) => $l !== null));
+        return collect($blocks)
+            ->map(fn (array $block) => implode("\n", array_filter($block, fn (?string $l) => $l !== null)))
+            ->filter()
+            ->implode("\n\n");
     }
 }

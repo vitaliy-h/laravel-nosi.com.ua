@@ -492,6 +492,13 @@ images. Current entities with images:
 | `shop_categories` | `Category` |
 | `shop_brands` | `Brand` |
 | `news` | `News` |
+| `sliders` | `Slider` |
+| `promos` | `Promo` |
+
+Presets the storefront uses: `card` (product card and product page thumbs 600×800, home
+category tile 600×750 — cut to the tile's ratio), `large` (product page photo, hero slider,
+promo banners). `thumb` is kept for the admin and the API. A new preset needs no cache
+clearing: missing previews are made on the first request.
 
 Example — add a `medium` preset for categories:
 

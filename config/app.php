@@ -55,6 +55,14 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     /*
+    | The one public address of the storefront (production: https://nosi.com.ua). When set,
+    | every other address (http, www, /index.php, /public, trailing slash) is 301-redirected
+    | to it and generated URLs (canonical, og:url, sitemap) use it. Leave empty locally.
+    */
+
+    'canonical_url' => env('APP_CANONICAL_URL'),
+
+    /*
     |--------------------------------------------------------------------------
     | Admin Panel Path
     |--------------------------------------------------------------------------
