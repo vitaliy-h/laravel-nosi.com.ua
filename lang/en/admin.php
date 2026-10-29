@@ -435,6 +435,7 @@ return [
             'view:clear'                   => 'Clear all compiled Blade view files.',
             'queue:restart'                => 'Restart queue worker daemons after their current job finishes.',
             'queue:work --stop-when-empty' => 'Send everything waiting in the queue (letters, SMS) now and stop.',
+            'modules:cache'                => 'Rebuild the list of module routes and commands (after files were uploaded by hand), then route:clear.',
             'telegram:webhook'             => 'Connect the Telegram bot to the site: the bot then answers /start with the chat ID for order notifications.',
             'optimize:clear'               => 'Remove all cached bootstrap files (config, routes, views, events).',
         ],

@@ -6,6 +6,7 @@ use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
+use Throwable;
 
 class ArtisanCommandRunner
 {
@@ -77,6 +78,12 @@ class ArtisanCommandRunner
             'params'      => [],
             'destructive' => false,
         ],
+        // Rebuilds the list of module routes and commands — after files were
+        // uploaded by hand rather than by deploy:ftp, new ones are unknown until then.
+        'modules:cache' => [
+            'params'      => [],
+            'destructive' => false,
+        ],
         // One-off on the FTP-only host: points the bot at /api/telegram/webhook on APP_URL.
         'telegram:webhook' => [
             'params'      => [],
@@ -127,8 +134,15 @@ class ArtisanCommandRunner
         $command = $meta['command'] ?? $key;
         $params = $meta['params'] ?? [];
 
-        $exitCode = Artisan::call($command, $params);
-        $output = Artisan::output();
+        // An unknown command (a stale modules cache) or a crash inside one is
+        // shown as the output instead of breaking the page.
+        try {
+            $exitCode = Artisan::call($command, $params);
+            $output = Artisan::output();
+        } catch (Throwable $e) {
+            $exitCode = 1;
+            $output = class_basename($e) . ': ' . $e->getMessage();
+        }
 
         Log::warning('[SuperAdmin] Artisan command executed from admin panel', [
             'action'     => $key,
