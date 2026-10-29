@@ -10,9 +10,20 @@ use Tests\TestCase;
 
 class TelegramServiceTest extends TestCase
 {
+    /**
+     * AppServiceProvider overwrites services.{social provider} — `services.telegram`
+     * among them — with the social login config at boot. The bot's own settings
+     * must live under a key it does not touch, or the token reads as empty.
+     */
+    public function test_the_bot_config_survives_boot(): void
+    {
+        $this->assertArrayHasKey('bot_token', config('services.telegram_bot'));
+        $this->assertArrayHasKey('chat_id', config('services.telegram_bot'));
+    }
+
     public function test_posts_the_message_to_the_bot_api(): void
     {
-        config(['services.telegram.bot_token' => 'test-token']);
+        config(['services.telegram_bot.bot_token' => 'test-token']);
         Http::fake(['api.telegram.org/*' => Http::response(['ok' => true])]);
 
         app(TelegramService::class)->send('123', '<b>Hi</b>');
@@ -25,7 +36,7 @@ class TelegramServiceTest extends TestCase
 
     public function test_a_refused_message_throws_so_the_job_retries(): void
     {
-        config(['services.telegram.bot_token' => 'test-token']);
+        config(['services.telegram_bot.bot_token' => 'test-token']);
         Http::fake(['api.telegram.org/*' => Http::response(['ok' => false, 'description' => 'chat not found'], 400)]);
 
         $this->expectException(RuntimeException::class);
@@ -36,7 +47,7 @@ class TelegramServiceTest extends TestCase
 
     public function test_the_command_registers_the_webhook_with_the_secret(): void
     {
-        config(['services.telegram.bot_token' => 'test-token']);
+        config(['services.telegram_bot.bot_token' => 'test-token']);
         Http::fake([
             'api.telegram.org/bottest-token/setWebhook'     => Http::response(['ok' => true, 'result' => true]),
             'api.telegram.org/bottest-token/getWebhookInfo' => Http::response(['ok' => true, 'result' => ['url' => 'https://x.test/api/telegram/webhook']]),
@@ -53,7 +64,7 @@ class TelegramServiceTest extends TestCase
 
     public function test_missing_token_throws(): void
     {
-        config(['services.telegram.bot_token' => null]);
+        config(['services.telegram_bot.bot_token' => null]);
         Http::fake();
 
         $this->expectException(RuntimeException::class);

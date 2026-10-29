@@ -10,10 +10,39 @@
 
     @if(($page ?? null) && !$page->is_indexable)
         <meta name="robots" content="noindex, nofollow">
+    @else
+        <meta name="robots" content="index, follow, max-image-preview:large">
     @endif
     {{-- A page sets its own with @section('canonical', ...); otherwise the current URL
          without the query string, keeping only ?page=N of a paginated list. --}}
-    <link rel="canonical" href="@hasSection('canonical')@yield('canonical')@else{{ url()->current() . (request()->integer('page') > 1 ? '?page=' . request()->integer('page') : '') }}@endif">
+    @php
+        $canonicalUrl = trim($__env->yieldContent('canonical'))
+            ?: url()->current() . (request()->integer('page') > 1 ? '?page=' . request()->integer('page') : '');
+        $siteName = t('header.logo') ?: config('app.name');
+        $ogTitle = $meta_title ?? config('app.name');
+        // A page sets its picture with @section('og_image', absolute url); otherwise
+        // public/og-image.jpg (1200×630) when it is uploaded, else the touch icon.
+        $ogImage = trim($__env->yieldContent('og_image'))
+            ?: (file_exists(public_path('og-image.jpg')) ? asset('og-image.jpg') : asset('apple-touch-icon.png'));
+    @endphp
+    <link rel="canonical" href="{{ $canonicalUrl }}">
+    {{-- The storefront is single-language: declare it and make it the default. --}}
+    <link rel="alternate" hreflang="{{ config('app.locale') }}" href="{{ $canonicalUrl }}">
+    <link rel="alternate" hreflang="x-default" href="{{ $canonicalUrl }}">
+
+    {{-- OpenGraph / Twitter: link previews in Telegram, Viber, Facebook etc. --}}
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:site_name" content="{{ $siteName }}">
+    <meta property="og:locale" content="{{ config('app.locale') === 'uk' ? 'uk_UA' : str_replace('-', '_', config('app.locale')) }}">
+    <meta property="og:title" content="{{ $ogTitle }}">
+    <meta property="og:description" content="{{ $meta_description ?? '' }}">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    <meta property="og:image" content="{{ $ogImage }}">
+    <meta property="og:image:alt" content="{{ $ogTitle }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $ogTitle }}">
+    <meta name="twitter:description" content="{{ $meta_description ?? '' }}">
+    <meta name="twitter:image" content="{{ $ogImage }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link href="{{ asset('favicon.ico') }}?v=2" rel="icon" sizes="48x48">

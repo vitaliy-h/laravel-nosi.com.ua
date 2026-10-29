@@ -3,6 +3,10 @@
 @section('body-class', 'news-item-page')
 
 @section('canonical', url($newsItem->url))
+@section('og_type', 'article')
+@if($newsItem->has_image)
+    @section('og_image', url($newsItem->image))
+@endif
 
 @php
     $newsSchema = array_filter([

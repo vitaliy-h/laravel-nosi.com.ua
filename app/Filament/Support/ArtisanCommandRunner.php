@@ -89,6 +89,11 @@ class ArtisanCommandRunner
             'params'      => [],
             'destructive' => false,
         ],
+        'telegram:webhook --check' => [
+            'command'     => 'telegram:webhook',
+            'params'      => ['--check' => true],
+            'destructive' => false,
+        ],
     ];
 
     public static function isAllowed(string $key): bool

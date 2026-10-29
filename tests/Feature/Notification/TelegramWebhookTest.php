@@ -11,7 +11,7 @@ class TelegramWebhookTest extends TestCase
     {
         parent::setUp();
 
-        config(['app.locale' => 'uk', 'services.telegram.bot_token' => 'test-token']);
+        config(['app.locale' => 'uk', 'services.telegram_bot.bot_token' => 'test-token']);
     }
 
     public function test_answers_with_the_chat_id(): void
@@ -34,7 +34,7 @@ class TelegramWebhookTest extends TestCase
 
     public function test_without_a_bot_token_the_endpoint_does_not_exist(): void
     {
-        config(['services.telegram.bot_token' => null]);
+        config(['services.telegram_bot.bot_token' => null]);
 
         $this->postJson('/api/telegram/webhook', $this->update(1))->assertNotFound();
     }

@@ -19,7 +19,7 @@ class SendTelegramMessageJobTest extends TestCase
     {
         parent::setUp();
 
-        config(['services.telegram.bot_token' => 'test-token']);
+        config(['services.telegram_bot.bot_token' => 'test-token']);
     }
 
     public function test_queue_logs_the_message_before_sending(): void

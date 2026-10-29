@@ -30,6 +30,19 @@ class IndexControllerTest extends TestCase
         $response->assertViewIs('modules.index.index');
     }
 
+    public function test_home_page_has_open_graph_robots_and_hreflang(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertStatus(200);
+        $response->assertSee('<meta name="robots" content="index, follow, max-image-preview:large">', false);
+        $response->assertSee('<meta property="og:type" content="website">', false);
+        $response->assertSee('<meta property="og:url" content="' . url('/') . '">', false);
+        $response->assertSee('<meta property="og:image" content="', false);
+        $response->assertSee('<meta name="twitter:card" content="summary_large_image">', false);
+        $response->assertSee('<link rel="alternate" hreflang="x-default" href="' . url('/') . '">', false);
+    }
+
     public function test_home_page_renders_every_block(): void
     {
         $category = Category::factory()->create();

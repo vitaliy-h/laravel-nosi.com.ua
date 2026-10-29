@@ -693,6 +693,7 @@ return [
             'queue:work --stop-when-empty' => 'Відправити зараз усе, що чекає в черзі (листи, SMS), і зупинитися.',
             'modules:cache'                => 'Перебудувати список маршрутів і команд модулів (після ручного завантаження файлів), потім route:clear.',
             'telegram:webhook'             => 'Підключити Telegram-бота до сайту: після цього бот відповідає на /start chat ID для сповіщень про замовлення.',
+            'telegram:webhook --check'     => 'Перевірити Telegram: чи бачить сайт токен і chat ID, кеш конфігурації, стан вебхука. Нічого не змінює.',
             'optimize:clear'               => 'Видалити всі кешовані bootstrap-файли (config, routes, views, events).',
         ],
     ],

@@ -21,7 +21,7 @@ class TelegramWebhookController extends BaseApiController
     public function __invoke(Request $request, TelegramService $telegram): JsonResponse
     {
         // No bot configured — the endpoint does not exist.
-        abort_if(blank(config('services.telegram.bot_token')), 404);
+        abort_if(blank(config('services.telegram_bot.bot_token')), 404);
 
         if (!hash_equals($telegram->webhookSecret(), (string) $request->header('X-Telegram-Bot-Api-Secret-Token'))) {
             return $this->error('Forbidden', status: 403);

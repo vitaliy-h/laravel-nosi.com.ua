@@ -23,13 +23,13 @@ class SendNewOrderTelegramActionTest extends TestCase
         parent::setUp();
 
         $this->seedLetterTemplates();
-        config(['app.locale' => 'uk', 'services.telegram.chat_id' => null]);
+        config(['app.locale' => 'uk', 'services.telegram_bot.chat_id' => null]);
         Queue::fake();
     }
 
     public function test_placing_an_order_sends_one_message_per_recipient(): void
     {
-        config(['services.telegram.chat_id' => '111, -222']);
+        config(['services.telegram_bot.chat_id' => '111, -222']);
 
         $this->placeOrder();
 
@@ -40,7 +40,7 @@ class SendNewOrderTelegramActionTest extends TestCase
 
     public function test_message_lists_the_customer_and_items_escaped(): void
     {
-        config(['services.telegram.chat_id' => '111']);
+        config(['services.telegram_bot.chat_id' => '111']);
 
         $order = $this->placeOrder();
 
@@ -61,7 +61,7 @@ class SendNewOrderTelegramActionTest extends TestCase
 
     public function test_the_dictionary_recipient_wins_over_env(): void
     {
-        config(['services.telegram.chat_id' => '111']);
+        config(['services.telegram_bot.chat_id' => '111']);
         Language::factory()->forLocalization(Localization::UK)->create([
             'dictionary' => ['telegram' => ['chat_id' => '999']],
         ]);

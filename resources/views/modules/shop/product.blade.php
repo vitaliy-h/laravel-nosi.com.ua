@@ -5,6 +5,8 @@
 @if($product->url)
     @section('canonical', url($product->url))
 @endif
+@section('og_type', 'product')
+@section('og_image', url($product->gallery[0] ?? $product->image))
 
 @php
     $productPrice = $product->price;

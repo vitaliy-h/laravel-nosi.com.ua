@@ -44,7 +44,7 @@ readonly class SendNewOrderTelegramAction
         $raw = Arr::get(Trans::getDictionary(config('app.locale')), 'telegram.chat_id');
 
         if (blank($raw)) {
-            $raw = config('services.telegram.chat_id');
+            $raw = config('services.telegram_bot.chat_id');
         }
 
         return array_values(array_filter(array_map('trim', preg_split('/[\s,;]+/', (string) $raw))));

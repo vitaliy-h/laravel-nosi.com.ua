@@ -2,6 +2,10 @@
 
 @section('body-class', 'index-page')
 
+@if($slides->isNotEmpty())
+    @section('og_image', url($slides->first()->image))
+@endif
+
 @section('content')
 
     {{-- Hero slider (admin → Home page → Slider) --}}

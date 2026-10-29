@@ -103,7 +103,7 @@ class TelegramService
 
     private function token(): string
     {
-        $token = (string) config('services.telegram.bot_token');
+        $token = (string) config('services.telegram_bot.bot_token');
 
         if ($token === '') {
             throw new RuntimeException('TELEGRAM_BOT_TOKEN is not set.');
