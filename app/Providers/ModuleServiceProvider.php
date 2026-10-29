@@ -48,11 +48,11 @@ class ModuleServiceProvider extends ServiceProvider
             $commands = [...$commands, ...$module['commands']];
         }
 
-        // Only the console will ever run one, and resolving the classes costs an
-        // autoload per command.
-        if ($this->app->runningInConsole()) {
-            $this->registerCommands($commands);
-        }
+        // Not only in the console: admin → Debug Tools runs whitelisted module
+        // commands (telegram:webhook) through Artisan::call() from a web request.
+        // Free for an ordinary page — the classes are resolved in Artisan::starting,
+        // which fires only once Artisan itself boots.
+        $this->registerCommands($commands);
     }
 
     /**
